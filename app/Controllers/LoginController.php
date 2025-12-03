@@ -69,4 +69,14 @@ class LoginController extends BaseController
         return redirect()->to('/work_master');
     }
 
+    public function logout()
+    {
+        $session = session();
+        $session->destroy();
+
+        return redirect()->to('login');
+    }
+
+
+
 }

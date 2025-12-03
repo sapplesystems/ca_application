@@ -1,47 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <title>Master Work List - CA Billing</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?php base_url();?>public/assets/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-</head>
-
-<body>
-    <div class="bg-blur"></div>
-
-    <header class="top-header">
-        <div class="logo-wrap">
-            <div class="logo-mark">CA</div>
-            <div>
-                <div class="logo-text-main">Kumar Samantaray &amp; Associates</div>
-                <div class="logo-text-sub">Chartered Accountants</div>
-            </div>
-        </div>
-        <div class="user-info">
-            Welcome! <span>Rajesh Kumar</span>
-            <a href="#">LOGOUT</a>
-        </div>
-    </header>
-
-    <!-- NAVBAR based on ca-project functional scope -->
-    <nav class="menu-bar">
-        <div class="menu-item active">Master Work List</div>
-        <div class="menu-item">Company Master</div>
-        <div class="menu-item">Client Master</div>
-        <div class="menu-item">Invoice Management</div>
-        <div class="menu-item">Receipt Notes (TDS)</div>
-        <div class="menu-item">Reports &amp; Registers</div>
-        <div class="menu-item">PDF Outputs</div>
-    </nav>
-
-    <main class="content-wrap">
+<main class="content-wrap">
         <!-- Master Work List screen (active) -->
         <section id="screen-list" class="screen active">
             <div class="card">
@@ -50,7 +7,7 @@
                         <div class="topbar-title">Master Work List</div>
                         <div class="topbar-subtitle">Service catalog with SAC, default rate &amp; GST%</div>
                     </div>
-                    <button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Add Service</button>
+                    <button class="btn" onclick="openServicePopup(0)">+ Add Service</button>
                 </div>
 
                 <div class="layout-row">
@@ -91,46 +48,28 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php foreach($workListData as $worklist){ ?>
                         <!-- Sample rows as before (shortened for demo) -->
                         <tr>
                             <td><input type="checkbox" /></td>
-                            <td>GST01</td>
-                            <td>GST Return Filing</td>
-                            <td>998300</td>
-                            <td>RETURN</td>
-                            <td>2,500.00</td>
-                            <td><span class="pill pill-green">Yes</span></td>
-                            <td>18.00%</td>
-                            <td>Monthly</td>
-                            <td><span class="pill pill-green">Active</span></td>
+                            <td><?= $worklist['service_code']; ?></td>
+                            <td><?= $worklist['service_name']; ?></td>
+                            <td><?= $worklist['sac_code']; ?></td>
+                            <td><?= $worklist['unit']; ?></td>
+                            <td><?= $worklist['default_rate']; ?></td>
+                            <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td>
+                            <td><?= $worklist['gst_percent']; ?></td>
+                            <td><?= $worklist['frequency']; ?></td>
+                            <td><span class="pill pill-green"><?= $worklist['status']; ?></span></td>
                             <td>
                                 <div class="actions">
-                                    <button class="action-btn action-edit">Edit</button>
+                                    <button class="action-btn action-edit" onclick="openServicePopup('<?php echo $worklist['id'];  ?>')">Edit</button>
                                     <button class="action-btn action-clone">Clone</button>
                                     <button class="action-btn action-deactivate">Deactivate</button>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td>AUD01</td>
-                            <td>Statutory Audit</td>
-                            <td>998201</td>
-                            <td>YEAR</td>
-                            <td>75,000.00</td>
-                            <td><span class="pill pill-green">Yes</span></td>
-                            <td>18.00%</td>
-                            <td>Annually</td>
-                            <td><span class="pill pill-green">Active</span></td>
-                            <td>
-                                <div class="actions">
-                                    <button class="action-btn action-edit">Edit</button>
-                                    <button class="action-btn action-clone">Clone</button>
-                                    <button class="action-btn action-deactivate">Deactivate</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- ...baaki rows yahi pattern follow karo... -->
+                        <?php }?>
                     </tbody>
                 </table>
 
@@ -147,24 +86,29 @@
     </main>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
+                    <h5 class="modal-title" id="addServiceModalLabel">
                         <div class="cmg-header__icon">CA</div> Company Master <span>(Add)
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                    <?php if(isset($validation)): ?>
+                    <div style="color:red; margin-bottom:10px;">
+                        <?= $validation->listErrors(); ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="msl-add-service-wrapper">
                         <div class="msl-popup-header">
                             <h2 class="msl-popup-title">Add Service</h2>
                             <p class="msl-popup-subtitle">Service catalog with SAC, default rate & GST%</p>
                         </div>
 
-                        <form class="msl-add-service-form">
+                        <form class="msl-add-service-form" method="post" action="<?php echo base_url('add-services'); ?>" id="addServiceForm">
+                             <?= csrf_field(); ?>
                             <!-- Row 1 -->
                             <div class="msl-form-row">
                                 <div class="msl-form-group">
@@ -223,8 +167,8 @@
                                     <label for="gstYesNo">GST?</label>
                                     <select id="gstYesNo" name="gst">
                                         <option value="">Select</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
                                     </select>
                                 </div>
 
@@ -253,7 +197,7 @@
                             <!-- Buttons -->
                             <div class="msl-form-actions">
                                 <button type="button" class="msl-btn-secondary">Cancel</button>
-                                <button type="submit" class="msl-btn-primary">Save Service</button>
+                                <button type="submit" class="msl-btn-primary" id="saveBtn">Save Service</button>
                             </div>
                         </form>
                     </div>
@@ -265,6 +209,98 @@
             </div>
         </div>
     </div>
-</body>
 
-</html>
+  <script>
+      let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+    document.getElementById("addServiceForm").addEventListener("submit", function(e) {
+
+        let requiredFields = [
+            "serviceCode",
+            "serviceName",
+            "sacCode",
+            "unit",
+            "defaultRate",
+            "gstPercent",
+            "gstYesNo",
+            "frequency",
+            "status"
+        ];
+
+        let isValid = true;
+
+        requiredFields.forEach(function(id) {
+            let input = document.getElementById(id);
+
+            // remove previous red border
+            input.style.border = "";
+
+            if (input.value.trim() === "") {
+                isValid = false;
+                input.style.border = "1px solid red";   // simple highlight
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault(); // Stop submit
+            alert("Please fill all required fields.");
+        }
+
+    });
+
+   <?php if(isset($validation)): ?>
+        document.addEventListener("DOMContentLoaded", function() {
+            serviceModal.show();
+        });
+    <?php endif; ?>
+      
+
+    function openServicePopup(id) {
+
+        // Reset form
+        $("#addServiceForm")[0].reset();
+
+        // Clear old errors
+        $("input, select").css("border", "");
+        $(".text-danger").remove();
+
+        // Show modal
+        serviceModal.show();
+
+        if (id === 0) {
+            // ADD
+            $("#saveBtn").text("Save Service");
+            $(".msl-popup-title").text("Add Service");
+            $("#addServiceForm").attr("action", "<?= base_url('add-services'); ?>");
+            return;
+        }
+
+        // EDIT
+        $("#saveBtn").text("Update Service");
+        $(".msl-popup-title").text("Edit Service");
+        $("#addServiceForm").attr("action", "<?= base_url('update-service'); ?>/" + id);
+
+        // Load existing data
+        $.ajax({
+            url: "<?= base_url('get-service'); ?>",
+            type: "POST",
+            data: { id: id },
+            dataType: "json",
+            success: function(response) {
+                $("#serviceCode").val(response.service_code);
+                $("#serviceName").val(response.service_name);
+                $("#sacCode").val(response.sac_code);
+                $("#unit").val(response.unit);
+                $("#defaultRate").val(response.default_rate);
+                $("#gstPercent").val(response.gst_percent);
+                $("#gstYesNo").val(response.gst_applicable);
+                $("#frequency").val(response.frequency);
+                $("#status").val(response.status);
+            }
+        });
+    }
+
+
+
+</script>
+
+
