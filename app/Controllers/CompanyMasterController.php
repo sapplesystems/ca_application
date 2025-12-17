@@ -17,7 +17,7 @@ class CompanyMasterController extends BaseController
     {
         //echo "<pre>";print_r($this->session->get());die;
         echo view('common/header');
-        echo view('CompanyMaster_list');
+        echo view('CompanyMaster/CompanyMaster_list');
         echo view('common/footer');
     }
 }

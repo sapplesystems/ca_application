@@ -101,6 +101,10 @@ body.login-body{
   box-shadow:0 2px 4px rgba(0,0,0,0.15);
   overflow-x:auto;
 }
+.menu-bar a {
+  text-decoration: none;
+  
+}
 .menu-item{
   background:#66bb6a;
   color:#ffffff;
@@ -377,7 +381,7 @@ label{
     padding:22px 20px 18px;
   }
 }
-/*--------------------------mster work add service css adding here---------------------------------------------
+/*--------------------------mster work add service pop up css start here---------------------------------------
 
        /* Wrapper and header */
 .msl-add-service-wrapper {
@@ -857,3 +861,220 @@ label{
     border: 0;
 }
 
+/*add client master css----------------*/
+
+  
+  
+    .clientm *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+        font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .clientm{
+        background:#f5f6f8;
+        padding:30px;
+    }
+    .clientm .modal{
+        max-width:1100px;
+        margin:0 auto;
+        background:#fff;
+        border-radius:8px;
+        box-shadow:0 10px 35px rgba(15,23,42,0.12);
+        padding:24px 28px 20px;
+    }
+    .clientm .modal-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:18px;
+    }
+    .clientm .modal-title{
+        font-size:16px;
+        font-weight:600;
+        letter-spacing:0.02em;
+        text-transform:uppercase;
+        color:#111827;
+    }
+    .clientm .close-btn{
+        border:none;
+        background:transparent;
+        font-size:22px;
+        cursor:pointer;
+        color:#6b7280;
+    }
+    .clientm .form-grid{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:14px 18px;
+    }
+    .clientm .form-row-full{
+        grid-column:1 / -1;
+    }
+    .clientm label{
+        display:block;
+        font-size:12px;
+        font-weight:500;
+        color:#374151;
+        margin-bottom:4px;
+    }
+    .clientm label span.req{color:#ef4444;}
+    .clientm .input, 
+    .clientm .select, 
+    .clientm .textarea{
+        width:100%;
+        border:1px solid #d1d5db;
+        border-radius:9999px;
+        padding:8px 14px;
+        font-size:13px;
+        outline:none;
+        transition:border-color .15s, box-shadow .15s;
+        background:#fff;
+    }
+    .clientm .textarea{
+        border-radius:8px;
+        min-height:60px;
+        resize:vertical;
+    }
+    .clientm .input:focus, 
+    .clientm .select:focus, 
+    .clientm .textarea:focus{
+        border-color:#22c55e;
+        box-shadow:0 0 0 1px rgba(34,197,94,0.25);
+    }
+    .clientm .muted{
+        font-size:11px;
+        color:#9ca3af;
+        margin-top:3px;
+    }
+    .clientm .input-group{
+        display:flex;
+        gap:8px;
+    }
+    .clientm .file-input{
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+    .clientm .file-input input[type="file"]{display:none;}
+    .clientm .btn-upload{
+        padding:7px 14px;
+        border-radius:9999px;
+        border:none;
+        cursor:pointer;
+        font-size:12px;
+        background:#16a34a;
+        color:#fff;
+        font-weight:500;
+    }
+    .clientm .btn-sm{
+        font-size:11px;
+        padding:4px 10px;
+        border-radius:9999px;
+        border:none;
+        cursor:pointer;
+        font-weight:500;
+    }
+    .clientm .btn-add-contact{background:#16a34a;color:#fff;}
+    .clientm .footer{
+        margin-top:18px;
+        display:flex;
+        justify-content:flex-end;
+        gap:8px;
+    }
+    .clientm .btn{
+        border-radius:9999px;
+        padding:8px 18px;
+        font-size:13px;
+        font-weight:500;
+        border:none;
+        cursor:pointer;
+    }
+    .clientm .btn-cancel{background:#e5e7eb;color:#374151;}
+    .clientm .btn-primary{background:#16a34a;color:#fff;}
+
+    /* add client view css here */
+     .client-view-modal {
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+
+.client-view-header {
+  background: #28a745;        
+  color: #fff;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.client-view-header small {
+  opacity: 0.8;
+}
+
+.font-weight-600 {
+  font-weight: 600;
+}
+
+/* content blocks */
+.cv-block {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.cv-block-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+/* single row (label + value) */
+.cv-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.15rem 0;
+}
+
+.cv-label {
+  flex: 0 0 42%;
+  max-width: 42%;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #9ca3af;
+}
+
+.cv-value {
+  flex: 1;
+  font-size: 0.88rem;
+  color: #111827;
+}
+
+/* rows jaha multiple line text hai */
+.cv-row-multiline .cv-value {
+  white-space: normal;
+}
+
+/* small screens: stack label above value */
+@media (max-width: 575.98px) {
+  .modal-dialog.modal-xl {
+    margin: 0.5rem;
+  }
+
+  .cv-row {
+    flex-direction: column;
+  }
+
+  .cv-label {
+    max-width: 100%;
+    margin-bottom: 0.15rem;
+  }
+
+  .cv-block {
+    padding: 0.7rem 0.75rem;
+  }
+}

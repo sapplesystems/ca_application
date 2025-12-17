@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
-     
+
 </head>
 
 <body>
@@ -35,14 +35,51 @@
 
     <!-- NAVBAR based on ca-project functional scope -->
     <nav class="menu-bar">
-        <a href="<?= base_url('work_master'); ?>" style="color:#fff;text-decoration:none">
-        <div class="menu-item active">    
-        Master Work List</div></a>
-         <a href="<?= base_url('company_master'); ?>" style="color:#fff;text-decoration:none"><div class="menu-item">Company Master</div></a>
-        <div class="menu-item">Client Master</div>
-        <div class="menu-item">Invoice Management</div>
-        <div class="menu-item">Receipt Notes (TDS)</div>
-        <div class="menu-item">Reports &amp; Registers</div>
-        <div class="menu-item">PDF Outputs</div>
+        <a href="<?= base_url('work_master'); ?>" class="menu-link">
+            <div class="menu-item">Master Work List</div>
+        </a>
+
+        <a href="<?= base_url('company_master'); ?>" class="menu-link">
+            <div class="menu-item">Company Master</div>
+        </a>
+
+        <a href="<?= base_url('Client_Master'); ?>" class="menu-link">
+            <div class="menu-item">Client Master</div>
+        </a>
+
+        <a href="<?= base_url('invoice_management'); ?>" class="menu-link">
+            <div class="menu-item">Invoice Management</div>
+        </a>
+
+        <a href="<?= base_url('receipt_notes'); ?>" class="menu-link">
+            <div class="menu-item">Receipt Notes (TDS)</div>
+        </a>
+
+        <a href="<?= base_url('reports_registers'); ?>" class="menu-link">
+            <div class="menu-item">Reports & Registers</div>
+        </a>
+
+        <a href="<?= base_url('pdf_outputs'); ?>" class="menu-link">
+            <div class="menu-item">PDF Outputs</div>
+        </a>
     </nav>
-    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUrl = window.location.href; // full URL
+
+        // sabhi menu links lo
+        document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
+            const linkHref = link.href;
+
+            // agar current URL is link se start hota hai to isko active karo
+            if (currentUrl.startsWith(linkHref)) {
+                // pehle previous active hata do
+                document.querySelectorAll('.menu-bar .menu-item.active')
+                    .forEach(el => el.classList.remove('active'));
+
+                // is link ke andar jo .menu-item hai usko active do
+                link.querySelector('.menu-item').classList.add('active');
+            }
+        });
+    });
+    </script>
