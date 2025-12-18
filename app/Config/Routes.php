@@ -20,3 +20,6 @@ $routes->match(['get', 'post'], 'Client_Master', 'ClientMasterController::index'
 $routes->post('clients/store', 'ClientMasterController::store');
 $routes->post('clients/update', 'ClientMasterController::update');
 $routes->post('clients/show', 'ClientMasterController::show');
+
+$routes->post('company-master/store', 'CompanyMasterController::store');
+$routes->get('company-master', 'CompanyMasterController::index');

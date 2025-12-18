@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 
@@ -65,19 +66,16 @@
     </nav>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const currentUrl = window.location.href; // full URL
+        const currentPath = window.location.pathname; // e.g. /company_master
 
-        // sabhi menu links lo
         document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
-            const linkHref = link.href;
+            const linkPath = new URL(link.href).pathname; // sirf path nikaalo
 
-            // agar current URL is link se start hota hai to isko active karo
-            if (currentUrl.startsWith(linkHref)) {
-                // pehle previous active hata do
-                document.querySelectorAll('.menu-bar .menu-item.active')
+            if (currentPath === linkPath) {
+                document
+                    .querySelectorAll('.menu-bar .menu-item.active')
                     .forEach(el => el.classList.remove('active'));
 
-                // is link ke andar jo .menu-item hai usko active do
                 link.querySelector('.menu-item').classList.add('active');
             }
         });

@@ -92,7 +92,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addServiceModalLabel">
-                    <div class="cmg-header__icon">CA</div> Company Master <span>(Add)
+                    <div class="cmg-header__icon">CA</div> Work Master
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
