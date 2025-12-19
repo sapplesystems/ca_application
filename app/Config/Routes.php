@@ -9,7 +9,6 @@ $routes->get('/login', 'LoginController::login');
 $routes->get('/', 'LoginController::login');
 
 $routes->get('/work_master', 'MasterWork::index');
-$routes->get('/company_master', 'CompanyMasterController::index');
 $routes->get('login', 'LoginController::login');
 $routes->post('login-for-entry', 'LoginController::loginforentry');
 $routes->get('logout', 'LoginController::logout');
@@ -22,4 +21,6 @@ $routes->post('clients/update', 'ClientMasterController::update');
 $routes->post('clients/show', 'ClientMasterController::show');
 
 $routes->post('company-master/store', 'CompanyMasterController::store');
-$routes->get('company-master', 'CompanyMasterController::index');
+$routes->match(['get', 'post'], 'company_master', 'CompanyMasterController::index', ['as' => 'company.master']);
+$routes->post('company-master/update', 'CompanyMasterController::update');
+$routes->post('company-master/show', 'CompanyMasterController::show');
