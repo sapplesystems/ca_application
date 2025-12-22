@@ -87,7 +87,7 @@
                                             data-target="#editcompanymaster" data-toggle="modal">
                                             Edit
                                         </button>
-                                        <button class="action-btn action-edit"> view </button>
+                                        <button class="action-btn action-view"data-id="<?= $row['id'] ?>"> view </button>
                                     </div>
                                 </td>
                             </tr>
@@ -120,7 +120,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content cmg-shell">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">SECTION: GENERAL INFO</h5>
+                        <h5 class="modal-title" id="staticBackdropLabel">Add Company Master</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -138,12 +138,8 @@
                                         Type of Company <span class="cmg-required">*</span>
                                     </label>
                                     <select class="cmg-select" name="company_type">
-                                        <option value="">Select type</option>
-                                        <option value="proprietorship">Proprietorship</option>
-                                        <option value="partnership">Partnership</option>
-                                        <option value="pvt_ltd">Private Limited</option>
-                                        <option value="ltd">Public Limited</option>
-                                        <option value="llp">LLP</option>
+                                        <option value="Consultancy Master">Consultancy Master</option>
+                                        <option value="Charted Account Master">Charted Account Master</option>
                                     </select>
                                 </div>
 
@@ -164,14 +160,7 @@
                                 <!-- Category -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">Category</label>
-                                    <select class="cmg-select" name="category">
-                                        <option value="">Select category</option>
-                                        <option value="company_limited_by_shares">Company limited by shares</option>
-                                        <option value="company_limited_by_guarantee">Company limited by guarantee
-                                        </option>
-                                        <option value="one_person_company">One Person Company</option>
-                                        <option value="others">Others</option>
-                                    </select>
+                                     <input type="text" class="cmg-input" name="category" placeholder="Enter category">
                                 </div>
 
                                 <!-- Registered Office -->
@@ -186,6 +175,13 @@
                                     <label class="cmg-label">Head Office</label>
                                     <textarea class="cmg-textarea" name="head_office"
                                         placeholder="Enter head office address (if different)"></textarea>
+                                </div>
+
+                            <!-- condition and terms-->
+                                <div class="cmg-field cmg-field--full">
+                                    <label class="cmg-label">Condition And Terms</label>
+                                    <textarea class="cmg-textarea" name="condition_and_terms"
+                                        placeholder="Enter condition and terms"></textarea>
                                 </div>
 
                                 <!-- Email / Tel / Website -->
@@ -244,64 +240,100 @@
 
                                     <div class="cmg-branches">
 
-                                        <div class="cmg-branches__header">
-                                            <span>Branches</span>
-                                            <button type="button" class="cmg-btn cmg-btn--ghost cmg-btn--small"
-                                                id="addBranchBtn">
-                                                + Add Branch
-                                            </button>
-                                        </div>
+            <div class="cmg-branches__header">
+                <span>Branches</span>
+                <button type="button"
+                        class="cmg-btn cmg-btn--ghost cmg-btn--small"
+                        id="addBranchBtn">
+                    + Add Branch
+                </button>
+            </div>
 
-                                        <!-- yahan dynamic list aayegi -->
-                                        <div id="branchesList">
+            <div id="branchesList">
 
-                                            <!-- default example (optional) -->
-                                            <div class="cmg-branches__item">
-                                                <div class="cmg-branches__item-main">
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input cmg-branches__title-input"
-                                                            name="branches[][title]" value="HO | Civil Lines, Delhi"
-                                                            placeholder="Branch title (e.g. HO | Civil Lines, Delhi)">
-                                                    </div>
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-textarea cmg-branches__subtitle-input"
-                                                            name="branches[][address]"
-                                                            placeholder="Branch address">123, Civil Lines, New Delhi - 110054</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="cmg-branches__item-actions">
-                                                    <button type="button"
-                                                        class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>
+                <!-- Default Branch -->
+                <div class="cmg-branches__item">
+                    <div class="cmg-branches__item-main">
 
-                                        </div>
+                        <div class="cmg-branches__row">
+                            <input type="text"
+                                class="cmg-input"
+                                name="branches[__i__][name]"
+                                placeholder="Branch name">
+                        </div>
 
-                                        <!-- Hidden template for new branch -->
-                                        <template id="branchTemplate">
-                                            <div class="cmg-branches__item">
-                                                <div class="cmg-branches__item-main">
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input cmg-branches__title-input"
-                                                            name="branches[][title]"
-                                                            placeholder="Branch title (e.g. HO | Civil Lines, Delhi)">
-                                                    </div>
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-textarea cmg-branches__subtitle-input"
-                                                            name="branches[][address]"
-                                                            placeholder="Branch address"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="cmg-branches__item-actions">
-                                                    <button type="button"
-                                                        class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </template>
+                        <div class="cmg-branches__row">
+                            <input type="text"
+                                class="cmg-input"
+                                name="branches[__i__][phone]"
+                                placeholder="Phone">
+                        </div>
+
+                        <div class="cmg-branches__row">
+                            <input type="email"
+                                class="cmg-input"
+                                name="branches[__i__][email]"
+                                placeholder="Email">
+                        </div>
+
+                        <div class="cmg-branches__row">
+                            <textarea class="cmg-input"
+                                    name="branches[__i__][address]"
+                                    placeholder="Address"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="cmg-branches__item-actions">
+                        <button type="button"
+                                class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Hidden Template -->
+            <template id="branchTemplate">
+                <div class="cmg-branches__item">
+                    <div class="cmg-branches__item-main">
+
+                        <div class="cmg-branches__row">
+                            <input type="text" class="cmg-input"
+                                name="branches[__i__][name]"
+                                placeholder="Branch name">
+                        </div>
+
+                        <div class="cmg-branches__row">
+                            <input type="text" class="cmg-input"
+                                name="branches[__i__][phone]"
+                                placeholder="Phone">
+                        </div>
+
+                        <div class="cmg-branches__row">
+                            <input type="email" class="cmg-input"
+                                name="branches[__i__][email]"
+                                placeholder="Email">
+                        </div>
+
+                        <div class="cmg-branches__row">
+                            <textarea class="cmg-input"
+                                    name="branches[__i__][address]"
+                                    placeholder="Address"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="cmg-branches__item-actions">
+                        <button type="button"
+                                class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </template>
+
 
                                     </div>
 
@@ -314,13 +346,11 @@
                                 <!-- Bank Account -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">Bank Account</label>
-                                    <select class="cmg-select" name="bank_account">
-                                        <option value="">Select bank account</option>
-                                        <!-- options dynamically from bank_accounts master -->
-                                    </select>
+                                 <input type="text" class="cmg-input" name="bank_account" placeholder="23456789012345">
                                     <p class="cmg-help-text">
                                         Select default bank account for this company.
                                     </p>
+
                                 </div>
 
                                 <!-- Logo Upload -->
@@ -338,13 +368,18 @@
                                     </p>
                                 </div>
 
-                                <!-- Status -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Status</label>
-                                    <select class="cmg-select" name="status">
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                    </select>
+                                 <!-- Business -->
+                                <div class="form-row-full">
+                                    <label>Nature of Business</label>
+                                    <textarea name="nature_of_business" class="textarea"></textarea>
+                                </div>
+                                <div>
+                                    <label>Nature of Service</label>
+                                    <textarea name="nature_of_service" class="textarea"></textarea>
+                                </div>
+                                <div>
+                                    <label>Nature of Product</label>
+                                    <textarea name="nature_of_product" class="textarea"></textarea>
                                 </div>
 
                             </div>
@@ -370,248 +405,38 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content cmg-shell">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">SECTION: GENERAL INFO</h5>
+                        <h5 class="modal-title" id="staticBackdropLabel">Edit CompanyMaster</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
 
-                    <div class="modal-body">
-                        <form class="cmg-form" method="POST" action="" enctype="multipart/form-data">
-                            <div class="cmg-grid">
-
-                                <!-- Type of Company -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">
-                                        Type of Company <span class="cmg-required">*</span>
-                                    </label>
-                                    <select class="cmg-select" name="company_type">
-                                        <option value="">Select type</option>
-                                        <option value="proprietorship">Proprietorship</option>
-                                        <option value="partnership">Partnership</option>
-                                        <option value="pvt_ltd">Private Limited</option>
-                                        <option value="ltd">Public Limited</option>
-                                        <option value="llp">LLP</option>
-                                    </select>
-                                </div>
-
-                                <!-- Name -->
-                                <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">
-                                        Name <span class="cmg-required">*</span>
-                                    </label>
-                                    <input type="text" class="cmg-input" placeholder="Enter company name" name="name">
-                                </div>
-
-                                <!-- Date of Incorporation -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Date of Incorporation</label>
-                                    <input type="date" class="cmg-input" name="date_of_incorporation">
-                                </div>
-
-                                <!-- Category -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Category</label>
-                                    <select class="cmg-select" name="category">
-                                        <option value="">Select category</option>
-                                        <option value="company_limited_by_shares">Company limited by shares</option>
-                                        <option value="company_limited_by_guarantee">Company limited by guarantee
-                                        </option>
-                                        <option value="one_person_company">One Person Company</option>
-                                        <option value="others">Others</option>
-                                    </select>
-                                </div>
-
-                                <!-- Registered Office -->
-                                <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Registered Office</label>
-                                    <textarea class="cmg-textarea" name="registered_office"
-                                        placeholder="Enter registered office address"></textarea>
-                                </div>
-
-                                <!-- Head Office -->
-                                <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Head Office</label>
-                                    <textarea class="cmg-textarea" name="head_office"
-                                        placeholder="Enter head office address (if different)"></textarea>
-                                </div>
-
-                                <!-- Email / Tel / Website -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Email</label>
-                                    <input type="email" class="cmg-input" name="email" placeholder="info@company.com">
-                                </div>
-
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Phone / Tel</label>
-                                    <input type="text" class="cmg-input" name="phone" placeholder="+91-9876543210">
-                                </div>
-
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Website</label>
-                                    <input type="text" class="cmg-input" name="website" placeholder="www.company.com">
-                                </div>
-
-                                <!-- Invoice Format -->
-                                <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Invoice Format</label>
-                                    <input type="text" class="cmg-input" name="invoice_format"
-                                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
-                                    <p class="cmg-help-text">
-                                        Define how invoice numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
-                                    </p>
-                                </div>
-
-                                <!-- PAN / GSTIN / IEC -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">PAN</label>
-                                    <input type="text" class="cmg-input" name="pan" placeholder="ABCDE1234F">
-                                </div>
-
-                                <div class="cmg-field">
-                                    <label class="cmg-label">GSTIN</label>
-                                    <input type="text" class="cmg-input" name="gstin" placeholder="22ABCDE1234F1ZS">
-                                </div>
-
-                                <div class="cmg-field">
-                                    <label class="cmg-label">IEC</label>
-                                    <input type="text" class="cmg-input" name="iec" placeholder="Import Export Code">
-                                </div>
-
-                                <!-- Sister Concerns -->
-                                <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Sister Concerns</label>
-                                    <textarea class="cmg-textarea" name="sister_concerns"
-                                        placeholder="List sister concerns, one per line"></textarea>
-                                </div>
-
-                                <!-- Branches (List) - UPDATED -->
-                                <!-- Branches (List) - UPDATED CLEAN UI -->
-                                <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Branches (List)</label>
-
-                                    <div class="cmg-branches">
-
-                                        <div class="cmg-branches__header">
-                                            <span>Branches</span>
-                                            <button type="button" class="cmg-btn cmg-btn--ghost cmg-btn--small"
-                                                id="addBranchBtn">
-                                                + Add Branch
-                                            </button>
-                                        </div>
-
-                                        <!-- yahan dynamic list aayegi -->
-                                        <div id="branchesList">
-
-                                            <!-- default example (optional) -->
-                                            <div class="cmg-branches__item">
-                                                <div class="cmg-branches__item-main">
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input cmg-branches__title-input"
-                                                            name="branches[][title]" value="HO | Civil Lines, Delhi"
-                                                            placeholder="Branch title (e.g. HO | Civil Lines, Delhi)">
-                                                    </div>
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-textarea cmg-branches__subtitle-input"
-                                                            name="branches[][address]"
-                                                            placeholder="Branch address">123, Civil Lines, New Delhi - 110054</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="cmg-branches__item-actions">
-                                                    <button type="button"
-                                                        class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <!-- Hidden template for new branch -->
-                                        <template id="branchTemplate">
-                                            <div class="cmg-branches__item">
-                                                <div class="cmg-branches__item-main">
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input cmg-branches__title-input"
-                                                            name="branches[][title]"
-                                                            placeholder="Branch title (e.g. HO | Civil Lines, Delhi)">
-                                                    </div>
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-textarea cmg-branches__subtitle-input"
-                                                            name="branches[][address]"
-                                                            placeholder="Branch address"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="cmg-branches__item-actions">
-                                                    <button type="button"
-                                                        class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </template>
-
-                                    </div>
-
-                                    <p class="cmg-help-text">
-                                        Use “Add Branch” to add multiple branches; click “Delete” to remove a branch.
-                                    </p>
-                                </div>
-
-
-                                <!-- Bank Account -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Bank Account</label>
-                                    <select class="cmg-select" name="bank_account">
-                                        <option value="">Select bank account</option>
-                                        <!-- options dynamically from bank_accounts master -->
-                                    </select>
-                                    <p class="cmg-help-text">
-                                        Select default bank account for this company.
-                                    </p>
-                                </div>
-
-                                <!-- Logo Upload -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Logo Upload</label>
-                                    <div class="cmg-upload">
-                                        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
-                                            ⬆ Upload Logo
-                                            <input type="file" name="logo" class="cmg-upload__input">
-                                        </label>
-                                        <span class="cmg-upload__text">No file chosen</span>
-                                    </div>
-                                    <p class="cmg-help-text">
-                                        Recommended size: 200x200px, Max file size: 2MB.
-                                    </p>
-                                </div>
-
-                                <!-- Status -->
-                                <div class="cmg-field">
-                                    <label class="cmg-label">Status</label>
-                                    <select class="cmg-select" name="status">
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-                            <!-- Footer buttons -->
-                            <div class="cmg-footer">
-                                <button type="button" class="cmg-btn cmg-btn--ghost" data-dismiss="modal">
-                                    Cancel
-                                </button>
-                                <button type="submit" class="cmg-btn cmg-btn--primary">
-                                    Update Company
-                                </button>
-                            </div>
-                        </form>
+                    <div class="modal-body" id="editcompany">
+                       
                     </div>
 
                 </div>
             </div>
         </div>
+        <!-- modal3 for view the comapny master -->
+         <div class="modal fade" id="viewCompanyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Company Details</h5>
+                <button type="button" class="btn-close" data-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="viewCompanyBody">
+                <!-- DETAILS WILL LOAD HERE -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             const addBtn = document.getElementById('addBranchBtn');
@@ -638,6 +463,55 @@
                 }
             });
         });
+        $(document).on('click', '.action-edit', function(e) {
+            e.preventDefault();
+            let companyId = $(this).data('id');
+            $.ajax({
+                url: window.location.href,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    "companyid": companyId,
+                    "editCompany": "editCompany"
+                },
+                success: function(data) {
+                    if (data.status == true) {
+                        $("#editcompanymaster").modal('show');
+                        $("#editcompany").html(data.html);
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    alert('Error while loading company data.');
+                }
+            });
+});
+
+$(document).on('click', '.action-view', function () {
+
+    let companyId = $(this).data('id');
+
+    $.ajax({
+        url: '<?= base_url('company-master/show') ?>',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            companyid: companyId,
+            viewCompany: true
+        },
+        success: function (resp) {
+            if (resp.status === true) {
+                $('#viewCompanyBody').html(resp.html);
+                $('#viewCompanyModal').modal('show');
+            }
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
+            alert('Error loading company details');
+        }
+    });
+});
+
         </script>
 
     </body>

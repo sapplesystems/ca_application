@@ -32,6 +32,10 @@ class CompanyMasterModel extends Model
         'bank_ac_no',           // ya bank_account, jo bhi column ho
         'logo',                 // logo ka filename
         'status',
+        'nature_of_business',
+        'nature_of_service',
+        'nature_of_product',
+        'condition_and_terms',
         'created_at',
         'updated_at'
     ];
@@ -65,4 +69,9 @@ class CompanyMasterModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+     public function findCompanyById(int $id)
+    {
+        return $this->where('id', $id)->first();
+    }
 }
