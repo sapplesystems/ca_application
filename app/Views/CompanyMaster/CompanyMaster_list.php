@@ -438,31 +438,34 @@
 
 
         <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const addBtn = document.getElementById('addBranchBtn');
-            const branchesList = document.getElementById('branchesList');
-            const branchTpl = document.getElementById('branchTemplate');
+document.addEventListener('DOMContentLoaded', function () {
+    const addBtn = document.getElementById('addBranchBtn');
+    const branchesList = document.getElementById('branchesList');
+    const branchTpl = document.getElementById('branchTemplate');
 
-            if (!addBtn || !branchesList || !branchTpl) {
-                return;
-            }
+    if (!addBtn || !branchesList || !branchTpl) return;
 
-            // Add Branch
-            addBtn.addEventListener('click', function() {
-                const clone = branchTpl.content.cloneNode(true);
-                branchesList.appendChild(clone);
-            });
+    let index = branchesList.children.length;
 
-            // Delete Branch (event delegation)
-            branchesList.addEventListener('click', function(e) {
-                if (e.target.classList.contains('btn-branch-delete')) {
-                    const item = e.target.closest('.cmg-branches__item');
-                    if (item) {
-                        item.remove();
-                    }
-                }
-            });
-        });
+    addBtn.addEventListener('click', function () {
+        const clone = branchTpl.content.cloneNode(true);
+        const item = clone.querySelector('.cmg-branches__item');
+
+        item.innerHTML = item.innerHTML.replace(/__i__/g, index);
+        index++;
+
+        branchesList.appendChild(item);
+    });
+
+    branchesList.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-branch-delete')) {
+            e.target.closest('.cmg-branches__item').remove();
+        }
+    });
+});
+
+
+
         $(document).on('click', '.action-edit', function(e) {
             e.preventDefault();
             let companyId = $(this).data('id');
