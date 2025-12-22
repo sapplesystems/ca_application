@@ -1,2 +1,30 @@
-.writable/logs
-.writable/session
+# ==================================
+# Ignore EVERYTHING by default
+# ==================================
+*
+
+# ==================================
+# Allow root files (required)
+# ==================================
+!.gitignore
+!composer.json
+!composer.lock
+!spark
+
+# ==================================
+# Allow application & public code
+# ==================================
+!app/
+!app/**
+
+!public/
+!public/**
+
+# ==================================
+# Explicitly ignore runtime & secrets
+# ==================================
+.env
+.env.*
+
+/writable/
+/vendor/
