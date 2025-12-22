@@ -60,7 +60,13 @@
                         <td><span class="pill pill-green"><?= esc($client['company_category']) ?></span></td>
                         <td><?= esc($client['company_sub_category']) ?></td>
                         <td><?= esc($client['corporate_office']) ?></td>
-                        <td><span class="pill pill-green">Active</span></td>
+                        <td>
+                                
+                            <div class="toggle <?= $client['status'] == 0 ? 'inactive' : '' ?>"
+                                data-id="<?= $client['id'] ?>">
+                                <div class="toggle-circle"></div>
+                            </div>
+                        </td>
                         <td>
                             <div class="actions">
                                 <button class="action-btn action-edit btn" data-id="<?= $client['id'] ?>">
@@ -387,5 +393,34 @@ $(document).on('click', '.action-view', function(e) {
             alert('Error while loading client');
         }
     });
+});
+document.querySelectorAll('.toggle').forEach(toggle => {
+
+    toggle.addEventListener('click', function() {
+
+        this.classList.toggle('inactive');
+
+        const status = this.classList.contains('inactive') ? 0 : 1;
+
+        const id = this.dataset.id;
+
+
+
+        fetch("<?= base_url('client/update-status') ?>", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: status
+                })
+            })
+            .then(res => res.json())
+            .then(data => console.log(data.message))
+            .catch(err => console.error(err));
+    });
+
 });
 </script>

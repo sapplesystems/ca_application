@@ -75,11 +75,11 @@
                                 <td><?= esc($row['head_office']) ?></td>
                                 <td><?= esc($row['email']) ?></td>
                                 <td>
-                                    <?php if ($row['status'] == 'active'): ?>
-                                    <span class="pill pill-green">Active</span>
-                                    <?php else: ?>
-                                    <span class="pill pill-red">Inactive</span>
-                                    <?php endif; ?>
+
+                                    <div class="toggle <?= $row['status'] == 0 ? 'inactive' : '' ?>"
+                                        data-id="<?= $row['id'] ?>">
+                                        <div class="toggle-circle"></div>
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="actions">
@@ -452,12 +452,63 @@
                 branchesList.appendChild(item);
             });
 
+            <<
+            << << < HEAD
             branchesList.addEventListener('click', function(e) {
                 if (e.target.classList.contains('btn-branch-delete')) {
                     e.target.closest('.cmg-branches__item').remove();
                 }
             });
+        }); ===
+        === =
+        branchesList.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-branch-delete')) {
+            e.target.closest('.cmg-branches__item').remove();
+        }
         });
+        });
+        let branchIndex;
+
+        $(document).on('click', '#editBranchBtn', function() {
+            console.log('Add clicked');
+
+            const branchesList = document.getElementById('branchesLists');
+            const branchTpl = document.getElementById('branchTemplate');
+
+            console.log('branchesList:', branchesList);
+            console.log('branchTemplate:', branchTpl);
+
+            if (!branchesList || !branchTpl) {
+                console.error('Missing branchesList or branchTemplate');
+                return;
+            }
+
+            if (branchIndex === undefined) {
+                branchIndex = branchesList.children.length;
+            }
+
+            const clone = branchTpl.content.cloneNode(true);
+            const item = clone.querySelector('.cmg-branches__item');
+
+            console.log('cloned item:', item);
+
+            if (!item) {
+                console.error('cmg-branches__item not found in template');
+                return;
+            }
+
+            item.innerHTML = item.innerHTML.replace(/__i__/g, branchIndex);
+            branchIndex++;
+
+            branchesList.appendChild(item);
+            console.log('Appended successfully');
+        });
+
+        // DELETE BRANCH (delegated)
+        $(document).on('click', '.btn-branch-delete', function() {
+            $(this).closest('.cmg-branches__item').remove();
+        }); >>>
+        >>> > ba43cc65330f347df7791ee9b8f2d0fa663f9c3b
 
 
 
@@ -517,6 +568,35 @@
                     $('body').removeClass('modal-open'); // body se class hatao
                     $('body').css('overflow', ''); // scroll normal
                 });
+        });
+        document.querySelectorAll('.toggle').forEach(toggle => {
+
+            toggle.addEventListener('click', function() {
+
+                this.classList.toggle('inactive');
+
+                const status = this.classList.contains('inactive') ? 0 : 1;
+
+                const id = this.dataset.id;
+
+
+
+                fetch("<?= base_url('/company-master/update-status') ?>", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: JSON.stringify({
+                            id: id,
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => console.log(data.message))
+                    .catch(err => console.error(err));
+            });
+
         });
         </script>
     </body>

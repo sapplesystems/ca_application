@@ -43,6 +43,7 @@ class ClientModel extends Model
         'nature_of_product',
         'billing_emails',
         'payment_terms',
+        'status',
     ];
 
     protected bool $allowEmptyInserts = false;

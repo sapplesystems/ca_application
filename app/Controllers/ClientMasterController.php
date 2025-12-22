@@ -487,6 +487,21 @@ return $this->response->setJSON([
         'message' => 'Invalid request'
     ]);
 }
+  public function updateStatus()
+    {
+        $data = $this->request->getJSON(true);
+
+        $status = $data['status'];
+        $userId = $data['id'];
+
+        $model = new ClientModel();
+        $model->update($userId, ['status' => $status]);
+        
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Status updated successfully'
+        ]);
+    }
 
 
 }
