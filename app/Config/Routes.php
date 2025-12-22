@@ -9,6 +9,7 @@ $routes->get('/login', 'LoginController::login');
 $routes->get('/', 'LoginController::login');
 
 $routes->get('/work_master', 'MasterWork::index');
+$routes->post('update-status', 'MasterWork::updateStatus');
 $routes->get('login', 'LoginController::login');
 $routes->post('login-for-entry', 'LoginController::loginforentry');
 $routes->get('logout', 'LoginController::logout');

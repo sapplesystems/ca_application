@@ -1,2 +1,48 @@
-.writable/logs
-.writable/session
+# --------------------------
+# OS generated files
+# --------------------------
+.DS_Store
+Thumbs.db
+
+# --------------------------
+# Node / npm
+# --------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# --------------------------
+# PHP / Composer
+# --------------------------
+vendor/
+composer.lock
+
+# --------------------------
+# CodeIgniter 4
+# --------------------------
+writable/cache/*
+writable/logs/*
+writable/session/*
+writable/uploads/*
+.env
+.env.development
+.env.testing
+.env.production
+
+# --------------------------
+# IDEs / Editors
+# --------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --------------------------
+# Others
+# --------------------------
+*.log
+*.tmp
+*.swp
+
