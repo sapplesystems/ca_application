@@ -320,7 +320,7 @@ document.querySelectorAll('.toggle').forEach(toggle => {
 
 
 
-        fetch("<?= base_url('update-status') ?>", {
+        fetch("<?= base_url('/work_master/update-status') ?>", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

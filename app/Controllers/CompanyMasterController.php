@@ -79,16 +79,16 @@ class CompanyMasterController extends BaseController
                     <label class="cmg-label">Condition And Terms</label>
                     <textarea class="cmg-textarea" name="condition_and_terms">' . esc($company['condition_and_terms']) . '</textarea>
                 </div>';
-                 /* ================= Bank Account ================= */
-            $html .= '<div class="cmg-field">
-                <label class="cmg-label">Bank Account</label>
-                <input type="text" class="cmg-input" name="bank_account" 
-                    value="' . esc($company['bank_ac_no']) . '" 
-                    placeholder="23456789012345">
-                <p class="cmg-help-text">
-                    Select default bank account for this company.
-                </p>
-            </div>';
+            //      /* ================= Bank Account ================= */
+            // $html .= '<div class="cmg-field">
+            //     <label class="cmg-label">Bank Account</label>
+            //     <input type="text" class="cmg-input" name="bank_account" 
+            //         value="' . esc($company['bank_ac_no']) . '" 
+            //         placeholder="23456789012345">
+            //     <p class="cmg-help-text">
+            //         Select default bank account for this company.
+            //     </p>
+            // </div>';
 
                 /* ================= Contact ================= */
                 $html .= '<div class="cmg-field">
@@ -105,14 +105,11 @@ class CompanyMasterController extends BaseController
                     <label class="cmg-label">Website</label>
                     <input type="text" class="cmg-input" name="website" value="' . esc($company['website']) . '">
                 </div>';
-                $html .= '<div class="cmg-field cmg-field--full">
-                    <label class="cmg-label">Sister Concerns</label>
-                    <textarea class="cmg-textarea" name="sister_concerns" 
-                        placeholder="List sister concerns, one per line">'
-                        . esc($company['sister_concerns']) .
-                    '</textarea>
+                 $html .= '<div class="cmg-field">
+                    <label class="cmg-label">IEC</label>
+                    <input type="text" class="cmg-input" name="iec" value="' . esc($company['iec']) . '">
                 </div>';
-                /* ================= Invoice Format ================= */
+                  /* ================= Invoice Format ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Invoice Format</label>
                     <input type="text" class="cmg-input" name="invoice_format"
@@ -122,6 +119,14 @@ class CompanyMasterController extends BaseController
                         Define how invoice numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
                     </p>
                 </div>';
+                $html .= '<div class="cmg-field cmg-field--full">
+                    <label class="cmg-label">Sister Concerns</label>
+                    <textarea class="cmg-textarea" name="sister_concerns" 
+                        placeholder="List sister concerns, one per line">'
+                        . esc($company['sister_concerns']) .
+                    '</textarea>
+                </div>';
+              
 
                 /* ================= GST ================= */
                 $html .= '<div class="cmg-field">
@@ -134,10 +139,7 @@ class CompanyMasterController extends BaseController
                     <input type="text" class="cmg-input" name="gstin" value="' . esc($company['gstin']) . '">
                 </div>';
 
-                $html .= '<div class="cmg-field">
-                    <label class="cmg-label">IEC</label>
-                    <input type="text" class="cmg-input" name="iec" value="' . esc($company['iec']) . '">
-                </div>';
+               
 
                 /* ================= Branches ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
@@ -149,52 +151,52 @@ class CompanyMasterController extends BaseController
                         <span>Branches</span>
                         <button type="button"
                                 class="cmg-btn cmg-btn--ghost cmg-btn--small"
-                                id="addBranchBtn">
+                                id="editBranchBtn" >
                             + Add Branch
                         </button>
                     </div>
 
-                    <div id="branchesList">';
+                    <div id="branchesLists">';
                     /* ================= Branch Template (Hidden) ================= */
-$html .= '
-<template id="branchTemplate">
-    <div class="cmg-branches__item">
-        <div class="cmg-branches__item-main">
+                    $html .= '
+                    <template id="branchTemplate">
+                        <div class="cmg-branches__item">
+                            <div class="cmg-branches__item-main">
 
-            <div class="cmg-branches__row">
-                <input type="text" class="cmg-input"
-                    name="branches[__i__][name]"
-                    placeholder="Branch name">
-            </div>
+                                <div class="cmg-branches__row">
+                                    <input type="text" class="cmg-input"
+                                        name="branches[__i__][name]"
+                                        placeholder="Branch name">
+                                </div>
 
-            <div class="cmg-branches__row">
-                <input type="text" class="cmg-input"
-                    name="branches[__i__][phone]"
-                    placeholder="Phone">
-            </div>
+                                <div class="cmg-branches__row">
+                                    <input type="text" class="cmg-input"
+                                        name="branches[__i__][phone]"
+                                        placeholder="Phone">
+                                </div>
 
-            <div class="cmg-branches__row">
-                <input type="email" class="cmg-input"
-                    name="branches[__i__][email]"
-                    placeholder="Email">
-            </div>
+                                <div class="cmg-branches__row">
+                                    <input type="email" class="cmg-input"
+                                        name="branches[__i__][email]"
+                                        placeholder="Email">
+                                </div>
 
-            <div class="cmg-branches__row">
-                <textarea class="cmg-input"
-                    name="branches[__i__][address]"
-                    placeholder="Address"></textarea>
-            </div>
+                                <div class="cmg-branches__row">
+                                    <textarea class="cmg-input"
+                                        name="branches[__i__][address]"
+                                        placeholder="Address"></textarea>
+                                </div>
 
-        </div>
+                            </div>
 
-        <div class="cmg-branches__item-actions">
-            <button type="button"
-                class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
-                Delete
-            </button>
-        </div>
-    </div>
-</template>';
+                            <div class="cmg-branches__item-actions">
+                                <button type="button"
+                                    class="cmg-btn cmg-btn--tiny cmg-btn--danger btn-branch-delete">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </template>';
                     $index = 0;
 
                 if (!empty($branches)) {
@@ -244,6 +246,16 @@ $html .= '
                 }
                     $html .= '</div></div></div>';
 
+
+                    $html .= '<div class="cmg-field">
+                <label class="cmg-label">Bank Account</label>
+                <input type="text" class="cmg-input" name="bank_account" 
+                    value="' . esc($company['bank_ac_no']) . '" 
+                    placeholder="23456789012345">
+                <p class="cmg-help-text">
+                    Select default bank account for this company.
+                </p>
+            </div>';
                 /* ================= Logo Upload ================= */
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Logo Upload</label>
@@ -252,19 +264,15 @@ $html .= '
                             ⬆ Upload Logo
                             <input type="file" name="logo" class="cmg-upload__input" value="' . esc($company['logo']) . '">
                         </label>
-                        <span class="cmg-upload__text">No file chosen</span>
+                        <span class="cmg-upload__text"><a href="' . esc($company['logo']) . '" target="_blank">
+                                    ' . esc($company['logo']) . '
+                                </a></span>
                     </div>
                     <p class="cmg-help-text">
                         Recommended size: 200x200px, Max file size: 2MB.
-                    </p></div>';
-                    $html .= '<div class="cmg-logo-preview">
-                            <p class="cmg-help-text">
-                                <strong>Current Logo Path:</strong><br>
-                                <a href="' . esc($company['logo']) . '" target="_blank">
-                                    ' . esc($company['logo']) . '
-                                </a>
-                            </p>
-                        </div>';
+                    </p></div>
+                     ';
+                    
 
                     
 
@@ -428,7 +436,6 @@ $html .= '
         'iec'                  => $request->getPost('iec'),
         'sister_concerns'      => $request->getPost('sister_concerns'),
         'bank_ac_no'           => $request->getPost('bank_account'),
-        'status'               => $request->getPost('status'),
         'nature_of_business'   => $request->getPost('nature_of_business'),
         'nature_of_service'    => $request->getPost('nature_of_service'),
         'nature_of_product'    => $request->getPost('nature_of_product'),
@@ -688,6 +695,23 @@ $html .= '
         'message' => 'Invalid request'
     ]);
 }
+
+
+      public function updateStatus()
+    {
+        $data = $this->request->getJSON(true);
+
+        $status = $data['status'];
+        $userId = $data['id'];
+
+        $model = new CompanyMasterModel();
+        $model->update($userId, ['status' => $status]);
+        print_r($model->getLastQuery());die();
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Status updated successfully'
+        ]);
+    }
 
 
 }
