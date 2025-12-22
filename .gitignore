@@ -1,48 +1,36 @@
-# --------------------------
-# OS generated files
-# --------------------------
-.DS_Store
-Thumbs.db
+# ==================================
+# Ignore EVERYTHING by default
+# ==================================
+*
 
-# --------------------------
-# Node / npm
-# --------------------------
-node_modules/
-npm-debug.log
-yarn-error.log
-package-lock.json
-yarn.lock
+# ==================================
+# Allow root files (required)
+# ==================================
+!.gitignore
+!composer.json
+!composer.lock
+!spark
 
-# --------------------------
-# PHP / Composer
-# --------------------------
-vendor/
-composer.lock
+# ==================================
+# Allow application & public code
+# ==================================
+!app/
+!app/**
 
-# --------------------------
-# CodeIgniter 4
-# --------------------------
-writable/cache/*
-writable/logs/*
-writable/session/*
-writable/uploads/*
+!public/
+!public/**
+
+# ==================================
+# Ignore app Config (local changes only)
+# ==================================
+app/Config/
+app/Config/**
+
+# ==================================
+# Explicitly ignore runtime & secrets
+# ==================================
 .env
-.env.development
-.env.testing
-.env.production
+.env.*
 
-# --------------------------
-# IDEs / Editors
-# --------------------------
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# --------------------------
-# Others
-# --------------------------
-*.log
-*.tmp
-*.swp
-
+/writable/
+/vendor/
