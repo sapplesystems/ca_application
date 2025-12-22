@@ -21,6 +21,12 @@
 !public/**
 
 # ==================================
+# Ignore app Config (local changes only)
+# ==================================
+app/Config/
+app/Config/**
+
+# ==================================
 # Explicitly ignore runtime & secrets
 # ==================================
 .env
