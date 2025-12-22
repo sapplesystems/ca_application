@@ -118,7 +118,7 @@
         <!-- Modal 1 for add company master -->
         <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable c">
                 <div class="modal-content cmg-shell">
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">Add Company Master</h5>
@@ -452,20 +452,12 @@
                 branchesList.appendChild(item);
             });
 
-            <<
-            << << < HEAD
+
             branchesList.addEventListener('click', function(e) {
                 if (e.target.classList.contains('btn-branch-delete')) {
                     e.target.closest('.cmg-branches__item').remove();
                 }
             });
-        }); ===
-        === =
-        branchesList.addEventListener('click', function(e) {
-        if (e.target.classList.contains('btn-branch-delete')) {
-            e.target.closest('.cmg-branches__item').remove();
-        }
-        });
         });
         let branchIndex;
 
@@ -507,8 +499,7 @@
         // DELETE BRANCH (delegated)
         $(document).on('click', '.btn-branch-delete', function() {
             $(this).closest('.cmg-branches__item').remove();
-        }); >>>
-        >>> > ba43cc65330f347df7791ee9b8f2d0fa663f9c3b
+        });
 
 
 
