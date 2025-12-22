@@ -58,7 +58,6 @@ class MasterWork extends BaseController
                 'gst_percent'    => $this->request->getPost('gst_percent'),
                 'gst_applicable' => $this->request->getPost('gst'),
                 'frequency'      => $this->request->getPost('frequency'),
-                'status'         => $this->request->getPost('status'),
             ];
            
             // Save Data
@@ -72,6 +71,22 @@ class MasterWork extends BaseController
         
     }
 
+      public function updateStatus()
+    {
+       
+        $data = $this->request->getJSON(true);
+
+        $status = $data['status'];
+        $userId = $data['id'];
+
+        $model = new WorkMasterModel();
+        $model->update($userId, ['status' => $status]);
+
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Status updated successfully'
+        ]);
+    }
     public function getService()
     {
         $id = $this->request->getPost('id');
@@ -114,7 +129,7 @@ class MasterWork extends BaseController
                 'gst_percent'    => $this->request->getPost('gst_percent'),
                 'gst_applicable' => $this->request->getPost('gst'),
                 'frequency'      => $this->request->getPost('frequency'),
-                'status'         => $this->request->getPost('status'),
+                
             ];
            
             // Save Data
