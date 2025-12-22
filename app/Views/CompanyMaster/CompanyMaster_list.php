@@ -234,7 +234,7 @@
                                         placeholder="List sister concerns, one per line"></textarea>
                                 </div>
 
-                                <!-- Branches (List) - UPDATED -->
+
                                 <!-- Branches (List) - UPDATED CLEAN UI -->
                                 <div class="cmg-field cmg-field--full">
                                     <label class="cmg-label">Branches (List)</label>
@@ -256,23 +256,25 @@
                                                 <div class="cmg-branches__item-main">
 
                                                     <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][name]" placeholder="Branch name">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][name]" placeholder="Branch name">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][phone]" placeholder="Phone">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][phone]" placeholder="Phone">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="email" class="cmg-input"
-                                                            name="branches[__i__][email]" placeholder="Email">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="email" class="cmg-input"
+                                                                name="branches[__i__][email]" placeholder="Email">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-input" name="branches[__i__][address]"
-                                                            placeholder="Address"></textarea>
+                                                        <div class="cmg-branches__field">
+                                                            <textarea class="cmg-input" name="branches[__i__][address]"
+                                                                placeholder="Address"></textarea>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -285,6 +287,7 @@
                                                 </div>
                                             </div>
 
+
                                         </div>
 
                                         <!-- Hidden Template -->
@@ -293,23 +296,25 @@
                                                 <div class="cmg-branches__item-main">
 
                                                     <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][name]" placeholder="Branch name">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][name]" placeholder="Branch name">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][phone]" placeholder="Phone">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][phone]" placeholder="Phone">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="email" class="cmg-input"
-                                                            name="branches[__i__][email]" placeholder="Email">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="email" class="cmg-input"
+                                                                name="branches[__i__][email]" placeholder="Email">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-input" name="branches[__i__][address]"
-                                                            placeholder="Address"></textarea>
+                                                        <div class="cmg-branches__field">
+                                                            <textarea class="cmg-input" name="branches[__i__][address]"
+                                                                placeholder="Address"></textarea>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -361,15 +366,15 @@
                                 <!-- Business -->
                                 <div class="form-row-full">
                                     <label>Nature of Business</label>
-                                    <textarea name="nature_of_business" class="textarea"></textarea>
+                                    <textarea name="nature_of_business" class="cmg-textarea"></textarea>
                                 </div>
                                 <div>
                                     <label>Nature of Service</label>
-                                    <textarea name="nature_of_service" class="textarea"></textarea>
+                                    <textarea name="nature_of_service" class="cmg-textarea"></textarea>
                                 </div>
-                                <div>
+                                <div class="cmg-field--full">
                                     <label>Nature of Product</label>
-                                    <textarea name="nature_of_product" class="textarea"></textarea>
+                                    <textarea name="nature_of_product" class="cmg-textarea"></textarea>
                                 </div>
 
                             </div>
@@ -428,31 +433,31 @@
 
 
         <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const addBtn = document.getElementById('addBranchBtn');
-    const branchesList = document.getElementById('branchesList');
-    const branchTpl = document.getElementById('branchTemplate');
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBtn = document.getElementById('addBranchBtn');
+            const branchesList = document.getElementById('branchesList');
+            const branchTpl = document.getElementById('branchTemplate');
 
-    if (!addBtn || !branchesList || !branchTpl) return;
+            if (!addBtn || !branchesList || !branchTpl) return;
 
-    let index = branchesList.children.length;
+            let index = branchesList.children.length;
 
-    addBtn.addEventListener('click', function () {
-        const clone = branchTpl.content.cloneNode(true);
-        const item = clone.querySelector('.cmg-branches__item');
+            addBtn.addEventListener('click', function() {
+                const clone = branchTpl.content.cloneNode(true);
+                const item = clone.querySelector('.cmg-branches__item');
 
-        item.innerHTML = item.innerHTML.replace(/__i__/g, index);
-        index++;
+                item.innerHTML = item.innerHTML.replace(/__i__/g, index);
+                index++;
 
-        branchesList.appendChild(item);
-    });
+                branchesList.appendChild(item);
+            });
 
-    branchesList.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-branch-delete')) {
-            e.target.closest('.cmg-branches__item').remove();
-        }
-    });
-});
+            branchesList.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-branch-delete')) {
+                    e.target.closest('.cmg-branches__item').remove();
+                }
+            });
+        });
 
 
 

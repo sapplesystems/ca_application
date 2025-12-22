@@ -492,6 +492,12 @@ $html .= '
         ->with('success', 'Company updated successfully');
 }
 
+
+
+  /* =======================
+        code for view 
+    ======================== */
+
      public function show()
 {
     // Make sure it's a POST request (recommended for AJAX)
@@ -531,42 +537,42 @@ $html .= '
                 /* ================= Name ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Name <span class="cmg-required">*</span></label>
-                    <input type="text" class="cmg-input" name="name" value="' . esc($company['name']) . '">
+                    <input type="text" class="cmg-input" name="name" value="' . esc($company['name']) . '" disabled>
                 </div>';
 
                 /* ================= Date ================= */
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Date of Incorporation</label>
-                    <input type="date" class="cmg-input" name="date_of_incorporation" value="' . esc($company['date_of_incorp']) . '">
+                    <input type="date" class="cmg-input" name="date_of_incorporation" value="' . esc($company['date_of_incorp']) . '" disabled>
                 </div>';
 
                 /* ================= Category ================= */
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Category</label>
-                    <input type="text" class="cmg-input" name="category" value="' . esc($company['category']) . '">
+                    <input type="text" class="cmg-input" name="category" value="' . esc($company['category']) . '" disabled>
                 </div>';
 
                 /* ================= Addresses ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Registered Office</label>
-                    <textarea class="cmg-textarea" name="registered_office">' . esc($company['registered_office']) . '</textarea>
+                    <textarea class="cmg-textarea" name="registered_office" disabled>' . esc($company['registered_office']) . '</textarea>
                 </div>';
 
                 $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Head Office</label>
-                    <textarea class="cmg-textarea" name="head_office">' . esc($company['head_office']) . '</textarea>
+                    <textarea class="cmg-textarea" name="head_office" disabled>' . esc($company['head_office']) . '</textarea>
                 </div>';
 
                 /* ================= Condition ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Condition And Terms</label>
-                    <textarea class="cmg-textarea" name="condition_and_terms">' . esc($company['condition_and_terms']) . '</textarea>
+                    <textarea class="cmg-textarea" name="condition_and_terms" disabled>' . esc($company['condition_and_terms']) . '</textarea>
                 </div>';
 
                  $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Sister Concerns</label>
                     <textarea class="cmg-textarea" name="sister_concerns" 
-                        placeholder="List sister concerns, one per line">'
+                        placeholder="List sister concerns, one per line" disabled>'
                         . esc($company['sister_concerns']) .
                     '</textarea>
                 </div>';
@@ -575,7 +581,7 @@ $html .= '
                     <label class="cmg-label">Invoice Format</label>
                     <input type="text" class="cmg-input" name="invoice_format"
                         value="' . esc($company['invoice_format']) . '"
-                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ" disabled>
                     <p class="cmg-help-text">
                         Define how invoice numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
                     </p>
@@ -584,48 +590,48 @@ $html .= '
                 /* ================= Contact ================= */
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Email</label>
-                    <input type="email" class="cmg-input" name="email" value="' . esc($company['email']) . '">
+                    <input type="email" class="cmg-input" name="email" value="' . esc($company['email']) . '" disabled>
                 </div>';
 
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Phone</label>
-                    <input type="text" class="cmg-input" name="phone" value="' . esc($company['telephone']) . '">
+                    <input type="text" class="cmg-input" name="phone" value="' . esc($company['telephone']) . '" disabled>
                 </div>';
 
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Website</label>
-                    <input type="text" class="cmg-input" name="website" value="' . esc($company['website']) . '">
+                    <input type="text" class="cmg-input" name="website" value="' . esc($company['website']) . '" disabled>
                 </div>';
 
                 /* ================= GST ================= */
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">PAN</label>
-                    <input type="text" class="cmg-input" name="pan" value="' . esc($company['pan']) . '">
+                    <input type="text" class="cmg-input" name="pan" value="' . esc($company['pan']) . '" disabled>
                 </div>';
 
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">GSTIN</label>
-                    <input type="text" class="cmg-input" name="gstin" value="' . esc($company['gstin']) . '">
+                    <input type="text" class="cmg-input" name="gstin" value="' . esc($company['gstin']) . '" disabled>
                 </div>';
 
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">IEC</label>
-                    <input type="text" class="cmg-input" name="iec" value="' . esc($company['iec']) . '">
+                    <input type="text" class="cmg-input" name="iec" value="' . esc($company['iec']) . '" disabled>
                 </div>';
 
                 /* ================= Branches ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
                 <label class="cmg-label">Branches</label>
-                <div class="cmg-branches"><div id="branchesList">';
+                <div class="cmg-branches"><div id="branchesList" disabled>';
 
                 if (!empty($branches)) {
                     foreach ($branches as $b) {
-                        $html .= '<div class="cmg-branches__item">
-                        <div class="cmg-branches__item-main">
-                            <input type="text" class="cmg-input" name="branches[_i_][name]" value="'.esc($b['name']).'" placeholder="Branch name">
-                            <input type="text" class="cmg-input" name="branches[_i_][phone]" value="'.esc($b['phone']).'" placeholder="Phone">
-                            <input type="email" class="cmg-input" name="branches[_i_][email]" value="'.esc($b['email']).'" placeholder="Email">
-                            <textarea class="cmg-input" name="branches[_i_][address]" placeholder="Address">'.esc($b['address']).'</textarea>
+                        $html .= '<div class="cmg-branches__item" disabled>
+                        <div class="cmg-branches__item-main" disabled>
+                            <input type="text" class="cmg-input" name="branches[_i_][name]" value="'.esc($b['name']).'" placeholder="Branch name" disabled>
+                            <input type="text" class="cmg-input" name="branches[_i_][phone]" value="'.esc($b['phone']).'" placeholder="Phone" disabled>
+                            <input type="email" class="cmg-input" name="branches[_i_][email]" value="'.esc($b['email']).'" placeholder="Email" disabled>
+                            <textarea class="cmg-input" name="branches[_i_][address]" placeholder="Address" disabled>'.esc($b['address']).'</textarea>
                         </div>
                         
                         </div>';
@@ -634,10 +640,10 @@ $html .= '
 
                 $html .= '</div></div></div>';
 
-                   $html .= '<div class="cmg-logo-preview">
-                            <p class="cmg-help-text">
+                   $html .= '<div class="cmg-logo-preview" disabled>
+                            <p class="cmg-help-text" disabled>
                                 <strong>Current Logo Path:</strong><br>
-                                <a href="' . esc($company['logo']) . '" target="_blank">
+                                <a href="' . esc($company['logo']) . '" target="_blank" disabled>
                                     ' . esc($company['logo']) . '
                                 </a>
                             </p>
@@ -646,17 +652,17 @@ $html .= '
                 /* ================= Business ================= */
                 $html .= '<div class="form-row-full">
                 <label>Nature of Business</label>
-                <textarea name="nature_of_business" class="textarea">'.esc($company['nature_of_business']).'</textarea>
+                <textarea name="nature_of_business" class="textarea" disabled>'.esc($company['nature_of_business']).'</textarea>
                 </div>';
 
                 $html .= '<div>
                 <label>Nature of Service</label>
-                <textarea name="nature_of_service" class="textarea">'.esc($company['nature_of_service']).'</textarea>
+                <textarea name="nature_of_service" class="textarea" disabled>'.esc($company['nature_of_service']).'</textarea>
                 </div>';
 
                 $html .= '<div>
                 <label>Nature of Product</label>
-                <textarea name="nature_of_product" class="textarea">'.esc($company['nature_of_product']).'</textarea>
+                <textarea name="nature_of_product" class="textarea" disabled>'.esc($company['nature_of_product']).'</textarea>
                 </div>';
 
                 $html .= '</div>';
