@@ -161,8 +161,9 @@
                     </div>
 
                     <div class="modal-body">
-                        <form class="cmg-form" method="POST" action="<?= base_url('company-master/store'); ?>"
-                            enctype="multipart/form-data">
+                        <form class="cmg-form" id="companyForm" method="POST"
+                            action="<?= base_url('company-master/store'); ?>" enctype="multipart/form-data">
+
                             <?= csrf_field() ?>
                             <div class="cmg-grid">
 
@@ -466,6 +467,220 @@
 
 
         <script>
+        // ===== FRONT-END VALIDATION FOR ADD COMPANY =====
+        $('#companyForm').on('submit', function(e) {
+            e.preventDefault();
+
+
+            $('.text-danger').remove();
+            $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
+
+            let isValid = true;
+            let firstError = null;
+
+
+            const requiredNames = [
+                'company_type',
+                'name',
+                'date_of_incorporation',
+                'category',
+                'registered_office',
+                'head_office',
+                'condition_and_terms',
+                'email',
+                'phone',
+                'website',
+                'invoice_format',
+                'pan',
+                'gstin',
+                'iec',
+                'sister_concerns',
+                'bank_account',
+                'nature_of_business',
+                'nature_of_service',
+                'nature_of_product'
+            ];
+
+            requiredNames.forEach(function(name) {
+                const input = $('[name="' + name + '"]');
+                const wrapper = input.closest('.cmg-field, .form-row-full');
+
+                if ($.trim(input.val()) === '') {
+                    isValid = false;
+
+                    if (!firstError) {
+                        firstError = input;
+                    }
+
+                    input.css('border', '1px solid red');
+
+                    wrapper.find('.text-danger').remove();
+                    wrapper.append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
+                        'This field is required.' +
+                        '</div>'
+                    );
+                }
+            });
+
+
+            if (!isValid) {
+                if (firstError && firstError.length) {
+                    $('html, body').animate({
+                        scrollTop: firstError.offset().top - 100
+                    }, 500);
+                    firstError.focus();
+                }
+                return;
+            }
+
+
+            this.submit();
+        });
+
+        // ===== EDIT COMPANY MODAL - PERFECT VALIDATION =====
+        $(document).on('submit', '#editcompanymaster form', function(e) {
+            e.preventDefault();
+
+            // Clear previous errors
+            $('.text-danger').remove();
+            $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
+
+            let isValid = true;
+            let firstError = null;
+
+            // ✅ ALL REQUIRED FIELDS (tumhare form ke exact names)
+            const requiredNames = [
+                'company_type', 'name', 'date_of_incorporation', 'category',
+                'registered_office', 'head_office', 'condition_and_terms',
+                'email', 'phone', 'website', 'invoice_format',
+                'pan', 'gstin', 'iec', 'sister_concerns', 'bank_account',
+                'nature_of_business', 'nature_of_service', 'nature_of_product' // ✅ YE ADD KIYA
+            ];
+
+            requiredNames.forEach(function(name) {
+                // ✅ YE LINE PERFECT - tumhare controller ke exact form ko target karta hai
+                const input = $(`#editcompanymaster [name="${name}"]`);
+                const wrapper = input.closest('.cmg-field, .form-row-full');
+
+                if ($.trim(input.val()) === '') {
+                    isValid = false;
+                    if (!firstError) firstError = input;
+
+                    input.css('border', '1px solid red');
+                    wrapper.find('.text-danger').remove();
+                    wrapper.append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
+                    );
+                }
+            });
+
+            // ✅ EMAIL VALIDATION
+            const emailInput = $('#editcompanymaster [name="email"]');
+            const email = emailInput.val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                isValid = false;
+                if (!firstError) firstError = emailInput;
+                emailInput.css('border', '1px solid red');
+                emailInput.closest('.cmg-field').find('.text-danger').remove().end()
+                    .append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">Invalid email format.</div>'
+                    );
+            }
+
+            // ✅ PHONE VALIDATION (10 digits)
+            const phoneInput = $('#editcompanymaster [name="phone"]');
+            const phone = phoneInput.val().replace(/[^\d]/g, '');
+            if (phone && phone.length !== 10) {
+                isValid = false;
+                if (!firstError) firstError = phoneInput;
+                phoneInput.css('border', '1px solid red');
+                phoneInput.closest('.cmg-field').find('.text-danger').remove().end()
+                    .append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">Phone must be 10 digits.</div>'
+                    );
+            }
+
+            if (!isValid) {
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+                firstError.focus();
+                return false;
+            }
+
+            // ✅ VALID - Form submit
+            this.submit();
+        });
+
+        // ✅ BRANCHES - Add/Delete (Working)
+        $(document).on('shown.bs.modal', '#editcompanymaster', function() {
+            const addBtn = document.getElementById('editBranchBtn');
+            const branchesList = document.getElementById('branchesLists');
+
+            if (addBtn && branchesList) {
+                let branchIndex = branchesList.children.length;
+
+                addBtn.onclick = function() {
+                    const template = document.getElementById('branchTemplate');
+                    if (!template) return;
+
+                    const clone = template.content.cloneNode(true);
+                    const item = clone.querySelector('.cmg-branches__item');
+                    if (item) {
+                        item.innerHTML = item.innerHTML.replace(/__i__/g, branchIndex);
+                        branchesList.appendChild(item);
+                        branchIndex++;
+                    }
+                };
+            }
+        });
+
+        $(document).on('click', '.btn-branch-delete', function() {
+            $(this).closest('.cmg-branches__item').remove();
+        });
+
+        // ✅ Clear errors on modal close
+        $(document).on('hidden.bs.modal', '#editcompanymaster', function() {
+            $('.text-danger').remove();
+            $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
+        });
+
+        // ===== BRANCHES FUNCTIONALITY FOR EDIT MODAL =====
+        $(document).on('shown.bs.modal', '#editcompanymaster', function() {
+            const addBtn = document.getElementById('editBranchBtn');
+            const branchesList = document.getElementById('branchesLists');
+
+            if (addBtn && branchesList) {
+                let branchIndex = branchesList.children.length;
+
+                // Add Branch Button
+                addBtn.onclick = function() {
+                    const template = document.getElementById('branchTemplate');
+                    if (!template) return;
+
+                    const clone = template.content.cloneNode(true);
+                    const item = clone.querySelector('.cmg-branches__item');
+                    item.innerHTML = item.innerHTML.replace(/__i__/g, branchIndex);
+                    branchIndex++;
+                    branchesList.appendChild(item);
+                };
+
+                // Delete Branch
+                branchesList.onclick = function(e) {
+                    if (e.target.classList.contains('btn-branch-delete')) {
+                        e.target.closest('.cmg-branches__item').remove();
+                    }
+                };
+            }
+        });
+
+        // Clear validation on modal close
+        $(document).on('hidden.bs.modal', '#editcompanymaster', function() {
+            $('.text-danger').remove();
+            $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const addBtn = document.getElementById('addBranchBtn');
             const branchesList = document.getElementById('branchesList');
@@ -585,12 +800,12 @@
             });
         });
         $(function() {
-            // Jab bhi koi modal band ho, backdrop clean karo
+
             $('#staticBackdrop, #editcompanymaster, #viewCompanyModal')
                 .on('hidden.bs.modal', function() {
-                    $('.modal-backdrop').remove(); // backdrop hatao
-                    $('body').removeClass('modal-open'); // body se class hatao
-                    $('body').css('overflow', ''); // scroll normal
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', '');
                 });
         });
         document.querySelectorAll('.toggle').forEach(toggle => {

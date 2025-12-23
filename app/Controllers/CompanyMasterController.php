@@ -30,7 +30,9 @@ class CompanyMasterController extends BaseController
             
             $html ="";
  
+            //    $html  = '<form class="cmg-form" method="POST" action="' . base_url('company-master/update') . '" enctype="multipart/form-data">';
                $html  = '<form class="cmg-form" method="POST" action="' . base_url('company-master/update') . '" enctype="multipart/form-data">';
+
                 $html .= csrf_field();
                 $html .= '<input type="hidden" name="company_id" value="' . esc($company['id']) . '">';
 
@@ -276,9 +278,9 @@ $html .= '</div></div></div>';
                     
 
                 /* ================= Business ================= */
-                $html .= '<div class="class="cmg-field">
+                $html .= '<div class="cmg-field ">
                 <label class="cmg-label">Nature of Business</label>
-                <textarea name="nature_of_business"class="cmg-textarea">'.esc($company['nature_of_business']).'</textarea>
+                <textarea name="nature_of_business" class="cmg-textarea">'.esc($company['nature_of_business']).'</textarea>
                 </div>';
 
                 $html .= '<div class="cmg-field">
@@ -288,7 +290,7 @@ $html .= '</div></div></div>';
 
                 $html .= '<div class=" cmg-field cmg-field--full">
                 <label class="cmg-label">Nature of Product</label>
-                <textarea name="nature_of_product" class="cmg-textarea"z>'.esc($company['nature_of_product']).'</textarea>
+                <textarea name="nature_of_product" class="cmg-textarea">'.esc($company['nature_of_product']).'</textarea>
                 </div>';
 
                 $html .= '</div>';
@@ -416,6 +418,11 @@ $html .= '</div></div></div>';
     }
 
     $data = [
+        // update() method ke data array mein ye add karo:
+'nature_of_business'   => $request->getPost('nature_of_business') ?? '',
+'nature_of_service'    => $request->getPost('nature_of_service') ?? '',
+'nature_of_product'    => $request->getPost('nature_of_product') ?? '',
+
          'type_of_company'   => $request->getPost('company_type'),
         'name'                 => $request->getPost('name'),
         'date_of_incorp'       => $request->getPost('date_of_incorporation'),
