@@ -14,5 +14,5 @@ app/Config/**
 .env
 .env.*
 
-/writable/
+/writable/**
 /vendor/

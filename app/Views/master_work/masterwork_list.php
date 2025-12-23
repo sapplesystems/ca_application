@@ -60,7 +60,12 @@
                         <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td>
                         <td><?= $worklist['gst_percent']; ?></td>
                         <td><?= $worklist['frequency']; ?></td>
-                        <td><span class="pill pill-green"><?= $worklist['status']; ?></span></td>
+                        <td>
+                            <div class="toggle <?= $worklist['status'] == 0 ? 'inactive' : '' ?>"
+                                data-id="<?= $worklist['id'] ?>">
+                                <div class="toggle-circle"></div>
+                            </div>
+                        </td>
                         <td>
                             <div class="actions">
                                 <button class="action-btn action-edit"
@@ -185,7 +190,7 @@
                         </div>
 
                         <!-- Row 5 -->
-                        <div class="msl-form-row">
+                        <!-- <div class="msl-form-row">
                             <div class="msl-form-group">
                                 <label for="status">Status</label>
                                 <select id="status" name="status">
@@ -193,7 +198,7 @@
                                     <option value="Inactive">Inactive</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Buttons -->
                         <div class="msl-form-actions">
@@ -300,8 +305,36 @@ function openServicePopup(id) {
             $("#gstPercent").val(response.gst_percent);
             $("#gstYesNo").val(response.gst_applicable);
             $("#frequency").val(response.frequency);
-            $("#status").val(response.status);
         }
     });
 }
+document.querySelectorAll('.toggle').forEach(toggle => {
+
+    toggle.addEventListener('click', function() {
+
+        this.classList.toggle('inactive');
+
+        const status = this.classList.contains('inactive') ? 0 : 1;
+
+        const id = this.dataset.id;
+
+
+
+        fetch("<?= base_url('/work_master/update-status') ?>", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: status
+                })
+            })
+            .then(res => res.json())
+            .then(data => console.log(data.message))
+            .catch(err => console.error(err));
+    });
+
+});
 </script>
