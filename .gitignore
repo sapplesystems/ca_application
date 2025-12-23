@@ -14,5 +14,8 @@ app/Config/**
 .env
 .env.*
 
-/writable/**
+/writable/
 /vendor/
+apps-fileview.texmex_20251211.00_p1
+.gitignore
+Displaying .gitignore.

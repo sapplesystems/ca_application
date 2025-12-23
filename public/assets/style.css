@@ -711,9 +711,24 @@ label{
     border: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;          /* height same for rows + button */
     gap: 10px;
-} 
+}
+.cmg-branches__row {
+    display: flex;
+    flex-wrap: wrap;               /* jab jagah kam ho to next line */
+    gap: 8px 12px;                 /* row-gap column-gap */
+}
+.cmg-branches__field {
+    flex: 0 0 calc(50% - 6px);     /* 2 columns */
+}
+.cmg-branches__field .cmg-input {
+    width: 100%;
+}
+.cmg-branches__item-actions {
+    display: flex;
+    align-items: center;
+}
 .cmg-branches__title {
     font-size: 13px;
     font-weight: 600;
@@ -877,6 +892,7 @@ label{
 .cmg-branches__row .cmg-input,
 .cmg-branches__row .cmg-textarea {
     width: 100%;
+    height: 40px;
 }
 
 .cmg-branches__title-input {
