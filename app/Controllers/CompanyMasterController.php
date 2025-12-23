@@ -277,18 +277,18 @@ $html .= '</div></div></div>';
 
                 /* ================= Business ================= */
                 $html .= '<div class="class="cmg-field">
-                <label>Nature of Business</label>
-                <textarea name="nature_of_business" class="textarea">'.esc($company['nature_of_business']).'</textarea>
+                <label class="cmg-label">Nature of Business</label>
+                <textarea name="nature_of_business"class="cmg-textarea">'.esc($company['nature_of_business']).'</textarea>
                 </div>';
 
                 $html .= '<div class="cmg-field">
-                <label>Nature of Service</label>
-                <textarea name="nature_of_service" class="textarea">'.esc($company['nature_of_service']).'</textarea>
+                <label class="cmg-label">Nature of Service</label>
+                <textarea name="nature_of_service" class="cmg-textarea">'.esc($company['nature_of_service']).'</textarea>
                 </div>';
 
                 $html .= '<div class=" cmg-field cmg-field--full">
-                <label>Nature of Product</label>
-                <textarea name="nature_of_product" class="textarea">'.esc($company['nature_of_product']).'</textarea>
+                <label class="cmg-label">Nature of Product</label>
+                <textarea name="nature_of_product" class="cmg-textarea"z>'.esc($company['nature_of_product']).'</textarea>
                 </div>';
 
                 $html .= '</div>';

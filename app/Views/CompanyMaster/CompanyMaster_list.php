@@ -118,7 +118,7 @@
         <!-- Modal 1 for add company master -->
         <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable c">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                 <div class="modal-content cmg-shell">
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">Add Company Master</h5>
@@ -365,15 +365,15 @@
 
                                 <!-- Business -->
                                 <div class="form-row-full">
-                                    <label>Nature of Business</label>
+                                    <label class="cmg-label">Nature of Business</label>
                                     <textarea name="nature_of_business" class="cmg-textarea"></textarea>
                                 </div>
                                 <div>
-                                    <label>Nature of Service</label>
+                                    <label class="cmg-label">Nature of Service</label>
                                     <textarea name="nature_of_service" class="cmg-textarea"></textarea>
                                 </div>
                                 <div class="cmg-field--full">
-                                    <label>Nature of Product</label>
+                                    <label class="cmg-label">Nature of Product</label>
                                     <textarea name="nature_of_product" class="cmg-textarea"></textarea>
                                 </div>
 
@@ -415,7 +415,7 @@
         </div>
         <!-- modal3 for view the comapny master -->
         <div class="modal fade" id="viewCompanyModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
 
                     <div class="modal-header">
@@ -583,7 +583,7 @@
                             status: status
                         })
                     })
-                    .then(res => res.json())
+                    .then(res => res.text())
                     .then(data => console.log(data.message))
                     .catch(err => console.error(err));
             });
