@@ -60,14 +60,20 @@
                         <td><span class="pill pill-green"><?= esc($client['company_category']) ?></span></td>
                         <td><?= esc($client['company_sub_category']) ?></td>
                         <td><?= esc($client['corporate_office']) ?></td>
-                        <td><span class="pill pill-green">Active</span></td>
+                        <td>
+                                
+                            <div class="toggle <?= $client['status'] == 0 ? 'inactive' : '' ?>"
+                                data-id="<?= $client['id'] ?>">
+                                <div class="toggle-circle"></div>
+                            </div>
+                        </td>
                         <td>
                             <div class="actions">
                                 <button class="action-btn action-edit btn" data-id="<?= $client['id'] ?>">
                                     Edit
                                 </button>
                                 <button class=" action-btn action-view btn" data-toggle="modal"
-                                    data-target="#exampleModal"data-id="<?= $client['id'] ?>">View</button>
+                                    data-target="#exampleModal" data-id="<?= $client['id'] ?>">View</button>
                                 <button class="action-btn action-deactivate">Deactivate</button>
                             </div>
                         </td>
@@ -285,16 +291,16 @@
                             </div>
 
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </form>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div </form>
 
                 </div>
             </div>
-            <div class="modal-footer">
+            <!-- <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -306,7 +312,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Section: General Info</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
             </div>
 
@@ -330,7 +336,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">View</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-           <div class="modal-body" id="viewclient">
+            <div class="modal-body" id="viewclient">
 
             </div>
             <div class="modal-footer">
@@ -371,23 +377,53 @@ $(document).on('click', '.action-view', function(e) {
     let clientId = $(this).data('id');
 
     $.ajax({
-    url: '<?= base_url('clients/show') ?>',
-    type: 'POST',
-    data: { client_id: clientId },
-    dataType: 'json', // tell jQuery to expect JSON
-    success: function(resp) {
-        if (resp.status === true) {
-            $("#viewclient").html(resp.html); // inject HTML
-            $('#clientviewModal').modal('show'); // show modal
-        } else {
-            alert(resp.message || 'No data found for this client');
+        url: '<?= base_url('clients/show') ?>',
+        type: 'POST',
+        data: {
+            client_id: clientId
+        },
+        dataType: 'json', // tell jQuery to expect JSON
+        success: function(resp) {
+            if (resp.status === true) {
+                $("#viewclient").html(resp.html); // inject HTML
+                $('#clientviewModal').modal('show'); // show modal
+            } else {
+                alert(resp.message || 'No data found for this client');
+            }
+        },
+        error: function(xhr) {
+            console.error(xhr.responseText);
+            alert('Error while loading client');
         }
-    },
-    error: function(xhr) {
-        console.error(xhr.responseText);
-        alert('Error while loading client');
-    }
+    });
 });
-});
+document.querySelectorAll('.toggle').forEach(toggle => {
 
+    toggle.addEventListener('click', function() {
+
+        this.classList.toggle('inactive');
+
+        const status = this.classList.contains('inactive') ? 0 : 1;
+
+        const id = this.dataset.id;
+
+
+
+        fetch("<?= base_url('client/update-status') ?>", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: status
+                })
+            })
+            .then(res => res.json())
+            .then(data => console.log(data.message))
+            .catch(err => console.error(err));
+    });
+
+});
 </script>
