@@ -71,22 +71,31 @@ class MasterWork extends BaseController
         
     }
 
-      public function updateStatus()
-    {
-       
-        $data = $this->request->getJSON(true);
+     public function updateStatus()
+{
+    $data = $this->request->getJSON(true);
 
-        $status = $data['status'];
-        $userId = $data['id'];
+    $status = $data['status'];   // 1 or 0
+    $userId = $data['id'];
 
-        $model = new WorkMasterModel();
-        $model->update($userId, ['status' => $status]);
+    $model = new WorkMasterModel();
+    $workmaster = $model->find($userId);
 
+    if ($model->update($userId, ['status' => $status])) {
+
+        $statusText = ($status == 1) ? 'Activated' : 'Deactivated';
+        $workmasterName = $workmaster['service_code'];
         return $this->response->setJSON([
-            'status' => true,
-            'message' => 'Status updated successfully'
+            'status'  => true,
+            'message' => "{$workmasterName} {$statusText} successfully"
         ]);
     }
+
+    return $this->response->setJSON([
+        'status'  => false,
+        'message' => 'Failed to update status'
+    ]);
+}
     public function getService()
     {
         $id = $this->request->getPost('id');

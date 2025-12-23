@@ -331,9 +331,51 @@ document.querySelectorAll('.toggle').forEach(toggle => {
                     status: status
                 })
             })
-            .then(res => res.json())
-            .then(data => console.log(data.message))
-            .catch(err => console.error(err));
+           .then(res => res.json()) // ✅ IMPORTANT
+.then(data => {
+
+    // Remove old popups if exist
+    document.getElementById('successPopup')?.remove();
+    document.getElementById('errorPopup')?.remove();
+
+    const popup = document.createElement('div');
+    popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+    popup.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: ${data.status ? '#79e47cff' : '#f44336'};
+        color: #000;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-weight: 500;
+        min-width: 260px;
+    `;
+
+    popup.innerHTML = `
+        <span
+            onclick="this.parentElement.remove()"
+            style="
+                position:absolute;
+                top:6px;
+                right:10px;
+                cursor:pointer;
+                font-size:18px;
+                font-weight:bold;
+            "
+        >&times;</span>
+        ${data.message}
+    `;
+
+    document.body.appendChild(popup);
+
+    // Auto close after 10 seconds
+    setTimeout(() => popup.remove(), 10000);
+})
+.catch(err => console.error(err));
     });
 
 });

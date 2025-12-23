@@ -9,7 +9,75 @@
                 </div>
                 <button class="btn" data-toggle="modal" data-target="#addclient">+ Add Client</button>
             </div>
+<?php if ($message = session()->getFlashdata('success')): ?>
+    <div id="successPopup"
+        style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #79e47cff;
+            color: #5f5a5aff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 9999;
+            font-weight: 500;
+            min-width: 250px;
+        ">
+         <span
+            onclick="document.getElementById('successPopup').remove();"
+            style="
+                position: absolute;
+                top: 6px;
+                right: 10px;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: bold;
+                color: #000000;
+            "
+            title="Close"
+        >
+            &times;
+        </span>
+        <?= esc($message) ?>
+    </div>
+    <?php endif; ?>
 
+    <?php if ($msg = session()->getFlashdata('error')): ?>
+    <div id="errorPopup"
+        style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: #000000;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 9999;
+            font-weight: 500;
+            min-width: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        ">
+        
+        <span><?= esc($msg) ?></span>
+
+        <button onclick="closeErrorPopup()"
+            style="
+                background: transparent;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                color: #000;
+                font-weight: bold;
+            ">
+            &times;
+        </button>
+    </div>
+    <?php endif; ?>
             <div class="layout-row">
                 <div style="flex:1;">
                     <input class="search-input" placeholder="Search by Service Code / Name / SAC..." />
@@ -418,9 +486,67 @@ document.querySelectorAll('.toggle').forEach(toggle => {
                 })
             })
             .then(res => res.json())
-            .then(data => console.log(data.message))
+           .then(data => {
+
+    // Remove existing popup if any
+    document.getElementById('successPopup')?.remove();
+    document.getElementById('errorPopup')?.remove();
+
+    const popup = document.createElement('div');
+    popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+    popup.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: ${data.status ? '#79e47cff' : '#f44336'};
+        color: #000;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-weight: 500;
+        min-width: 260px;
+    `;
+
+    popup.innerHTML = `
+        <span
+            style="
+                position:absolute;
+                top:6px;
+                right:10px;
+                cursor:pointer;
+                font-size:18px;
+                font-weight:bold;
+            "
+            onclick="this.parentElement.remove()"
+        >&times;</span>
+        ${data.message}
+    `;
+
+    document.body.appendChild(popup);
+
+    // Auto remove after 10 seconds
+    setTimeout(() => popup.remove(), 10000);
+})
             .catch(err => console.error(err));
     });
 
+
 });
+ setTimeout(function () {
+            const popup = document.getElementById('successPopup');
+            if (popup) {
+                popup.style.transition = 'opacity 0.5s ease';
+                popup.style.opacity = '0';
+                setTimeout(() => popup.remove(), 500);
+            }
+        }, 10000); 
+         function closeErrorPopup() {
+            const popup = document.getElementById('errorPopup');
+            if (popup) popup.remove();
+        }
+
+        // Auto hide after 10 seconds
+        setTimeout(closeErrorPopup, 10000);
 </script>

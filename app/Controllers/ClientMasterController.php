@@ -196,8 +196,12 @@ class ClientMasterController extends BaseController
         ];
 
         $clientModel->insert($data);
-
-        return redirect()->back()->with('success', 'Client added successfully');
+        $result = $clientModel->insert($data);
+       if($result){
+            return redirect()->back()->with('success', 'Client added successfully');
+        } else {
+            return redirect()->back()->with('error', 'Failed to add client');
+        }
     }
 
     // Handle form submission
@@ -265,8 +269,13 @@ class ClientMasterController extends BaseController
 
         // Update the client
         $clientModel->update($id, $data);
+        $result = $clientModel->update($id, $data);
 
-        return redirect()->to('/Client_Master')->with('success', 'Client updated successfully');
+if ($result) {
+            return redirect()->to('/Client_Master')->with('success', 'Client updated successfully');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update client');
+        }
     }
 
 
@@ -488,20 +497,30 @@ return $this->response->setJSON([
     ]);
 }
   public function updateStatus()
-    {
-        $data = $this->request->getJSON(true);
+{
+    $data = $this->request->getJSON(true);
 
-        $status = $data['status'];
-        $userId = $data['id'];
+    $status = $data['status'];   // 1 or 0
+    $userId = $data['id'];
 
-        $model = new ClientModel();
-        $model->update($userId, ['status' => $status]);
-        
+    $model = new ClientModel();
+$client = $model->find($userId);
+    if ($model->update($userId, ['status' => $status])) {
+
+        $statusText = ($status == 1) ? 'Activated' : 'Deactivated';
+$clientName = $client['legal_name'] ?? 'Client';
         return $this->response->setJSON([
-            'status' => true,
-            'message' => 'Status updated successfully'
+            'status'  => true,
+            'message' => "{$clientName} {$statusText} successfully"
         ]);
     }
+
+    return $this->response->setJSON([
+        'status'  => false,
+        'message' => 'Failed to update status'
+    ]);
+}
+
 
 
 }

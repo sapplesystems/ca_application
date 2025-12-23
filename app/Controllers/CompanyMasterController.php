@@ -357,7 +357,6 @@ $html .= '</div></div></div>';
             'iec'               => $request->getPost('iec'),
             'sister_concerns'   => $request->getPost('sister_concerns'),
             'bank_ac_no'        => $request->getPost('bank_account'),
-            'status'            => $request->getPost('status'),
             'nature_of_business'  => $request->getPost('nature_of_business'),
             'nature_of_service'   => $request->getPost('nature_of_service'),
             'nature_of_product'   => $request->getPost('nature_of_product'),
@@ -416,9 +415,6 @@ $html .= '</div></div></div>';
         return redirect()->back()->with('error', 'Invalid Company');
     }
 
-    /* =======================
-        1️⃣ COMPANY DATA
-    ======================== */
     $data = [
          'type_of_company'   => $request->getPost('company_type'),
         'name'                 => $request->getPost('name'),
@@ -441,9 +437,6 @@ $html .= '</div></div></div>';
         'condition_and_terms'  => $request->getPost('condition_and_terms'),
     ];
 
-    /* =======================
-        2️⃣ LOGO UPDATE (OPTIONAL)
-    ======================== */
     $logoFile = $request->getFile('logo');
     if ($logoFile && $logoFile->isValid() && ! $logoFile->hasMoved()) {
         $newName = $logoFile->getRandomName();
@@ -451,18 +444,11 @@ $html .= '</div></div></div>';
         $data['logo'] = $newName;
     }
 
-    /* =======================
-        3️⃣ UPDATE COMPANY
-    ======================== */
     $this->companyModel->update($companyId, $data);
 
-    /* =======================
-        4️⃣ UPDATE BRANCHES
-    ======================== */
     $branches = $request->getPost('branches');
     $branchModel = new \App\Models\BranchModel();
 
-    // ❗ Delete old branches first
     $branchModel->where('company_id', $companyId)->delete();
 
     if (!empty($branches)) {
@@ -490,9 +476,6 @@ $html .= '</div></div></div>';
         }
     }
 
-    /* =======================
-        5️⃣ REDIRECT
-    ======================== */
     return redirect()
         ->to(base_url('company_master'))
         ->with('success', 'Company updated successfully');
@@ -726,21 +709,31 @@ $html .= '</div></div></div>';
 
 
 
-      public function updateStatus()
-    {
-        $data = $this->request->getJSON(true);
+       public function updateStatus()
+{
+    $data = $this->request->getJSON(true);
 
-        $status = $data['status'];
-        $userId = $data['id'];
+    $status = $data['status'];   // 1 or 0
+    $userId = $data['id'];
 
-        $model = new CompanyMasterModel();
-        $model->update($userId, ['status' => $status]);
-        print_r($model->getLastQuery());die();
+    $model = new CompanyMasterModel();
+    $company = $model->find($userId);
+    if ($model->update($userId, ['status' => $status])) {
+
+        $statusText = ($status == 1) ? 'Activated' : 'Deactivated';
+        $companyName = $company['name']; 
+
         return $this->response->setJSON([
-            'status' => true,
-            'message' => 'Status updated successfully'
+            'status'  => true,
+            'message' => "{$companyName} {$statusText} successfully"
         ]);
     }
+
+    return $this->response->setJSON([
+        'status'  => false,
+        'message' => 'Failed to update status'
+    ]);
+}
 
 
 }
