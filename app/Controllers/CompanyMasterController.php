@@ -653,16 +653,7 @@ $html .= '</div></div></div>';
                 </div>';
             }
         } else {
-            $html .= '<div class="cmg-branches__item">
-                <div class="cmg-branches__item-main">
-                    <div class="cmg-branches__row">
-                        <div class="cmg-branches__field"><input type="text" class="cmg-input" disabled></div>
-                        <div class="cmg-branches__field"><input type="text" class="cmg-input" disabled></div>
-                        <div class="cmg-branches__field"><input type="text" class="cmg-input" disabled></div>
-                        <div class="cmg-branches__field"><textarea class="cmg-input" disabled></textarea></div>
-                    </div>
-                </div>
-            </div>';
+            $html .= '<p>No branches available.</p>';
         }
 
         $html .= '</div></div></div>';
