@@ -74,13 +74,13 @@
                                 <td><?= esc($row['registered_office']) ?></td>
                                 <td><?= esc($row['head_office']) ?></td>
                                 <td><?= esc($row['email']) ?></td>
-                               <td>
-                                
-                            <div class="toggle <?= $row['status'] == 0 ? 'inactive' : '' ?>"
-                                data-id="<?= $row['id'] ?>">
-                                <div class="toggle-circle"></div>
-                            </div>
-                        </td>
+                                <td>
+
+                                    <div class="toggle <?= $row['status'] == 0 ? 'inactive' : '' ?>"
+                                        data-id="<?= $row['id'] ?>">
+                                        <div class="toggle-circle"></div>
+                                    </div>
+                                </td>
                                 <td>
                                     <div class="actions">
                                         <button class="action-btn action-edit" data-id="<?= $row['id'] ?>"
@@ -118,7 +118,7 @@
         <!-- Modal 1 for add company master -->
         <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable c">
                 <div class="modal-content cmg-shell">
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">Add Company Master</h5>
@@ -234,7 +234,7 @@
                                         placeholder="List sister concerns, one per line"></textarea>
                                 </div>
 
-                                <!-- Branches (List) - UPDATED -->
+
                                 <!-- Branches (List) - UPDATED CLEAN UI -->
                                 <div class="cmg-field cmg-field--full">
                                     <label class="cmg-label">Branches (List)</label>
@@ -256,23 +256,25 @@
                                                 <div class="cmg-branches__item-main">
 
                                                     <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][name]" placeholder="Branch name">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][name]" placeholder="Branch name">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][phone]" placeholder="Phone">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][phone]" placeholder="Phone">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="email" class="cmg-input"
-                                                            name="branches[__i__][email]" placeholder="Email">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="email" class="cmg-input"
+                                                                name="branches[__i__][email]" placeholder="Email">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-input" name="branches[__i__][address]"
-                                                            placeholder="Address"></textarea>
+                                                        <div class="cmg-branches__field">
+                                                            <textarea class="cmg-input" name="branches[__i__][address]"
+                                                                placeholder="Address"></textarea>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -285,6 +287,7 @@
                                                 </div>
                                             </div>
 
+
                                         </div>
 
                                         <!-- Hidden Template -->
@@ -293,23 +296,25 @@
                                                 <div class="cmg-branches__item-main">
 
                                                     <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][name]" placeholder="Branch name">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][name]" placeholder="Branch name">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="text" class="cmg-input"
-                                                            name="branches[__i__][phone]" placeholder="Phone">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="text" class="cmg-input"
+                                                                name="branches[__i__][phone]" placeholder="Phone">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <input type="email" class="cmg-input"
-                                                            name="branches[__i__][email]" placeholder="Email">
-                                                    </div>
+                                                        <div class="cmg-branches__field">
+                                                            <input type="email" class="cmg-input"
+                                                                name="branches[__i__][email]" placeholder="Email">
+                                                        </div>
 
-                                                    <div class="cmg-branches__row">
-                                                        <textarea class="cmg-input" name="branches[__i__][address]"
-                                                            placeholder="Address"></textarea>
+                                                        <div class="cmg-branches__field">
+                                                            <textarea class="cmg-input" name="branches[__i__][address]"
+                                                                placeholder="Address"></textarea>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -361,15 +366,15 @@
                                 <!-- Business -->
                                 <div class="form-row-full">
                                     <label>Nature of Business</label>
-                                    <textarea name="nature_of_business" class="textarea"></textarea>
+                                    <textarea name="nature_of_business" class="cmg-textarea"></textarea>
                                 </div>
                                 <div>
                                     <label>Nature of Service</label>
-                                    <textarea name="nature_of_service" class="textarea"></textarea>
+                                    <textarea name="nature_of_service" class="cmg-textarea"></textarea>
                                 </div>
-                                <div>
+                                <div class="cmg-field--full">
                                     <label>Nature of Product</label>
-                                    <textarea name="nature_of_product" class="textarea"></textarea>
+                                    <textarea name="nature_of_product" class="cmg-textarea"></textarea>
                                 </div>
 
                             </div>
@@ -428,73 +433,73 @@
 
 
         <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBtn = document.getElementById('addBranchBtn');
+            const branchesList = document.getElementById('branchesList');
+            const branchTpl = document.getElementById('branchTemplate');
 
-document.addEventListener('DOMContentLoaded', function () {
-    const addBtn = document.getElementById('addBranchBtn');
-    const branchesList = document.getElementById('branchesList');
-    const branchTpl = document.getElementById('branchTemplate');
+            if (!addBtn || !branchesList || !branchTpl) return;
 
-    if (!addBtn || !branchesList || !branchTpl) return;
+            let index = branchesList.children.length;
 
-    let index = branchesList.children.length;
+            addBtn.addEventListener('click', function() {
+                const clone = branchTpl.content.cloneNode(true);
+                const item = clone.querySelector('.cmg-branches__item');
 
-    addBtn.addEventListener('click', function () {
-        const clone = branchTpl.content.cloneNode(true);
-        const item = clone.querySelector('.cmg-branches__item');
+                item.innerHTML = item.innerHTML.replace(/__i__/g, index);
+                index++;
 
-        item.innerHTML = item.innerHTML.replace(/__i__/g, index);
-        index++;
+                branchesList.appendChild(item);
+            });
 
-        branchesList.appendChild(item);
-    });
 
-    branchesList.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-branch-delete')) {
-            e.target.closest('.cmg-branches__item').remove();
-        }
-    });
-});
-let branchIndex;
+            branchesList.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-branch-delete')) {
+                    e.target.closest('.cmg-branches__item').remove();
+                }
+            });
+        });
+        let branchIndex;
 
-$(document).on('click', '#editBranchBtn', function () {
-    console.log('Add clicked');
+        $(document).on('click', '#editBranchBtn', function() {
+            console.log('Add clicked');
 
-    const branchesList = document.getElementById('branchesLists');
-    const branchTpl = document.getElementById('branchTemplate');
+            const branchesList = document.getElementById('branchesLists');
+            const branchTpl = document.getElementById('branchTemplate');
 
-    console.log('branchesList:', branchesList);
-    console.log('branchTemplate:', branchTpl);
+            console.log('branchesList:', branchesList);
+            console.log('branchTemplate:', branchTpl);
 
-    if (!branchesList || !branchTpl) {
-        console.error('Missing branchesList or branchTemplate');
-        return;
-    }
+            if (!branchesList || !branchTpl) {
+                console.error('Missing branchesList or branchTemplate');
+                return;
+            }
 
-    if (branchIndex === undefined) {
-        branchIndex = branchesList.children.length;
-    }
+            if (branchIndex === undefined) {
+                branchIndex = branchesList.children.length;
+            }
 
-    const clone = branchTpl.content.cloneNode(true);
-    const item = clone.querySelector('.cmg-branches__item');
+            const clone = branchTpl.content.cloneNode(true);
+            const item = clone.querySelector('.cmg-branches__item');
 
-    console.log('cloned item:', item);
+            console.log('cloned item:', item);
 
-    if (!item) {
-        console.error('cmg-branches__item not found in template');
-        return;
-    }
+            if (!item) {
+                console.error('cmg-branches__item not found in template');
+                return;
+            }
 
-    item.innerHTML = item.innerHTML.replace(/__i__/g, branchIndex);
-    branchIndex++;
+            item.innerHTML = item.innerHTML.replace(/__i__/g, branchIndex);
+            branchIndex++;
 
-    branchesList.appendChild(item);
-    console.log('Appended successfully');
-});
+            branchesList.appendChild(item);
+            console.log('Appended successfully');
+        });
 
-// DELETE BRANCH (delegated)
-$(document).on('click', '.btn-branch-delete', function () {
-    $(this).closest('.cmg-branches__item').remove();
-});
+        // DELETE BRANCH (delegated)
+        $(document).on('click', '.btn-branch-delete', function() {
+            $(this).closest('.cmg-branches__item').remove();
+        });
 
 
 
@@ -557,35 +562,33 @@ $(document).on('click', '.btn-branch-delete', function () {
         });
         document.querySelectorAll('.toggle').forEach(toggle => {
 
-    toggle.addEventListener('click', function() {
+            toggle.addEventListener('click', function() {
 
-        this.classList.toggle('inactive');
+                this.classList.toggle('inactive');
 
-        const status = this.classList.contains('inactive') ? 0 : 1;
+                const status = this.classList.contains('inactive') ? 0 : 1;
 
-        const id = this.dataset.id;
-
-
-
-        fetch("<?= base_url('/company-master/update-status') ?>", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: JSON.stringify({
-                    id: id,
-                    status: status
-                })
-            })
-            .then(res => res.json())
-            .then(data => console.log(data.message))
-            .catch(err => console.error(err));
-    });
-
-});
+                const id = this.dataset.id;
 
 
+
+                fetch("<?= base_url('/company-master/update-status') ?>", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: JSON.stringify({
+                            id: id,
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => console.log(data.message))
+                    .catch(err => console.error(err));
+            });
+
+        });
         </script>
     </body>
 

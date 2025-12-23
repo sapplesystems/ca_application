@@ -1,36 +1,21 @@
-# ==================================
-# Ignore EVERYTHING by default
-# ==================================
-*
-
-# ==================================
-# Allow root files (required)
-# ==================================
 !.gitignore
 !composer.json
 !composer.lock
 !spark
 
-# ==================================
-# Allow application & public code
-# ==================================
 !app/
 !app/**
 
 !public/
 !public/**
-
-# ==================================
-# Ignore app Config (local changes only)
-# ==================================
 app/Config/
 app/Config/**
 
-# ==================================
-# Explicitly ignore runtime & secrets
-# ==================================
 .env
 .env.*
 
-/writable/**
+/writable/
 /vendor/
+apps-fileview.texmex_20251211.00_p1
+.gitignore
+Displaying .gitignore.

@@ -295,121 +295,189 @@ class ClientMasterController extends BaseController
             ]);
         }
 
-     $html = '<div class="view-client">';
+// yahi se tumhara HTML start karo:
+$html  = '<div class="clientm">';
+$html .= '<div class="form-grid">';
 
-// CIN / Name / Trade
+// CIN / Legal / Trade
 $html .= '<div class="form-row-full">';
-$html .= '<div style="flex:0 0 28%;"><label>CIN No</label>';
-$html .= '<input type="text" class="input" value="' . $client['cin_no'] . '" disabled></div>';
+$html .= '  <div class="input-group">';
 
-$html .= '<div style="flex:1;"><label>Legal Name</label>';
-$html .= '<input type="text" class="input" value="' . $client['legal_name'] . '" disabled></div>';
+$html .= '    <div style="flex:0 0 28%;">';
+$html .= '      <label>CIN No</label>';
+$html .= '      <input type="text" class="input" value="'.esc($client['cin_no'] ?? '').'" disabled>';
+$html .= '    </div>';
 
-$html .= '<div style="flex:0 0 28%;"><label>Trade Name</label>';
-$html .= '<input type="text" class="input" value="' . $client['trade_name'] . '" disabled></div>';
+$html .= '    <div style="flex:1">';
+$html .= '      <label>Name (Legal)</label>';
+$html .= '      <input type="text" class="input" value="'.esc($client['legal_name'] ?? '').'" disabled>';
+$html .= '    </div>';
+
+$html .= '    <div style="flex:0 0 28%;">';
+$html .= '      <label>Trade Name (Alias)</label>';
+$html .= '      <input type="text" class="input" value="'.esc($client['trade_name'] ?? '').'" disabled>';
+$html .= '    </div>';
+
+$html .= '  </div>';
 $html .= '</div>';
 
-// ROC / Registration
-$html .= '<div><label>ROC Code</label>';
-$html .= '<input type="text" class="input" value="' . $client['roc_code'] . '" disabled></div>';
+// ROC / Reg No
+$html .= '<div>';
+$html .= '  <label>ROC Code</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['roc_code'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Registration No</label>';
-$html .= '<input type="text" class="input" value="' . $client['registration_no'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Registration No</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['registration_no'] ?? '').'" disabled>';
+$html .= '</div>';
 
-// Date / Certificate
-$html .= '<div><label>Date of Incorporation</label>';
-$html .= '<input type="date" class="input" value="' . $client['date_of_incorporation'] . '" disabled></div>';
+// Date / COI
+$html .= '<div>';
+$html .= '  <label>Date of Incorporation</label>';
+$html .= '  <input type="date" class="input" value="'.esc($client['date_of_incorporation'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Certificate of Incorporation</label>';
-$html .= '<input type="text" class="input" value="' . ($client['coi_file'] ?? '') . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Certificate of Incorporation</label>';
+$html .= '  <div class="file-input">';
+$html .= '    <span class="input" style="padding:8px;">'.esc($client['coi_file'] ?? 'No file').'</span>';
+$html .= '  </div>';
+$html .= '</div>';
 
 // Category
-$html .= '<div><label>Company Category</label>';
-$html .= '<input type="text" class="input" value="' . $client['company_category'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Company Category</label>';
+$html .= '  <input type="text" class="input select" value="'.esc($client['company_category'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Company Sub-Category</label>';
-$html .= '<input type="text" class="input" value="' . $client['company_sub_category'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Company Sub-Category</label>';
+$html .= '  <input type="text" class="input select" value="'.esc($client['company_sub_category'] ?? '').'" disabled>';
+$html .= '</div>';
 
-// Address
-$html .= '<div class="form-row-full"><label>Registered Office</label>';
-$html .= '<textarea class="textarea" disabled>' . $client['registered_office'] . '</textarea></div>';
+// Registered / Corporate office
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Registered Office</label>';
+$html .= '  <textarea class="textarea" disabled>'.esc($client['registered_office'] ?? '').'</textarea>';
+$html .= '</div>';
 
-$html .= '<div class="form-row-full"><label>Corporate Office</label>';
-$html .= '<textarea class="textarea" disabled>' . $client['corporate_office'] . '</textarea></div>';
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Corporate Office</label>';
+$html .= '  <textarea class="textarea" disabled>'.esc($client['corporate_office'] ?? '').'</textarea>';
+$html .= '</div>';
 
 // Contact
-$html .= '<div><label>Tel No</label>';
-$html .= '<input type="text" class="input" value="' . $client['telephone'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Tel No</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['telephone'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Fax No</label>';
-$html .= '<input type="text" class="input" value="' . $client['fax'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Fax No</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['fax'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div class="form-row-full"><label>Website</label>';
-$html .= '<input type="text" class="input" value="' . $client['website'] . '" disabled></div>';
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Website</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['website'] ?? '').'" disabled>';
+$html .= '</div>';
 
 // Share capital
-$html .= '<div><label>Authorised Share Capital</label>';
-$html .= '<input type="text" class="input" value="' . $client['authorised_share_capital'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Authorised Share Capital</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['authorised_share_capital'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Number of Shares</label>';
-$html .= '<input type="number" class="input" value="' . $client['number_of_shares'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Number of Shares</label>';
+$html .= '  <input type="number" class="input" value="'.esc($client['number_of_shares'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Face Value</label>';
-$html .= '<input type="text" class="input" value="' . $client['face_value'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Face Value</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['face_value'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Paid-up Share Capital</label>';
-$html .= '<input type="text" class="input" value="' . $client['paid_up_share_capital'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Paid-up Share Capital</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['paid_up_share_capital'] ?? '').'" disabled>';
+$html .= '</div>';
 
 // PAN / GST / ESI
-$html .= '<div><label>PAN</label>';
-$html .= '<input type="text" class="input" value="' . $client['pan'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>PAN</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['pan'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>GSTIN</label>';
-$html .= '<input type="text" class="input" value="' . $client['gstin'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>GSTIN</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['gstin'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>ESI Number</label>';
-$html .= '<input type="text" class="input" value="' . $client['esi_no'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>ESI Number</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['esi_no'] ?? '').'" disabled>';
+$html .= '</div>';
 
 // IEC / Bank
-$html .= '<div><label>Export & Import Code</label>';
-$html .= '<input type="text" class="input" value="' . $client['iec_code'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Export & Import Code</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['iec_code'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div class="form-row-full"><label>Bank Account Number</label>';
-$html .= '<input type="text" class="input" value="' . $client['bank_account_no'] . '" disabled></div>';
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Bank Account Number</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['bank_account_no'] ?? '').'" disabled>';
+$html .= '</div>';
 
 // Directors
-$html .= '<div><label>Number of Directors / Shareholders</label>';
-$html .= '<input type="number" class="input" value="' . $client['directors_count'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Number of Directors / Shareholders</label>';
+$html .= '  <input type="number" class="input" value="'.esc($client['directors_count'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div class="form-row-full"><label>Name of Subsidiary / Sister Concern</label>';
-$html .= '<input type="text" class="input" value="' . $client['subsidiary_names'] . '" disabled></div>';
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Name of Subsidiary / Sister Concern</label>';
+$html .= '  <input type="text" class="input" value="'.esc($client['subsidiary_names'] ?? '').'" disabled>';
+$html .= '</div>';
 
 // Business
-$html .= '<div class="form-row-full"><label>Nature of Business</label>';
-$html .= '<textarea class="textarea" disabled>' . $client['nature_of_business'] . '</textarea></div>';
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Nature of Business</label>';
+$html .= '  <textarea class="textarea" disabled>'.esc($client['nature_of_business'] ?? '').'</textarea>';
+$html .= '</div>';
 
-$html .= '<div><label>Nature of Service</label>';
-$html .= '<textarea class="textarea" disabled>' . $client['nature_of_service'] . '</textarea></div>';
+$html .= '<div>';
+$html .= '  <label>Nature of Service</label>';
+$html .= '  <textarea class="textarea" disabled>'.esc($client['nature_of_service'] ?? '').'</textarea>';
+$html .= '</div>';
 
-$html .= '<div><label>Nature of Product</label>';
-$html .= '<textarea class="textarea" disabled>' . $client['nature_of_product'] . '</textarea></div>';
+$html .= '<div>';
+$html .= '  <label>Nature of Product</label>';
+$html .= '  <textarea class="textarea" disabled>'.esc($client['nature_of_product'] ?? '').'</textarea>';
+$html .= '</div>';
 
 // Billing
-$html .= '<div class="form-row-full"><label>Billing Emails</label>';
-$html .= '<input type="email" class="input" value="' . $client['billing_emails'] . '" disabled></div>';
+$html .= '<div class="form-row-full">';
+$html .= '  <label>Billing Emails</label>';
+$html .= '  <input type="email" class="input" value="'.esc($client['billing_emails'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '<div><label>Payment Terms</label>';
-$html .= '<input type="text" class="input" value="' . $client['payment_terms'] . '" disabled></div>';
+$html .= '<div>';
+$html .= '  <label>Payment Terms</label>';
+$html .= '  <input type="text" class="input select" value="'.esc($client['payment_terms'] ?? '').'" disabled>';
+$html .= '</div>';
 
-$html .= '</div>'; // end view-client
+$html .= '</div>'; // .form-grid
+$html .= '</div>'; // .clientm
 
+// yahi pe sirf ek hi return rakho:
+return $this->response->setJSON([
+    'status' => true,
+    'html'   => $html,
+]);
 
-
-        // Return JSON
-        return $this->response->setJSON([
-            'status' => true,
-            'html' => $html
-        ]);
     }
 
     // Invalid request method

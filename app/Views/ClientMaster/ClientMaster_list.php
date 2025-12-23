@@ -74,7 +74,7 @@
                                 </button>
                                 <button class=" action-btn action-view btn" data-toggle="modal"
                                     data-target="#exampleModal" data-id="<?= $client['id'] ?>">View</button>
-                                <button class="action-btn action-deactivate">Deactivate</button>
+                                <!-- <button class="action-btn action-deactivate">Deactivate</button> -->
                             </div>
                         </td>
                     </tr>
@@ -105,7 +105,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Section: General Info</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Client </h5>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -292,8 +292,9 @@
 
                         </div>
                         <div>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div </form>
+                            <button type="submit" class="btn btn-primary">Add Client</button>
+                        </div>
+                    </form>
 
                 </div>
             </div>
@@ -311,17 +312,13 @@
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Section: General Info</h5>
+                <h5 class="modal-title">Edit Client</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
             </div>
 
             <div class="modal-body" id="editclient">
 
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
 
         </div>
