@@ -195,7 +195,6 @@ class ClientMasterController extends BaseController
             'payment_terms'            => $this->request->getPost('payment_terms'),
         ];
 
-        $clientModel->insert($data);
         $result = $clientModel->insert($data);
        if($result){
             return redirect()->back()->with('success', 'Client added successfully');
