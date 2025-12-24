@@ -116,6 +116,8 @@
                     <form class="msl-add-service-form" method="post" action="<?php echo base_url('add-services'); ?>"
                         id="addServiceForm">
                         <?= csrf_field(); ?>
+                        <input type="hidden" id="serviceId" name="id">
+
                         <!-- Row 1 -->
                         <div class="msl-form-row">
                             <div class="msl-form-group">
@@ -220,53 +222,71 @@
 </div>
 
 <script>
+// Bootstrap modal object
 let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
-document.getElementById("addServiceForm").addEventListener("submit", function(e) {
 
-    let requiredFields = [
-        "serviceCode",
-        "serviceName",
-        "sacCode",
-        "unit",
-        "defaultRate",
-        "gstPercent",
-        "gstYesNo",
-        "frequency",
-        "status"
-    ];
+// ===== AJAX SUBMIT (Add / Edit Service) =====
+$('#addServiceForm').on('submit', function(e) {
+    e.preventDefault(); // page reload रोकें
 
-    let isValid = true;
+    // पुराने errors हटाएं
+    $('.text-danger').remove();
+    $('input, select').css('border', '');
 
-    requiredFields.forEach(function(id) {
-        let input = document.getElementById(id);
+    const id = $('#serviceId').val();
+    const url = id ?
+        "<?= base_url('update-service'); ?>/" + id // EDIT
+        :
+        "<?= base_url('add-services'); ?>"; // ADD
 
-        // remove previous red border
-        input.style.border = "";
+    $.ajax({
+        url: url,
+        method: "POST",
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(res) {
 
-        if (input.value.trim() === "") {
-            isValid = false;
-            input.style.border = "1px solid red"; // simple highlight
+            if (res.status === 'error') {
+
+                $.each(res.errors, function(field, msg) {
+
+                    let input = $('[name="' + field + '"]');
+                    let wrapper = input.closest('.msl-form-group');
+
+                    input.css('border', '1px solid red');
+
+                    wrapper.find('.text-danger').remove();
+
+                    wrapper.append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
+                        msg +
+                        '</div>'
+                    );
+                });
+
+            } else if (res.status === 'success') {
+
+                alert(res.message);
+                serviceModal.hide();
+                location.reload();
+            }
         }
     });
-
-    if (!isValid) {
-        e.preventDefault(); // Stop submit
-        alert("Please fill all required fields.");
-    }
-
 });
 
+// ===== PHP validation (agar session se aaye) to modal open =====
 <?php if(isset($validation)): ?>
 document.addEventListener("DOMContentLoaded", function() {
     serviceModal.show();
 });
 <?php endif; ?>
 
-
+// ===== Add / Edit popup =====
 function openServicePopup(id) {
 
     // Reset form
     $("#addServiceForm")[0].reset();
+    $("#serviceId").val('');
 
     // Clear old errors
     $("input, select").css("border", "");
@@ -275,18 +295,17 @@ function openServicePopup(id) {
     // Show modal
     serviceModal.show();
 
-    if (id === 0) {
+    if (id === 0 || id === '0') {
         // ADD
         $("#saveBtn").text("Save Service");
         $(".msl-popup-title").text("Add Service");
-        $("#addServiceForm").attr("action", "<?= base_url('add-services'); ?>");
         return;
     }
 
     // EDIT
+    $("#serviceId").val(id); // hidden id set
     $("#saveBtn").text("Update Service");
     $(".msl-popup-title").text("Edit Service");
-    $("#addServiceForm").attr("action", "<?= base_url('update-service'); ?>/" + id);
 
     // Load existing data
     $.ajax({
@@ -308,6 +327,8 @@ function openServicePopup(id) {
         }
     });
 }
+
+// ===== Status toggle =====
 document.querySelectorAll('.toggle').forEach(toggle => {
 
     toggle.addEventListener('click', function() {
@@ -315,10 +336,7 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         this.classList.toggle('inactive');
 
         const status = this.classList.contains('inactive') ? 0 : 1;
-
         const id = this.dataset.id;
-
-
 
         fetch("<?= base_url('/work_master/update-status') ?>", {
                 method: "POST",
@@ -331,9 +349,51 @@ document.querySelectorAll('.toggle').forEach(toggle => {
                     status: status
                 })
             })
-            .then(res => res.json())
-            .then(data => console.log(data.message))
-            .catch(err => console.error(err));
+           .then(res => res.json()) // ✅ IMPORTANT
+.then(data => {
+
+    // Remove old popups if exist
+    document.getElementById('successPopup')?.remove();
+    document.getElementById('errorPopup')?.remove();
+
+    const popup = document.createElement('div');
+    popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+    popup.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: ${data.status ? '#79e47cff' : '#f44336'};
+        color: #000;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-weight: 500;
+        min-width: 260px;
+    `;
+
+    popup.innerHTML = `
+        <span
+            onclick="this.parentElement.remove()"
+            style="
+                position:absolute;
+                top:6px;
+                right:10px;
+                cursor:pointer;
+                font-size:18px;
+                font-weight:bold;
+            "
+        >&times;</span>
+        ${data.message}
+    `;
+
+    document.body.appendChild(popup);
+
+    // Auto close after 10 seconds
+    setTimeout(() => popup.remove(), 10000);
+})
+.catch(err => console.error(err));
     });
 
 });

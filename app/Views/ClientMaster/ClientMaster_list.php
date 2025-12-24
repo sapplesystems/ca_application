@@ -7,9 +7,79 @@
                     <div class="topbar-title">Client Master List</div>
                     <div class="topbar-subtitle">Service catalog with SAC, default rate &amp; GST%</div>
                 </div>
-                <button class="btn" data-toggle="modal" data-target="#addclient">+ Add Client</button>
-            </div>
+                <!-- <button class="btn" data-toggle="modal" data-target="#addclient">+ Add Client</button> -->
+                <button class="btn" data-bs-toggle="modal" data-bs-target="#addclient">+ Add Client</button>
 
+            </div>
+<?php if ($message = session()->getFlashdata('success')): ?>
+    <div id="successPopup"
+        style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #79e47cff;
+            color: #5f5a5aff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 9999;
+            font-weight: 500;
+            min-width: 250px;
+        ">
+         <span
+            onclick="document.getElementById('successPopup').remove();"
+            style="
+                position: absolute;
+                top: 6px;
+                right: 10px;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: bold;
+                color: #000000;
+            "
+            title="Close"
+        >
+            &times;
+        </span>
+        <?= esc($message) ?>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($msg = session()->getFlashdata('error')): ?>
+    <div id="errorPopup"
+        style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: #000000;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 9999;
+            font-weight: 500;
+            min-width: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        ">
+        
+        <span><?= esc($msg) ?></span>
+
+        <button onclick="closeErrorPopup()"
+            style="
+                background: transparent;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                color: #000;
+                font-weight: bold;
+            ">
+            &times;
+        </button>
+    </div>
+    <?php endif; ?>
             <div class="layout-row">
                 <div style="flex:1;">
                     <input class="search-input" placeholder="Search by Service Code / Name / SAC..." />
@@ -61,7 +131,7 @@
                         <td><?= esc($client['company_sub_category']) ?></td>
                         <td><?= esc($client['corporate_office']) ?></td>
                         <td>
-                                
+
                             <div class="toggle <?= $client['status'] == 0 ? 'inactive' : '' ?>"
                                 data-id="<?= $client['id'] ?>">
                                 <div class="toggle-circle"></div>
@@ -107,9 +177,12 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add Client </h5>
 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+
+
+
             </div>
             <div class="modal-body ">
                 <div class="clientm">
@@ -128,7 +201,7 @@
                                     <div style="flex:1">
                                         <label>Name (Legal) <span class="req">*</span></label>
                                         <input type="text" name="legal_name" class="input"
-                                            placeholder="Enter legal company name" required>
+                                            placeholder="Enter legal company name">
                                     </div>
                                     <div style="flex:0 0 28%;">
                                         <label>Trade Name (Alias)</label>
@@ -170,18 +243,19 @@
                                 <label>Company Category</label>
                                 <select name="company_category" class="select">
                                     <option value="">Select category</option>
-                                    <option value="">Select category</option>
-                                    <option value="">Select category</option>
-                                    <option value="">Select category</option>
+                                    <option value="Private Limited">Private Limited</option>
+                                    <option value="Public Limited">Public Limited</option>
+                                    <option value="LLP">LLP</option>
+                                    <option value="Partnership">Partnership</option>
                                 </select>
                             </div>
                             <div>
                                 <label>Company Sub-Category</label>
                                 <select name="company_sub_category" class="select">
                                     <option value="">Select sub-category</option>
-                                    <option value="">Select sub-category</option>
-                                    <option value="">Select sub-category</option>
-                                    <option value="">Select sub-category</option>
+                                    <option value="Small">Small</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Large">Large</option>
                                 </select>
                             </div>
 
@@ -291,17 +365,14 @@
                             </div>
 
                         </div>
-                        <div>
-                            <button type="submit" class="btn btn-primary">Add Client</button>
+                        <div class="cmg-footer" style="margin-top:10px">
+                            <button type=" submit" class="btn btn-primary" style="margin-top:10px">Add Client</button>
                         </div>
                     </form>
 
                 </div>
             </div>
-            <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div> -->
+
         </div>
     </div>
 </div>
@@ -345,9 +416,364 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"> </script>
 <script>
+// ================== ADD CLIENT ==================
+let clientAddModal = new bootstrap.Modal(document.getElementById('addclient'));
+let clientEditModal = new bootstrap.Modal(document.getElementById('clientEditModal'));
+
+// ADD form submit
+$('#addclient form').on('submit', function(e) {
+    e.preventDefault();
+
+    // Clear previous errors (sirf Add modal ke andar)
+    $('#addclient .text-danger').remove();
+    $('#addclient input, #addclient select, #addclient textarea').css('border', '');
+
+    let isValid = true;
+    let firstErrorField = null;
+
+    const requiredFields = [{
+            name: 'legal_name',
+            msg: 'Legal name is required'
+        },
+        {
+            name: 'registration_no',
+            msg: 'Registration number is required'
+        },
+        {
+            name: 'company_category',
+            msg: 'Please select company category'
+        },
+        {
+            name: 'company_sub_category',
+            msg: 'Please select sub-category'
+        },
+        {
+            name: 'registered_office',
+            msg: 'Registered office is required'
+        },
+        {
+            name: 'corporate_office',
+            msg: 'Corporate office is required'
+        },
+        {
+            name: 'telephone',
+            msg: 'Telephone number is required'
+        },
+        {
+            name: 'fax',
+            msg: 'Fax number is required'
+        },
+        {
+            name: 'website',
+            msg: 'Website is required'
+        },
+        {
+            name: 'authorised_share_capital',
+            msg: 'Authorised share capital is required'
+        },
+        {
+            name: 'number_of_shares',
+            msg: 'Number of shares is required'
+        },
+        {
+            name: 'face_value',
+            msg: 'Face value is required'
+        },
+        {
+            name: 'paid_up_share_capital',
+            msg: 'Paid-up share capital is required'
+        },
+        {
+            name: 'pan',
+            msg: 'PAN is required'
+        },
+        {
+            name: 'gstin',
+            msg: 'GSTIN is required'
+        },
+        {
+            name: 'esi_no',
+            msg: 'ESI Number is required'
+        },
+        {
+            name: 'iec_code',
+            msg: 'Export & Import Code is required'
+        },
+        {
+            name: 'bank_account_no',
+            msg: 'Bank Account Number is required'
+        },
+        {
+            name: 'directors_count',
+            msg: 'Number of Directors/Shareholders is required'
+        },
+        {
+            name: 'subsidiary_names',
+            msg: 'Name of Subsidiary/Sister Concern is required'
+        },
+        {
+            name: 'nature_of_business',
+            msg: 'Nature of Business is required'
+        },
+        {
+            name: 'nature_of_service',
+            msg: 'Nature of Service is required'
+        },
+        {
+            name: 'nature_of_product',
+            msg: 'Nature of Product is required'
+        },
+        {
+            name: 'billing_emails',
+            msg: 'Billing Emails is required'
+        },
+        {
+            name: 'payment_terms',
+            msg: 'Please select payment terms'
+        },
+        {
+            name: 'roc_code',
+            msg: 'ROC Code is required'
+        },
+        {
+            name: 'cin_no',
+            msg: 'CIN No is required'
+        },
+        {
+            name: 'trade_name',
+            msg: 'Trade Name is required'
+        },
+        {
+            name: 'date_of_incorporation',
+            msg: 'Date of Incorporation is required'
+        }
+    ];
+
+    requiredFields.forEach(function(field) {
+        let $input = $('#addclient [name="' + field.name + '"]');
+        if ($input.length === 0) return;
+
+        let value = ($input.val() || '').trim();
+
+        if (!value) {
+            let wrapper =
+                $input.closest('.input-group').length ? $input.closest('.input-group') :
+                $input.closest('.form-row-full').length ? $input.closest('.form-row-full') :
+                $input.closest('div').length ? $input.closest('div') :
+                $input.parent();
+
+            $input.css('border', '1px solid red');
+            wrapper.find('.text-danger').remove();
+            wrapper.append(
+                '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
+                field.msg +
+                '</div>'
+            );
+
+            if (!firstErrorField) firstErrorField = $input;
+            isValid = false;
+        }
+    });
+
+    if (!isValid && firstErrorField) {
+        $('html, body').animate({
+            scrollTop: firstErrorField.offset().top - 150
+        }, 500);
+        firstErrorField.focus();
+        return false;
+    }
+
+    const $btn = $(this).find('button[type="submit"]');
+    $btn.prop('disabled', true).text('Saving...');
+    setTimeout(() => {
+        this.submit(); // normal PHP clients/store
+    }, 300);
+});
+
+// Add Client button
+$('#addclient').on('show.bs.modal', function() {
+    const $form = $('#addclient form');
+    $form[0].reset();
+    $('#addclient .text-danger').remove();
+    $('#addclient input, #addclient select, #addclient textarea').css('border', '');
+});
+
+// Add modal close
+$('#addclient').on('hidden.bs.modal', function() {
+    $('#addclient .text-danger').remove();
+    $('#addclient input, #addclient select, #addclient textarea').css('border', '');
+});
+
+
+// ================== EDIT CLIENT ==================
+
+// Edit validation helper
+function validateEditClientForm($form) {
+    $form.find('.text-danger').remove();
+    $form.find('input, select, textarea').css('border', '');
+
+    let isValid = true;
+    let firstErrorField = null;
+
+    const requiredFields = [{
+            name: 'legal_name',
+            msg: 'Legal name is required'
+        },
+        {
+            name: 'registration_no',
+            msg: 'Registration number is required'
+        },
+        {
+            name: 'company_category',
+            msg: 'Please select company category'
+        },
+        {
+            name: 'company_sub_category',
+            msg: 'Please select sub-category'
+        },
+        {
+            name: 'registered_office',
+            msg: 'Registered office is required'
+        },
+        {
+            name: 'corporate_office',
+            msg: 'Corporate office is required'
+        },
+        {
+            name: 'telephone',
+            msg: 'Telephone number is required'
+        },
+        {
+            name: 'fax',
+            msg: 'Fax number is required'
+        },
+        {
+            name: 'website',
+            msg: 'Website is required'
+        },
+        {
+            name: 'authorised_share_capital',
+            msg: 'Authorised share capital is required'
+        },
+        {
+            name: 'number_of_shares',
+            msg: 'Number of shares is required'
+        },
+        {
+            name: 'face_value',
+            msg: 'Face value is required'
+        },
+        {
+            name: 'paid_up_share_capital',
+            msg: 'Paid-up share capital is required'
+        },
+        {
+            name: 'pan',
+            msg: 'PAN is required'
+        },
+        {
+            name: 'gstin',
+            msg: 'GSTIN is required'
+        },
+        {
+            name: 'esi_no',
+            msg: 'ESI Number is required'
+        },
+        {
+            name: 'iec_code',
+            msg: 'Export & Import Code is required'
+        },
+        {
+            name: 'bank_account_no',
+            msg: 'Bank Account Number is required'
+        },
+        {
+            name: 'directors_count',
+            msg: 'Number of Directors/Shareholders is required'
+        },
+        {
+            name: 'subsidiary_names',
+            msg: 'Name of Subsidiary/Sister Concern is required'
+        },
+        {
+            name: 'nature_of_business',
+            msg: 'Nature of Business is required'
+        },
+        {
+            name: 'nature_of_service',
+            msg: 'Nature of Service is required'
+        },
+        {
+            name: 'nature_of_product',
+            msg: 'Nature of Product is required'
+        },
+        {
+            name: 'billing_emails',
+            msg: 'Billing Emails is required'
+        },
+        {
+            name: 'payment_terms',
+            msg: 'Please select payment terms'
+        },
+        {
+            name: 'roc_code',
+            msg: 'ROC Code is required'
+        },
+        {
+            name: 'cin_no',
+            msg: 'CIN No is required'
+        },
+        {
+            name: 'trade_name',
+            msg: 'Trade Name is required'
+        },
+        {
+            name: 'date_of_incorporation',
+            msg: 'Date of Incorporation is required'
+        }
+    ];
+
+    requiredFields.forEach(function(field) {
+        let $input = $form.find('[name="' + field.name + '"]');
+        if ($input.length === 0) return;
+
+        let value = ($input.val() || '').trim();
+
+        if (!value) {
+            let wrapper =
+                $input.closest('.input-group').length ? $input.closest('.input-group') :
+                $input.closest('.form-row-full').length ? $input.closest('.form-row-full') :
+                $input.closest('div').length ? $input.closest('div') :
+                $input.parent();
+
+            $input.css('border', '1px solid red');
+            wrapper.find('.text-danger').remove();
+            wrapper.append(
+                '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
+                field.msg +
+                '</div>'
+            );
+
+            if (!firstErrorField) firstErrorField = $input;
+            isValid = false;
+        }
+    });
+
+    if (!isValid && firstErrorField) {
+        $('html, body').animate({
+            scrollTop: firstErrorField.offset().top - 150
+        }, 500);
+        firstErrorField.focus();
+    }
+
+    return isValid;
+}
+
+// Edit button -> load form + bind validation
 $(document).on('click', '.action-edit', function(e) {
     e.preventDefault();
     let clientId = $(this).data('id');
+
     $.ajax({
         url: window.location.href,
         type: 'POST',
@@ -356,11 +782,26 @@ $(document).on('click', '.action-edit', function(e) {
             "editClient": "editClient"
         },
         success: function(data) {
-
             let resp = JSON.parse(data);
             if (resp.status == true) {
-                $("#clientEditModal").modal('show');
-                $("#editclient").html(resp.html);
+                $('#editclient').html(resp.html);
+                clientEditModal.show();
+
+                // Submit handler for injected form
+                $('#editClientForm').on('submit', function(e) {
+                    e.preventDefault();
+                    const $form = $(this);
+
+                    if (!validateEditClientForm($form)) {
+                        return false;
+                    }
+
+                    const $btn = $form.find('button[type="submit"]');
+                    $btn.prop('disabled', true).text('Updating...');
+                    setTimeout(() => {
+                        this.submit(); // normal PHP clients/update
+                    }, 300);
+                });
             }
         },
         error: function(xhr) {
@@ -369,21 +810,29 @@ $(document).on('click', '.action-edit', function(e) {
         }
     });
 });
+
+// Edit modal close
+$('#clientEditModal').on('hidden.bs.modal', function() {
+    $('#editclient').html('');
+});
+
+
+// ================== VIEW CLIENT ==================
 $(document).on('click', '.action-view', function(e) {
     e.preventDefault();
     let clientId = $(this).data('id');
 
     $.ajax({
-        url: '<?= base_url('clients/show') ?>',
+        url: '<?= base_url("clients/show") ?>',
         type: 'POST',
         data: {
             client_id: clientId
         },
-        dataType: 'json', // tell jQuery to expect JSON
+        dataType: 'json',
         success: function(resp) {
             if (resp.status === true) {
-                $("#viewclient").html(resp.html); // inject HTML
-                $('#clientviewModal').modal('show'); // show modal
+                $('#viewclient').html(resp.html);
+                $('#clientviewModal').modal('show');
             } else {
                 alert(resp.message || 'No data found for this client');
             }
@@ -394,17 +843,14 @@ $(document).on('click', '.action-view', function(e) {
         }
     });
 });
+
+
+// ================== STATUS TOGGLE ==================
 document.querySelectorAll('.toggle').forEach(toggle => {
-
     toggle.addEventListener('click', function() {
-
         this.classList.toggle('inactive');
-
         const status = this.classList.contains('inactive') ? 0 : 1;
-
         const id = this.dataset.id;
-
-
 
         fetch("<?= base_url('client/update-status') ?>", {
                 method: "POST",
@@ -418,9 +864,65 @@ document.querySelectorAll('.toggle').forEach(toggle => {
                 })
             })
             .then(res => res.json())
-            .then(data => console.log(data.message))
+           .then(data => {
+
+    // Remove existing popup if any
+    document.getElementById('successPopup')?.remove();
+    document.getElementById('errorPopup')?.remove();
+
+    const popup = document.createElement('div');
+    popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+    popup.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: ${data.status ? '#79e47cff' : '#f44336'};
+        color: #000;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-weight: 500;
+        min-width: 260px;
+    `;
+
+    popup.innerHTML = `
+        <span
+            style="
+                position:absolute;
+                top:6px;
+                right:10px;
+                cursor:pointer;
+                font-size:18px;
+                font-weight:bold;
+            "
+            onclick="this.parentElement.remove()"
+        >&times;</span>
+        ${data.message}
+    `;
+
+    document.body.appendChild(popup);
+
+    // Auto remove after 10 seconds
+    setTimeout(() => popup.remove(), 10000);
+})
             .catch(err => console.error(err));
     });
-
 });
+ setTimeout(function () {
+            const popup = document.getElementById('successPopup');
+            if (popup) {
+                popup.style.transition = 'opacity 0.5s ease';
+                popup.style.opacity = '0';
+                setTimeout(() => popup.remove(), 500);
+            }
+        }, 10000); 
+         function closeErrorPopup() {
+            const popup = document.getElementById('errorPopup');
+            if (popup) popup.remove();
+        }
+
+        // Auto hide after 10 seconds
+        setTimeout(closeErrorPopup, 10000);
 </script>
