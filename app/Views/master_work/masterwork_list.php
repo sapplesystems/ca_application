@@ -1,5 +1,5 @@
 <main class="content-wrap">
-    <!-- Master Work List screen (active) -->
+
     <section id="screen-list" class="screen active">
         <div class="card">
             <div class="topbar">
@@ -49,7 +49,7 @@
                 </thead>
                 <tbody>
                     <?php foreach($workListData as $worklist){ ?>
-                    <!-- Sample rows as before (shortened for demo) -->
+
                     <tr>
                         <td><input type="checkbox" /></td>
                         <td><?= $worklist['service_code']; ?></td>
@@ -222,22 +222,20 @@
 </div>
 
 <script>
-// Bootstrap modal object
 let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
 
-// ===== AJAX SUBMIT (Add / Edit Service) =====
-$('#addServiceForm').on('submit', function(e) {
-    e.preventDefault(); // page reload रोकें
 
-    // पुराने errors हटाएं
+$('#addServiceForm').on('submit', function(e) {
+    e.preventDefault();
+
+
     $('.text-danger').remove();
     $('input, select').css('border', '');
 
     const id = $('#serviceId').val();
     const url = id ?
-        "<?= base_url('update-service'); ?>/" + id // EDIT
-        :
-        "<?= base_url('add-services'); ?>"; // ADD
+        "<?= base_url('update-service'); ?>/" + id :
+        "<?= base_url('add-services'); ?>";
 
     $.ajax({
         url: url,
@@ -274,40 +272,39 @@ $('#addServiceForm').on('submit', function(e) {
     });
 });
 
-// ===== PHP validation (agar session se aaye) to modal open =====
+
 <?php if(isset($validation)): ?>
 document.addEventListener("DOMContentLoaded", function() {
     serviceModal.show();
 });
 <?php endif; ?>
 
-// ===== Add / Edit popup =====
+
 function openServicePopup(id) {
 
-    // Reset form
+
     $("#addServiceForm")[0].reset();
     $("#serviceId").val('');
 
-    // Clear old errors
     $("input, select").css("border", "");
     $(".text-danger").remove();
 
-    // Show modal
+
     serviceModal.show();
 
     if (id === 0 || id === '0') {
-        // ADD
+
         $("#saveBtn").text("Save Service");
         $(".msl-popup-title").text("Add Service");
         return;
     }
 
-    // EDIT
-    $("#serviceId").val(id); // hidden id set
+
+    $("#serviceId").val(id);
     $("#saveBtn").text("Update Service");
     $(".msl-popup-title").text("Edit Service");
 
-    // Load existing data
+
     $.ajax({
         url: "<?= base_url('get-service'); ?>",
         type: "POST",
@@ -349,17 +346,17 @@ document.querySelectorAll('.toggle').forEach(toggle => {
                     status: status
                 })
             })
-           .then(res => res.json()) // ✅ IMPORTANT
-.then(data => {
+            .then(res => res.json())
+            .then(data => {
 
-    // Remove old popups if exist
-    document.getElementById('successPopup')?.remove();
-    document.getElementById('errorPopup')?.remove();
 
-    const popup = document.createElement('div');
-    popup.id = data.status ? 'successPopup' : 'errorPopup';
+                document.getElementById('successPopup')?.remove();
+                document.getElementById('errorPopup')?.remove();
 
-    popup.style.cssText = `
+                const popup = document.createElement('div');
+                popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+                popup.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -373,7 +370,7 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         min-width: 260px;
     `;
 
-    popup.innerHTML = `
+                popup.innerHTML = `
         <span
             onclick="this.parentElement.remove()"
             style="
@@ -388,12 +385,12 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         ${data.message}
     `;
 
-    document.body.appendChild(popup);
+                document.body.appendChild(popup);
 
-    // Auto close after 10 seconds
-    setTimeout(() => popup.remove(), 10000);
-})
-.catch(err => console.error(err));
+
+                setTimeout(() => popup.remove(), 10000);
+            })
+            .catch(err => console.error(err));
     });
 
 });

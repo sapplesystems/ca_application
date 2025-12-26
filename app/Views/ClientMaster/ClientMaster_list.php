@@ -11,9 +11,8 @@
                 <button class="btn" data-bs-toggle="modal" data-bs-target="#addclient">+ Add Client</button>
 
             </div>
-<?php if ($message = session()->getFlashdata('success')): ?>
-    <div id="successPopup"
-        style="
+            <?php if ($message = session()->getFlashdata('success')): ?>
+            <div id="successPopup" style="
             position: fixed;
             top: 20px;
             right: 20px;
@@ -26,9 +25,7 @@
             font-weight: 500;
             min-width: 250px;
         ">
-         <span
-            onclick="document.getElementById('successPopup').remove();"
-            style="
+                <span onclick="document.getElementById('successPopup').remove();" style="
                 position: absolute;
                 top: 6px;
                 right: 10px;
@@ -36,18 +33,15 @@
                 font-size: 18px;
                 font-weight: bold;
                 color: #000000;
-            "
-            title="Close"
-        >
-            &times;
-        </span>
-        <?= esc($message) ?>
-    </div>
-    <?php endif; ?>
+            " title="Close">
+                    &times;
+                </span>
+                <?= esc($message) ?>
+            </div>
+            <?php endif; ?>
 
-    <?php if ($msg = session()->getFlashdata('error')): ?>
-    <div id="errorPopup"
-        style="
+            <?php if ($msg = session()->getFlashdata('error')): ?>
+            <div id="errorPopup" style="
             position: fixed;
             top: 20px;
             right: 20px;
@@ -64,11 +58,10 @@
             justify-content: space-between;
             gap: 12px;
         ">
-        
-        <span><?= esc($msg) ?></span>
 
-        <button onclick="closeErrorPopup()"
-            style="
+                <span><?= esc($msg) ?></span>
+
+                <button onclick="closeErrorPopup()" style="
                 background: transparent;
                 border: none;
                 font-size: 18px;
@@ -76,10 +69,10 @@
                 color: #000;
                 font-weight: bold;
             ">
-            &times;
-        </button>
-    </div>
-    <?php endif; ?>
+                    &times;
+                </button>
+            </div>
+            <?php endif; ?>
             <div class="layout-row">
                 <div style="flex:1;">
                     <input class="search-input" placeholder="Search by Service Code / Name / SAC..." />
@@ -424,7 +417,7 @@ let clientEditModal = new bootstrap.Modal(document.getElementById('clientEditMod
 $('#addclient form').on('submit', function(e) {
     e.preventDefault();
 
-    // Clear previous errors (sirf Add modal ke andar)
+
     $('#addclient .text-danger').remove();
     $('#addclient input, #addclient select, #addclient textarea').css('border', '');
 
@@ -586,11 +579,11 @@ $('#addclient form').on('submit', function(e) {
     const $btn = $(this).find('button[type="submit"]');
     $btn.prop('disabled', true).text('Saving...');
     setTimeout(() => {
-        this.submit(); // normal PHP clients/store
+        this.submit();
     }, 300);
 });
 
-// Add Client button
+
 $('#addclient').on('show.bs.modal', function() {
     const $form = $('#addclient form');
     $form[0].reset();
@@ -607,7 +600,7 @@ $('#addclient').on('hidden.bs.modal', function() {
 
 // ================== EDIT CLIENT ==================
 
-// Edit validation helper
+
 function validateEditClientForm($form) {
     $form.find('.text-danger').remove();
     $form.find('input, select, textarea').css('border', '');
@@ -769,7 +762,7 @@ function validateEditClientForm($form) {
     return isValid;
 }
 
-// Edit button -> load form + bind validation
+
 $(document).on('click', '.action-edit', function(e) {
     e.preventDefault();
     let clientId = $(this).data('id');
@@ -787,7 +780,7 @@ $(document).on('click', '.action-edit', function(e) {
                 $('#editclient').html(resp.html);
                 clientEditModal.show();
 
-                // Submit handler for injected form
+
                 $('#editClientForm').on('submit', function(e) {
                     e.preventDefault();
                     const $form = $(this);
@@ -799,7 +792,7 @@ $(document).on('click', '.action-edit', function(e) {
                     const $btn = $form.find('button[type="submit"]');
                     $btn.prop('disabled', true).text('Updating...');
                     setTimeout(() => {
-                        this.submit(); // normal PHP clients/update
+                        this.submit();
                     }, 300);
                 });
             }
@@ -811,7 +804,7 @@ $(document).on('click', '.action-edit', function(e) {
     });
 });
 
-// Edit modal close
+
 $('#clientEditModal').on('hidden.bs.modal', function() {
     $('#editclient').html('');
 });
@@ -864,16 +857,16 @@ document.querySelectorAll('.toggle').forEach(toggle => {
                 })
             })
             .then(res => res.json())
-           .then(data => {
+            .then(data => {
 
-    // Remove existing popup if any
-    document.getElementById('successPopup')?.remove();
-    document.getElementById('errorPopup')?.remove();
 
-    const popup = document.createElement('div');
-    popup.id = data.status ? 'successPopup' : 'errorPopup';
+                document.getElementById('successPopup')?.remove();
+                document.getElementById('errorPopup')?.remove();
 
-    popup.style.cssText = `
+                const popup = document.createElement('div');
+                popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+                popup.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -887,7 +880,7 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         min-width: 260px;
     `;
 
-    popup.innerHTML = `
+                popup.innerHTML = `
         <span
             style="
                 position:absolute;
@@ -902,27 +895,28 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         ${data.message}
     `;
 
-    document.body.appendChild(popup);
+                document.body.appendChild(popup);
 
-    // Auto remove after 10 seconds
-    setTimeout(() => popup.remove(), 10000);
-})
+
+                setTimeout(() => popup.remove(), 10000);
+            })
             .catch(err => console.error(err));
     });
 });
- setTimeout(function () {
-            const popup = document.getElementById('successPopup');
-            if (popup) {
-                popup.style.transition = 'opacity 0.5s ease';
-                popup.style.opacity = '0';
-                setTimeout(() => popup.remove(), 500);
-            }
-        }, 10000); 
-         function closeErrorPopup() {
-            const popup = document.getElementById('errorPopup');
-            if (popup) popup.remove();
-        }
+setTimeout(function() {
+    const popup = document.getElementById('successPopup');
+    if (popup) {
+        popup.style.transition = 'opacity 0.5s ease';
+        popup.style.opacity = '0';
+        setTimeout(() => popup.remove(), 500);
+    }
+}, 10000);
 
-        // Auto hide after 10 seconds
-        setTimeout(closeErrorPopup, 10000);
+function closeErrorPopup() {
+    const popup = document.getElementById('errorPopup');
+    if (popup) popup.remove();
+}
+
+
+setTimeout(closeErrorPopup, 10000);
 </script>

@@ -27,10 +27,9 @@
                         <button class="btn" onclick="openServicePopup(0)" data-toggle="modal"
                             data-target="#staticBackdrop">+ Add Company</button>
                     </div>
- 
-                 <?php if ($message = session()->getFlashdata('success')): ?>
-    <div id="successPopup"
-        style="
+
+                    <?php if ($message = session()->getFlashdata('success')): ?>
+                    <div id="successPopup" style="
             position: fixed;
             top: 20px;
             right: 20px;
@@ -43,9 +42,7 @@
             font-weight: 500;
             min-width: 250px;
         ">
-         <span
-            onclick="document.getElementById('successPopup').remove();"
-            style="
+                        <span onclick="document.getElementById('successPopup').remove();" style="
                 position: absolute;
                 top: 6px;
                 right: 10px;
@@ -53,14 +50,12 @@
                 font-size: 18px;
                 font-weight: bold;
                 color: #000000;
-            "
-            title="Close"
-        >
-            &times;
-        </span>
-        <?= esc($message) ?>
-    </div>
-    <?php endif; ?>
+            " title="Close">
+                            &times;
+                        </span>
+                        <?= esc($message) ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="layout-row">
                         <div style="flex:1;">
                             <input class="search-input" placeholder="Search by Service Code / Name / SAC..." />
@@ -542,24 +537,24 @@
         $(document).on('submit', '#editcompanymaster form', function(e) {
             e.preventDefault();
 
-            // Clear previous errors
+
             $('.text-danger').remove();
             $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
 
             let isValid = true;
             let firstError = null;
 
-            // ✅ ALL REQUIRED FIELDS (tumhare form ke exact names)
+
             const requiredNames = [
                 'company_type', 'name', 'date_of_incorporation', 'category',
                 'registered_office', 'head_office', 'condition_and_terms',
                 'email', 'phone', 'website', 'invoice_format',
                 'pan', 'gstin', 'iec', 'sister_concerns', 'bank_account',
-                'nature_of_business', 'nature_of_service', 'nature_of_product' // ✅ YE ADD KIYA
+                'nature_of_business', 'nature_of_service', 'nature_of_product'
             ];
 
             requiredNames.forEach(function(name) {
-                // ✅ YE LINE PERFECT - tumhare controller ke exact form ko target karta hai
+
                 const input = $(`#editcompanymaster [name="${name}"]`);
                 const wrapper = input.closest('.cmg-field, .form-row-full');
 
@@ -589,7 +584,7 @@
                     );
             }
 
-            // ✅ PHONE VALIDATION (10 digits)
+
             const phoneInput = $('#editcompanymaster [name="phone"]');
             const phone = phoneInput.val().replace(/[^\d]/g, '');
             if (phone && phone.length !== 10) {
@@ -610,11 +605,11 @@
                 return false;
             }
 
-            // ✅ VALID - Form submit
+
             this.submit();
         });
 
-        // ✅ BRANCHES - Add/Delete (Working)
+
         $(document).on('shown.bs.modal', '#editcompanymaster', function() {
             const addBtn = document.getElementById('editBranchBtn');
             const branchesList = document.getElementById('branchesLists');
@@ -641,7 +636,7 @@
             $(this).closest('.cmg-branches__item').remove();
         });
 
-        // ✅ Clear errors on modal close
+
         $(document).on('hidden.bs.modal', '#editcompanymaster', function() {
             $('.text-danger').remove();
             $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
@@ -655,7 +650,7 @@
             if (addBtn && branchesList) {
                 let branchIndex = branchesList.children.length;
 
-                // Add Branch Button
+
                 addBtn.onclick = function() {
                     const template = document.getElementById('branchTemplate');
                     if (!template) return;
@@ -667,7 +662,7 @@
                     branchesList.appendChild(item);
                 };
 
-                // Delete Branch
+
                 branchesList.onclick = function(e) {
                     if (e.target.classList.contains('btn-branch-delete')) {
                         e.target.closest('.cmg-branches__item').remove();
@@ -676,7 +671,7 @@
             }
         });
 
-        // Clear validation on modal close
+
         $(document).on('hidden.bs.modal', '#editcompanymaster', function() {
             $('.text-danger').remove();
             $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
@@ -744,7 +739,7 @@
             console.log('Appended successfully');
         });
 
-        // DELETE BRANCH (delegated)
+
         $(document).on('click', '.btn-branch-delete', function() {
             $(this).closest('.cmg-branches__item').remove();
         });
@@ -831,17 +826,17 @@
                             status: status
                         })
                     })
-                   .then(res => res.json()) // ✅ IMPORTANT
-.then(data => {
+                    .then(res => res.json())
+                    .then(data => {
 
-    // Remove old popups if exist
-    document.getElementById('successPopup')?.remove();
-    document.getElementById('errorPopup')?.remove();
 
-    const popup = document.createElement('div');
-    popup.id = data.status ? 'successPopup' : 'errorPopup';
+                        document.getElementById('successPopup')?.remove();
+                        document.getElementById('errorPopup')?.remove();
 
-    popup.style.cssText = `
+                        const popup = document.createElement('div');
+                        popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+                        popup.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -855,7 +850,7 @@
         min-width: 260px;
     `;
 
-    popup.innerHTML = `
+                        popup.innerHTML = `
         <span
             onclick="this.parentElement.remove()"
             style="
@@ -870,23 +865,23 @@
         ${data.message}
     `;
 
-    document.body.appendChild(popup);
+                        document.body.appendChild(popup);
 
-    // Auto close after 10 seconds
-    setTimeout(() => popup.remove(), 10000);
-})
-.catch(err => console.error(err));
+
+                        setTimeout(() => popup.remove(), 10000);
+                    })
+                    .catch(err => console.error(err));
             });
 
         });
-        setTimeout(function () {
+        setTimeout(function() {
             const popup = document.getElementById('successPopup');
             if (popup) {
                 popup.style.transition = 'opacity 0.5s ease';
                 popup.style.opacity = '0';
                 setTimeout(() => popup.remove(), 500);
             }
-        }, 10000); 
+        }, 10000);
         </script>
     </body>
 
