@@ -6,8 +6,7 @@
 !app/
 !app/**
 
-!public/
-!public/**
+
 app/Config/
 app/Config/**
 
