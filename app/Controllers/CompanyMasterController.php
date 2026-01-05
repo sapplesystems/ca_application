@@ -14,7 +14,7 @@ class CompanyMasterController extends BaseController
     public function __construct()
     {
         $this->session      = \Config\Services::session();
-        $this->companyModel = new CompanyMasterModel();   // <-- yaha object
+        $this->companyModel = new CompanyMasterModel();   
     }
     public function index()
     {
@@ -323,7 +323,7 @@ $html .= '</div></div></div>';
         }else{
             $companies = $this->companyModel
                         ->orderBy('id', 'DESC')
-                        ->findAll();   // ya where('status','active') agar sirf active chahiye
+                        ->findAll();   
 
     $data = [
         'companies' => $companies,
@@ -339,10 +339,10 @@ $html .= '</div></div></div>';
     {
         $request = $this->request;
 
-        // 1️⃣ Branches data (ANOTHER TABLE)
+        
         $branches = $request->getPost('branches'); 
 
-        // 2️⃣ Company data (MAIN TABLE)
+        // 2️⃣ 
         $data = [
             'type_of_company'   => $request->getPost('company_type'),
             'name'              => $request->getPost('name'),
@@ -418,7 +418,7 @@ $html .= '</div></div></div>';
     }
 
     $data = [
-        // update() method ke data array mein ye add karo:
+        
 'nature_of_business'   => $request->getPost('nature_of_business') ?? '',
 'nature_of_service'    => $request->getPost('nature_of_service') ?? '',
 'nature_of_product'    => $request->getPost('nature_of_product') ?? '',
@@ -533,7 +533,7 @@ $html .= '</div></div></div>';
             <select class="cmg-select" name="company_type">
                 <option value="Consultancy Master" ' . ($company['type_of_company']=='Consultancy Master'?'selected':'') . '>Consultancy Master</option>
                 <option value="Charted Account Master" ' . ($company['type_of_company']=='Charted Account Master'?'selected':'') . '>Charted Account Master</option>
-            </select>
+      </select>
         </div>';
 
         /* ================= Name ================= */

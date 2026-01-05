@@ -304,7 +304,7 @@ if ($result) {
             ]);
         }
 
-// yahi se tumhara HTML start karo:
+
 $html  = '<div class="clientm">';
 $html .= '<div class="form-grid">';
 
