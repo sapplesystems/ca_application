@@ -9,6 +9,7 @@ $routes->get('/login', 'LoginController::login');
 $routes->get('/', 'LoginController::login');
 
 $routes->get('/work_master', 'MasterWork::index');
+$routes->get('/InvoiceManagment', 'InvoiceMasterController::index');
 $routes->post('/work_master/update-status', 'MasterWork::updateStatus');
 $routes->get('login', 'LoginController::login');
 $routes->post('login-for-entry', 'LoginController::loginforentry');

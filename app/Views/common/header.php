@@ -48,7 +48,7 @@
             <div class="menu-item">Client Master</div>
         </a>
 
-        <a href="<?= base_url('invoice_management'); ?>" class="menu-link">
+        <a href="<?= base_url('InvoiceManagment'); ?>" class="menu-link">
             <div class="menu-item">Invoice Management</div>
         </a>
 
