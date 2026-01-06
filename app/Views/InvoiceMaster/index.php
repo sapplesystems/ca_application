@@ -32,9 +32,14 @@
 
                         <td>
                             <div class="invoiceM-action-group">
-                                <button class="invoiceM-action-btn invoiceM-btn-manage">
+                                <!-- <button class="invoiceM-action-btn invoiceM-btn-manage">
                                     💼 Manage Invoice
-                                </button>
+                                </button> -->
+                                <a href="<?= base_url('ManageInvoice') ?>"
+                                    class="invoiceM-action-btn invoiceM-btn-manage">
+                                    💼 Manage Invoice
+                                </a>
+
                                 <button class="invoiceM-action-btn invoiceM-btn-generate">
                                     📄 Generate Debit
                                 </button>
