@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice <?= esc($invoice['invoice_no']); ?></title>
+<style>
+body { font-family: Arial, sans-serif; font-size: 12px; }
+.invoice-box { width: 100%; margin: auto; border: 1px solid #000; padding: 10px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+th, td { border: 1px solid #000; padding: 4px; font-size: 12px; }
+th { background: #000; color: #fff; }
+.right { text-align: right; }
+.center { text-align: center; }
+.no-border { border: none; }
+h2 { text-align: center; font-size: 14px; margin: 5px 0; }
+</style>
+</head>
+<body>
+<div class="invoice-box">
+    <table>
+        <tr>
+            <td>
+                <strong><?= esc($company['name']); ?></strong><br>
+                <?= esc($company['type_of_company']); ?><br>
+                <?= esc($company['registered_office']); ?><br>
+                PH: <?= esc($company['telephone']); ?><br>
+                Email: <?= esc($company['email']); ?><br>
+                GSTIN: <?= esc($company['gstin']); ?>
+            </td>
+            <td class="right">
+                <strong>Invoice No:</strong> <?= esc($invoice['invoice_no']); ?><br>
+                <strong>Date:</strong> <?= esc($invoice['invoice_date']); ?>
+            </td>
+        </tr>
+    </table>
+
+    <h2>Professional Invoice</h2>
+
+    <table>
+        <tr>
+            <td><strong>Bill To:</strong><br><?= esc($client['legal_name']); ?><br><?= esc($client['registered_office']); ?></td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th>SL No.</th>
+            <th>Nature of Services</th>
+            <th class="right">Amount (Rs)</th>
+        </tr>
+        <tr>
+            <td class="center">1</td>
+            <td><?= esc($invoice['service_description']); ?></td>
+            <td class="right"><?= number_format($invoice['service_amount'],2); ?></td>
+        </tr>
+        <tr>
+            <td class="center">A</td>
+            <td class="right">Service Value</td>
+            <td class="right"><?= number_format($invoice['service_value'],2); ?></td>
+        </tr>
+        <?php if($invoice['cgst_amount'] > 0 || $invoice['sgst_amount'] > 0): ?>
+        <tr>
+            <td class="center">i</td>
+            <td>CGST @ 9%</td>
+            <td class="right"><?= number_format($invoice['cgst_amount'],2); ?></td>
+        </tr>
+        <tr>
+            <td class="center">ii</td>
+            <td>SGST @ 9%</td>
+            <td class="right"><?= number_format($invoice['sgst_amount'],2); ?></td>
+        </tr>
+        <?php elseif($invoice['igst_amount'] > 0): ?>
+        <tr>
+            <td class="center">i</td>
+            <td>IGST @ 18%</td>
+            <td class="right"><?= number_format($invoice['igst_amount'],2); ?></td>
+        </tr>
+        <?php endif; ?>
+        <tr>
+            <td class="center">B</td>
+            <td class="right">Total Expenses Recoverable</td>
+            <td class="right"><?= number_format($invoice['expense_total'],2); ?></td>
+        </tr>
+        <tr>
+            <td class="no-border"></td>
+            <td class="right"><strong>Grand Total</strong></td>
+            <td class="right"><strong><?= number_format($invoice['grand_total'],2); ?></strong></td>
+        </tr>
+        <tr>
+            <td class="no-border"></td>
+            <td class="right">(-) Advances Received</td>
+            <td class="right"><?= number_format($invoice['advance_received'],2); ?></td>
+        </tr>
+        <tr>
+            <td class="center">C</td>
+            <td><strong>Amount in Words</strong></td>
+            <td class="right"><strong><?= number_format($invoice['total_invoice_amount'],2); ?></strong></td>
+        </tr>
+    </table>
+
+    <p><strong>Banker Details:</strong> <?= esc($company['bank_ac_no']); ?> - <?= esc($company['head_office']); ?></p>
+
+    <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
+
+    <div class="right">
+        <button onclick="window.print()">Print Invoice</button>
+    </div>
+</div>
+</body>
+</html>

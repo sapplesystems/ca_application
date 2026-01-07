@@ -10,7 +10,10 @@
                  </button>
              </div>
              <div class="modal-body">
+                <form method="post" action="<?= base_url('preview'); ?>">
                  <div class="Gvoice-wrapper">
+                  <input type="hidden" name="client_id" value="<?= esc($clients[0]['id']); ?>">
+
                      <!-- Title -->
                      <div class="Gvoice-title">Choose Works And Company For Invoice</div>
 
@@ -28,94 +31,80 @@
 
                      <!-- Choose work section -->
                      <div class="Gvoice-section-title">Choose Work For Invoice</div>
-                     <div class="Gvoice-box">
-                         <div class="Gvoice-option-row">
-                             <input type="checkbox" />
-                             <div class="Gvoice-option-text">
-                                 PAN Application (25032101 )[Consultancy Fee]
-                             </div>
-                             <div class="Gvoice-option-status">Allocated</div>
-                         </div>
+                    <div class="Gvoice-box">
 
-                         <div class="Gvoice-option-row">
-                             <input type="checkbox" />
-                             <div class="Gvoice-option-text">
-                                 PAN Correction (25032102 )[Consultancy Fee]
-                             </div>
-                             <div class="Gvoice-option-status">Allocated</div>
-                         </div>
+                        <?php if (!empty($works)): ?>
+                            <?php foreach ($works as $work): ?>
 
-                         <div class="Gvoice-option-row">
-                             <input type="checkbox" />
-                             <div class="Gvoice-option-text">
-                                 MSME Registration (25032103 )[Consultancy Fee]
-                             </div>
-                             <div class="Gvoice-option-status">Allocated</div>
-                         </div>
+                                <div class="Gvoice-option-row">
+                                    <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>" />
 
-                         <div class="Gvoice-option-row">
-                             <input type="checkbox" />
-                             <div class="Gvoice-option-text">
-                                 Consultancy Charges (25032104 )[Consultancy Fee]
-                             </div>
-                             <div class="Gvoice-option-status">Allocated</div>
-                         </div>
+                                    <div class="Gvoice-option-text">
+                                        <?= esc($work['service_name']); ?>
+                                        (<?= esc($work['sac_code']); ?>)
+                                        [<?= esc($work['frequency']); ?>]
+                                    </div>
 
-                         <!-- aur works yahan add kar sakte ho -->
-                     </div>
+                                    <div class="Gvoice-option-status">
+                                        Allocated
+                                    </div>
+                                </div>
+
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No works found</p>
+                        <?php endif; ?>
+
+                    </div>
+
 
                      <!-- Choose company section -->
                      <div class="Gvoice-section-title">Choose Company For Invoice</div>
                      <div class="Gvoice-box">
-                         <div class="Gvoice-option-row">
-                             <input type="radio" name="company" />
-                             <div class="Gvoice-option-text">
-                                 Deleted SAMPURN [Consultancy Master]
-                             </div>
-                         </div>
 
-                         <div class="Gvoice-option-row">
-                             <input type="radio" name="company" />
-                             <div class="Gvoice-option-text">
-                                 ENDLESS SOLUTIONS [Consultancy Master]
-                             </div>
-                         </div>
+                        <?php if (!empty($companies)): ?>
+                            <?php foreach ($companies as $company): ?>
 
-                         <div class="Gvoice-option-row">
-                             <input type="radio" name="company" />
-                             <div class="Gvoice-option-text">
-                                 Meenakshi Company [Charted Account Master]
-                             </div>
-                         </div>
+                                <div class="Gvoice-option-row">
+                                    <input 
+                                        type="radio" 
+                                        name="company_id" 
+                                        value="<?= $company['id']; ?>" 
+                                    />
 
-                         <div class="Gvoice-option-row">
-                             <input type="radio" name="company" />
-                             <div class="Gvoice-option-text">
-                                 OXYFYN SERVICES PRIVATE LIMITED [Charted Account Master]
-                             </div>
-                         </div>
-                     </div>
+                                    <div class="Gvoice-option-text">
+                                        <?= esc($company['name']); ?>
+                                        [<?= esc($company['type_of_company']); ?>]
+                                    </div>
+                                </div>
 
-                     <!-- Choose tax section -->
-                     <div class="Gvoice-section-title">Choose tax For Invoice</div>
-                     <div class="Gvoice-box">
-                         <div class="Gvoice-option-row">
-                             <input type="radio" name="tax" />
-                             <div class="Gvoice-option-text">CGST &amp; SGST</div>
-                         </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No companies found</p>
+                        <?php endif; ?>
 
-                         <div class="Gvoice-option-row">
-                             <input type="radio" name="tax" />
-                             <div class="Gvoice-option-text">IGST</div>
-                         </div>
-                     </div>
+                    </div>
 
+
+                   <div class="Gvoice-section-title">Choose tax For Invoice</div>
+                    <div class="Gvoice-box">
+                        <div class="Gvoice-option-row">
+                            <input type="radio" name="tax" value="cgst_sgst" checked>
+                            <div class="Gvoice-option-text">CGST &amp; SGST</div>
+                        </div>
+
+                        <div class="Gvoice-option-row">
+                            <input type="radio" name="tax" value="igst">
+                            <div class="Gvoice-option-text">IGST</div>
+                        </div>
+                    </div>
                      <!-- Buttons -->
                      <div class="Gvoice-actions">
                          <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
                          <button class="Gvoice-btn Gvoice-btn-danger">Cancel</button>
                      </div>
                  </div>
+                 </form>
              </div>
 
          </div>
@@ -123,7 +112,7 @@
  </div>
  <div class="Minvoice-wrapper">
      <!-- Header -->
-     <div class="Minvoice-header">List Of Generated Invoice for NEROCA</div>
+     <div class="Minvoice-header">List Of Generated Invoice for <?= esc($clients[0]['legal_name']) ?></div>
 
      <!-- Top Buttons -->
      <div class="Minvoice-top-actions">
@@ -141,9 +130,16 @@
      <div class="Minvoice-filter-row">
          <div class="Minvoice-filter-group">
              <label for="Minvoice-company">Select Company</label>
-             <select id="Minvoice-company">
-                 <option>Select Company</option>
-             </select>
+            <select id="Minvoice-company" name="company_id">
+    <option value="">Select Company</option>
+
+    <?php foreach ($companies as $company): ?>
+        <option value="<?= $company['id']; ?>">
+            <?= esc($company['name']); ?>
+        </option>
+    <?php endforeach; ?>
+
+</select>
          </div>
 
          <div class="Minvoice-filter-group">

@@ -35,7 +35,7 @@
                                 <!-- <button class="invoiceM-action-btn invoiceM-btn-manage">
                                     💼 Manage Invoice
                                 </button> -->
-                                <a href="<?= base_url('ManageInvoice') ?>"
+                                <a href="<?= base_url('ManageInvoice/') ?><?= $client['id'] ?>"
                                     class="invoiceM-action-btn invoiceM-btn-manage">
                                     💼 Manage Invoice
                                 </a>
