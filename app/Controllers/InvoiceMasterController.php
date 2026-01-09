@@ -40,13 +40,18 @@ class InvoiceMasterController extends BaseController
         ->findAll();
         $workModel = new WorkMasterModel();
         $works = $workModel->select('id, service_name ,sac_code,frequency')->findAll();
+        $invoiceModel = new InvoiceMasterModel();
+        $invoice=  $invoiceModel->getInvoiceWithCompany($id);
+      
 
         echo view('common/header');
         
         echo view('InvoiceMaster/Manage_invoice', [
             'companies' => $companies,
             'clients' => $clients,
-            'works' => $works
+            'works' => $works,
+            'invoices' => $invoice,
+             
         ]);
         echo view('common/footer');
     }
@@ -86,6 +91,9 @@ class InvoiceMasterController extends BaseController
     $clientModel = new ClientModel();
     $client = $clientModel->find($client_id);
 
+    $invoiceModel = new InvoiceMasterModel();
+    $invoiceNo = $invoiceModel->generateInvoiceNo('INV', '001');
+
     return view('common/header')
         . view('InvoiceMaster/invoice_preview', [
             'company' => $company,
@@ -96,7 +104,8 @@ class InvoiceMasterController extends BaseController
             'cgst' => $cgst,
             'sgst' => $sgst,
             'igst' => $igst,
-            'taxType' => $taxType
+            'taxType' => $taxType,
+            'invoiceNo' => $invoiceNo 
         ])
         . view('common/footer');
 }
@@ -212,6 +221,91 @@ public function pdf($id)
         ['Attachment' => true]
     );
 }
+
+
+ public function edit($id)
+    {
+        $invoiceModel = new InvoiceMasterModel();
+        $invoice = $invoiceModel->find($id);
+        
+        $companyId = $invoice['company_id'];
+        // Fetch company
+        $companyModel = new CompanyMasterModel();
+        $company = $companyModel->find($companyId);
+
+        $clientId = $invoice['client_id'];
+        // Fetch client
+        $clientModel = new ClientModel();
+        $client = $clientModel->find($clientId);
+        
+
+        if (!$invoice) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Invoice not found');
+        }
+
+        return view('common/header').view('InvoiceMaster/edit_invoice_preview', [
+            'invoice' => $invoice,
+            'company' => $company,
+            'client' => $client,  
+
+        ]). view('common/footer');
+    }
+    public function delete($id)
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invalid request'
+            ]);
+        }
+        $invoiceModel = new InvoiceMasterModel();
+        $invoice = $invoiceModel->find($id);
+
+        if (!$invoice) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invoice not found'
+            ]);
+        }
+
+        $invoiceModel->delete($id);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Invoice deleted successfully'
+        ]);
+    }
+
+    public function receipt($id)
+    {
+        print_r($id); exit;
+        $invoiceModel = new InvoiceMasterModel();
+
+        // Get invoice by ID
+        $invoice = $invoiceModel->find($id);
+
+        if (!$invoice) {
+            return redirect()->to('/invoice')->with('error', 'Invoice not found.');
+        }
+
+        // Load company and client info if needed
+        $companyModel = new CompanyMasterModel();
+        $clientModel  = new ClientModel();
+
+        $company = $companyModel->find($invoice['company_id']);
+        $client  = $clientModel->find($invoice['client_id']);
+
+        // Pass data to view
+        $data = [
+            'invoice' => $invoice,
+            'company' => $company,
+            'client'  => $client
+        ];
+
+        echo view('InvoiceMaster/receipt_invoice', $data);
+    }
+
+
 
 
 }

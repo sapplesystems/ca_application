@@ -31,7 +31,7 @@
         </td>
         <td width="40%" align="right">
             <strong>Invoice No. :</strong><br>
-           DEG/2023-24/001
+          <?= esc($invoiceNo) ?>
         </td>
     </tr>
 
@@ -203,14 +203,14 @@
 <input type="hidden" name="net_amount" id="netAmountInput">
 <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
 <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-<input type="hidden" name="invoice_no" value="DEG/2023-24/001">
+<input type="hidden" name="invoice_no" value="<?= esc($invoiceNo) ?>">
 <input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>">
 <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 <input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
 
 <div style="margin-top:20px; text-align:center;">
     <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
-    <a href="<?= base_url('invoice'); ?>" class="Gvoice-btn Gvoice-btn-danger">
+    <a href="<?= base_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
         Cancel
     </a>
 </div>
@@ -262,7 +262,7 @@ document.getElementById('invoiceForm').addEventListener('submit', function(e) {
                         cancelButtonText: 'No'
                     }).then((res) => {
                         if(res.isConfirmed){
-                            window.location.href = '<?= site_url("invoice") ?>';
+                            window.location.href = '<?= site_url("InvoiceManagment") ?>';
                         }
                         // else just close popup
                     });
