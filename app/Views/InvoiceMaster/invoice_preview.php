@@ -17,7 +17,7 @@
                 </td>
 
                 <td align="right">
-                    <strong>Invoice No:</strong> DEG/2023-24/001<br>
+                    <strong>Invoice No:</strong> <?= esc($invoiceNo) ?><br>
                     <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
                 </td>
             </tr>
@@ -35,7 +35,7 @@
                 </td>
                 <td width="40%" align="right">
                     <strong>Invoice No. :</strong><br>
-                    DEG/2023-24/001
+                    <?= esc($invoiceNo) ?>
                 </td>
             </tr>
 
@@ -206,33 +206,6 @@
                     name="term_condition">
 
     </textarea>
-                <<<<<<< HEAD <div id="froala">
-            </div>
-            <link href="node_modules/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-            <script type="text/javascript" src="node_modules/froala-editor/js/froala_editor.pkgd.min.js"></script>
-</div>
-<input type="hidden" name="service_value" id="serviceValueInput">
-<input type="hidden" name="cgst_amount" id="cgstInput">
-<input type="hidden" name="sgst_amount" id="sgstInput">
-<input type="hidden" name="igst_amount" id="igstInput">
-<input type="hidden" name="expense_total" id="expenseTotalInput">
-<input type="hidden" name="grand_total" id="grandTotalInput">
-<input type="hidden" name="net_amount" id="netAmountInput">
-<input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
-<input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-<input type="hidden" name="invoice_no" value="DEG/2023-24/001">
-<input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>">
-<input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
-<input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
-
-<div style="margin-top:20px; text-align:center;">
-    <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
-    <a href="<?= base_url('invoice'); ?>" class="Gvoice-btn Gvoice-btn-danger">
-        Cancel
-    </a>
-</div>
-</form>
-=======
 </div>
 <input type="hidden" name="service_value" id="serviceValueInput">
 <input type="hidden" name="cgst_amount" id="cgstInput">
@@ -253,8 +226,10 @@
     <a href="<?= base_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
         Cancel
     </a>
-    >>>>>>> 0472077d7e68b720751b56f8d2dc9b8ce07e6383
 </div>
+</form>
+
+
 
 
 
@@ -262,72 +237,18 @@
 
 <script>
 document.getElementById('invoiceForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // prevent normal form submit
+    e.preventDefault(); // prevent normal form submit
 
-        const form = this;
-
-        // Submit form via AJAX
-        fetch(form.action, {
-                <<
-                <<
-                << < HEAD
-                method: 'POST',
-                body: new FormData(form)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Invoice Saved!',
-                        text: 'Your invoice has been saved successfully.',
-                        icon: 'success',
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Print Invoice',
-                        denyButtonText: 'Download PDF',
-                        cancelButtonText: 'Close'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            alert(data.invoice_id);
-                            // Print invoice
-                            window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDenied) {
-                            // Download PDF
-                            window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
-                        } else if (result.isDismissed) {
-                            // Check if user clicked cancel
-                            // Optional: redirect to invoice list
-                            Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Do you want to go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, Redirect',
-                                cancelButtonText: 'No'
-                            }).then((res) => {
-                                if (res.isConfirmed) {
-                                    window.location.href = '<?= site_url("invoice") ?>';
-                                }
-                                // else just close popup
-                            });
-                        }
-                    });
-                } else {
-                    Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
-                }
-            })
-            .catch(err => {
-                Swal.fire('Error!', 'Network or server error', 'error');
-            }); ===
-        ===
-        =
+    const form = this;
+    
+    // Submit form via AJAX
+    fetch(form.action, {
         method: 'POST',
-            body: new FormData(form)
+        body: new FormData(form)
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'success') {
+        if(data.status === 'success') {
             Swal.fire({
                 title: 'Invoice Saved!',
                 text: 'Your invoice has been saved successfully.',
@@ -338,14 +259,13 @@ document.getElementById('invoiceForm').addEventListener('submit', function(e) {
                 denyButtonText: 'Download PDF',
                 cancelButtonText: 'Close'
             }).then((result) => {
-                if (result.isConfirmed) {
-                    alert(data.invoice_id);
+                if(result.isConfirmed) {
                     // Print invoice
-                    window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id, '_blank');
-                } else if (result.isDenied) {
+                    window.open('<?= site_url("invoice/print/") ?>'+data.invoice_id, '_blank');
+                } else if(result.isDenied) {
                     // Download PDF
-                    window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
-                } else if (result.isDismissed) {
+                    window.open('<?= site_url("invoice/pdf/") ?>'+data.invoice_id, '_blank');
+                } else if(result.isDismissed) {
                     // Check if user clicked cancel
                     // Optional: redirect to invoice list
                     Swal.fire({
@@ -356,7 +276,7 @@ document.getElementById('invoiceForm').addEventListener('submit', function(e) {
                         confirmButtonText: 'Yes, Redirect',
                         cancelButtonText: 'No'
                     }).then((res) => {
-                        if (res.isConfirmed) {
+                        if(res.isConfirmed){
                             window.location.href = '<?= site_url("InvoiceManagment") ?>';
                         }
                         // else just close popup
@@ -369,9 +289,7 @@ document.getElementById('invoiceForm').addEventListener('submit', function(e) {
     })
     .catch(err => {
         Swal.fire('Error!', 'Network or server error', 'error');
-    }); >>>
->>>
-> 0472077 d7e68b720751b56f8d2dc9b8ce07e6383
+    });
 });
 
 function calculateTotals() {
@@ -385,9 +303,7 @@ function calculateTotals() {
 
     document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-    let cgst = 0,
-        sgst = 0,
-        igst = 0;
+    let cgst = 0, sgst = 0, igst = 0;
 
     if (document.getElementById('cgstAmount')) {
         cgst = serviceValue * 0.09;
@@ -430,9 +346,7 @@ function calculateTotals() {
 function numberToWords(num) {
     const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
     const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
-        "Nineteen"
-    ];
+    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
 
     function convert(n) {
         if (n < 10) return ones[n];
@@ -456,4 +370,7 @@ document.getElementById('advance').addEventListener('input', calculateTotals);
 
 // Initial calculation
 calculateTotals();
+
+
+
 </script>
