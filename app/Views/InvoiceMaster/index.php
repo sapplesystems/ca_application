@@ -1,3 +1,53 @@
+<!-- Modal -->
+<div class="modal fade" id="debitpopup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="debitP">
+                    <div class="header">Generate Debit Note</div>
+
+                    <div class="content">
+                        <div class="title">Choose Company For Invoice</div>
+
+                        <div class="radio-box">
+                            <label>
+                                <input type="radio" name="company_debitP" />
+                                Deleted SAMPURN [Consultancy Master]
+                            </label>
+
+                            <label>
+                                <input type="radio" name="company_debitP" />
+                                ENDLESS SOLUTIONS [Consultancy Master]
+                            </label>
+
+                            <label>
+                                <input type="radio" name="company_debitP" />
+                                Meenakshi Company [Charted Account Master]
+                            </label>
+
+                            <label>
+                                <input type="radio" name="company_debitP" />
+                                OXFYNN SERVICES PRIVATE LIMITED [Charted Account Master]
+                            </label>
+                        </div>
+
+                        <div class="buttons">
+                            <button class="btn btn-proceed">Proceed</button>
+                            <button class="btn btn-cancel" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 <div class="invoiceM-containerr">
     <div class="invoiceM-toolbar">
         <div class="invoiceM-toolbar-title">Client Grid</div>
@@ -40,9 +90,13 @@
                                     💼 Manage Invoice
                                 </a>
 
-                                <button class="invoiceM-action-btn invoiceM-btn-generate">
+                                <!-- <button class="invoiceM-action-btn invoiceM-btn-generate">
                                     📄 Generate Debit
-                                </button>
+                                </button> -->
+                                <a href="#" class="invoiceM-action-btn invoiceM-btn-manage" data-toggle="modal"
+                                    data-target="#debitpopup">
+                                    📄 Generate Debit
+                                </a>
                                 <button class="invoiceM-action-btn invoiceM-btn-list">
                                     📋 Debit Note List
                                 </button>

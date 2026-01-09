@@ -1983,3 +1983,66 @@ textarea {
     width: 100%;
   }
 }
+/*-------------------------------------Debit Note Css ----------------------------------------*/
+.debitP {
+  /* background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 100%; */
+}
+
+.debitP .header {
+  color: #f05a28;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-bottom: 1px dotted #ccc;
+}
+
+.debitP .content {
+  padding: 15px;
+}
+
+.debitP .title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.debitP .radio-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background: #fafafa;
+}
+
+.debitP .radio-box label {
+  display: block;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.debitP .buttons {
+  margin-top: 15px;
+}
+
+.debitP .btn {
+  border: none;
+  padding: 8px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 2px;
+}
+
+.debitP .btn-proceed {
+  background-color: #5cb85c;
+}
+
+.debitP .btn-cancel {
+  background-color: #d9534f;
+  margin-left: 10px;
+}
+
+.debitP .btn:hover {
+  opacity: 0.9;
+}
