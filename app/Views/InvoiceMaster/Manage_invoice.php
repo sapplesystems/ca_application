@@ -10,100 +10,96 @@
                  </button>
              </div>
              <div class="modal-body">
-                <form method="post" action="<?= base_url('preview'); ?>">
-                 <div class="Gvoice-wrapper">
-                  <input type="hidden" name="client_id" value="<?= esc($clients[0]['id']); ?>">
+                 <form method="post" action="<?= base_url('preview'); ?>">
+                     <div class="Gvoice-wrapper">
+                         <input type="hidden" name="client_id" value="<?= esc($clients[0]['id']); ?>">
 
-                     <!-- Title -->
-                     <div class="Gvoice-title">Choose Works And Company For Invoice</div>
+                         <!-- Title -->
+                         <div class="Gvoice-title">Choose Works And Company For Invoice</div>
 
-                     <!-- Invoice type row -->
-                     <div class="Gvoice-row">
-                         <div class="Gvoice-label">
-                             Select Invoice Type: <span class="Gvoice-required">*</span>
+                         <!-- Invoice type row -->
+                         <div class="Gvoice-row">
+                             <div class="Gvoice-label">
+                                 Select Invoice Type: <span class="Gvoice-required">*</span>
+                             </div>
+                             <select class="Gvoice-select">
+                                 <option>Automatic Invoice</option>
+                                 <option>Manual Invoice</option>
+                                 <!-- other options -->
+                             </select>
                          </div>
-                         <select class="Gvoice-select">
-                             <option>Automatic Invoice</option>
-                             <option>Manual Invoice</option>
-                             <!-- other options -->
-                         </select>
+
+                         <!-- Choose work section -->
+                         <div class="Gvoice-section-title">Choose Work For Invoice</div>
+                         <div class="Gvoice-box">
+
+                             <?php if (!empty($works)): ?>
+                             <?php foreach ($works as $work): ?>
+
+                             <div class="Gvoice-option-row">
+                                 <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>" />
+
+                                 <div class="Gvoice-option-text">
+                                     <?= esc($work['service_name']); ?>
+                                     (<?= esc($work['sac_code']); ?>)
+                                     [<?= esc($work['frequency']); ?>]
+                                 </div>
+
+                                 <div class="Gvoice-option-status">
+                                     Allocated
+                                 </div>
+                             </div>
+
+                             <?php endforeach; ?>
+                             <?php else: ?>
+                             <p>No works found</p>
+                             <?php endif; ?>
+
+                         </div>
+
+
+                         <!-- Choose company section -->
+                         <div class="Gvoice-section-title">Choose Company For Invoice</div>
+                         <div class="Gvoice-box">
+
+                             <?php if (!empty($companies)): ?>
+                             <?php foreach ($companies as $company): ?>
+
+                             <div class="Gvoice-option-row">
+                                 <input type="radio" name="company_id" value="<?= $company['id']; ?>" />
+
+                                 <div class="Gvoice-option-text">
+                                     <?= esc($company['name']); ?>
+                                     [<?= esc($company['type_of_company']); ?>]
+                                 </div>
+                             </div>
+
+                             <?php endforeach; ?>
+                             <?php else: ?>
+                             <p>No companies found</p>
+                             <?php endif; ?>
+
+                         </div>
+
+
+                         <div class="Gvoice-section-title">Choose tax For Invoice</div>
+                         <div class="Gvoice-box">
+                             <div class="Gvoice-option-row">
+                                 <input type="radio" name="tax" value="cgst_sgst" checked>
+                                 <div class="Gvoice-option-text">CGST &amp; SGST</div>
+                             </div>
+
+                             <div class="Gvoice-option-row">
+                                 <input type="radio" name="tax" value="igst">
+                                 <div class="Gvoice-option-text">IGST</div>
+                             </div>
+                         </div>
+                         <!-- Buttons -->
+                         <div class="Gvoice-actions">
+                             <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
+                             <button class="Gvoice-btn Gvoice-btn-danger" data-dismiss="modal">Cancel</button>
+                         </div>
                      </div>
-
-                     <!-- Choose work section -->
-                     <div class="Gvoice-section-title">Choose Work For Invoice</div>
-                    <div class="Gvoice-box">
-
-                        <?php if (!empty($works)): ?>
-                            <?php foreach ($works as $work): ?>
-
-                                <div class="Gvoice-option-row">
-                                    <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>" />
-
-                                    <div class="Gvoice-option-text">
-                                        <?= esc($work['service_name']); ?>
-                                        (<?= esc($work['sac_code']); ?>)
-                                        [<?= esc($work['frequency']); ?>]
-                                    </div>
-
-                                    <div class="Gvoice-option-status">
-                                        Allocated
-                                    </div>
-                                </div>
-
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p>No works found</p>
-                        <?php endif; ?>
-
-                    </div>
-
-
-                     <!-- Choose company section -->
-                     <div class="Gvoice-section-title">Choose Company For Invoice</div>
-                     <div class="Gvoice-box">
-
-                        <?php if (!empty($companies)): ?>
-                            <?php foreach ($companies as $company): ?>
-
-                                <div class="Gvoice-option-row">
-                                    <input 
-                                        type="radio" 
-                                        name="company_id" 
-                                        value="<?= $company['id']; ?>" 
-                                    />
-
-                                    <div class="Gvoice-option-text">
-                                        <?= esc($company['name']); ?>
-                                        [<?= esc($company['type_of_company']); ?>]
-                                    </div>
-                                </div>
-
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p>No companies found</p>
-                        <?php endif; ?>
-
-                    </div>
-
-
-                   <div class="Gvoice-section-title">Choose tax For Invoice</div>
-                    <div class="Gvoice-box">
-                        <div class="Gvoice-option-row">
-                            <input type="radio" name="tax" value="cgst_sgst" checked>
-                            <div class="Gvoice-option-text">CGST &amp; SGST</div>
-                        </div>
-
-                        <div class="Gvoice-option-row">
-                            <input type="radio" name="tax" value="igst">
-                            <div class="Gvoice-option-text">IGST</div>
-                        </div>
-                    </div>
-                     <!-- Buttons -->
-                     <div class="Gvoice-actions">
-                         <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
-                         <button class="Gvoice-btn Gvoice-btn-danger">Cancel</button>
-                     </div>
-                 </div>
                  </form>
              </div>
 
@@ -130,16 +126,16 @@
      <div class="Minvoice-filter-row">
          <div class="Minvoice-filter-group">
              <label for="Minvoice-company">Select Company</label>
-            <select id="Minvoice-company" name="company_id">
-    <option value="">Select Company</option>
+             <select id="Minvoice-company" name="company_id">
+                 <option value="">Select Company</option>
 
-    <?php foreach ($companies as $company): ?>
-        <option value="<?= $company['id']; ?>">
-            <?= esc($company['name']); ?>
-        </option>
-    <?php endforeach; ?>
+                 <?php foreach ($companies as $company): ?>
+                 <option value="<?= $company['id']; ?>">
+                     <?= esc($company['name']); ?>
+                 </option>
+                 <?php endforeach; ?>
 
-</select>
+             </select>
          </div>
 
          <div class="Minvoice-filter-group">

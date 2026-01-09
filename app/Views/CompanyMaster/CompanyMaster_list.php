@@ -24,8 +24,9 @@
                             <div class="topbar-title">Company Master List</div>
                             <div class="topbar-subtitle">Service catalog with SAC, default rate &amp; GST%</div>
                         </div>
-                        <button class="btn" onclick="openServicePopup(0)" data-toggle="modal"
-                            data-target="#staticBackdrop">+ Add Company</button>
+                        <!-- <button class="btn" onclick="openServicePopup(0)" data-toggle="modal"
+                            data-target="#staticBackdrop">+ Add Company</button> -->
+                        <button class="btn" data-toggle="modal" data-target="#staticBackdrop">Add Company</button>
                     </div>
 
                     <?php if ($message = session()->getFlashdata('success')): ?>
@@ -366,20 +367,35 @@
                                 </div>
 
 
-                                <!-- Bank Account -->
+                                <!-- Bank Account (pehle se hai) -->
                                 <div class="cmg-field">
-                                    <label class="cmg-label">Bank Account</label>
-                                    <input type="text" class="cmg-input" name="bank_account"
+                                    <label class="cmg-label">Bank Account<span class="cmg-required">*</span></label>
+                                    <input type="text" class="cmg-input" name="bankaccount"
                                         placeholder="23456789012345">
-                                    <p class="cmg-help-text">
-                                        Select default bank account for this company.
-                                    </p>
-
+                                    <p class="cmg-help-text">Select default bank account for this company.</p>
                                 </div>
+
+                                <!-- Bank Branch - Updated -->
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Bank Branch <span class="cmg-required">*</span></label>
+                                    <input type="text" class="cmg-input" name="bankbranch"
+                                        placeholder="Enter bank branch name">
+                                    <p class="cmg-help-text">Enter bank branch name (e.g., Main Branch Delhi).</p>
+                                </div>
+
+                                <!-- Bank IFSC - Updated -->
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Bank IFSC <span class="cmg-required">*</span></label>
+                                    <input type="text" class="cmg-input" name="bankifsc" placeholder="SBIN0000001"
+                                        maxlength="11">
+                                    <p class="cmg-help-text">Enter 11-character IFSC code (e.g., SBIN0000001).</p>
+                                </div>
+
+
 
                                 <!-- Logo Upload -->
                                 <div class="cmg-field">
-                                    <label class="cmg-label">Logo Upload</label>
+                                    <label class="cmg-label">Logo Upload<span class="cmg-required">*</span></label>
                                     <div class="cmg-upload">
                                         <label class="cmg-btn cmg-btn--primary cmg-btn--small">
                                             ⬆ Upload Logo
@@ -394,15 +410,18 @@
 
                                 <!-- Business -->
                                 <div class="form-row-full">
-                                    <label class="cmg-label">Nature of Business</label>
+                                    <label class="cmg-label">Nature of Business<span
+                                            class="cmg-required">*</span></label>
                                     <textarea name="nature_of_business" class="cmg-textarea"></textarea>
                                 </div>
                                 <div>
-                                    <label class="cmg-label">Nature of Service</label>
+                                    <label class="cmg-label">Nature of Service<span
+                                            class="cmg-required">*</span></label>
                                     <textarea name="nature_of_service" class="cmg-textarea"></textarea>
                                 </div>
                                 <div class="cmg-field--full">
-                                    <label class="cmg-label">Nature of Product</label>
+                                    <label class="cmg-label">Nature of Product<span
+                                            class="cmg-required">*</span></label>
                                     <textarea name="nature_of_product" class="cmg-textarea"></textarea>
                                 </div>
 
@@ -466,13 +485,11 @@
         $('#companyForm').on('submit', function(e) {
             e.preventDefault();
 
-
             $('.text-danger').remove();
             $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
 
             let isValid = true;
             let firstError = null;
-
 
             const requiredNames = [
                 'company_type',
@@ -491,6 +508,8 @@
                 'iec',
                 'sister_concerns',
                 'bank_account',
+                'bankbranch',
+                'bankifsc',
                 'nature_of_business',
                 'nature_of_service',
                 'nature_of_product'
@@ -508,7 +527,6 @@
                     }
 
                     input.css('border', '1px solid red');
-
                     wrapper.find('.text-danger').remove();
                     wrapper.append(
                         '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
@@ -518,6 +536,27 @@
                 }
             });
 
+
+
+            // Bank IFSC Format Validation
+            const bankIfscInput = $('[name="bankifsc"]');
+            if (bankIfscInput.length) {
+                const ifsc = bankIfscInput.val().trim().toUpperCase();
+                const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+                if (!ifscRegex.test(ifsc) || ifsc.length !== 11) {
+                    isValid = false;
+                    if (!firstError) firstError = bankIfscInput;
+
+                    bankIfscInput.css('border', '1px solid red');
+                    bankIfscInput.closest('.cmg-field').find('.text-danger').remove();
+                    bankIfscInput.closest('.cmg-field').append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
+                        'Invalid IFSC! 11 chars (e.g., SBIN0000001)' +
+                        '</div>'
+                    );
+                }
+            }
 
             if (!isValid) {
                 if (firstError && firstError.length) {
@@ -529,9 +568,9 @@
                 return;
             }
 
-
             this.submit();
         });
+
 
         // ===== EDIT COMPANY MODAL - PERFECT VALIDATION =====
         $(document).on('submit', '#editcompanymaster form', function(e) {

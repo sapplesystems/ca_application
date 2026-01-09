@@ -1,220 +1,227 @@
+<div class="invoiceM-containerr">
+    <div class=" inv-header-main">
+        <h1 class="inv-title-main">Invoice</h1>
+        <button class="inv-back-btn-main">Back to Genrate Invoice Greed</button>
+    </div>
+    <form method="post" action="<?= site_url('/saveInvoice') ?>" id="invoiceForm">
+        <table width="100%" border="0">
+            <tr>
+                <td>
+                    <h2><?= esc($company['name']); ?></h2>
+                    <br>
+                    <?= esc($company['type_of_company']); ?><br>
+                    <?= esc($company['registered_office'] ?? ''); ?><br>
+                    PH: <?= esc($company['telephone'] ?? ''); ?><br>
+                    Email: <?= esc($company['email'] ?? ''); ?><br>
+                    GSTIN: <?= esc($company['gstin'] ?? ''); ?>
+                </td>
 
-<h2 style="text-align:center;">Invoice</h2>
-<form method="post" action="<?= site_url('/saveInvoice') ?>" id="invoiceForm">
-<table width="100%" border="0">
-    <tr>
-        <td>
-            <strong><?= esc($company['name']); ?></strong><br>
-            <?= esc($company['type_of_company']); ?><br>
-            <?= esc($company['registered_office'] ?? ''); ?><br>
-            PH: <?= esc($company['telephone'] ?? ''); ?><br>
-            Email: <?= esc($company['email'] ?? ''); ?><br>
-            GSTIN: <?= esc($company['gstin'] ?? ''); ?>
-        </td>
+                <td align="right">
+                    <strong>Invoice No:</strong> DEG/2023-24/001<br>
+                    <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
+                </td>
+            </tr>
+        </table>
 
-        <td align="right">
-            <strong>Invoice No:</strong> DEG/2023-24/001<br>
-            <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
-        </td>
-    </tr>
-</table>
+        <hr>
+        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
+            Service Invoice
+        </div>
 
-<hr>
-<div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-    Service Invoice
-</div>
+        <table width="100%" border="0" cellpadding="6">
+            <tr>
+                <td width="60%">
+                    <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
+                </td>
+                <td width="40%" align="right">
+                    <strong>Invoice No. :</strong><br>
+                    DEG/2023-24/001
+                </td>
+            </tr>
 
-<table width="100%" border="0" cellpadding="6">
-    <tr>
-        <td width="60%">
-            <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-        </td>
-        <td width="40%" align="right">
-            <strong>Invoice No. :</strong><br>
-           DEG/2023-24/001
-        </td>
-    </tr>
+            <tr>
+                <td>
+                    <strong>Category Of Service :</strong> CONSULTANCY
+                </td>
+                <td align="right">
+                    <strong>Date :</strong><br>
+                    <?= date('d-m-Y'); ?>
+                </td>
+            </tr>
+        </table>
 
-    <tr>
-        <td>
-            <strong>Category Of Service :</strong> CONSULTANCY
-        </td>
-        <td align="right">
-            <strong>Date :</strong><br>
-             <?= date('d-m-Y'); ?>
-        </td>
-    </tr>
-</table>
+        <hr>
 
-<hr>
+        <!-- Bill To Section -->
+        <table width="100%" border="0" cellpadding="6">
+            <tr>
+                <td>
+                    <strong>Bill To,</strong><br><br>
 
-<!-- Bill To Section -->
-<table width="100%" border="0" cellpadding="6">
-    <tr>
-        <td>
-            <strong>Bill To,</strong><br><br>
+                    <strong>Name :</strong>
+                    <?= esc($client['legal_name']); ?><br>
 
-            <strong>Name :</strong>
-            <?= esc($client['legal_name']); ?><br>
+                    <strong>Address :</strong>
+                    <?= esc($client['registered_office']); ?>
+                </td>
+            </tr>
+        </table>
 
-            <strong>Address :</strong>
-            <?= esc($client['registered_office']); ?>
-        </td>
-    </tr>
-</table>
+        <table class="invoice-table"
+            style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;">
 
-<table class="invoice-table" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;">
+            <thead>
+                <tr style="background:#0b5c7d; color:#fff;">
+                    <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
+                    <th style="width:70%; padding:8px; border:1px solid #ccc;">Nature of Services</th>
+                    <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
+                </tr>
+            </thead>
 
-    <thead>
-        <tr style="background:#0b5c7d; color:#fff;">
-            <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
-            <th style="width:70%; padding:8px; border:1px solid #ccc;">Nature of Services</th>
-            <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
-        </tr>
-    </thead>
+            <tbody>
+                <!-- Service row -->
+                <tr>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">1</td>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <?= esc($company['name']); ?>[<?= esc($company['type_of_company']); ?>]
+                        <input type="text" name="service_description"
+                            style="width:100%; margin-top:6px; padding:6px; border:1px solid #bbb;"
+                            placeholder="Description">
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" name="service_amount" class="service-amount" value="0"
+                            style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
+                    </td>
+                </tr>
 
-    <tbody>
-        <!-- Service row -->
-        <tr>
-            <td style="padding:8px; border:1px solid #ccc; text-align:center;">1</td>
-            <td style="padding:8px; border:1px solid #ccc;">
-                <?= esc($company['name']); ?>[<?= esc($company['type_of_company']); ?>]
-                <input type="text" name="service_description"
-                       style="width:100%; margin-top:6px; padding:6px; border:1px solid #bbb;"
-                       placeholder="Description">
-            </td>
-            <td style="padding:8px; border:1px solid #ccc;">
-                <input type="number"
-                       name="service_amount"
-                       class="service-amount"
-                       value="0"
-                       style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
-            </td>
-        </tr>
+                <!-- A -->
+                <tr style="background:#0b5c7d; color:#fff;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service Value
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                        <span id="serviceValue">0</span>
+                    </td>
+                </tr>
+                <?php if ($taxType === 'cgst_sgst'): ?>
+                <!-- CGST Row -->
+                <tr id="cgstRow" style="background:#e9f5fb;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">i</td>
+                    <td style="padding:8px; border:1px solid #ccc;">CGST @ 9%</td>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="text" id="cgstAmount" readonly style="width:100%; text-align:right;">
+                    </td>
+                </tr>
 
-        <!-- A -->
-        <tr style="background:#0b5c7d; color:#fff;">
-            <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service Value</td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                <span id="serviceValue">0</span>
-            </td>
-        </tr>
-<?php if ($taxType === 'cgst_sgst'): ?>
-       <!-- CGST Row -->
-<tr id="cgstRow" style="background:#e9f5fb;">
-    <td style="padding:8px; border:1px solid #ccc; text-align:center;">i</td>
-    <td style="padding:8px; border:1px solid #ccc;">CGST @ 9%</td>
-    <td style="padding:8px; border:1px solid #ccc;">
-        <input type="text" id="cgstAmount" readonly
-               style="width:100%; text-align:right;">
-    </td>
-</tr>
+                <!-- SGST Row -->
+                <tr id="sgstRow" style="background:#e9f5fb;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">ii</td>
+                    <td style="padding:8px; border:1px solid #ccc;">SGST @ 9%</td>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="text" id="sgstAmount" readonly style="width:100%; text-align:right;">
+                    </td>
+                </tr>
+                <?php endif; ?>
+                <?php if ($taxType === 'igst'): ?>
+                <tr id="igstRow" style="background:#e9f5fb;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">i</td>
+                    <td style="padding:8px; border:1px solid #ccc;">IGST @ 18%</td>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="text" id="igstAmount" readonly style="width:100%; text-align:right;">
+                    </td>
+                </tr>
+                <?php endif; ?>
 
-<!-- SGST Row -->
-<tr id="sgstRow" style="background:#e9f5fb;">
-    <td style="padding:8px; border:1px solid #ccc; text-align:center;">ii</td>
-    <td style="padding:8px; border:1px solid #ccc;">SGST @ 9%</td>
-    <td style="padding:8px; border:1px solid #ccc;">
-        <input type="text" id="sgstAmount" readonly
-               style="width:100%; text-align:right;">
-    </td>
-</tr>
-<?php endif; ?>
-<?php if ($taxType === 'igst'): ?>
-<tr id="igstRow" style="background:#e9f5fb;">
-    <td style="padding:8px; border:1px solid #ccc; text-align:center;">i</td>
-    <td style="padding:8px; border:1px solid #ccc;">IGST @ 18%</td>
-    <td style="padding:8px; border:1px solid #ccc;">
-        <input type="text" id="igstAmount" readonly
-               style="width:100%; text-align:right;">
-    </td>
-</tr>
-<?php endif; ?>
+                <!-- B -->
+                <tr style="background:#0b5c7d; color:#fff;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">B</td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                        Total Expenses Recoverable
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                        <span id="expenseTotal">0</span>
+                    </td>
+                </tr>
 
-        <!-- B -->
-        <tr style="background:#0b5c7d; color:#fff;">
-            <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">B</td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                Total Expenses Recoverable
-            </td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                <span id="expenseTotal">0</span>
-            </td>
-        </tr>
+                <!-- Grand total -->
+                <tr>
+                    <td style="padding:8px; border:1px solid #ccc;"></td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        <strong>Grand Total</strong>
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        <strong id="grandTotal">0</strong>
+                    </td>
+                </tr>
 
-        <!-- Grand total -->
-        <tr>
-            <td style="padding:8px; border:1px solid #ccc;"></td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;">
-                <strong>Grand Total</strong>
-            </td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;">
-                <strong id="grandTotal">0</strong>
-            </td>
-        </tr>
+                <!-- Advance -->
+                <tr>
+                    <td style="padding:8px; border:1px solid #ccc;"></td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        (-) Advances Received
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        <input type="number" id="advance" name="advance_received"
+                            style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
+                    </td>
+                </tr>
 
-        <!-- Advance -->
-        <tr>
-            <td style="padding:8px; border:1px solid #ccc;"></td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right;">
-                (-) Advances Received
-            </td>
-            <td style="padding:8px; border:1px solid #ccc;">
-                <input type="number" id="advance" name="advance_received"
-                       style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
-            </td>
-        </tr>
+                <!-- Net -->
+                <tr style="background:#0b5c7d; color:#fff;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center; color:black;">C</td>
+                    <td style="padding:8px; border:1px solid #ccc;color:black">
+                        <strong>(Amount In Words)</strong><br>
+                        <span id="amountInWords">ZERO</span>
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
+                        Net Amount Receivable (A+B)
+                        <br><strong id="netAmount">0</strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- Net -->
-        <tr style="background:#0b5c7d; color:#fff;">
-            <td style="padding:8px; border:1px solid #ccc; text-align:center; color:black;">C</td>
-            <td style="padding:8px; border:1px solid #ccc;color:black">
-                <strong>(Amount In Words)</strong><br>
-                <span id="amountInWords">ZERO</span>
-            </td>
-            <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
-                Net Amount Receivable (A+B)
-                <br><strong id="netAmount">0</strong>
-            </td>
-        </tr>
-    </tbody>
-</table>
+        <div class="bank-details">
+            <strong>Banker's Details</strong><br>
+            SBI<br>
+            <?= esc($company['head_office']); ?><br>
+            Ac.No.: <?= esc($company['bank_ac_no']); ?><br>
+            IFSC Code: ICIC0000722
+        </div>
 
-<div class="bank-details">
-    <strong>Banker's Details</strong><br>
-    SBI<br>
-    <?= esc($company['head_office']); ?><br>
-    Ac.No.: <?= esc($company['bank_ac_no']); ?><br>
-    IFSC Code: ICIC0000722
-</div>
-<div>
-    <label name="term_condition"><strong>Terms & Conditions:</strong></label>
-    <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;" name="term_condition">
-    
+        <div>
+            <label name="term_condition"><strong>Terms & Conditions:</strong></label>
+            <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
+                name="term_condition">
+
     </textarea>
-</div>
-<input type="hidden" name="service_value" id="serviceValueInput">
-<input type="hidden" name="cgst_amount" id="cgstInput">
-<input type="hidden" name="sgst_amount" id="sgstInput">
-<input type="hidden" name="igst_amount" id="igstInput">
-<input type="hidden" name="expense_total" id="expenseTotalInput">
-<input type="hidden" name="grand_total" id="grandTotalInput">
-<input type="hidden" name="net_amount" id="netAmountInput">
-<input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
-<input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-<input type="hidden" name="invoice_no" value="DEG/2023-24/001">
-<input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>">
-<input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
-<input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
+            <div id="froala"></div>
+            <link href="node_modules/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+            <script type="text/javascript" src="node_modules/froala-editor/js/froala_editor.pkgd.min.js"></script>
+        </div>
+        <input type="hidden" name="service_value" id="serviceValueInput">
+        <input type="hidden" name="cgst_amount" id="cgstInput">
+        <input type="hidden" name="sgst_amount" id="sgstInput">
+        <input type="hidden" name="igst_amount" id="igstInput">
+        <input type="hidden" name="expense_total" id="expenseTotalInput">
+        <input type="hidden" name="grand_total" id="grandTotalInput">
+        <input type="hidden" name="net_amount" id="netAmountInput">
+        <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
+        <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
+        <input type="hidden" name="invoice_no" value="DEG/2023-24/001">
+        <input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>">
+        <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
+        <input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
 
-<div style="margin-top:20px; text-align:center;">
-    <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
-    <a href="<?= base_url('invoice'); ?>" class="Gvoice-btn Gvoice-btn-danger">
-        Cancel
-    </a>
+        <div style="margin-top:20px; text-align:center;">
+            <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
+            <a href="<?= base_url('invoice'); ?>" class="Gvoice-btn Gvoice-btn-danger">
+                Cancel
+            </a>
+        </div>
+    </form>
 </div>
-</form>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -224,57 +231,58 @@ document.getElementById('invoiceForm').addEventListener('submit', function(e) {
     e.preventDefault(); // prevent normal form submit
 
     const form = this;
-    
+
     // Submit form via AJAX
     fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.status === 'success') {
-            Swal.fire({
-                title: 'Invoice Saved!',
-                text: 'Your invoice has been saved successfully.',
-                icon: 'success',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Print Invoice',
-                denyButtonText: 'Download PDF',
-                cancelButtonText: 'Close'
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    alert(data.invoice_id);
-                    // Print invoice
-                    window.open('<?= site_url("invoice/print/") ?>'+data.invoice_id, '_blank');
-                } else if(result.isDenied) {
-                    // Download PDF
-                    window.open('<?= site_url("invoice/pdf/") ?>'+data.invoice_id, '_blank');
-                } else if(result.isDismissed) {
-                    // Check if user clicked cancel
-                    // Optional: redirect to invoice list
-                    Swal.fire({
-                        title: 'Redirect?',
-                        text: 'Do you want to go back to invoice list?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Redirect',
-                        cancelButtonText: 'No'
-                    }).then((res) => {
-                        if(res.isConfirmed){
-                            window.location.href = '<?= site_url("invoice") ?>';
-                        }
-                        // else just close popup
-                    });
-                }
-            });
-        } else {
-            Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
-        }
-    })
-    .catch(err => {
-        Swal.fire('Error!', 'Network or server error', 'error');
-    });
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    title: 'Invoice Saved!',
+                    text: 'Your invoice has been saved successfully.',
+                    icon: 'success',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Print Invoice',
+                    denyButtonText: 'Download PDF',
+                    cancelButtonText: 'Close'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        alert(data.invoice_id);
+                        // Print invoice
+                        window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id,
+                            '_blank');
+                    } else if (result.isDenied) {
+                        // Download PDF
+                        window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
+                    } else if (result.isDismissed) {
+                        // Check if user clicked cancel
+                        // Optional: redirect to invoice list
+                        Swal.fire({
+                            title: 'Redirect?',
+                            text: 'Do you want to go back to invoice list?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, Redirect',
+                            cancelButtonText: 'No'
+                        }).then((res) => {
+                            if (res.isConfirmed) {
+                                window.location.href = '<?= site_url("invoice") ?>';
+                            }
+                            // else just close popup
+                        });
+                    }
+                });
+            } else {
+                Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
+            }
+        })
+        .catch(err => {
+            Swal.fire('Error!', 'Network or server error', 'error');
+        });
 });
 
 function calculateTotals() {
@@ -288,7 +296,9 @@ function calculateTotals() {
 
     document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-    let cgst = 0, sgst = 0, igst = 0;
+    let cgst = 0,
+        sgst = 0,
+        igst = 0;
 
     if (document.getElementById('cgstAmount')) {
         cgst = serviceValue * 0.09;
@@ -331,7 +341,9 @@ function calculateTotals() {
 function numberToWords(num) {
     const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
     const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+        "Nineteen"
+    ];
 
     function convert(n) {
         if (n < 10) return ones[n];
@@ -355,9 +367,4 @@ document.getElementById('advance').addEventListener('input', calculateTotals);
 
 // Initial calculation
 calculateTotals();
-
-
-
 </script>
-
-
