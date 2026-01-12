@@ -6,8 +6,10 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ClientModel;
 use App\Models\CompanyMasterModel;
+use App\Models\DebitNotes;
 use App\Models\WorkMasterModel;
 use App\Models\InvoiceMasterModel;
+use App\Models\ExpenseModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 class InvoiceMasterController extends BaseController
@@ -19,9 +21,12 @@ class InvoiceMasterController extends BaseController
     $clients = $clientModel
         ->select('id, legal_name')
         ->findAll();
+    $companyModel = new CompanyMasterModel();
+        $companies= $companyModel
+        ->select('id, name,type_of_company')->findAll();
 
     echo view('common/header');
-    echo view('InvoiceMaster/index', ['clients' => $clients]);
+    echo view('InvoiceMaster/index', ['clients' => $clients, 'companies' => $companies]);
     echo view('common/footer');
 }
 
@@ -305,7 +310,168 @@ public function pdf($id)
         echo view('InvoiceMaster/receipt_invoice', $data);
     }
 
+public function storeDebitNote()
+    {
+        
+         $companyId = $this->request->getPost('company_debit');
+         $clientId = $this->request->getPost('client_id');
+
+         $clientModel = new ClientModel();
+        $client = $clientModel->find($clientId);
+        //  print_r($companyId); exit;
+        $companyModel = new CompanyMasterModel();
+        $company = $companyModel->find($companyId);
+        
+        return view('common/header')
+            . view('InvoiceMaster/DebitNote', ['company' => $company, 'client' => $client])
+            . view('common/footer');
+    }
+
+   public function saveDebitNote()
+{
+    // Load models
+    $DebitModel   = new DebitNotes();
+    $ExpenseModel = new ExpenseModel();
+
+    // Collect debit note data
+    $data = [
+        'debit_no'                  => $this->request->getPost('debit_no'),
+        'total_recoverable_expenses' => $this->request->getPost('expense_total'),
+        'advance_amount'            => $this->request->getPost('advance_received'),
+        'total_amount'              => $this->request->getPost('net_amount'),
+        'client_id'                 => $this->request->getPost('client_id'),
+        'company_id'                => $this->request->getPost('company_id'),
+        'terms_and_conditions'      => $this->request->getPost('term_condition'),
+        'date'                      => $this->request->getPost('debit_date'),
+        'created_by'                => $this->request->getPost('created_by'),
+    ];
+
+    // Insert debit note
+    $insertId = $DebitModel->insert($data);
+
+    // If insert successful, save expenses
+    if ($insertId) {
+
+        $descriptions = $this->request->getPost('expense_description');
+        $amounts      = $this->request->getPost('expense_amount');
+
+        $expenseData = [];
+
+        foreach ($descriptions as $i => $desc) {
+            // Skip empty rows
+            if (empty($desc) || empty($amounts[$i])) {
+                continue;
+            }
+
+            $expenseData[] = [
+                'debit_id'             => $insertId, // link to the debit note
+                'expense_description'  => $desc,
+                'expense_amount'       => $amounts[$i],
+                'created_at'           => date('Y-m-d H:i:s')
+            ];
+        }
+
+        // Insert all expenses in batch
+        if (!empty($expenseData)) {
+            $ExpenseModel->insertBatch($expenseData);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'invoice_id' => $insertId
+        ]);
+    } else {
+        return $this->response->setJSON([
+            'status' => 'error'
+        ]);
+    }
+}
+
+public function debitNote($id)
+{
+    $debitModel = new DebitNotes();
+
+    // Get debit note by ID
+    $debitNote = $debitModel->find($id);
+
+    $ExpenseModel = new ExpenseModel();
+    $expenses = $ExpenseModel->where('debit_id', $id)->findAll();
+
+    if (!$debitNote) {
+        return redirect()->to('/debit-notes')->with('error', 'Debit Note not found.');
+    }
+
+    // Load company and client info if needed
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    $company = $companyModel->find($debitNote['company_id']);
+    $client  = $clientModel->find($debitNote['client_id']);
+
+    // Pass data to view
+    $data = [
+        'debitNote' => $debitNote,
+        'company'   => $company,
+        'client'    => $client,
+        'expenses'  => $expenses,
+    ];
+
+    echo view('InvoiceMaster/debitprint', $data);
 
 
 
+}
+
+public function debitNotePDF($id)
+{
+    $debitModel = new DebitNotes();
+
+    // Get debit note by ID
+    $debitNote = $debitModel->find($id);
+
+    $ExpenseModel = new ExpenseModel();
+    $expenses = $ExpenseModel->where('debit_id', $id)->findAll();
+
+    if (!$debitNote) {
+        return redirect()->to('/debit-notes')->with('error', 'Debit Note not found.');
+    }
+
+    // Load company and client info if needed
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    $company = $companyModel->find($debitNote['company_id']);
+    $client  = $clientModel->find($debitNote['client_id']);
+
+    // Pass data to view
+    $data = [
+        'debitNote' => $debitNote,
+        'company'   => $company,
+        'client'    => $client,
+        'expenses'  => $expenses,
+    ];
+
+    // Load HTML view
+    $html = view('InvoiceMaster/debitprint', $data);
+
+    // Dompdf options
+    $options = new Options();
+    $options->set('defaultFont', 'DejaVu Sans');
+    $options->set('isRemoteEnabled', true);
+
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+
+    // A4 size, portrait
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Output PDF (force download)
+    $dompdf->stream(
+        'Debit_Note_' . $debitNote['debit_no'] . '.pdf',
+        ['Attachment' => true]
+    );
+}
 }

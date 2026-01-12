@@ -43,5 +43,9 @@ $routes->get('invoice/pdf/(:num)', 'InvoiceMasterController::pdf/$1');
 $routes->get('invoice/edit/(:num)', 'InvoiceMasterController::edit/$1');
 $routes->delete('invoice/delete/(:num)', 'InvoiceMasterController::delete/$1');
 $routes->get('invoice/receipt/(:num)', 'InvoiceMasterController::receipt/$1');
+$routes->post('debit-note/store','InvoiceMasterController::storeDebitNote');
+$routes->post('/savedebit','InvoiceMasterController::saveDebitNote');
+$routes->get('/DebitNote/(:num)', 'InvoiceMasterController::debitNote/$1');
+$routes->get('DebitNotePDF/(:num)', 'InvoiceMasterController::debitNotePDF/$1');
 
 

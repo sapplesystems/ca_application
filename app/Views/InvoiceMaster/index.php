@@ -2,47 +2,50 @@
 <div class="modal fade" id="debitpopup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+             <form method="post" action="<?= base_url('debit-note/store') ?>">
+                <?= csrf_field() ?>
+               <input type="hidden" name="client_id" id="client_id">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Generate Debit Note</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="debitP">
-                    <div class="header">Generate Debit Note</div>
+    <div class="content">
+        <div class="title">Choose Company For Invoice</div>
 
-                    <div class="content">
-                        <div class="title">Choose Company For Invoice</div>
+        <div class="radio-box">
 
-                        <div class="radio-box">
-                            <label>
-                                <input type="radio" name="company_debitP" />
-                                Deleted SAMPURN [Consultancy Master]
-                            </label>
+            <?php if (!empty($companies)) : ?>
+                <?php foreach ($companies as $company) : ?>
 
-                            <label>
-                                <input type="radio" name="company_debitP" />
-                                ENDLESS SOLUTIONS [Consultancy Master]
-                            </label>
+                    <label>
+                        <input type="radio"
+                               name="company_debit"
+                               value="<?= esc($company['id']) ?>"
+                               required>
 
-                            <label>
-                                <input type="radio" name="company_debitP" />
-                                Meenakshi Company [Charted Account Master]
-                            </label>
+                        <?= esc($company['name']) ?>
+                        [<?= esc($company['type_of_company']) ?>]
+                    </label>
 
-                            <label>
-                                <input type="radio" name="company_debitP" />
-                                OXFYNN SERVICES PRIVATE LIMITED [Charted Account Master]
-                            </label>
-                        </div>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <p>No companies found.</p>
+            <?php endif; ?>
 
-                        <div class="buttons">
-                            <button class="btn btn-proceed">Proceed</button>
-                            <button class="btn btn-cancel" data-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-proceed" type="submit">Proceed</button>
+            <button class="btn btn-cancel" data-dismiss="modal">Cancel</button>
+        </div>
+        </form>
+    </div>
+</div>
+
             </div>
 
         </div>
@@ -93,10 +96,13 @@
                                 <!-- <button class="invoiceM-action-btn invoiceM-btn-generate">
                                     📄 Generate Debit
                                 </button> -->
-                                <a href="#" class="invoiceM-action-btn invoiceM-btn-manage" data-toggle="modal"
-                                    data-target="#debitpopup">
-                                    📄 Generate Debit
-                                </a>
+                               <a href="#"
+   class="invoiceM-action-btn invoiceM-btn-manage"
+   data-bs-toggle="modal"
+   data-bs-target="#debitpopup"
+   data-client-id="<?= esc($client['id']) ?>">
+   📄 Generate Debit
+</a>
                                 <button class="invoiceM-action-btn invoiceM-btn-list">
                                     📋 Debit Note List
                                 </button>
@@ -141,4 +147,12 @@ document.querySelectorAll(".invoiceM-action-btn").forEach((btn) => {
         console.log(`${this.textContent} clicked for ${client}`);
     });
 });
+document.getElementById('debitpopup')
+    .addEventListener('show.bs.modal', function (event) {
+
+        const button = event.relatedTarget; // clicked button
+        const clientId = button.getAttribute('data-client-id');
+
+        document.getElementById('client_id').value = clientId;
+    });
 </script>
