@@ -2046,3 +2046,190 @@ textarea {
 .debitP .btn:hover {
   opacity: 0.9;
 }
+/*---------------------------------------Genrate ReciptNote popup Css here-----------------------------*/
+
+/* .reciptnote {
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+} */
+
+.reciptnote .header {
+  padding: 10px 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #f05a28;
+  border-bottom: 1px dotted #ccc;
+  position: relative;
+}
+
+.reciptnote .add-btn {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  background: #6fb64a;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 3px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.reciptnote table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.reciptnote thead th {
+  background: #0b5d7d;
+  color: #fff;
+  font-size: 14px;
+  padding: 10px;
+  border-right: 1px solid #fff;
+  text-align: left;
+}
+
+.reciptnote thead th:last-child {
+  border-right: none;
+  text-align: center;
+}
+
+.reciptnote tbody td {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #eee;
+  color: #555;
+}
+
+.reciptnote tbody tr:nth-child(odd) {
+  background: #eaf6fb;
+}
+
+.reciptnote tbody tr:nth-child(even) {
+  background: #ffffff;
+}
+
+.reciptnote .amount {
+  text-align: right;
+}
+
+.reciptnote .action {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.reciptnote .action i {
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 6px;
+}
+
+.reciptnote .action .fa-pen-to-square {
+  color: #1e88e5;
+}
+
+.reciptnote .action .fa-trash {
+  color: #e53935;
+}
+/*-----------------------------add recipt note in popup css----------------------------------*/
+<style>
+  .ReciptNoteData {
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .ReciptNoteData .top {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+  }
+
+  .ReciptNoteData .company h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .ReciptNoteData .company span {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .ReciptNoteData .contact {
+    text-align: right;
+    font-size: 13px;
+  }
+
+  .ReciptNoteData .title {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 6px;
+    font-size: 18px;
+  }
+
+  .ReciptNoteData .section {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .ReciptNoteData .row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .ReciptNoteData .row label {
+    width: 160px;
+    font-weight: bold;
+  }
+
+  .ReciptNoteData input,
+  .ReciptNoteData select {
+    padding: 6px;
+    border: 1px solid #bbb;
+    width: 100%;
+  }
+
+  .ReciptNoteData .full {
+    flex: 1;
+  }
+
+  .ReciptNoteData .highlight {
+    background: #eaf6fb;
+  }
+
+  .ReciptNoteData .text {
+    line-height: 1.6;
+  }
+
+  .ReciptNoteData .buttons {
+    text-align: center;
+    padding: 15px;
+  }
+
+  .ReciptNoteData .buttons button {
+    padding: 6px 18px;
+    border-radius: 15px;
+    border: 1px solid #999;
+    cursor: pointer;
+    margin: 0 6px;
+  }
+
+  .ReciptNoteData .buttons .submit {
+    background: #666;
+    color: #fff;
+  }
+
+  .ReciptNoteData .footer {
+    text-align: center;
+    font-size: 13px;
+    padding: 8px;
+  }
+</style>
