@@ -108,7 +108,7 @@
          </div>
      </div>
  </div>
- <!-------------------------------- Modal for Recipt Note------------------------------------->
+ <!-------------------------------- Modal for show details Recipt Note------------------------------------->
 
  <!-- Modal2 -->
  <div class="modal fade" id="ReciptNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

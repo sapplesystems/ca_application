@@ -494,20 +494,7 @@
             const requiredNames = [
                 'company_type',
                 'name',
-                'date_of_incorporation',
-                'category',
-                'registered_office',
-                'head_office',
-                'condition_and_terms',
-                'email',
-                'phone',
-                'website',
-                'invoice_format',
-                'pan',
-                'gstin',
-                'iec',
-                'sister_concerns',
-                'bank_account',
+                'bankaccount', // ✅ CORRECT NAME
                 'bankbranch',
                 'bankifsc',
                 'nature_of_business',
@@ -519,55 +506,42 @@
                 const input = $('[name="' + name + '"]');
                 const wrapper = input.closest('.cmg-field, .form-row-full');
 
-                if ($.trim(input.val()) === '') {
+                if (!input.length || $.trim(input.val()) === '') {
                     isValid = false;
-
-                    if (!firstError) {
-                        firstError = input;
-                    }
+                    if (!firstError) firstError = input;
 
                     input.css('border', '1px solid red');
                     wrapper.find('.text-danger').remove();
                     wrapper.append(
-                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
-                        'This field is required.' +
-                        '</div>'
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
                     );
                 }
             });
 
-
-
-            // Bank IFSC Format Validation
+            // IFSC FORMAT CHECK
             const bankIfscInput = $('[name="bankifsc"]');
-            if (bankIfscInput.length) {
-                const ifsc = bankIfscInput.val().trim().toUpperCase();
-                const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+            const ifsc = bankIfscInput.val()?.trim().toUpperCase();
+            const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
 
-                if (!ifscRegex.test(ifsc) || ifsc.length !== 11) {
-                    isValid = false;
-                    if (!firstError) firstError = bankIfscInput;
+            if (!ifscRegex.test(ifsc)) {
+                isValid = false;
+                if (!firstError) firstError = bankIfscInput;
 
-                    bankIfscInput.css('border', '1px solid red');
-                    bankIfscInput.closest('.cmg-field').find('.text-danger').remove();
-                    bankIfscInput.closest('.cmg-field').append(
-                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
-                        'Invalid IFSC! 11 chars (e.g., SBIN0000001)' +
-                        '</div>'
-                    );
-                }
+                bankIfscInput.css('border', '1px solid red');
+                bankIfscInput.closest('.cmg-field').append(
+                    '<div class="text-danger" style="font-size:12px;margin-top:4px;">Invalid IFSC (e.g. SBIN0000001)</div>'
+                );
             }
 
             if (!isValid) {
-                if (firstError && firstError.length) {
-                    $('html, body').animate({
-                        scrollTop: firstError.offset().top - 100
-                    }, 500);
-                    firstError.focus();
-                }
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+                firstError.focus();
                 return;
             }
 
+            // ✅ FINALLY SUBMIT
             this.submit();
         });
 
