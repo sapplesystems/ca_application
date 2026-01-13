@@ -353,8 +353,6 @@
                          <button class="btn btn-success flex-fill"  id="printReceiptBtn">Print Receipt</button>
                          <button class="btn btn-success flex-fill" id="downloadPdfBtn">Receipt PDF Download</button>
                      </div>
-
-                     <button class="btn btn-secondary w-100 rounded-pill">Close</button>
                  </div>
              </div>
              <!-- <div class="modal-footer">
