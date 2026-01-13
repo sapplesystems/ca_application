@@ -106,7 +106,7 @@
          </div>
      </div>
  </div>
- <!-------------------------------- Modal for Recipt Note------------------------------------->
+ <!-------------------------------- Modal for show details Recipt Note------------------------------------->
 
  <!-- Modal2 -->
  <div class="modal fade" id="ReciptNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -196,91 +196,98 @@
                  </button>
              </div>
              <div class="modal-body">
-                 <div class="ReciptNoteData">
-                     <!-- Header -->
-                     <div class="top">
-                         <div class="company">
-                             <h2>ENDLESS SOLUTIONS</h2>
-                             <span>CONSULTANCY SERVICES</span>
+                 <div class="receiptnote-container">
+                     <!-- HEADER -->
+                     <div class="receiptnote-header">
+                         <div>
+                             <div class="receiptnote-company-name">ENDLESS SOLUTIONS</div>
+                             <div class="receiptnote-company-sub">CONSULTANCY SERVICES</div>
                          </div>
-
-                         <div class="contact">
-                             Address : A 202, RG CITY CENTRE, D.B. GUPTA ROAD, PAHARGANJ, NEW DELHI -
-                             110055<br />
-                             Ph. No. : 011-43613961, Fax No. : 011-43613961<br />
+                         <div class="receiptnote-address">
+                             Address : A 202, RG CITY CENTRE, D.B. GUPTA ROAD,<br />
+                             PAHARGANJ, NEW DELHI - 110055<br />
+                             PH. No. : 011-43613961, Fax No. : 011-43613961<br />
                              E-Mail : end.solu@gmail.com
                          </div>
                      </div>
 
-                     <!-- Title -->
-                     <div class="title">Receipt Note</div>
+                     <!-- TITLE -->
+                     <div class="receiptnote-title">Receipt Note</div>
 
-                     <!-- Receipt Info -->
-                     <div class="section">
-                         <div class="row">
-                             <label>PAN :</label>
-                             <div class="full"></div>
+                     <!-- TABLE -->
+                     <table class="receiptnote-table">
+                         <tr>
+                             <td class="receiptnote-label">PAN :</td>
+                             <td></td>
+                             <td class="receiptnote-label">Receipt Note No. :</td>
+                             <td>
+                                 <input class="receiptnote-input" value="END/1718/2425/" />
+                             </td>
+                         </tr>
 
-                             <label>Receipt Note No. :</label>
-                             <input type="text" value="END/1718/2425/" />
-                         </div>
+                         <tr class="receiptnote-light">
+                             <td></td>
+                             <td></td>
+                             <td class="receiptnote-label">Date :</td>
+                             <td>
+                                 <input class="receiptnote-input" value="09/01/2026" />
+                             </td>
+                         </tr>
 
-                         <div class="row highlight">
-                             <label></label>
-                             <div class="full"></div>
+                         <tr class="receiptnote-light">
+                             <td colspan="4"><strong>Issued To,</strong></td>
+                         </tr>
 
-                             <label>Date :</label>
-                             <input type="text" value="09/01/2026" />
-                         </div>
-                     </div>
+                         <tr>
+                             <td class="receiptnote-label">Name :</td>
+                             <td colspan="3">GS HEALTHCARE PRIVATE LIMITED.</td>
+                         </tr>
 
-                     <!-- Issued To -->
-                     <div class="section highlight">
-                         <strong>Issued To,</strong>
-                     </div>
-
-                     <div class="section">
-                         <div class="row">
-                             <label>Name :</label>
-                             <div class="full">GS HEALTHCARE PRIVATE LIMITED.</div>
-                         </div>
-
-                         <div class="row highlight">
-                             <label>Address :</label>
-                             <div class="full">
+                         <tr class="receiptnote-light">
+                             <td class="receiptnote-label">Address :</td>
+                             <td colspan="3">
                                  A-1/53 FIRST FLOOR, SAFDARJUNG ENCLAVE NEW DELHI South West Delhi DL
                                  110029 IN
-                             </div>
-                         </div>
+                             </td>
+                         </tr>
 
-                         <div class="row">
-                             <label>Mode Of Payment :</label>
-                             <select>
-                                 <option>Cash</option>
-                                 <option>Cheque</option>
-                             </select>
-                         </div>
+                         <tr class="receiptnote-light">
+                             <td class="receiptnote-label">
+                                 Mode Of Payment :<br />(Cheque/Cash)
+                             </td>
+                             <td colspan="3">
+                                 <select class="receiptnote-select">
+                                     <option>Cash</option>
+                                     <option>Cheque</option>
+                                 </select>
+                             </td>
+                         </tr>
+                     </table>
+
+                     <!-- TEXT -->
+                     <div class="receiptnote-text">
+                         Received with thanks from M/s/Mr/Mrs/Ms GS HEALTHCARE PRIVATE LIMITED
+                         the sum of Rs.
+                         <input class="receiptnote-inline-input" value="0.00" />
+                         /- Amount in Words <strong>Zero Rupees</strong> Against Cash after
+                         deduction of TDS Rs
+                         <input class="receiptnote-inline-input" placeholder="TDS Amount" />
+                         /- Amount In Words <strong>Zero Rupees</strong> for professional
+                         Services Rendered/ Advance Against invoice Raised vide Bill No
+                         END/1718/2425/ dated 09/01/2026
                      </div>
 
-                     <!-- Amount Text -->
-                     <div class="section highlight text">
-                         Received with thanks from M/s/Mr/Mrs/Ms GS HEALTHCARE PRIVATE LIMITED. the
-                         sum of Rs.
-                         <input type="text" value="0.00" style="width: 120px" />
-                         /- Amount in Words <b>Zero Rupees</b> Against Cash after deduction of TDS Rs
-                         <input type="text" placeholder="TDS Amount" style="width: 120px" />
-                         /- Amount In Words <b>Zero Rupees</b> for professional Services Rendered/
-                         Advance Against invoice Raised vide Bill No END/1718/2425/ dated 09/01/2026
+                     <!-- FOOTER -->
+                     <div class="receiptnote-footer">
+                         For more Information reach us @ www.ksaca.in
                      </div>
 
-                     <!-- Footer -->
-                     <div class="footer">For more Information reach us @ <b>www.ksaca.in</b></div>
-
-                     <!-- Buttons -->
-                     <div class="buttons">
-                         <button class="submit" data-toggle="modal" data-target="#submitrecipt">Submit</button>
-                         <button>Cancel</button>
-                         <button>Preview</button>
+                     <!-- BUTTONS -->
+                     <div class="receiptnote-buttons">
+                         <button class="receiptnote-btn receiptnote-btn-submit" data-toggle="modal"
+                             data-target="#submitrecipt">Submit</button>
+                         <button class="receiptnote-btn receiptnote-btn-cancel">Cancel</button>
+                         <button class="receiptnote-btn receiptnote-btn-preview">Preview</button>
                      </div>
                  </div>
              </div>
@@ -291,10 +298,6 @@
          </div>
      </div>
  </div>
- <!-- Button trigger modal -->
- <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submitrecipt">
-     Launch demo modal
- </button> -->
 
  <!-- Modal -->
  <div class="modal fade" id="submitrecipt" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
