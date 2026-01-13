@@ -10,6 +10,7 @@ use App\Models\DebitNotes;
 use App\Models\WorkMasterModel;
 use App\Models\InvoiceMasterModel;
 use App\Models\ExpenseModel;
+use App\Models\ReciptDetailsModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 class InvoiceMasterController extends BaseController
@@ -47,7 +48,8 @@ class InvoiceMasterController extends BaseController
         $works = $workModel->select('id, service_name ,sac_code,frequency')->findAll();
         $invoiceModel = new InvoiceMasterModel();
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
-      
+        $receiptModel=new ReciptDetailsModel();
+        $receipt=$receiptModel->select('*')->findAll();
 
         echo view('common/header');
         
@@ -56,6 +58,7 @@ class InvoiceMasterController extends BaseController
             'clients' => $clients,
             'works' => $works,
             'invoices' => $invoice,
+            'receipt'=>$receipt,
              
         ]);
         echo view('common/footer');
@@ -281,34 +284,29 @@ public function pdf($id)
         ]);
     }
 
-    public function receipt($id)
-    {
-        print_r($id); exit;
-        $invoiceModel = new InvoiceMasterModel();
+  public function receipt($id)
+{
+    $invoiceModel = new InvoiceMasterModel();
+    $invoice = $invoiceModel->find($id);
 
-        // Get invoice by ID
-        $invoice = $invoiceModel->find($id);
-
-        if (!$invoice) {
-            return redirect()->to('/invoice')->with('error', 'Invoice not found.');
-        }
-
-        // Load company and client info if needed
-        $companyModel = new CompanyMasterModel();
-        $clientModel  = new ClientModel();
-
-        $company = $companyModel->find($invoice['company_id']);
-        $client  = $clientModel->find($invoice['client_id']);
-
-        // Pass data to view
-        $data = [
-            'invoice' => $invoice,
-            'company' => $company,
-            'client'  => $client
-        ];
-
-        echo view('InvoiceMaster/receipt_invoice', $data);
+    if (!$invoice) {
+        return $this->response->setJSON(['error' => 'Invoice not found']);
     }
+
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    $company = $companyModel->find($invoice['company_id']);
+    $client  = $clientModel->find($invoice['client_id']);
+
+    return $this->response->setJSON([
+        'invoice' => $invoice,
+        'company' => $company,
+        'client'  => $client
+    ]);
+}
+
+
 
 public function storeDebitNote()
     {
@@ -474,4 +472,181 @@ public function debitNotePDF($id)
         ['Attachment' => true]
     );
 }
+
+public function saveReceipt()
+{
+ 
+$data = [
+        'recipt_no'       => $this->request->getPost('recipt_no'),
+        'date'            => $this->request->getPost('date'),
+        'mode_of_payment' => $this->request->getPost('mode_of_payment'),
+        'cheque_date'     => $this->request->getPost('cheque_date'),
+        'cheque_number'   => $this->request->getPost('cheque_number'),
+        'drawen_bank'     => $this->request->getPost('drawen_bank'),
+        'bill_amount'     => $this->request->getPost('bill_amount'),
+        'tds_amount'      => $this->request->getPost('tds_amount'),
+        'invoice_id'      => $this->request->getPost('invoice_id'),
+    ];
+
+    $receiptModel = new ReciptDetailsModel();
+
+   if ($receiptModel->insert($data)) {
+        return $this->response->setJSON([
+            'success' => true
+        ]);
+    }
+
+    return $this->response->setJSON([
+        'success' => false
+    ]);
+}
+
+public function getInvoiceDetails($invoice_id)
+{
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel=new ClientModel();
+
+    // Fetch invoice by ID
+    $invoice = $invoiceModel->find($invoice_id);
+
+    if (!$invoice) {
+        return $this->response->setJSON(['error' => 'Invoice not found'])->setStatusCode(404);
+    }
+
+    // Fetch the company associated with this invoice
+    $company = $companyModel->find($invoice['company_id']);
+    $client=$clientModel->find($invoice['client_id']);
+    // print_r($company);exit;
+
+    if (!$company) {
+        return $this->response->setJSON(['error' => 'Company not found'])->setStatusCode(404);
+    }
+
+    // Return JSON with invoice + company info
+    return $this->response->setJSON([
+        'invoice_id'      => $invoice['id'],
+        'invoice_no'      => $invoice['invoice_no'],
+        'invoice_date'    => $invoice['invoice_date'],
+        'company_name'    => $company['name'],
+        'company_type'    => $company['type_of_company'],
+        'company_address' => $company['registered_office'] ?? '',
+        'company_phone'   => $company['telephone'] ?? '',
+        'company_email'   => $company['email'] ?? '',
+        'client_pan'     =>$client['pan'],
+        'client_name'    =>$client['legal_name'],
+        'client_address' =>$client['registered_office'],
+    ]);
+}
+public function updateReceipt()
+{
+    $receiptModel = new ReciptDetailsModel();
+
+    $receipt_id = $this->request->getPost('receipt_id');
+
+    if (!$receipt_id) {
+        return $this->response->setJSON(['success' => false]);
+    }
+
+    $data = [
+        'recipt_no'        => $this->request->getPost('recipt_no'),
+        'date'             => $this->request->getPost('date'),
+        'mode_of_payment'  => $this->request->getPost('mode_of_payment'),
+        'cheque_date'      => $this->request->getPost('cheque_date'),
+        'cheque_number'    => $this->request->getPost('cheque_number'),
+        'drawen_bank'      => $this->request->getPost('drawen_bank'),
+        'bill_amount'      => $this->request->getPost('bill_amount'),
+        'tds_amount'       => $this->request->getPost('tds_amount'),
+    ];
+
+    $receiptModel->update($receipt_id, $data);
+
+    return $this->response->setJSON(['success' => true]);
+}
+public function deleteReceipt($id)
+{
+    $receiptModel = new ReciptDetailsModel();
+
+    $receipt = $receiptModel->find($id);
+
+    if (!$receipt) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Receipt not found'
+        ]);
+    }
+
+    $receiptModel->delete($id);
+
+    return $this->response->setJSON([
+        'success' => true
+    ]);
+}
+public function printReceipt($receipt_id)
+{
+    $receiptModel = new ReciptDetailsModel();
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    $receipt = $receiptModel->find($receipt_id);
+    $invoice = $invoiceModel->find($receipt['invoice_id']);
+    $company = $companyModel->find($invoice['company_id']);
+    $client  = $clientModel->find($invoice['client_id']);
+
+    return view('InvoiceMaster/receipt', [
+        'receipt' => $receipt,
+        'invoice' => $invoice,
+        'company' => $company,
+        'client'  => $client
+    ]);
+}
+
+public function receiptPdf($receipt_id)
+{
+    $receiptModel = new ReciptDetailsModel();
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    // Fetch data
+    $receipt = $receiptModel->find($receipt_id);
+    if (!$receipt) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Receipt not found');
+    }
+
+    $invoice = $invoiceModel->find($receipt['invoice_id']);
+    $company = $companyModel->find($invoice['company_id']);
+    $client  = $clientModel->find($invoice['client_id']);
+
+    // Load HTML view
+    $html = view('InvoiceMaster/receipt', [
+        'receipt' => $receipt,
+        'invoice' => $invoice,
+        'company' => $company,
+        'client'  => $client
+    ]);
+
+    // Dompdf options
+    $options = new Options();
+    $options->set('defaultFont', 'DejaVu Sans');
+    $options->set('isRemoteEnabled', true);
+
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Download PDF
+    return $this->response
+        ->setHeader('Content-Type', 'application/pdf')
+        ->setHeader(
+            'Content-Disposition',
+            'attachment; filename="Receipt_' . $receipt['recipt_no'] . '.pdf"'
+        )
+        ->setBody($dompdf->output());
+}
+
+
+
 }

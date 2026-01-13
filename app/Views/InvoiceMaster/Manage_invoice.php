@@ -1,3 +1,5 @@
+
+ 
  <!-------------------------------- Modal for genrate invoice------------------------------------->
  <!-- Modal1 -->
  <div class="modal fade" id="GenrateVoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -113,17 +115,20 @@
      <div class="modal-dialog modal-xl">
          <div class="modal-content">
              <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                 <h5 class="modal-title" id="exampleModalLabel"></h5>
                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                      <span aria-hidden="true">&times;</span>
                  </button>
              </div>
+             <input type="hidden" id="currentInvoiceId">
+
              <div class="modal-body">
                  <div class="reciptnote">
                      <div class="header">
                          Receipt Note List
-                         <button class="add-btn" data-toggle="modal" data-target="#addreciptnote"><i
-                                 class="fa fa-plus"></i> Add New</button>
+                        <button class="add-btn" id="addReceiptBtn">
+                            <i class="fa fa-plus"></i> Add New
+                        </button>
                      </div>
 
                      <table>
@@ -143,37 +148,43 @@
                          </thead>
 
                          <tbody>
+                            <?php if (!empty($receipt)) : ?>
+                           <?php foreach ($receipt as $rec) : ?>
                              <tr>
-                                 <td>1</td>
-                                 <td>END/1718/2425/</td>
-                                 <td>09/01/2026 12:00 AM</td>
-                                 <td>cash</td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td class="amount">0.00</td>
-                                 <td class="amount">0.00</td>
+                                 <td><?= esc($rec['id']) ?></td>
+                                 <td><?= esc($rec['recipt_no']) ?></td>
+                                 <td><?= esc($rec['date']) ?></td>
+                                 <td><?= esc($rec['mode_of_payment']) ?></td>
+                                 <td><?= esc($rec['cheque_date']) ?></td>
+                                 <td><?= esc($rec['cheque_number']) ?></td>
+                                 <td><?= esc($rec['drawen_bank']) ?></td>
+                                 <td class="amount"><?= esc($rec['bill_amount']) ?></td>
+                                 <td class="amount"><?= esc($rec['tds_amount']) ?></td>
                                  <td class="action">
-                                     <i class="fa-solid fa-pen-to-square" title="Edit"></i>
-                                     <i class="fa-solid fa-trash" title="Delete"></i>
+                                     <i class="fa-solid fa-pen-to-square edit-btn" 
+                                        title="Edit" 
+                                        data-id="<?= $rec['id'] ?>"
+                                        data-recipt_no="<?= esc($rec['recipt_no']) ?>"
+                                        data-date="<?= esc($rec['date']) ?>"
+                                        data-mode_of_payment="<?= esc($rec['mode_of_payment']) ?>"
+                                        data-cheque_date="<?= esc($rec['cheque_date']) ?>"
+                                        data-cheque_number="<?= esc($rec['cheque_number']) ?>"
+                                        data-drawen_bank="<?= esc($rec['drawen_bank']) ?>"
+                                        data-bill_amount="<?= esc($rec['bill_amount']) ?>"
+                                        data-tds_amount="<?= esc($rec['tds_amount']) ?>"
+                                        data-invoice-id="<?= esc($rec['invoice_id']) ?>">
+                                        </i>
+                                      <i class="fa-solid fa-trash delete-btn" 
+                                            title="Delete" 
+                                            data-id="<?= $rec['id'] ?>">
                                  </td>
                              </tr>
-
-                             <tr>
-                                 <td>2</td>
-                                 <td>END/1718/2425/</td>
-                                 <td>09/01/2026 12:00 AM</td>
-                                 <td>cash</td>
-                                 <td></td>
-                                 <td></td>
-                                 <td></td>
-                                 <td class="amount">0.00</td>
-                                 <td class="amount">0.00</td>
-                                 <td class="action">
-                                     <i class="fa-solid fa-pen-to-square" title="Edit"></i>
-                                     <i class="fa-solid fa-trash" title="Delete"></i>
-                                 </td>
-                             </tr>
+                             <?php endforeach; ?>
+                            <?php else : ?>
+                            <tr>
+                                  <td colspan="9" class="Minvoice-text-center">No invoices found</td>
+                            </tr>
+                            <?php endif; ?>
                          </tbody>
                      </table>
                  </div>
@@ -190,107 +201,134 @@
      <div class="modal-dialog modal-xl">
          <div class="modal-content">
              <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                 <h5 class="modal-title" id="exampleModalLabel"></h5>
                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                      <span aria-hidden="true">&times;</span>
                  </button>
              </div>
-             <div class="modal-body">
-                 <div class="ReciptNoteData">
-                     <!-- Header -->
-                     <div class="top">
-                         <div class="company">
-                             <h2>ENDLESS SOLUTIONS</h2>
-                             <span>CONSULTANCY SERVICES</span>
+             <form id="receiptForm">
+                <div class="modal-body">
+                    <input type="hidden" name="invoice_id" id="current_invoice_id">
+                    <input type="hidden" name="receipt_id" id="receipt_id">
+                    <div class="ReciptNoteData">
+                        <!-- Header -->
+                        <div class="top">
+                            <div class="company">
+                                <h2 id="companyName"></h2>
+                                <span id="companyType"></span>
+                            </div>
+
+                            <div class="contact">
+                                Address :<span id="companyAddress"></span><br />
+                                Ph. No. : <span id="companyPhone"></span><br />
+                                E-Mail : <span id="companyEmail"></span><br />
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="title">Receipt Note</div>
+
+                        <!-- Receipt Info -->
+                        <div class="section">
+                            <div class="row">
+                                <label>PAN :</label>
+                                <div class="full" id="clientPan"></div>
+
+                                <label>Receipt Note No. :</label>
+                                <input type="text"   name="recipt_no" id="receiptNo" />
+                            </div>
+
+                            <div class="row highlight">
+                                <label></label>
+                                <div class="full"></div>
+
+                                <label>Date :</label>
+                                <input type="text" name="date" id="receiptDate" />
+                            </div>
+                        </div>
+
+                        <!-- Issued To -->
+                        <div class="section highlight">
+                            <strong>Issued To,</strong>
+                        </div>
+
+                        <div class="section">
+                            <div class="row">
+                                <label>Name :</label>
+                                <div class="full" id="clientName"></div>
+                            </div>
+
+                            <div class="row highlight">
+                                <label>Address :</label>
+                                <div class="full">
+                                        <span id="clientAddress"></span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label>Mode Of Payment :</label>
+                                <select name="mode_of_payment" id="modeOfPayment">
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            </div>
+                              <div id="chequeFields" style="display:none;">
+                                  <label>Cheque Date</label>
+                                <input type="date" name="cheque_date">
+                                  <label>Cheque Number</label>
+                                <input type="text" name="cheque_number" placeholder="Cheque Number">
+                                  <label>Drawn Bank</label>
+                                <input type="text" name="drawen_bank" placeholder="Drawn Bank">
                          </div>
+                        </div>
+                       
 
-                         <div class="contact">
-                             Address : A 202, RG CITY CENTRE, D.B. GUPTA ROAD, PAHARGANJ, NEW DELHI -
-                             110055<br />
-                             Ph. No. : 011-43613961, Fax No. : 011-43613961<br />
-                             E-Mail : end.solu@gmail.com
-                         </div>
-                     </div>
+                        <!-- Amount Text -->
+                        <div class="section highlight text">
+                            Received with thanks from M/s/Mr/Mrs/Ms <span id="clientName"></span>. the
+                            sum of Rs.
+                            <input type="text"  name="bill_amount" id="billAmount" style="width: 120px" />
+                            /- Amount in Words <b>Zero Rupees</b> Against Cash after deduction of TDS Rs
+                            <input type="text" placeholder="TDS Amount" style="width: 120px"  name="tds_amount" id="tdsAmount" />
+                            /- Amount In Words <b>Zero Rupees</b> for professional Services Rendered/
+                            Advance Against invoice Raised vide Bill No <span id="invoiceNo"></span>/ dated <span id="invoiceDate"></span>.
+                        </div>
 
-                     <!-- Title -->
-                     <div class="title">Receipt Note</div>
+                        <!-- Footer -->
+                        <div class="footer">For more Information reach us @ <b>www.ksaca.in</b></div>
 
-                     <!-- Receipt Info -->
-                     <div class="section">
-                         <div class="row">
-                             <label>PAN :</label>
-                             <div class="full"></div>
-
-                             <label>Receipt Note No. :</label>
-                             <input type="text" value="END/1718/2425/" />
-                         </div>
-
-                         <div class="row highlight">
-                             <label></label>
-                             <div class="full"></div>
-
-                             <label>Date :</label>
-                             <input type="text" value="09/01/2026" />
-                         </div>
-                     </div>
-
-                     <!-- Issued To -->
-                     <div class="section highlight">
-                         <strong>Issued To,</strong>
-                     </div>
-
-                     <div class="section">
-                         <div class="row">
-                             <label>Name :</label>
-                             <div class="full">GS HEALTHCARE PRIVATE LIMITED.</div>
-                         </div>
-
-                         <div class="row highlight">
-                             <label>Address :</label>
-                             <div class="full">
-                                 A-1/53 FIRST FLOOR, SAFDARJUNG ENCLAVE NEW DELHI South West Delhi DL
-                                 110029 IN
-                             </div>
-                         </div>
-
-                         <div class="row">
-                             <label>Mode Of Payment :</label>
-                             <select>
-                                 <option>Cash</option>
-                                 <option>Cheque</option>
-                             </select>
-                         </div>
-                     </div>
-
-                     <!-- Amount Text -->
-                     <div class="section highlight text">
-                         Received with thanks from M/s/Mr/Mrs/Ms GS HEALTHCARE PRIVATE LIMITED. the
-                         sum of Rs.
-                         <input type="text" value="0.00" style="width: 120px" />
-                         /- Amount in Words <b>Zero Rupees</b> Against Cash after deduction of TDS Rs
-                         <input type="text" placeholder="TDS Amount" style="width: 120px" />
-                         /- Amount In Words <b>Zero Rupees</b> for professional Services Rendered/
-                         Advance Against invoice Raised vide Bill No END/1718/2425/ dated 09/01/2026
-                     </div>
-
-                     <!-- Footer -->
-                     <div class="footer">For more Information reach us @ <b>www.ksaca.in</b></div>
-
-                     <!-- Buttons -->
-                     <div class="buttons">
-                         <button class="submit" data-toggle="modal" data-target="#submitrecipt">Submit</button>
-                         <button>Cancel</button>
-                         <button>Preview</button>
-                     </div>
-                 </div>
-             </div>
-             <div class="modal-footer">
-                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                 <button type="button" class="btn btn-primary">Save changes</button>
-             </div>
+                        <!-- Buttons -->
+                        <div class="buttons">
+                            <button type="button" class="btn btn-primary" id="saveReceiptBtn">Save Receipt</button>
+                            <button>Cancel</button>
+                            <button type="button"  id="previewReceiptBtn">
+                                Preview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+             </form>
          </div>
      </div>
  </div>
+ <div class="modal fade" id="receiptPreviewModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Receipt Preview</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body" id="receiptPreviewContent">
+        <!-- Preview HTML will be injected here -->
+      </div>
+
+    </div>
+  </div>
+</div>
+
+ 
  <!-- Button trigger modal -->
  <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submitrecipt">
      Launch demo modal
@@ -312,8 +350,8 @@
                      <label class="pdf-label">Receipt PDF</label>
 
                      <div class="d-flex gap-2 mb-3">
-                         <button class="btn btn-success flex-fill">Print Receipt</button>
-                         <button class="btn btn-success flex-fill">Receipt PDF Download</button>
+                         <button class="btn btn-success flex-fill"  id="printReceiptBtn">Print Receipt</button>
+                         <button class="btn btn-success flex-fill" id="downloadPdfBtn">Receipt PDF Download</button>
                      </div>
 
                      <button class="btn btn-secondary w-100 rounded-pill">Close</button>
@@ -428,11 +466,13 @@
                          </button>
 
                          <!-- Export Excel -->
-                         <button> <a href="<?= site_url('invoice/receipt/' . $row['id']) ?>"
-                                 class="Minvoice-icon-btn export" title="Export Excel" data-toggle="modal"
-                                 data-target="#ReciptNote">
-                                 📥
-                             </a></button>
+                        <a href="#"
+                            class="Minvoice-icon-btn export open-receipt"
+                            data-toggle="modal"
+                            data-target="#ReciptNote"
+                            data-id="<?= $row['id'] ?>">
+                            📥
+                        </a>
                          <!-- Print & Preview -->
                          <button type="button" class="Minvoice-print-btn" onclick="printInvoice(<?= $row['id'] ?>)"
                              style="padding:2px;border-radius: 10px;border: 2px solid #f1c40f;">
@@ -523,4 +563,249 @@ function printLedger() {
     document.body.innerHTML = originalContents;
     location.reload();
 }
+$(document).on('click', '.open-receipt', function () {
+    let invoiceId = $(this).data('id');
+    $('#currentInvoiceId').val(invoiceId);
+});
+$('#addReceiptBtn').on('click', function () {
+    let invoiceId = $('#currentInvoiceId').val();
+   $('#ReciptNote').css('display', 'none');
+    $('#addreciptnote').modal('show');
+    
+    $('#currentInvoiceId').val(invoiceId);
+    loadReceiptData(invoiceId);
+});
+
+
+function loadReceiptData(invoiceId) {
+    $.ajax({
+        url: "<?= site_url('invoice/receipt') ?>"+"/"+invoiceId,
+        type: "GET",
+        data: { invoice_id: invoiceId },
+        dataType: "json",
+        success: function (res) {
+      
+            // Company
+            $('#companyName').text(res.company.name);
+            $('#companyType').text(res.company.type_of_company);
+            $('#companyAddress').html(res.company.registered_office);
+            $('#companyPhone').text(res.company.telephone);
+            $('#companyEmail').text(res.company.email);
+
+            // Client
+            $('#clientName').text(res.client.legal_name);
+            $('#clientAddress').html(res.client.registered_office);
+            $('#clientPan').text(res.client.pan);
+
+            // Invoice
+            $('#receiptNo').val(res.invoice.invoice_no);
+            $('#receiptDate').val(res.invoice.invoice_date);
+            $('#billAmount').val(res.invoice.total_invoice_amount);
+            $('#current_invoice_id').val(res.invoice.id);
+        }
+    });
+}
+$(document).on('click', '.close', function () {
+    $('#addreciptnote').modal('hide');
+    $('#submitrecipt').modal('hide');
+    $('#ReciptNote').css('display', 'block');
+});
+$(document).ready(function() {
+    // Listen for changes in the dropdown
+    $('#modeOfPayment').on('change', function() {
+        if ($(this).val() === 'Cheque') {
+            $('#chequeFields').slideDown(); // show fields with animation
+        } else {
+            $('#chequeFields').slideUp();   // hide fields if not Cheque
+        }
+    });
+
+    // Optional: hide cheque fields on page load if "Cash" is selected
+    if ($('#modeOfPayment').val() !== 'Cheque') {
+        $('#chequeFields').hide();
+    }
+});
+
+
+document.getElementById("saveReceiptBtn").addEventListener("click", function () {
+
+    const receiptId = document.getElementById("receipt_id").value;
+    const form = document.getElementById("receiptForm");
+    const formData = new FormData(form);
+
+    // EDIT MODE → UPDATE
+    if (receiptId) {
+        fetch("updateReceipt", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Receipt updated successfully");
+                 $('#submitrecipt').data('receipt-id', receiptId);
+                $('#submitrecipt').modal('show');
+              
+            } else {
+                alert("Update failed");
+            }
+        });
+
+    } 
+    // ADD MODE → INSERT
+    else {
+        fetch("saveReceipt", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Receipt added successfully");
+                $('#submitrecipt').data('receipt-id', receiptId);
+                $('#submitrecipt').modal('show');
+                
+            } else {
+                alert("Save failed");
+                
+            }
+        });
+    }
+});
+
+
+// Edit button click
+document.addEventListener("click", function(e) {
+    if(e.target.classList.contains("edit-btn")) {
+        const btn = e.target;
+
+        const invoiceId = btn.dataset.invoiceId;
+
+        // Fill basic receipt fields
+       document.getElementById("receipt_id").value = btn.dataset.id;
+        document.getElementById("receiptNo").value = btn.dataset.recipt_no;
+        document.getElementById("receiptDate").value = btn.dataset.date;
+        document.getElementById("billAmount").value = btn.dataset.bill_amount;
+        document.getElementById("tdsAmount").value = btn.dataset.tds_amount;
+        document.getElementById("modeOfPayment").value = btn.dataset.mode_of_payment;
+
+        // Show/hide cheque fields
+        const chequeFields = document.getElementById("chequeFields");
+        if(btn.dataset.mode_of_payment === "Cheque") {
+            chequeFields.style.display = "block";
+            chequeFields.querySelector("input[name='cheque_date']").value = btn.dataset.cheque_date;
+            chequeFields.querySelector("input[name='cheque_number']").value = btn.dataset.cheque_number;
+            chequeFields.querySelector("input[name='drawen_bank']").value = btn.dataset.drawen_bank;
+        } else {
+            chequeFields.style.display = "none";
+        }
+
+        // Fetch company details from backend using invoice_id
+        fetch(`getInvoiceDetails/${invoiceId}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("companyName").textContent = data.company_name;
+            document.getElementById("companyType").textContent = data.company_type;
+            document.getElementById("companyAddress").textContent = data.company_address;
+            document.getElementById("companyPhone").textContent = data.company_phone;
+            document.getElementById("companyEmail").textContent = data.company_email;
+            document.getElementById("clientName").textContent = data.client_name;
+            document.getElementById("clientAddress").textContent = data.client_address;
+            document.getElementById("clientPan").textContent = data.client_pan;
+
+
+        })
+        .catch(err => console.error("Error fetching company data:", err));
+
+        // Open modal
+        const modal = new bootstrap.Modal(document.getElementById('addreciptnote'));
+        modal.show();
+    }
+});
+
+// Delete button click
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete-btn")) {
+        const id = e.target.dataset.id;
+
+        if (confirm("Are you sure you want to delete this receipt?")) {
+            fetch(`deleteReceipt/${id}`, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    e.target.closest("tr").remove();
+                    alert("Receipt deleted successfully");
+                } else {
+                    alert("Failed to delete receipt");
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    }
+});
+
+document.getElementById("previewReceiptBtn").addEventListener("click", function () {
+
+    const receiptNo = document.getElementById("receiptNo").value;
+    const receiptDate = document.getElementById("receiptDate").value;
+    const mode = document.getElementById("modeOfPayment").value;
+    const billAmount = document.getElementById("billAmount").value;
+    const tdsAmount = document.getElementById("tdsAmount").value;
+
+    const companyName = document.getElementById("companyName").innerText;
+    const companyAddress = document.getElementById("companyAddress").innerText;
+    const companyPhone = document.getElementById("companyPhone").innerText;
+    const companyEmail = document.getElementById("companyEmail").innerText;
+
+    const previewHTML = `
+        <div style="padding:20px;font-family:Arial">
+            <h3>${companyName}</h3>
+            <p>${companyAddress}</p>
+            <p>Phone: ${companyPhone}</p>
+            <p>Email: ${companyEmail}</p>
+            <hr>
+
+            <h4>Receipt Note</h4>
+            <p><b>Receipt No:</b> ${receiptNo}</p>
+            <p><b>Date:</b> ${receiptDate}</p>
+            <p><b>Mode of Payment:</b> ${mode}</p>
+
+            <p><b>Bill Amount:</b> ₹${billAmount}</p>
+            <p><b>TDS Amount:</b> ₹${tdsAmount}</p>
+        </div>
+    `;
+
+    document.getElementById("receiptPreviewContent").innerHTML = previewHTML;
+
+    new bootstrap.Modal(
+        document.getElementById("receiptPreviewModal")
+    ).show();
+});
+document.getElementById("printReceiptBtn").addEventListener("click", function () {
+
+    const receiptId = $('#submitrecipt').data('receipt-id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.open(`printReceipt/${receiptId}`);
+});
+document.getElementById("downloadPdfBtn").addEventListener("click", function () {
+
+    const receiptId = $('#submitrecipt').data('receipt-id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.open(`receiptPdf/${receiptId}`, '_blank');
+});
  </script>
