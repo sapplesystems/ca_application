@@ -652,23 +652,31 @@ document.getElementById("saveReceiptBtn").addEventListener("click", function () 
     } 
     // ADD MODE → INSERT
     else {
-        fetch("saveReceipt", {
-            method: "POST",
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("Receipt added successfully");
-                $('#submitrecipt').data('receipt-id', receiptId);
-                $('#submitrecipt').modal('show');
-                
-            } else {
-                alert("Save failed");
-                
-            }
-        });
-    }
+    fetch("saveReceipt", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data.success) {
+            alert("Save failed");
+            return;
+        }
+
+        // ✅ GET ID FROM SERVER
+        const receipt_id = data.receipt_id;
+        alert("Receipt added successfully");
+
+        // ✅ STORE IT
+        $('#receipt_id').val(receipt_id);
+
+        $('#submitrecipt')   // make sure this is your modal ID
+            .data('receipt-id', receipt_id)
+            .attr('data-receipt-id', receipt_id)
+            .modal('show');
+    });
+}
 });
 
 

@@ -491,8 +491,10 @@ $data = [
     $receiptModel = new ReciptDetailsModel();
 
    if ($receiptModel->insert($data)) {
+     $receipt_id = $receiptModel->getInsertID();
         return $this->response->setJSON([
-            'success' => true
+            'success' => true,
+            'receipt_id' => $receipt_id
         ]);
     }
 
