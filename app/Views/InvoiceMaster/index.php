@@ -38,7 +38,6 @@
 
                             <div class="buttons">
                                 <button class="btn btn-proceed" type="submit">Proceed</button>
-                                <button class="btn btn-cancel" data-dismiss="modal">Cancel</button>
                             </div>
             </form>
         </div>
