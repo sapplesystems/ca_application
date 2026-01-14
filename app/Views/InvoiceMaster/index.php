@@ -88,15 +88,17 @@
                                     class="invoiceM-action-btn invoiceM-btn-manage">
                                     💼 Manage Invoice
                                 </a>
-
-
-                                <a href="#" class="invoiceM-action-btn invoiceM-btn-manage" data-bs-toggle="modal"
-                                    data-bs-target="#debitpopup" data-client-id="<?= esc($client['id']) ?>">
+                               <a href="#"
+                                    class="invoiceM-action-btn invoiceM-btn-manage"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#debitpopup"
+                                    data-client-id="<?= esc($client['id']) ?>">
                                     📄 Generate Debit
                                 </a>
-                                <button class="invoiceM-action-btn invoiceM-btn-list">
+                                <a href="<?= base_url('DebitNoteList/') ?><?= $client['id'] ?>"
+                                class="invoiceM-action-btn invoiceM-btn-list">
                                     📋 Debit Note List
-                                </button>
+                                </a>
                             </div>
                         </td>
                         <?php endforeach; ?>

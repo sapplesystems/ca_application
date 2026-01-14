@@ -53,6 +53,10 @@ $routes->post('ManageInvoice/updateReceipt', 'InvoiceMasterController::updateRec
 $routes->post('ManageInvoice/deleteReceipt/(:num)', 'InvoiceMasterController::deleteReceipt/$1');
 $routes->get('ManageInvoice/printReceipt/(:num)', 'InvoiceMasterController::printReceipt/$1');
 $routes->get('ManageInvoice/receiptPdf/(:num)', 'InvoiceMasterController::receiptPdf/$1');
+$routes->get('DebitNoteList/(:num)','InvoiceMasterController::debitlist/$1');
+$routes->get('debits/delete/(:num)', 'InvoiceMasterController::debitDelete/$1');
+$routes->get('debits/edit/(:num)', 'InvoiceMasterController::debitEdit/$1');
+$routes->post('debits/update/(:num)', 'InvoiceMasterController::debitUpdate/$1');
 
 
 

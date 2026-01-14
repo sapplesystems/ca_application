@@ -649,6 +649,79 @@ public function receiptPdf($receipt_id)
         ->setBody($dompdf->output());
 }
 
+public function debitlist($id)
+{
+    // Load models
+    $clientModel  = new ClientModel();
+    $debitModel   = new DebitNotes();
 
+    // Get client
+    $client = $clientModel->find($id);
+
+    if (!$client) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Client not found');
+    }
+
+    // Get debit notes for this client
+    $debits = $debitModel
+    ->select('debits.*, client_master.legal_name, company_master.name AS company_name')
+    ->join('client_master', 'client_master.id = debits.client_id')
+    ->join('company_master', 'company_master.id = debits.company_id')
+    ->where('client_id',$id)
+    ->findAll();
+
+
+    return view('common/header')
+        . view('InvoiceMaster/debit-note-listing', [
+            'client'  => $client,
+            'debits'  => $debits,
+        ])
+        . view('common/footer');
+}
+
+public function debitDelete($id)
+{
+     $debitModel = new DebitNotes();
+     $debitModel->delete($id);
+
+        return redirect()->to('DebitNoteList/1')->with('success', 'Debit deleted successfully');
+}
+
+public function debitEdit($id)
+{
+    // print_r($id);exit;
+    $debitModel   = new DebitNotes();
+        $companyModel = new CompanyMasterModel();
+        $clientModel  = new ClientModel();
+        $expenseModel = new ExpenseModel();
+
+        $debitNote = $debitModel->find($id);
+
+        $data = [
+            'debitNote' => $debitNote,
+            'company'   => $companyModel->find($debitNote['company_id']),
+            'client'    => $clientModel->find($debitNote['client_id']),
+            'expenses'  => $expenseModel->where('debit_id', $id)->findAll(),
+        ];
+
+        return view('common/header').view('InvoiceMaster/edit_debit_note', $data).view('common/footer');
+
+}
+  public function debitUpdate($id)
+    {
+        print_r($id);exit;
+        $debitModel = new DebitNotes();
+
+        $debitModel->update($id, [
+            'date'                     => $this->request->getPost('date'),
+            'advance_amount'           => $this->request->getPost('advance_amount'),
+            'total_amount'             => $this->request->getPost('total_amount'),
+            'terms_and_conditions'     => $this->request->getPost('terms_and_conditions'),
+        ]);
+
+        return redirect()
+            ->to('/DebitNoteList/1')
+            ->with('success', 'Debit note updated successfully');
+    }
 
 }
