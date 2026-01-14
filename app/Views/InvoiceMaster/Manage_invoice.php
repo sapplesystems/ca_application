@@ -611,7 +611,7 @@ function loadReceiptData(invoiceId) {
 $(document).on('click', '.close', function() {
     $('#addreciptnote').modal('hide');
     $('#submitrecipt').modal('hide');
-    $('#ReciptNote').css('display', 'block');
+    location.reload();
 });
 $(document).ready(function() {
     // Listen for changes in the dropdown
