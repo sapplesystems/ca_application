@@ -2258,3 +2258,72 @@ textarea {
 .receiptnote-btn-preview {
   background: #eee;
 }
+/*--------------------------------------Recipt Note Preview Css---------------------------------------------------------*/
+
+.receipt-wrapper {
+  font-family: Arial, Helvetica, sans-serif;
+  border: 1px solid #000;
+  background: #fff;
+}
+
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  font-size: 13px;
+}
+
+.company-left h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.company-left span {
+  font-size: 13px;
+  font-style: italic;
+}
+
+.company-right {
+  text-align: right;
+  line-height: 1.4;
+}
+
+.receipt-title {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+  padding: 8px;
+  font-weight: 600;
+}
+
+.receipt-body {
+  font-size: 13px;
+}
+
+.receipt-row {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+
+.receipt-row.light {
+  background: #eaf4f8;
+}
+
+.label {
+  width: 150px;
+  padding: 10px;
+  font-weight: 600;
+}
+
+.value {
+  flex: 1;
+  padding: 10px;
+}
+
+.receipt-footer {
+  text-align: center;
+  font-size: 12px;
+  padding: 12px;
+}

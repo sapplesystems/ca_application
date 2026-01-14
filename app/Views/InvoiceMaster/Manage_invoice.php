@@ -107,8 +107,6 @@
     </div>
 </div>
 <!-------------------------------- Modal for show details Recipt Note------------------------------------->
-
-<!-- Modal2 -->
 <div class="modal fade" id="ReciptNote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -190,7 +188,6 @@
 <!-- Button trigger modal -->
 
 <!-------------------------------- Modal for Add Recipt Note------------------------------------->
-<!-- Modal3 -->
 <div class="modal fade" id="addreciptnote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -326,6 +323,7 @@
         </div>
     </div>
 </div>
+<!-------------------------------- Modal for Preview Recipt Note------------------------------------->
 <div class="modal fade" id="receiptPreviewModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -342,14 +340,7 @@
         </div>
     </div>
 </div>
-
-
-<!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submitrecipt">
-     Launch demo modal
- </button> -->
-
-<!-- Modal -->
+<!-------------------------------- Modal for submitrecipt------------------------------------->
 <div class="modal fade" id="submitrecipt" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -666,31 +657,31 @@ document.getElementById("saveReceiptBtn").addEventListener("click", function() {
     }
     // ADD MODE → INSERT
     else {
-    fetch("saveReceipt", {
-        method: "POST",
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
+        fetch("saveReceipt", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
 
-        if (!data.success) {
-            alert("Save failed");
-            return;
-        }
+                if (!data.success) {
+                    alert("Save failed");
+                    return;
+                }
 
-        // ✅ GET ID FROM SERVER
-        const receipt_id = data.receipt_id;
-        alert("Receipt added successfully");
+                // ✅ GET ID FROM SERVER
+                const receipt_id = data.receipt_id;
+                alert("Receipt added successfully");
 
-        // ✅ STORE IT
-        $('#receipt_id').val(receipt_id);
+                // ✅ STORE IT
+                $('#receipt_id').val(receipt_id);
 
-        $('#submitrecipt')   // make sure this is your modal ID
-            .data('receipt-id', receipt_id)
-            .attr('data-receipt-id', receipt_id)
-            .modal('show');
-    });
-}
+                $('#submitrecipt') // make sure this is your modal ID
+                    .data('receipt-id', receipt_id)
+                    .attr('data-receipt-id', receipt_id)
+                    .modal('show');
+            });
+    }
 });
 
 
@@ -783,22 +774,55 @@ document.getElementById("previewReceiptBtn").addEventListener("click", function(
     const companyEmail = document.getElementById("companyEmail").innerText;
 
     const previewHTML = `
-        <div style="padding:20px;font-family:Arial">
-            <h3>${companyName}</h3>
-            <p>${companyAddress}</p>
-            <p>Phone: ${companyPhone}</p>
-            <p>Email: ${companyEmail}</p>
-            <hr>
+<div class="receipt-wrapper">
 
-            <h4>Receipt Note</h4>
-            <p><b>Receipt No:</b> ${receiptNo}</p>
-            <p><b>Date:</b> ${receiptDate}</p>
-            <p><b>Mode of Payment:</b> ${mode}</p>
-
-            <p><b>Bill Amount:</b> ₹${billAmount}</p>
-            <p><b>TDS Amount:</b> ₹${tdsAmount}</p>
+    <div class="receipt-header">
+        <div class="company-left">
+            <h2>${companyName}</h2>
+            <span>CONSULTANCY SERVICES</span>
         </div>
-    `;
+        <div class="company-right">
+            <div>${companyAddress}</div>
+            <div>Ph: ${companyPhone}</div>
+            <div>Email: ${companyEmail}</div>
+        </div>
+    </div>
+
+    <div class="receipt-title">Receipt Note</div>
+
+    <div class="receipt-body">
+
+        <div class="receipt-row">
+            <div class="label">Receipt No :</div>
+            <div class="value">${receiptNo}</div>
+            <div class="label">Date :</div>
+            <div class="value">${receiptDate}</div>
+        </div>
+
+        <div class="receipt-row light">
+            <div class="label">Mode Of Payment :</div>
+            <div class="value">${mode}</div>
+        </div>
+
+        <div class="receipt-row">
+            <div class="label">Bill Amount :</div>
+            <div class="value">₹ ${billAmount}</div>
+        </div>
+
+        <div class="receipt-row">
+            <div class="label">TDS Amount :</div>
+            <div class="value">₹ ${tdsAmount}</div>
+        </div>
+
+    </div>
+
+    <div class="receipt-footer">
+        For more information reach us @ <b>www.ksaca.in</b>
+    </div>
+
+</div>
+`;
+
 
     document.getElementById("receiptPreviewContent").innerHTML = previewHTML;
 
