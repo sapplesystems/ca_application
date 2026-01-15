@@ -707,21 +707,65 @@ public function debitEdit($id)
         return view('common/header').view('InvoiceMaster/edit_debit_note', $data).view('common/footer');
 
 }
-  public function debitUpdate($id)
-    {
-        print_r($id);exit;
-        $debitModel = new DebitNotes();
+ public function debitUpdate($id)
+{
+    // print_r($this->request->getPost());exit;
+    $DebitModel   = new DebitNotes();
+    $ExpenseModel = new ExpenseModel();
 
-        $debitModel->update($id, [
-            'date'                     => $this->request->getPost('date'),
-            'advance_amount'           => $this->request->getPost('advance_amount'),
-            'total_amount'             => $this->request->getPost('total_amount'),
-            'terms_and_conditions'     => $this->request->getPost('terms_and_conditions'),
-        ]);
+    // Collect debit note data (same as save)
+    $data = [
+        'debit_no'                  => $this->request->getPost('debit_no'),
+        'total_recoverable_expenses'=> $this->request->getPost('expense_total'),
+        'advance_amount'            => $this->request->getPost('advance_received'),
+        'total_amount'              => $this->request->getPost('net_amount'),
+        'client_id'                 => $this->request->getPost('client_id'),
+        'company_id'                => $this->request->getPost('company_id'),
+        'terms_and_conditions'      => $this->request->getPost('term_condition'),
+    ];
 
-        return redirect()
-            ->to('/DebitNoteList/1')
-            ->with('success', 'Debit note updated successfully');
+    // 1️⃣ Update debit note
+    $DebitModel->update($id, $data);
+
+    // 2️⃣ Expenses update / insert
+    $descriptions = $this->request->getPost('expense_description');
+    $amounts      = $this->request->getPost('expense_amount');
+    $expenseIds   = $this->request->getPost('expense_id');
+
+    foreach ($descriptions as $i => $desc) {
+
+        if (empty($desc) || empty($amounts[$i])) {
+            continue;
+        }
+
+        $expenseData = [
+            'expense_description' => $desc,
+            'expense_amount'      => $amounts[$i],
+            'updated_at'          => date('Y-m-d H:i:s')
+        ];
+
+        // ✅ Update existing expense
+        if (!empty($expenseIds[$i])) {
+
+            $ExpenseModel->update($expenseIds[$i], $expenseData);
+
+        }
+        // ✅ Insert new expense
+        else {
+
+            $expenseData['debit_id']   = $id;
+            $expenseData['created_at'] = date('Y-m-d H:i:s');
+
+            $ExpenseModel->insert($expenseData);
+        }
     }
+
+    return $this->response->setJSON([
+        'status'     => 'success',
+        'mode'       => 'update',
+        'invoice_id' => $id
+    ]);
+}
+
 
 }

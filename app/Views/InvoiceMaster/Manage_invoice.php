@@ -307,9 +307,6 @@
                                 id="saveReceiptBtn">
                                 Save Receipt
                             </button>
-                            <button type="button" class="receiptnote-btn receiptnote-btn-cancel">
-                                Cancel
-                            </button>
                             <button type="button" class="receiptnote-btn receiptnote-btn-preview"
                                 id="previewReceiptBtn">
                                 Preview

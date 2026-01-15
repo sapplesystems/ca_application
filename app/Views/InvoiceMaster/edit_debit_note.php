@@ -1,3 +1,35 @@
+<?php
+function toRoman($number)
+{
+    $map = [
+        'm'  => 1000,
+        'cm' => 900,
+        'd'  => 500,
+        'cd' => 400,
+        'c'  => 100,
+        'xc' => 90,
+        'l'  => 50,
+        'xl' => 40,
+        'x'  => 10,
+        'ix' => 9,
+        'v'  => 5,
+        'iv' => 4,
+        'i'  => 1,
+    ];
+
+    $result = '';
+    foreach ($map as $roman => $value) {
+        while ($number >= $value) {
+            $result .= $roman;
+            $number -= $value;
+        }
+    }
+    return $result;
+}
+?>
+
+
+
 <div class="invoiceM-containerr">
     <div class=" inv-header-main">
         <h1 class="inv-title-main">Debit Note</h1>
@@ -5,7 +37,7 @@
             Back to Generate Invoice Grid
         </a>
     </div>
-    <form method="post" action="<?= base_url('debits/update/' . $debitNote['id']) ?>">
+    <form id="debitForm" method="post" action="<?= base_url('debits/update/' . $debitNote['id']) ?>">
     <?= csrf_field() ?>
         <table width="100%" border="0">
             <tr>
@@ -48,7 +80,7 @@
                 </td>
                 <td align="right">
                     <strong>Date :</strong><br>
-                    <?= date('d-m-Y'); ?>
+                    <?= esc($debitNote['date']) ?>
                 </td>
             </tr>
         </table>
@@ -106,8 +138,9 @@
    <?php if(!empty($expenses)): ?>
     <?php foreach($expenses as $index => $exp): ?>
     <tr class="expense-row" style="background:#e9f5fb;">
-        <td style="text-align:center;"><?= $index + 1 ?></td>
+        <td style="text-align:center;"><?=  toRoman($index + 1) ?></td>
         <td>
+            <input type="hidden" name="expense_id[]" value="<?= $exp['id'] ?>">
             <input type="text" placeholder="Expense Recoverable"
                    style="width:100%;" 
                    name="expense_description[]" 
@@ -126,12 +159,22 @@
         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
         <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
     </tr>
+     <tr class="expense-row" style="background:#e9f5fb;">
+        <td style="text-align:center;">ii</td>
+        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+    </tr>
+     <tr class="expense-row" style="background:#e9f5fb;">
+        <td style="text-align:center;">iii</td>
+        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+    </tr>
 <?php endif; ?>
 
 <!-- Hidden Template Row -->
 <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
     <td style="text-align:center;"></td>
-    <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+    <td>  <input type="hidden" name="expense_id[]" value=""><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
     <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
 </tr>
 
@@ -142,14 +185,14 @@
         Total Expenses Recoverable
       </td>
       <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-        <span id="expenseTotalDisplay">0</span>
+        <span id="expenseTotalDisplay"><?= esc($debitNote['total_recoverable_expenses'] ?? 0) ?></span>
       </td>
     </tr>
 
     <tr>
       <td style="padding:8px; border:1px solid #ccc;"></td>
       <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong>Grand Total</strong></td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong id="grandTotalDisplay">0</strong></td>
+      <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong id="grandTotalDisplay"><?= esc($debitNote['total_recoverable_expenses'] ?? 0) ?></strong></td>
     </tr>
 
     <tr>
@@ -169,7 +212,7 @@
       </td>
       <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
         Net Amount Receivable (A+B)<br>
-        <strong id="netAmountDisplay">0</strong>
+        <strong id="netAmountDisplay"><?= esc($debitNote['total_amount']) ?></strong>
       </td>
     </tr>
 
@@ -186,8 +229,10 @@
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
-                <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
-                    name="term_condition" value="<?= esc($debitNote['terms_and_conditions'] ?? '') ?>">
+              <textarea
+    style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
+    name="term_condition"><?= esc($debitNote['terms_and_conditions'] ?? '') ?></textarea>
+
 
     </textarea>
             </div>
@@ -198,8 +243,9 @@
 
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="debit_date" value="<?= esc($debitNote['date'] ?? date('Y-m-d')) ?>">
+            <input type="hidden" name="debit_date" value="<?= esc(date('Y-m-d')) ?>">
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
+
 
             <div style="margin-top:20px; text-align:center;">
                 <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
@@ -215,66 +261,79 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-         document.getElementById('debitForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // prevent normal form submit
+  <script>
+document.getElementById('debitForm').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-        const form = this;
+    const form = this;
 
-        // Submit form via AJAX
-        fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
+    fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === 'success') {
+
+            Swal.fire({
+                title: data.mode === 'update'
+                    ? 'Invoice Updated!'
+                    : 'Invoice Saved!',
+                text: 'Debit Note processed successfully.',
+                icon: 'success',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Print Invoice',
+                denyButtonText: 'Download PDF',
+                cancelButtonText: 'Close'
+            }).then(result => {
+
+                if (result.isConfirmed) {
+                    window.open(
+                        '<?= site_url("DebitNote/") ?>' + data.invoice_id,
+                        '_blank'
+                    );
+                }
+
+                else if (result.isDenied) {
+                    window.open(
+                        '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
+                        '_blank'
+                    );
+                }
+
+                else if (result.isDismissed) {
                     Swal.fire({
-                        title: 'Invoice Saved!',
-                        text: 'Your invoice has been saved successfully.',
-                        icon: 'success',
-                        showDenyButton: true,
+                        title: 'Redirect?',
+                        text: 'Go back to invoice list?',
+                        icon: 'question',
                         showCancelButton: true,
-                        confirmButtonText: 'Print Invoice',
-                        denyButtonText: 'Download PDF',
-                        cancelButtonText: 'Close'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Print invoice
-                            window.open('<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDenied) {
-                            // Download PDF
-                            window.open('<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDismissed) {
-                            // Check if user clicked cancel
-                            // Optional: redirect to invoice list
-                            Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Do you want to go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, Redirect',
-                                cancelButtonText: 'No'
-                            }).then((res) => {
-                                if (res.isConfirmed) {
-                                    window.location.href =
-                                        '<?= site_url("InvoiceManagment") ?>';
-                                }
-                                // else just close popup
-                            });
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No'
+                    }).then(res => {
+                        if (res.isConfirmed) {
+                            window.location.href =
+                                '<?= site_url("InvoiceManagment") ?>';
                         }
                     });
-                } else {
-                    Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
                 }
-            })
-            .catch(err => {
-                Swal.fire('Error!', 'Network or server error', 'error');
             });
+
+        } else {
+            Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
+        }
+    })
+    .catch(() => {
+        Swal.fire('Error!', 'Network or server error', 'error');
     });
-  function numberToWords(num) {
+});
+
+/* ================= NUMBER TO WORDS ================= */
+function numberToWords(num) {
     if (num === 0) return 'ZERO';
 
     const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE',
@@ -294,23 +353,23 @@
     return convert(num).trim();
 }
 
+/* ================= CALCULATE TOTALS ================= */
 function calculateTotals() {
     let expenseTotal = 0;
 
-    document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
-        .forEach(input => {
-            expenseTotal += parseFloat(input.value) || 0;
-        });
+    document.querySelectorAll('.expense').forEach(input => {
+        expenseTotal += parseFloat(input.value) || 0;
+    });
 
     const advance = parseFloat(document.getElementById('advance').value) || 0;
     const netAmount = expenseTotal - advance;
 
-    /* ===== DISPLAY ===== */
+    // Display
     document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
     document.getElementById('grandTotalDisplay').innerText = expenseTotal.toFixed(2);
     document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
 
-    /* ===== BACKEND (HIDDEN INPUTS) ===== */
+    // Hidden inputs
     document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
     document.getElementById('grandTotalInput').value = expenseTotal.toFixed(2);
     document.getElementById('netAmountInput').value = netAmount.toFixed(2);
@@ -319,44 +378,7 @@ function calculateTotals() {
         numberToWords(Math.round(netAmount));
 }
 
-
-// Add input event listener for dynamic rows
-function attachInputListeners() {
-    document.querySelectorAll('.expense, #advance').forEach(el => {
-        el.removeEventListener('input', calculateTotals); // prevent duplicates
-        el.addEventListener('input', calculateTotals);
-    });
-}
-
-// Call whenever a new row is added
-function addExpenseRow() {
-    const tbody = document.getElementById('expenseBody');
-    const hiddenRow = document.getElementById('hiddenRow');
-
-    const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
-
-    // Clone hidden row
-    const newRow = hiddenRow.cloneNode(true);
-    newRow.style.display = '';
-    newRow.id = '';
-    newRow.cells[0].textContent = existingRows + 1; // simple counting
-
-    // Insert before totals row
-    const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
-    tbody.insertBefore(newRow, totalsRow);
-
-    // Attach input listener to the new input
-    attachInputListeners();
-
-    // Recalculate totals
-    calculateTotals();
-}
-
-// Initial setup
-attachInputListeners();
-calculateTotals()
-
-// Function to convert a number to Roman numeral
+/* ================= ROMAN NUMBERS ================= */
 function toRoman(num) {
     const romanMap = [
         { value: 1000, numeral: 'm' },
@@ -370,7 +392,7 @@ function toRoman(num) {
         { value: 10, numeral: 'x' },
         { value: 9, numeral: 'ix' },
         { value: 5, numeral: 'v' },
-        { value: 4, numeral: 'iv' },
+        { value: 4, numeral: 'iV' },
         { value: 1, numeral: 'i' }
     ];
 
@@ -384,26 +406,34 @@ function toRoman(num) {
     return result;
 }
 
-
+/* ================= ADD ROW ================= */
 function addExpenseRow() {
     const tbody = document.getElementById('expenseBody');
     const hiddenRow = document.getElementById('hiddenRow');
 
-    // Count existing visible expense rows
-    const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
-
-    // Clone the hidden row
     const newRow = hiddenRow.cloneNode(true);
-    newRow.style.display = ''; // make it visible
-    newRow.id = ''; // remove id to avoid duplicates
+    newRow.style.display = '';
+    newRow.id = '';
 
-    // Set the first cell to dynamic Roman numeral
-    newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
+    const rowCount = tbody.querySelectorAll('.expense-row').length;
+    newRow.cells[0].textContent = toRoman(rowCount + 1);
 
-    // Append before totals row
-    const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]'); 
+    const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
     tbody.insertBefore(newRow, totalsRow);
+
+    attachInputListeners();
+    calculateTotals();
 }
 
+/* ================= INPUT LISTENERS ================= */
+function attachInputListeners() {
+    document.querySelectorAll('.expense, #advance').forEach(el => {
+        el.removeEventListener('input', calculateTotals);
+        el.addEventListener('input', calculateTotals);
+    });
+}
 
-    </script>
+/* ================= INIT ================= */
+attachInputListeners();
+calculateTotals();
+</script>
