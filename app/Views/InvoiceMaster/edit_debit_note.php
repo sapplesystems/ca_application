@@ -6,7 +6,7 @@
         </a>
     </div>
     <form method="post" action="<?= base_url('debits/update/' . $debitNote['id']) ?>">
-    <?= csrf_field() ?>
+        <?= csrf_field() ?>
         <table width="100%" border="0">
             <tr>
                 <td>
@@ -28,7 +28,7 @@
 
         <hr>
         <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-           Debit Note
+            Debit Note
         </div>
 
         <table width="100%" border="0" cellpadding="6">
@@ -80,101 +80,106 @@
                 </tr>
             </table>
 
-        <table class="invoice-table" style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;">
-  <thead>
-    <tr style="background:#0b5c7d; color:#fff;">
-      <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
-      <th style="width:70%; padding:8px; border:1px solid #ccc;">Details Of Expenses</th>
-      <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
-    </tr>
-  </thead>
+            <table class="invoice-table"
+                style="width:100%; border-collapse:collapse; font-family:Arial, sans-serif; font-size:14px;">
+                <thead>
+                    <tr style="background:#0b5c7d; color:#fff;">
+                        <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
+                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Details Of Expenses</th>
+                        <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
+                    </tr>
+                </thead>
 
-  <tbody id="expenseBody">
+                <tbody id="expenseBody">
 
-    <!-- Add Expense Button Row -->
-    <tr>
-      <td></td>
-      <td>Add : Expenses Recoverable</td>
-      <td>
-        <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
-          ➕ Add Expense
-        </button>
-      </td>
-    </tr>
+                    <!-- Add Expense Button Row -->
+                    <tr>
+                        <td></td>
+                        <td>Add : Expenses Recoverable</td>
+                        <td>
+                            <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
+                                ➕ Add Expense
+                            </button>
+                        </td>
+                    </tr>
 
-    <!-- Existing Expense Rows -->
-   <?php if(!empty($expenses)): ?>
-    <?php foreach($expenses as $index => $exp): ?>
-    <tr class="expense-row" style="background:#e9f5fb;">
-        <td style="text-align:center;"><?= $index + 1 ?></td>
-        <td>
-            <input type="text" placeholder="Expense Recoverable"
-                   style="width:100%;" 
-                   name="expense_description[]" 
-                   value="<?= esc($exp['expense_description']) ?>">
-        </td>
-        <td>
-            <input type="number" class="expense" style="width:100%; text-align:right;"
-                   name="expense_amount[]" 
-                   value="<?= esc($exp['expense_amount']) ?>">
-        </td>
-    </tr>
-    <?php endforeach; ?>
-<?php else: ?>
-    <tr class="expense-row" style="background:#e9f5fb;">
-        <td style="text-align:center;">i</td>
-        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
-        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
-    </tr>
-<?php endif; ?>
+                    <!-- Existing Expense Rows -->
+                    <?php if(!empty($expenses)): ?>
+                    <?php foreach($expenses as $index => $exp): ?>
+                    <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;"><?= $index + 1 ?></td>
+                        <td>
+                            <input type="text" placeholder="Expense Recoverable" style="width:100%;"
+                                name="expense_description[]" value="<?= esc($exp['expense_description']) ?>">
+                        </td>
+                        <td>
+                            <input type="number" class="expense" style="width:100%; text-align:right;"
+                                name="expense_amount[]" value="<?= esc($exp['expense_amount']) ?>">
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php else: ?>
+                    <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">i</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
+                                name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;"
+                                name="expense_amount[]"></td>
+                    </tr>
+                    <?php endif; ?>
 
-<!-- Hidden Template Row -->
-<tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
-    <td style="text-align:center;"></td>
-    <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
-    <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
-</tr>
+                    <!-- Hidden Template Row -->
+                    <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
+                        <td style="text-align:center;"></td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
+                                name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;"
+                                name="expense_amount[]"></td>
+                    </tr>
 
-    <!-- Totals / Grand Total / Advance / Net rows -->
-    <tr style="background:#0b5c7d; color:#fff;">
-      <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-        Total Expenses Recoverable
-      </td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-        <span id="expenseTotalDisplay">0</span>
-      </td>
-    </tr>
+                    <!-- Totals / Grand Total / Advance / Net rows -->
+                    <tr style="background:#0b5c7d; color:#fff;">
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                            Total Expenses Recoverable
+                        </td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                            <span id="expenseTotalDisplay">0</span>
+                        </td>
+                    </tr>
 
-    <tr>
-      <td style="padding:8px; border:1px solid #ccc;"></td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong>Grand Total</strong></td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong id="grandTotalDisplay">0</strong></td>
-    </tr>
+                    <tr>
+                        <td style="padding:8px; border:1px solid #ccc;"></td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong>Grand Total</strong>
+                        </td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong
+                                id="grandTotalDisplay">0</strong></td>
+                    </tr>
 
-    <tr>
-      <td style="padding:8px; border:1px solid #ccc;">B</td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right;">(-) Advances Received</td>
-      <td style="padding:8px; border:1px solid #ccc;">
-        <input type="number" value="<?= esc($debitNote['advance_amount'] ?? 0) ?>" id="advance" name="advance_received"
-               style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
-      </td>
-    </tr>
+                    <tr>
+                        <td style="padding:8px; border:1px solid #ccc;">B</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;">(-) Advances Received</td>
+                        <td style="padding:8px; border:1px solid #ccc;">
+                            <input type="number" value="<?= esc($debitNote['advance_amount'] ?? 0) ?>" id="advance"
+                                name="advance_received"
+                                style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
+                        </td>
+                    </tr>
 
-    <tr style="background:#0b5c7d; color:#fff;">
-      <td style="padding:8px; border:1px solid #ccc; text-align:center; color:black;">C</td>
-      <td style="padding:8px; border:1px solid #ccc;color:black">
-        <strong>(Amount In Words)</strong><br>
-        <span id="amountInWords">ZERO</span>
-      </td>
-      <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
-        Net Amount Receivable (A+B)<br>
-        <strong id="netAmountDisplay">0</strong>
-      </td>
-    </tr>
+                    <tr style="background:#0b5c7d; color:#fff;">
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center; color:black;">C</td>
+                        <td style="padding:8px; border:1px solid #ccc;color:black">
+                            <strong>(Amount In Words)</strong><br>
+                            <span id="amountInWords">ZERO</span>
+                        </td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
+                            Net Amount Receivable (A+B)<br>
+                            <strong id="netAmountDisplay">0</strong>
+                        </td>
+                    </tr>
 
-  </tbody>
-</table>
+                </tbody>
+            </table>
 
             <div class="bank-details">
                 <strong>Banker's Details</strong><br>
@@ -191,10 +196,10 @@
 
     </textarea>
             </div>
-<input type="hidden" name="expense_total" id="expenseTotalInput" value="0">
-<input type="hidden" name="grand_total" id="grandTotalInput" value="0">
-<input type="hidden" name="net_amount" id="netAmountInput" value="0">
-<input type="hidden" name="debit_no" value="DN/END/1718/2425//2625/185">
+            <input type="hidden" name="expense_total" id="expenseTotalInput" value="0">
+            <input type="hidden" name="grand_total" id="grandTotalInput" value="0">
+            <input type="hidden" name="net_amount" id="netAmountInput" value="0">
+            <input type="hidden" name="debit_no" value="DN/END/1718/2425//2625/185">
 
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
@@ -202,7 +207,7 @@
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
+                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Debit</button>
                 <a href="<?= base_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
                     Cancel
                 </a>
@@ -216,7 +221,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-         document.getElementById('debitForm').addEventListener('submit', function(e) {
+    document.getElementById('debitForm').addEventListener('submit', function(e) {
         e.preventDefault(); // prevent normal form submit
 
         const form = this;
@@ -274,136 +279,177 @@
                 Swal.fire('Error!', 'Network or server error', 'error');
             });
     });
-  function numberToWords(num) {
-    if (num === 0) return 'ZERO';
 
-    const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE',
-        'TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN',
-        'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'];
+    function numberToWords(num) {
+        if (num === 0) return 'ZERO';
 
-    const tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'];
+        const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE',
+            'TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN',
+            'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'
+        ];
 
-    function convert(n) {
-        if (n < 20) return ones[n];
-        if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
-        if (n < 1000) return ones[Math.floor(n / 100)] + ' HUNDRED ' + (n % 100 ? convert(n % 100) : '');
-        if (n < 100000) return convert(Math.floor(n / 1000)) + ' THOUSAND ' + (n % 1000 ? convert(n % 1000) : '');
-        return '';
-    }
+        const tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'];
 
-    return convert(num).trim();
-}
-
-function calculateTotals() {
-    let expenseTotal = 0;
-
-    document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
-        .forEach(input => {
-            expenseTotal += parseFloat(input.value) || 0;
-        });
-
-    const advance = parseFloat(document.getElementById('advance').value) || 0;
-    const netAmount = expenseTotal - advance;
-
-    /* ===== DISPLAY ===== */
-    document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
-    document.getElementById('grandTotalDisplay').innerText = expenseTotal.toFixed(2);
-    document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
-
-    /* ===== BACKEND (HIDDEN INPUTS) ===== */
-    document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
-    document.getElementById('grandTotalInput').value = expenseTotal.toFixed(2);
-    document.getElementById('netAmountInput').value = netAmount.toFixed(2);
-
-    document.getElementById('amountInWords').innerText =
-        numberToWords(Math.round(netAmount));
-}
-
-
-// Add input event listener for dynamic rows
-function attachInputListeners() {
-    document.querySelectorAll('.expense, #advance').forEach(el => {
-        el.removeEventListener('input', calculateTotals); // prevent duplicates
-        el.addEventListener('input', calculateTotals);
-    });
-}
-
-// Call whenever a new row is added
-function addExpenseRow() {
-    const tbody = document.getElementById('expenseBody');
-    const hiddenRow = document.getElementById('hiddenRow');
-
-    const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
-
-    // Clone hidden row
-    const newRow = hiddenRow.cloneNode(true);
-    newRow.style.display = '';
-    newRow.id = '';
-    newRow.cells[0].textContent = existingRows + 1; // simple counting
-
-    // Insert before totals row
-    const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
-    tbody.insertBefore(newRow, totalsRow);
-
-    // Attach input listener to the new input
-    attachInputListeners();
-
-    // Recalculate totals
-    calculateTotals();
-}
-
-// Initial setup
-attachInputListeners();
-calculateTotals()
-
-// Function to convert a number to Roman numeral
-function toRoman(num) {
-    const romanMap = [
-        { value: 1000, numeral: 'm' },
-        { value: 900, numeral: 'cm' },
-        { value: 500, numeral: 'd' },
-        { value: 400, numeral: 'cd' },
-        { value: 100, numeral: 'c' },
-        { value: 90, numeral: 'xc' },
-        { value: 50, numeral: 'l' },
-        { value: 40, numeral: 'xl' },
-        { value: 10, numeral: 'x' },
-        { value: 9, numeral: 'ix' },
-        { value: 5, numeral: 'v' },
-        { value: 4, numeral: 'iv' },
-        { value: 1, numeral: 'i' }
-    ];
-
-    let result = '';
-    for (const { value, numeral } of romanMap) {
-        while (num >= value) {
-            result += numeral;
-            num -= value;
+        function convert(n) {
+            if (n < 20) return ones[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+            if (n < 1000) return ones[Math.floor(n / 100)] + ' HUNDRED ' + (n % 100 ? convert(n % 100) : '');
+            if (n < 100000) return convert(Math.floor(n / 1000)) + ' THOUSAND ' + (n % 1000 ? convert(n % 1000) : '');
+            return '';
         }
+
+        return convert(num).trim();
     }
-    return result;
-}
+
+    function calculateTotals() {
+        let expenseTotal = 0;
+
+        document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
+            .forEach(input => {
+                expenseTotal += parseFloat(input.value) || 0;
+            });
+
+        const advance = parseFloat(document.getElementById('advance').value) || 0;
+        const netAmount = expenseTotal - advance;
+
+        /* ===== DISPLAY ===== */
+        document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
+        document.getElementById('grandTotalDisplay').innerText = expenseTotal.toFixed(2);
+        document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
+
+        /* ===== BACKEND (HIDDEN INPUTS) ===== */
+        document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
+        document.getElementById('grandTotalInput').value = expenseTotal.toFixed(2);
+        document.getElementById('netAmountInput').value = netAmount.toFixed(2);
+
+        document.getElementById('amountInWords').innerText =
+            numberToWords(Math.round(netAmount));
+    }
 
 
-function addExpenseRow() {
-    const tbody = document.getElementById('expenseBody');
-    const hiddenRow = document.getElementById('hiddenRow');
+    // Add input event listener for dynamic rows
+    function attachInputListeners() {
+        document.querySelectorAll('.expense, #advance').forEach(el => {
+            el.removeEventListener('input', calculateTotals); // prevent duplicates
+            el.addEventListener('input', calculateTotals);
+        });
+    }
 
-    // Count existing visible expense rows
-    const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
+    // Call whenever a new row is added
+    function addExpenseRow() {
+        const tbody = document.getElementById('expenseBody');
+        const hiddenRow = document.getElementById('hiddenRow');
 
-    // Clone the hidden row
-    const newRow = hiddenRow.cloneNode(true);
-    newRow.style.display = ''; // make it visible
-    newRow.id = ''; // remove id to avoid duplicates
+        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
 
-    // Set the first cell to dynamic Roman numeral
-    newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
+        // Clone hidden row
+        const newRow = hiddenRow.cloneNode(true);
+        newRow.style.display = '';
+        newRow.id = '';
+        newRow.cells[0].textContent = existingRows + 1; // simple counting
 
-    // Append before totals row
-    const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]'); 
-    tbody.insertBefore(newRow, totalsRow);
-}
+        // Insert before totals row
+        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
+        tbody.insertBefore(newRow, totalsRow);
+
+        // Attach input listener to the new input
+        attachInputListeners();
+
+        // Recalculate totals
+        calculateTotals();
+    }
+
+    // Initial setup
+    attachInputListeners();
+    calculateTotals()
+
+    // Function to convert a number to Roman numeral
+    function toRoman(num) {
+        const romanMap = [{
+                value: 1000,
+                numeral: 'm'
+            },
+            {
+                value: 900,
+                numeral: 'cm'
+            },
+            {
+                value: 500,
+                numeral: 'd'
+            },
+            {
+                value: 400,
+                numeral: 'cd'
+            },
+            {
+                value: 100,
+                numeral: 'c'
+            },
+            {
+                value: 90,
+                numeral: 'xc'
+            },
+            {
+                value: 50,
+                numeral: 'l'
+            },
+            {
+                value: 40,
+                numeral: 'xl'
+            },
+            {
+                value: 10,
+                numeral: 'x'
+            },
+            {
+                value: 9,
+                numeral: 'ix'
+            },
+            {
+                value: 5,
+                numeral: 'v'
+            },
+            {
+                value: 4,
+                numeral: 'iv'
+            },
+            {
+                value: 1,
+                numeral: 'i'
+            }
+        ];
+
+        let result = '';
+        for (const {
+                value,
+                numeral
+            } of romanMap) {
+            while (num >= value) {
+                result += numeral;
+                num -= value;
+            }
+        }
+        return result;
+    }
 
 
+    function addExpenseRow() {
+        const tbody = document.getElementById('expenseBody');
+        const hiddenRow = document.getElementById('hiddenRow');
+
+        // Count existing visible expense rows
+        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
+
+        // Clone the hidden row
+        const newRow = hiddenRow.cloneNode(true);
+        newRow.style.display = ''; // make it visible
+        newRow.id = ''; // remove id to avoid duplicates
+
+        // Set the first cell to dynamic Roman numeral
+        newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
+
+        // Append before totals row
+        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
+        tbody.insertBefore(newRow, totalsRow);
+    }
     </script>

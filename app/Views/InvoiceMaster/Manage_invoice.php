@@ -852,4 +852,36 @@ document.getElementById("downloadPdfBtn").addEventListener("click", function() {
 
     window.open(`receiptPdf/${receiptId}`, '_blank');
 });
+document.addEventListener('DOMContentLoaded', function() {
+
+    const form = document.querySelector('#GenrateVoice form');
+
+    form.addEventListener('submit', function(e) {
+
+        // 1️⃣ Check works selected
+        const worksChecked = document.querySelectorAll(
+            'input[name="work_ids[]"]:checked'
+        ).length;
+
+        // 2️⃣ Check company selected
+        const companySelected = document.querySelector(
+            'input[name="company_id"]:checked'
+        );
+
+        if (worksChecked === 0) {
+            e.preventDefault();
+            alert('Please select at least one Work for Invoice');
+            return false;
+        }
+
+        if (!companySelected) {
+            e.preventDefault();
+            alert('Please select a Company for Invoice');
+            return false;
+        }
+
+
+    });
+
+});
 </script>
