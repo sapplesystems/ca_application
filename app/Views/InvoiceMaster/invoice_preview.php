@@ -19,7 +19,6 @@
                 </td>
 
                 <td align="right">
-                    <strong>Invoice No:</strong> <?= esc($invoiceNo) ?><br>
                     <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
                 </td>
             </tr>
@@ -35,10 +34,7 @@
                 <td width="60%">
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
-                <td width="40%" align="right">
-                    <strong>Invoice No. :</strong><br>
-                    <?= esc($invoiceNo) ?>
-                </td>
+                
             </tr>
 
             <tr>
@@ -58,7 +54,11 @@
                 </td>
                 <td width="40%" align="right">
                     <strong>Invoice No. :</strong><br>
-                    <?= esc($invoiceNo) ?>
+                    <input type="text"
+                        name="invoice_no"
+                        value="<?= esc($invoiceNo) ?>"
+                        style="width:180px; padding:4px;"
+                        required>
                 </td>
             </tr>
 
@@ -91,20 +91,32 @@
                 </thead>
 
                 <tbody>
-                    <!-- Service row -->
-                    <tr>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;">1</td>
-                        <td style="padding:8px; border:1px solid #ccc;">
-                            <?= esc($company['name']); ?>[<?= esc($company['type_of_company']); ?>]
-                            <input type="text" name="service_description"
-                                style="width:100%; margin-top:6px; padding:6px; border:1px solid #bbb;"
-                                placeholder="Description">
-                        </td>
-                        <td style="padding:8px; border:1px solid #ccc;">
-                            <input type="number" name="service_amount" class="service-amount" value="0"
-                                style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
-                        </td>
-                    </tr>
+                   <?php $sl = 1; ?>
+<?php foreach($works as $service): ?>
+<tr>
+    <td style="padding:8px; border:1px solid #ccc; text-align:center;"><?= $sl++; ?></td>
+    
+    <td style="padding:8px; border:1px solid #ccc;">
+        <?= esc($service['service_name']); ?> [<?= esc($service['unit']); ?>]
+        <input type="hidden" name="service_name[]" value="<?= esc($service['service_name']) ?>">
+        <input type="hidden" name="unit[]" value="<?= esc($service['unit']) ?>">
+        <input type="text" 
+               name="service_description[]" 
+               value=""
+               style="width:100%; margin-top:6px; padding:6px; border:1px solid #bbb;" 
+               placeholder="Description">
+    </td>
+    
+    <td style="padding:8px; border:1px solid #ccc;">
+        <input type="number" 
+               name="service_amount[]" 
+               class="service-amount" 
+               value=""
+               style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
+    </td>
+</tr>
+<?php endforeach; ?>
+
 
                     <!-- A -->
                     <tr style="background:#0b5c7d; color:#fff;">
@@ -117,9 +129,18 @@
                         </td>
                     </tr>
                     <?php if ($taxType === 'cgst_sgst'): ?>
+                            <tr>
+                            <td></td>
+                            <td>Add : Expenses Recoverable</td>
+                            <td>
+                                <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
+                                ➕ Add Expense
+                                </button>
+                            </td>
+                            </tr>
                     <!-- CGST Row -->
                     <tr id="cgstRow" style="background:#e9f5fb;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;">i</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
                         <td style="padding:8px; border:1px solid #ccc;">CGST @ 9%</td>
                         <td style="padding:8px; border:1px solid #ccc;">
                             <input type="text" id="cgstAmount" readonly style="width:100%; text-align:right;">
@@ -128,21 +149,78 @@
 
                     <!-- SGST Row -->
                     <tr id="sgstRow" style="background:#e9f5fb;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;">ii</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
                         <td style="padding:8px; border:1px solid #ccc;">SGST @ 9%</td>
                         <td style="padding:8px; border:1px solid #ccc;">
                             <input type="text" id="sgstAmount" readonly style="width:100%; text-align:right;">
                         </td>
                     </tr>
+                     <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">i</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
+
+                        <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">ii</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
+
+                        <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">iii</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
+
+                        <!-- Hidden Template Row -->
+                        <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
+                        <td style="text-align:center;"></td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
                     <?php endif; ?>
                     <?php if ($taxType === 'igst'): ?>
+                            <tr>
+                            <td></td>
+                            <td>Add : Expenses Recoverable</td>
+                            <td>
+                                <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
+                                ➕ Add Expense
+                                </button>
+                            </td>
+                            </tr>
                     <tr id="igstRow" style="background:#e9f5fb;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;">i</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
                         <td style="padding:8px; border:1px solid #ccc;">IGST @ 18%</td>
                         <td style="padding:8px; border:1px solid #ccc;">
                             <input type="text" id="igstAmount" readonly style="width:100%; text-align:right;">
                         </td>
                     </tr>
+                      <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">i</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
+
+                        <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">ii</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
+
+                        <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">iii</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
+
+                        <!-- Hidden Template Row -->
+                        <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
+                        <td style="text-align:center;"></td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;" name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:100%; text-align:right;" name="expense_amount[]"></td>
+                        </tr>
                     <?php endif; ?>
 
                     <!-- B -->
@@ -218,7 +296,6 @@
             <input type="hidden" name="net_amount" id="netAmountInput">
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="invoice_no" value="<?= esc($invoiceNo) ?>">
             <input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>">
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
@@ -297,57 +374,89 @@
             });
     });
 
-    function calculateTotals() {
+function calculateTotals() {
 
-        let serviceInputs = document.querySelectorAll('.service-amount');
-        let serviceValue = 0;
+    let serviceValue = 0;
+    document.querySelectorAll('.service-amount').forEach(el => {
+        serviceValue += parseFloat(el.value || 0);
+    });
 
-        serviceInputs.forEach(input => {
-            serviceValue += parseFloat(input.value || 0);
-        });
+    document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-        document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
+    let cgst = 0, sgst = 0, igst = 0;
 
-        let cgst = 0,
-            sgst = 0,
-            igst = 0;
-
-        if (document.getElementById('cgstAmount')) {
-            cgst = serviceValue * 0.09;
-            sgst = serviceValue * 0.09;
-            document.getElementById('cgstAmount').value = cgst.toFixed(2);
-            document.getElementById('sgstAmount').value = sgst.toFixed(2);
-        }
-
-        if (document.getElementById('igstAmount')) {
-            igst = serviceValue * 0.18;
-            document.getElementById('igstAmount').value = igst.toFixed(2);
-        }
-
-        let expenseTotal = cgst + sgst + igst;
-        document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
-
-        let grandTotal = serviceValue + expenseTotal;
-        document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
-
-        let advance = parseFloat(document.getElementById('advance').value || 0);
-        let netAmount = grandTotal - advance;
-
-        document.getElementById('netAmount').innerText = netAmount.toFixed(2);
-
-        document.getElementById('amountInWords').innerText =
-            numberToWords(Math.round(netAmount)).toUpperCase();
-
-        /* ✅ STORE VALUES FOR BACKEND */
-        document.getElementById('serviceValueInput').value = serviceValue.toFixed(2);
-        document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalInput').value = grandTotal.toFixed(2);
-        document.getElementById('netAmountInput').value = netAmount.toFixed(2);
-
-        document.getElementById('cgstInput').value = cgst.toFixed(2);
-        document.getElementById('sgstInput').value = sgst.toFixed(2);
-        document.getElementById('igstInput').value = igst.toFixed(2);
+    if (document.getElementById('cgstAmount')) {
+        cgst = serviceValue * 0.09;
+        sgst = serviceValue * 0.09;
+        document.getElementById('cgstAmount').value = cgst.toFixed(2);
+        document.getElementById('sgstAmount').value = sgst.toFixed(2);
     }
+
+    if (document.getElementById('igstAmount')) {
+        igst = serviceValue * 0.18;
+        document.getElementById('igstAmount').value = igst.toFixed(2);
+    }
+
+    /* ✅ SUM EXPENSES */
+    let expenseTotal = 0;
+    document.querySelectorAll('.expense').forEach(el => {
+        expenseTotal += parseFloat(el.value || 0);
+    });
+
+    document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
+
+    /* ✅ GRAND TOTAL */
+    let taxTotal = cgst + sgst + igst;
+    let grandTotal = serviceValue + taxTotal + expenseTotal;
+    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+
+    /* ✅ ADVANCE */
+    let advance = parseFloat(document.getElementById('advance').value || 0);
+    let netAmount = grandTotal - advance;
+
+    document.getElementById('netAmount').innerText = netAmount.toFixed(2);
+    document.getElementById('amountInWords').innerText =
+        numberToWords(Math.round(netAmount)).toUpperCase();
+
+    /* Hidden inputs */
+    serviceValueInput.value = serviceValue.toFixed(2);
+    expenseTotalInput.value = expenseTotal.toFixed(2);
+    grandTotalInput.value = grandTotal.toFixed(2);
+    netAmountInput.value = netAmount.toFixed(2);
+    cgstInput.value = cgst.toFixed(2);
+    sgstInput.value = sgst.toFixed(2);
+    igstInput.value = igst.toFixed(2);
+}
+
+/* ✅ ADD EXPENSE ROW */
+function addExpenseRow() {
+    const template = document.getElementById('hiddenRow');
+    const clone = template.cloneNode(true);
+
+    clone.style.display = '';
+    clone.removeAttribute('id');
+
+    // 🔥 IMPORTANT: reset values
+    clone.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+    template.parentNode.insertBefore(clone, template);
+}
+
+/* EVENTS */
+document.addEventListener('input', function (e) {
+    if (
+        e.target.classList.contains('service-amount') ||
+        e.target.classList.contains('expense') ||
+        e.target.id === 'advance'
+    ) {
+        calculateTotals();
+    }
+});
+
+/* INIT */
+calculateTotals();
 
     // Convert Number to Words (Indian Format – basic)
     function numberToWords(num) {
@@ -379,4 +488,5 @@
 
     // Initial calculation
     calculateTotals();
+    
     </script>

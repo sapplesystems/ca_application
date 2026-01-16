@@ -338,8 +338,7 @@ $html .= '</div></div></div>';
     public function store()
     {
         $request = $this->request;
-
-        
+        // print_r( $request->getPost());exit;
         $branches = $request->getPost('branches'); 
 
         // 2️⃣ 
@@ -363,6 +362,8 @@ $html .= '</div></div></div>';
             'nature_of_service'   => $request->getPost('nature_of_service'),
             'nature_of_product'   => $request->getPost('nature_of_product'),
             'condition_and_terms' => $request->getPost('condition_and_terms'),
+            'bank_name'      =>$request->getPost('bank_name'),
+            'bank_ifsc'      =>$request->getPost('bank_ifsc'),
         ];
 
         // 3️⃣ Logo upload (optional)

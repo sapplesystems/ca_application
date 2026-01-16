@@ -36,6 +36,8 @@ class CompanyMasterModel extends Model
         'nature_of_service',
         'nature_of_product',
         'condition_and_terms',
+        'bank_name',
+        'bank_ifsc',
         'created_at',
         'updated_at'
     ];

@@ -41,6 +41,7 @@ $routes->post('/saveInvoice', 'InvoiceMasterController::saveInvoice');
 $routes->get('invoice/print/(:num)', 'InvoiceMasterController::print/$1');
 $routes->get('invoice/pdf/(:num)', 'InvoiceMasterController::pdf/$1');
 $routes->get('invoice/edit/(:num)', 'InvoiceMasterController::edit/$1');
+$routes->post('updateInvoice/(:num)', 'InvoiceMasterController::updateInvoice/$1');
 $routes->delete('invoice/delete/(:num)', 'InvoiceMasterController::delete/$1');
 $routes->get('invoice/receipt/(:num)', 'InvoiceMasterController::receipt/$1');
 $routes->post('debit-note/store','InvoiceMasterController::storeDebitNote');

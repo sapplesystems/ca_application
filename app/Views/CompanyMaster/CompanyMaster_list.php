@@ -378,7 +378,7 @@
                                 <!-- Bank Branch - Updated -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">Bank Branch <span class="cmg-required">*</span></label>
-                                    <input type="text" class="cmg-input" name="bankbranch"
+                                    <input type="text" class="cmg-input" name="bank_name"
                                         placeholder="Enter bank branch name">
                                     <p class="cmg-help-text">Enter bank branch name (e.g., Main Branch Delhi).</p>
                                 </div>
@@ -386,7 +386,7 @@
                                 <!-- Bank IFSC - Updated -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">Bank IFSC <span class="cmg-required">*</span></label>
-                                    <input type="text" class="cmg-input" name="bankifsc" placeholder="SBIN0000001"
+                                    <input type="text" class="cmg-input" name="bank_ifsc" placeholder="SBIN0000001"
                                         maxlength="11">
                                     <p class="cmg-help-text">Enter 11-character IFSC code (e.g., SBIN0000001).</p>
                                 </div>
@@ -495,8 +495,8 @@
                 'company_type',
                 'name',
                 'bankaccount', // ✅ CORRECT NAME
-                'bankbranch',
-                'bankifsc',
+                'bank_name',
+                'bank_ifsc',
                 'nature_of_business',
                 'nature_of_service',
                 'nature_of_product'
@@ -519,7 +519,7 @@
             });
 
             // IFSC FORMAT CHECK
-            const bankIfscInput = $('[name="bankifsc"]');
+            const bankIfscInput = $('[name="bank_ifsc"]');
             const ifsc = bankIfscInput.val()?.trim().toUpperCase();
             const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
 

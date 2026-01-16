@@ -10,6 +10,7 @@ use App\Models\DebitNotes;
 use App\Models\WorkMasterModel;
 use App\Models\InvoiceMasterModel;
 use App\Models\ExpenseModel;
+use App\Models\InvoiceWorksModel;
 use App\Models\ReciptDetailsModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -118,14 +119,14 @@ class InvoiceMasterController extends BaseController
         . view('common/footer');
 }
 
-        public function saveInvoice(){
-          
+        public function saveInvoice()
+        {
+    //    print_r( $this->request->getPost());exit;
         $invoiceModel = new InvoiceMasterModel();
-
+        $ExpenseModel=new ExpenseModel();
+        $workModel=new InvoiceWorksModel();
                 // Collect POST data
                 $data = [
-                    'service_description' => $this->request->getPost('service_description'),
-                    'service_amount'=> $this->request->getPost('service_amount'),
                     'service_value' => $this->request->getPost('service_value'),
                     'expense_total' => $this->request->getPost('expense_total'),
                     'grand_total'   => $this->request->getPost('grand_total'),
@@ -148,12 +149,62 @@ class InvoiceMasterController extends BaseController
 
                  $insertId = $invoiceModel->insert($data);
 
-                if($insertId){
-                    return $this->response->setJSON([
-                        'status' => 'success',
-                        'invoice_id' => $insertId
-                    ]);
-                } else {
+    // If insert successful, save expenses
+    if ($insertId) {
+
+        $descriptions = $this->request->getPost('expense_description');
+        $amounts      = $this->request->getPost('expense_amount');
+
+        $expenseData = [];
+
+        foreach ($descriptions as $i => $desc) {
+            // Skip empty rows
+            if (empty($desc) || empty($amounts[$i])) {
+                continue;
+            }
+
+            $expenseData[] = [
+                'invoice_id'             => $insertId, 
+                'expense_description'  => $desc,
+                'expense_amount'       => $amounts[$i],
+                'created_at'           => date('Y-m-d H:i:s')
+            ];
+        }
+
+        // Insert all expenses in batch
+        if (!empty($expenseData)) {
+            $ExpenseModel->insertBatch($expenseData);
+        }
+    $workTitles   = $this->request->getPost('service_description') ?? [];
+    $workAmounts  = $this->request->getPost('service_amount') ?? [];
+    $serviceName =$this->request->getPost('service_name') ?? [];
+    $serviceUnit=$this->request->getPost('unit') ?? [];
+    $workData = [];
+
+    foreach ($workTitles as $i => $title) {
+        if (!empty($title) && !empty($workAmounts[$i])) {
+            $workData[] = [
+                'invoice_id'   => $insertId,
+                'service_description'   => $title,
+                'service_amount' => $workAmounts[$i],
+                'service_name'       => $serviceName[$i] ?? null,
+                'service_unit'       => $serviceUnit[$i] ?? null,
+                'created_at'           => date('Y-m-d H:i:s')
+            ];
+        }
+        
+    }
+
+    if (!empty($workData)) {
+        $workModel->insertBatch($workData);
+    }
+
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'invoice_id' => $insertId
+        ]);
+    } else {
                     return $this->response->setJSON([
                         'status' => 'error'
                     ]);
@@ -245,6 +296,14 @@ public function pdf($id)
         // Fetch client
         $clientModel = new ClientModel();
         $client = $clientModel->find($clientId);
+        $ExpenseModel = new ExpenseModel();
+
+     $expenses= $ExpenseModel
+    ->where('invoice_id', $id)
+    ->findAll();
+
+    $invoiceWorkModel=new InvoiceWorksModel();
+    $invoice_works=$invoiceWorkModel->where('invoice_id', $id)->findAll();
         
 
         if (!$invoice) {
@@ -255,9 +314,113 @@ public function pdf($id)
             'invoice' => $invoice,
             'company' => $company,
             'client' => $client,  
+            'expenses'=>$expenses,
+            'invoice_works'=> $invoice_works,
 
         ]). view('common/footer');
     }
+    
+ public function updateInvoice($id)
+{
+    // print_r($this->request->getPost()); exit;
+
+    $invoiceModel = new InvoiceMasterModel();
+    $expenseModel = new ExpenseModel();
+    $workModel    = new InvoiceWorksModel();
+
+    // ======================
+    // UPDATE INVOICE MASTER
+    // ======================
+    $invoiceModel->update($id, [
+        'service_value'        => $this->request->getPost('service_value'),
+        'expense_total'        => $this->request->getPost('expense_total'),
+        'grand_total'          => $this->request->getPost('grand_total'),
+        'total_invoice_amount'=> $this->request->getPost('net_amount'),
+        'advance_received'     => $this->request->getPost('advance_received'),
+        'updated_at'           => date('Y-m-d H:i:s')
+    ]);
+
+    // ======================
+    // EXPENSE UPDATE / INSERT
+    // ======================
+    $expenseIds   = $this->request->getPost('expense_id') ?? [];
+    $descriptions = $this->request->getPost('expense_description') ?? [];
+    $amounts      = $this->request->getPost('expense_amount') ?? [];
+
+    foreach ($descriptions as $i => $desc) {
+
+        if ($desc === '' || empty($amounts[$i])) {
+            continue;
+        }
+
+        // UPDATE
+        if (!empty($expenseIds[$i])) {
+
+            $expenseModel->update($expenseIds[$i], [
+                'expense_description' => $desc,
+                'expense_amount'      => $amounts[$i],
+                'updated_at'          => date('Y-m-d H:i:s')
+            ]);
+        }
+        // INSERT
+        else {
+
+            $expenseModel->insert([
+                'invoice_id'          => $id,
+                'expense_description' => $desc,
+                'expense_amount'      => $amounts[$i],
+                'created_at'          => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
+    // ======================
+    // UPDATE / INSERT WORKS
+    // ONLY service_amount is updated
+    // ======================
+    $workIds      = $this->request->getPost('work_id') ?? [];
+    $workAmounts  = $this->request->getPost('service_amount') ?? [];
+    $workTitles   = $this->request->getPost('service_description') ?? [];
+    $serviceNames = $this->request->getPost('service_name') ?? [];
+    $serviceUnits = $this->request->getPost('unit') ?? [];
+
+    foreach ($workAmounts as $i => $amount) {
+
+        if (empty($amount)) {
+            continue;
+        }
+
+        // UPDATE EXISTING → ONLY amount
+        if (!empty($workIds[$i])) {
+
+            $workModel->update($workIds[$i], [
+                'service_description'=> $workTitles[$i] ?? null,
+                'service_amount' => $amount,
+                'updated_at'     => date('Y-m-d H:i:s')
+            ]);
+        }
+        // INSERT NEW
+        else {
+
+            if (empty($workTitles[$i])) {
+                continue;
+            }
+
+            $workModel->insert([
+                'invoice_id'          => $id,
+                'service_description' => $workTitles[$i],
+                'service_amount'      => $amount,
+                'service_name'        => $serviceNames[$i] ?? null,
+                'service_unit'        => $serviceUnits[$i] ?? null,
+                'created_at'          => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
+    return redirect()->to(site_url('ManageInvoice/1'))
+                     ->with('success', 'Invoice updated successfully');
+}
+
     public function delete($id)
     {
         if (!$this->request->isAJAX()) {
