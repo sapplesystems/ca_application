@@ -65,17 +65,25 @@ class InvoiceMasterModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-   public function getInvoiceWithCompany($clientId)
+public function getInvoiceWithCompany($clientId)
 {
     return $this->select('
             invoices.*,
-            company_master.name AS company_name
+            company_master.name AS company_name,
+            recipt_details.date AS recipt_date,
+            recipt_details.recipt_no,
+            recipt_details.tds_amount,
+            GROUP_CONCAT(invoice_works.service_name SEPARATOR ",\n ") AS service_names
         ')
         ->join('company_master', 'company_master.id = invoices.company_id', 'left')
+        ->join('recipt_details', 'recipt_details.invoice_id = invoices.id', 'left')
+        ->join('invoice_works', 'invoice_works.invoice_id = invoices.id', 'left')
         ->where('invoices.client_id', $clientId)
+        ->groupBy('invoices.id')
         ->orderBy('invoices.id', 'DESC')
         ->findAll();
 }
+
 
 
         public function generateInvoiceNo($org, $branch)

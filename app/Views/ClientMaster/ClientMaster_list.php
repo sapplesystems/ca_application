@@ -307,6 +307,10 @@
                                 <label>ESI Number</label>
                                 <input type="text" name="esi_no" class="input">
                             </div>
+                             <div>
+                                <label>GST State</label>
+                                <input type="text" name="gst_state" class="input">
+                            </div>
 
                             <!-- IEC / Bank -->
                             <div>

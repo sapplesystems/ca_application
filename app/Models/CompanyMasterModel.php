@@ -39,7 +39,8 @@ class CompanyMasterModel extends Model
         'bank_name',
         'bank_ifsc',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'gst_state',
     ];
 
     protected bool $allowEmptyInserts = false;

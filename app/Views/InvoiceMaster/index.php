@@ -6,7 +6,7 @@
                 <?= csrf_field() ?>
                 <input type="hidden" name="client_id" id="client_id">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Generate Debit Note</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Generate Note</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -14,6 +14,15 @@
                 <div class="modal-body">
                     <div class="debitP">
                         <div class="content">
+
+                        <div class="form-group mb-3">
+                            <label><strong>Select Note Type</strong></label>
+                            <select name="note_type" class="form-control" required>
+                                <option value="">-- Select --</option>
+                                <option value="debit">Debit Note</option>
+                                <option value="credit">Credit Note</option>
+                            </select>
+                        </div>
                             <div class="title">Choose Company For Invoice</div>
 
                             <div class="radio-box">
@@ -92,11 +101,11 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#debitpopup"
                                     data-client-id="<?= esc($client['id']) ?>">
-                                    📄 Generate Debit
+                                    📄 Generate Note
                                 </a>
                                 <a href="<?= base_url('DebitNoteList/') ?><?= $client['id'] ?>"
                                 class="invoiceM-action-btn invoiceM-btn-list">
-                                    📋 Debit Note List
+                                    📋  Note List
                                 </a>
                             </div>
                         </td>
@@ -147,4 +156,6 @@ document.getElementById('debitpopup')
 
         document.getElementById('client_id').value = clientId;
     });
+
+    
 </script>

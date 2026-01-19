@@ -113,7 +113,9 @@
       </div>
 
    
-      <div class="debitnotepdf-title">Debit Note</div>
+     <div class="debitnotepdf-title">
+    <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
+</div>
 
       
       <div class="debitnotepdf-info">
@@ -123,7 +125,11 @@
             <b>Category Of Service:</b><?php echo $company['type_of_company']; ?><br />
           </div>
           <div>
-            <b>Invoice No.:</b><?php echo $debitNote['debit_no']; ?><br />
+           <?php if ($debitNote['note_type'] === 'debit') : ?>
+              <b>Invoice No.:</b> <?= esc($debitNote['debit_no']); ?><br />
+            <?php elseif ($debitNote['note_type'] === 'credit') : ?>
+              <b>Invoice No.:</b> <?= esc($debitNote['credit_no']); ?><br />
+            <?php endif; ?>
             <b>Date:</b> <?php echo $debitNote['date']; ?>
           </div>
         </div>
@@ -188,9 +194,9 @@
       <div class="debitnotepdf-bank">
         <div>
           <b>Banker's Details</b><br />
-          ICICI Bank Ltd<br />
-          Ac.No. : <?php echo $company['head_office']; ?><br />
-          IFSC Code : ICIC0000722
+          <?php echo $company['bank_name']; ?><br /><br />
+          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
+          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
         </div>
         <div class="debitnotepdf-sign">
           <b><?php echo $company['name']; ?></b><br /><br /><br />

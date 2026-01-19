@@ -13,7 +13,7 @@
                 <form method="post" action="<?= base_url('preview'); ?>">
                     <div class="Gvoice-wrapper">
                         <input type="hidden" name="client_id" value="<?= esc($clients[0]['id']); ?>">
-
+                        <input type="hidden" id="client_state" value="<?= esc($clients[0]['gst_state']); ?>">
                         <!-- Title -->
                         <div class="Gvoice-title">Choose Works And Company For Invoice</div>
 
@@ -66,7 +66,7 @@
                             <?php foreach ($companies as $company): ?>
 
                             <div class="Gvoice-option-row">
-                                <input type="radio" name="company_id" value="<?= $company['id']; ?>" />
+                                <input type="radio" name="company_id" value="<?= $company['id']; ?>" data-state="<?= esc($company['gst_state']); ?>" />
 
                                 <div class="Gvoice-option-text">
                                     <?= esc($company['name']); ?>
@@ -85,7 +85,7 @@
                         <div class="Gvoice-section-title">Choose tax For Invoice</div>
                         <div class="Gvoice-box">
                             <div class="Gvoice-option-row">
-                                <input type="radio" name="tax" value="cgst_sgst" checked>
+                                <input type="radio" name="tax" value="cgst_sgst">
                                 <div class="Gvoice-option-text">CGST &amp; SGST</div>
                             </div>
 
@@ -420,12 +420,14 @@
                 <tr>
                     <th style="width: 12%">Invoice No</th>
                     <th style="width: 10%">Invoice Date</th>
-                    <th style="width: 10%">Works</th>
-                    <th style="width: 21%">Company</th>
-                    <th style="width: 12%">Total Invoice Amount</th>
+                    <th style="width: 22%">Works</th>
+                    <th style="width: 10%">Company</th>
+                    <th style="width: 8%">Total Invoice Amount</th>
                     <th style="width: 10%">Receipt Date</th>
                     <th style="width: 5%">Receipt No</th>
+                    <th style="width: 10%">Receipt Amount</th>
                     <th style="width: 32%">Action</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -436,22 +438,24 @@
 
                 <?php if (!empty($invoices)) : ?>
                 <?php foreach ($invoices as $row) : ?>
+                  
                 <tr>
                     <td><?= esc($row['invoice_no']) ?></td>
                     <td><?= date('d-m-Y', strtotime($row['invoice_date'])) ?></td>
                     <td class="Minvoice-works-text">
-                        <?= esc($row['service_description']) ?>
+                        <?= esc($row['service_names']) ?>
                     </td>
                     <td><?= esc($row['company_name']) ?></td>
                     <td>
                         <?= number_format($row['total_invoice_amount'], 2) ?>
                     </td>
                     <td>
-                        <?= !empty($row['invoice_date']) 
-                            ? date('d-m-Y', strtotime($row['invoice_date'])) 
+                        <?= !empty($row['recipt_date']) 
+                            ? date('d-m-Y', strtotime($row['recipt_date'])) 
                             : '-' ?>
                     </td>
-                    <td><?= esc($row['id']) ?></td>
+                    <td><?= esc($row['recipt_no']) ?></td>
+                    <td><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
 
                     <td>
                         <!-- Edit -->
@@ -477,6 +481,7 @@
                             Print &amp; Preview
                         </button>
                     </td>
+                    <td></td>
                 </tr>
                 <?php endforeach; ?>
                 <?php else : ?>
@@ -487,14 +492,53 @@
 
                 <!-- Total row -->
                 <tr class="Minvoice-total-row">
-                    <td colspan="4" class="Minvoice-text-right">Total</td>
+                    <td  class="Minvoice-text-right">Total Invoice Amount</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
                         <?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?>
                     </td>
-                    <td colspan="2" class="Minvoice-closing-balance">Closing<br>Balance</td>
-                    <td class="Minvoice-text-right Minvoice-amount-bold">
-                        <?= number_format(array_sum(array_column($invoices, 'amount')), 2) ?>
+                    <td  class="Minvoice-text">Total Recipt Amount</td>
+                    <td class="Minvoice-text Minvoice-amount-bold">
+                        <?= number_format(array_sum(array_column($receipt, 'tds_amount')), 2) ?>
                     </td>
+                  <?php
+                    $debitTotal = array_sum(
+                        array_column(
+                            array_filter($debit, function ($row) {
+                                return isset($row['note_type']) && $row['note_type'] !== 'credit';
+                            }),
+                            'total_amount'
+                        )
+                    );
+
+                    $creditTotal = array_sum(
+                        array_column(
+                            array_filter($debit, function ($row) {
+                                return isset($row['note_type']) && $row['note_type'] === 'credit';
+                            }),
+                            'total_amount'
+                        )
+                    );
+                    ?>
+
+
+                   <td  class="Minvoice-text-right">Total Debit Amount</td>
+                    <td class="Minvoice-text-right Minvoice-amount-bold">
+                            <?= number_format($debitTotal, 2) ?>
+                        </td>
+                     <td  class="Minvoice-text-right">Total Creadit Amount</td>
+                    <td class="Minvoice-text-right Minvoice-amount-bold">
+                        <?= number_format($creditTotal, 2) ?>
+                    </td>
+                    <?php
+                        $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
+                        $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
+
+                        $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
+                        ?>
+                    <td  class="Minvoice-closing-balance">Closing<br>Balance</td>
+                    <td class="Minvoice-text-right Minvoice-amount-bold">
+    <?= number_format($closingBalance, 2) ?>
+</td>
                     <td></td>
                 </tr>
             </tbody>
@@ -881,4 +925,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const clientState = document.getElementById('client_state').value;
+
+    // Get tax radio buttons
+    const cgstSgst = document.querySelector('input[name="tax"][value="cgst_sgst"]');
+    const igst = document.querySelector('input[name="tax"][value="igst"]');
+
+    // Listen for company selection
+    document.querySelectorAll('input[name="company_id"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            const companyState = this.getAttribute('data-state');
+
+            if (companyState === clientState) {
+                cgstSgst.checked = true; // Same state → CGST & SGST
+            } else {
+                igst.checked = true; // Different state → IGST
+            }
+        });
+    });
+});
+
+
 </script>

@@ -11,9 +11,10 @@
                 <thead>
                     <tr>
                         <th class="invoiceM-sno">Sr No</th>
-                        <th style="width:20%;">Debit Note No</th>
+                        <th style="width:20%;">Debit Note No /Credit Note No.</th>
                         <th>Client Name</th>
                         <th>Company Name</th>
+                        <th>Note Type</th>
                         <th>Date</th>
                         <th>TotalAmount</th>
                         <th>Amount Received</th>
@@ -28,10 +29,15 @@
                     <tr>
                         <td class="invoiceM-sno"><?= $i++ ?></td>
                         <td class="invoiceM-client-name">
-                            <?= esc($debit['debit_no']) ?>
+                              <?= esc(
+        $debit['note_type'] === 'debit'
+            ? $debit['debit_no']
+            : $debit['credit_no']
+    ); ?>
                         </td>
                         <td><?= $debit['legal_name'] ?></td>
                         <td><?= $debit['company_name'] ?></td>
+                        <td><?= ucfirst(esc($debit['note_type'])) ?></td>
                         <td> <?= esc($debit['date']) ?></td>
                         <td> <?= esc($debit['total_amount']) ?></td>
                         <td><?= esc($debit['advance_amount']) ?></td>

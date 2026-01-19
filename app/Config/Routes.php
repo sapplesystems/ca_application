@@ -58,6 +58,8 @@ $routes->get('DebitNoteList/(:num)','InvoiceMasterController::debitlist/$1');
 $routes->get('debits/delete/(:num)', 'InvoiceMasterController::debitDelete/$1');
 $routes->get('debits/edit/(:num)', 'InvoiceMasterController::debitEdit/$1');
 $routes->post('debits/update/(:num)', 'InvoiceMasterController::debitUpdate/$1');
+$routes->post('Expense/delete', 'InvoiceMasterController::ExpenseDelete');
+
 
 
 

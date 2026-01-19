@@ -1,11 +1,15 @@
 <div class="invoiceM-containerr">
     <div class=" inv-header-main">
-        <h1 class="inv-title-main">Debit Note</h1>
+       <h1 class="inv-title-main">
+    <span id="noteTitle">Debit Note</span>
+</h1>
         <a href="javascript:history.back()" class="inv-back-btn-main">
             Back to Generate Invoice Grid
         </a>
     </div>
     <form method="post" action="<?= site_url('/savedebit') ?>" id="debitForm">
+        <input type="hidden" name="note_type" id="noteTypeHidden" value="debit">
+
         <table width="100%" border="0">
             <tr>
                 <td>
@@ -19,7 +23,6 @@
                 </td>
 
                 <td align="right">
-                    <strong>Debit Note No:</strong>DN/END/1718/2425//2625/185<br>
                     <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
                 </td>
             </tr>
@@ -34,10 +37,6 @@
             <tr>
                 <td width="60%">
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-                </td>
-                <td width="40%" align="right">
-                    <strong>Debit Note No. :</strong><br>
-                    DN/END/1718/2425//2625/185
                 </td>
             </tr>
 
@@ -57,8 +56,12 @@
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
                 <td width="40%" align="right">
-                    <strong>Debit Note No. :</strong><br>
-                    DN/END/1718/2425//2625/185
+                    <strong> Debit Note No. :</strong><br>
+                    <input type="text"
+                        name="debit_no"
+                        value="<?= esc($debitNo); ?>"
+                        style="width:180px; padding:4px;"
+                        required>
                 </td>
             </tr>
 
@@ -107,33 +110,40 @@
                         <td style="text-align:center;">i</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:100%; text-align:right;"
-                                name="expense_amount[]"></td>
+                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                                name="expense_amount[]">
+                             <button type="button" class="btn btn-danger btn-sm delete-row"style="background-color: red;">✖</button>
+
+                            </td>
                     </tr>
 
                     <tr class="expense-row" style="background:#e9f5fb;">
                         <td style="text-align:center;">ii</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:100%; text-align:right;"
-                                name="expense_amount[]"></td>
+                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                                name="expense_amount[]">
+                             <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
+
+                            </td>
                     </tr>
 
                     <tr class="expense-row" style="background:#e9f5fb;">
                         <td style="text-align:center;">iii</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:100%; text-align:right;"
-                                name="expense_amount[]"></td>
-                    </tr>
+                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                                name="expense_amount[]">
+                             <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
                     <!-- Hidden Template Row -->
                     <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
                         <td style="text-align:center;"></td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:100%; text-align:right;"
-                                name="expense_amount[]"></td>
+                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                                name="expense_amount[]">
+                             <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
                     </tr>
 
                     <!-- Totals / Grand Total / Advance / Net rows -->
@@ -179,13 +189,15 @@
                 </tbody>
             </table>
 
-            <div class="bank-details">
-                <strong>Banker's Details</strong><br>
-                SBI<br>
-                <?= esc($company['head_office']); ?><br>
-                Ac.No.: <?= esc($company['bank_ac_no']); ?><br>
-                IFSC Code: ICIC0000722
-            </div>
+             <div class="debitnotepdf-bank">
+        <div>
+          <b>Banker's Details</b><br />
+          <?php echo $company['bank_name']; ?><br />
+          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
+          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+        </div>
+        
+      </div>
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
@@ -197,8 +209,6 @@
             <input type="hidden" name="expense_total" id="expenseTotalInput" value="0">
             <input type="hidden" name="grand_total" id="grandTotalInput" value="0">
             <input type="hidden" name="net_amount" id="netAmountInput" value="0">
-            <input type="hidden" name="debit_no" value="DN/END/1718/2425//2625/185">
-
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
             <input type="hidden" name="debit_date" value="<?= date('Y-m-d') ?>">
@@ -450,4 +460,68 @@
         const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
         tbody.insertBefore(newRow, totalsRow);
     }
+    document.addEventListener('click', function (e) {
+    if (!e.target.classList.contains('delete-row')) return;
+
+    const row = e.target.closest('tr');
+    const expenseId = e.target.dataset.expenseId; // DB ID
+    const tbody = document.getElementById('expenseBody');
+
+    Swal.fire({
+        title: 'Delete this expense?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete'
+    }).then(result => {
+
+        if (!result.isConfirmed) return;
+
+        // If expense exists in DB → delete via AJAX
+        if (expenseId) {
+            fetch('<?= site_url("Expense/delete") ?>', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ expense_id: expenseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    removeRow(row, tbody);
+                } else {
+                    Swal.fire('Error', data.message || 'Delete failed', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Server error', 'error');
+            });
+        } 
+        // If not saved yet → just remove from UI
+        else {
+            removeRow(row, tbody);
+        }
+    });
+});
+
+function removeRow(row, tbody) {
+    const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
+
+    if (rows.length <= 1) {
+        Swal.fire('Warning', 'At least one expense row is required.', 'warning');
+        return;
+    }
+
+    row.remove();
+
+    // Re-index rows
+    tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])')
+        .forEach((tr, index) => {
+            tr.cells[0].textContent = index + 1;
+        });
+
+    calculateTotals();
+}
     </script>

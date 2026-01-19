@@ -141,7 +141,10 @@ class CompanyMasterController extends BaseController
                     <input type="text" class="cmg-input" name="gstin" value="' . esc($company['gstin']) . '">
                 </div>';
 
-               
+                $html .='<div class="cmg-field">
+                    <label class="cmg-label">GST State</label>
+                    <input type="text" class="cmg-input" name="gst_state" value="' . esc($company['gst_state']) . '">
+                </div>'   ;            
 
                 /* ================= Branches ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
@@ -257,6 +260,20 @@ $html .= '</div></div></div>';
                     Select default bank account for this company.
                 </p>
             </div>';
+            $html .= '<div class="cmg-field">
+                <label class="cmg-label">Bank Name</label>
+                <input type="text" class="cmg-input" name="bank_name" 
+                    value="' . esc($company['bank_name']) . '" 
+                    placeholder="Bank Name">
+               
+            </div>';
+            $html .= '<div class="cmg-field">
+                <label class="cmg-label">Bank Ifsc</label>
+                <input type="text" class="cmg-input" name="bank_ifsc" 
+                    value="' . esc($company['bank_ifsc']) . '" 
+                    placeholder="SBIN0000001">
+               
+            </div>';
                 /* ================= Logo Upload ================= */
                 $html .= '<div class="cmg-field">
                     <label class="cmg-label">Logo Upload</label>
@@ -364,6 +381,7 @@ $html .= '</div></div></div>';
             'condition_and_terms' => $request->getPost('condition_and_terms'),
             'bank_name'      =>$request->getPost('bank_name'),
             'bank_ifsc'      =>$request->getPost('bank_ifsc'),
+            'gst_state'      =>$request->getPost('gst_state'),
         ];
 
         // 3️⃣ Logo upload (optional)
@@ -411,6 +429,7 @@ $html .= '</div></div></div>';
 
    public function update()
 {
+    // print_r($this->request->getPost());exit;
     $request = $this->request;
 
     $companyId = $request->getPost('company_id');
@@ -443,6 +462,9 @@ $html .= '</div></div></div>';
         'nature_of_service'    => $request->getPost('nature_of_service'),
         'nature_of_product'    => $request->getPost('nature_of_product'),
         'condition_and_terms'  => $request->getPost('condition_and_terms'),
+        'bank_name'      =>$request->getPost('bank_name'),
+        'bank_ifsc'      =>$request->getPost('bank_ifsc'),
+        'gst_state'      =>$request->getPost('gst_state'),
     ];
 
     $logoFile = $request->getFile('logo');

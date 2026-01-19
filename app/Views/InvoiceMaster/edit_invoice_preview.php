@@ -94,7 +94,7 @@ function romanNumeral($num) {
 </tr>
 </thead>
 
-<tbody>
+<tbody id="expenseBody">
   <?php $sl = 1; ?>
 <?php foreach ($invoice_works as $service): ?>
 <tr>
@@ -171,7 +171,9 @@ function romanNumeral($num) {
                        class="expense"
                        name="expense_amount[]"
                        value="<?= esc($exp['expense_amount']); ?>"
-                       style="width:100%; text-align:right;">
+                       style="width:85%; text-align:right;">
+              <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+
             </td>
         </tr>
     <?php endforeach; ?>
@@ -183,7 +185,9 @@ function romanNumeral($num) {
         <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
     </td>
     <td>
-        <input type="number" class="expense" name="expense_amount[]" style="width:100%; text-align:right;">
+        <input type="number" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
+       <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+
     </td>
 </tr>
 <?php endif; ?>
@@ -220,7 +224,9 @@ function romanNumeral($num) {
                        class="expense"
                        name="expense_amount[]"
                        value="<?= esc($exp['expense_amount']); ?>"
-                       style="width:100%; text-align:right;">
+                       style="width:85%; text-align:right;">
+              <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+
             </td>
         </tr>
     <?php endforeach; ?>
@@ -232,7 +238,9 @@ function romanNumeral($num) {
         <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
     </td>
     <td>
-        <input type="number" class="expense" name="expense_amount[]" style="width:100%; text-align:right;">
+        <input type="number" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
+        <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+
     </td>
 </tr>
 <?php endif; ?>
@@ -264,12 +272,12 @@ function romanNumeral($num) {
 </tr>
 
 <tr style="background:#0b5c7d;color:#fff;">
-    <td align="center">C</td>
-    <td>
+    <td align="center" style="color:black;">C</td>
+    <td style="color:black;">
         <strong>Amount In Words</strong><br>
         <span id="amountInWords"></span>
     </td>
-    <td align="right">
+    <td align="right" style="color:black;" >
         <strong id="netAmount">0</strong>
     </td>
 </tr>
@@ -277,6 +285,12 @@ function romanNumeral($num) {
 </table>
 
 <br>
+        <div>
+          <b>Banker's Details</b><br />
+          <?php echo $company['bank_name']; ?><br />
+          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
+          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+        </div>
 
 <strong>Terms & Conditions</strong>
 <textarea name="term_condition" style="width:100%;height:80px;">
@@ -308,6 +322,64 @@ function romanNumeral($num) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // prevent normal form submit
+
+        const form = this;
+
+        // Submit form via AJAX
+        fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Invoice Updated!',
+                        text: 'Your invoice has been updated successfully.',
+                        icon: 'success',
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Print Invoice',
+                        denyButtonText: 'Download PDF',
+                        cancelButtonText: 'Close'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Print invoice
+                            window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id,
+                                '_blank');
+                        } else if (result.isDenied) {
+                            // Download PDF
+                            window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id,
+                                '_blank');
+                        } else if (result.isDismissed) {
+                            // Check if user clicked cancel
+                            // Optional: redirect to invoice list
+                            Swal.fire({
+                                title: 'Redirect?',
+                                text: 'Do you want to go back to invoice list?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, Redirect',
+                                cancelButtonText: 'No'
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.href =
+                                        '<?= site_url("InvoiceManagment") ?>';
+                                }
+                                // else just close popup
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error!', 'Network or server error', 'error');
+            });
+    });
 function calculateTotals() {
 
     /* SERVICE TOTAL */
@@ -433,4 +505,69 @@ document.querySelector('.service-amount').addEventListener('input', calculateTot
 document.getElementById('advance').addEventListener('input', calculateTotals);
 
 calculateTotals();
+
+document.addEventListener('click', function (e) {
+    if (!e.target.classList.contains('delete-row')) return;
+
+    const row = e.target.closest('tr');
+    const expenseId = e.target.dataset.expenseId; // DB ID
+    const tbody = document.getElementById('expenseBody');
+
+    Swal.fire({
+        title: 'Delete this expense?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete'
+    }).then(result => {
+
+        if (!result.isConfirmed) return;
+
+        // If expense exists in DB → delete via AJAX
+        if (expenseId) {
+            fetch('<?= site_url("Expense/delete") ?>', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ expense_id: expenseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    removeRow(row, tbody);
+                } else {
+                    Swal.fire('Error', data.message || 'Delete failed', 'error');
+                }
+            })
+            .catch(() => {
+                Swal.fire('Error', 'Server error', 'error');
+            });
+        } 
+        // If not saved yet → just remove from UI
+        else {
+            removeRow(row, tbody);
+        }
+    });
+});
+
+function removeRow(row, tbody) {
+    const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
+
+    if (rows.length <= 1) {
+        Swal.fire('Warning', 'At least one expense row is required.', 'warning');
+        return;
+    }
+
+    row.remove();
+
+    // Re-index rows
+    tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])')
+        .forEach((tr, index) => {
+            tr.cells[0].textContent = index + 1;
+        });
+
+    calculateTotals();
+}
 </script>

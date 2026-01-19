@@ -1,45 +1,15 @@
-<?php
-function toRoman($number)
-{
-    $map = [
-        'm'  => 1000,
-        'cm' => 900,
-        'd'  => 500,
-        'cd' => 400,
-        'c'  => 100,
-        'xc' => 90,
-        'l'  => 50,
-        'xl' => 40,
-        'x'  => 10,
-        'ix' => 9,
-        'v'  => 5,
-        'iv' => 4,
-        'i'  => 1,
-    ];
-
-    $result = '';
-    foreach ($map as $roman => $value) {
-        while ($number >= $value) {
-            $result .= $roman;
-            $number -= $value;
-        }
-    }
-    return $result;
-}
-?>
-
-
-
 <div class="invoiceM-containerr">
     <div class=" inv-header-main">
-        <h1 class="inv-title-main">  <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?></h1>
-        
+       <h1 class="inv-title-main">
+    <span id="noteTitle">Credit Note</span>
+</h1>
         <a href="javascript:history.back()" class="inv-back-btn-main">
             Back to Generate Invoice Grid
         </a>
     </div>
-    <form id="debitForm" method="post" action="<?= base_url('debits/update/' . $debitNote['id']) ?>">
-    <?= csrf_field() ?>
+    <form method="post" action="<?= site_url('/savedebit') ?>" id="debitForm">
+        <input type="hidden" name="note_type" id="noteTypeHidden" value="credit">
+
         <table width="100%" border="0">
             <tr>
                 <td>
@@ -60,7 +30,7 @@ function toRoman($number)
 
         <hr>
         <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-             <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
+            Credit Note
         </div>
 
         <table width="100%" border="0" cellpadding="6">
@@ -76,7 +46,7 @@ function toRoman($number)
                 </td>
                 <td align="right">
                     <strong>Date :</strong><br>
-                    <?= esc($debitNote['date']) ?>
+                    <?= date('d-m-Y'); ?>
                 </td>
             </tr>
         </table>
@@ -86,20 +56,12 @@ function toRoman($number)
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
                 <td width="40%" align="right">
-                    <strong>  <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note No.' : 'Credit Note No.'; ?></strong><br>
-                    <?php if ($debitNote['note_type'] === 'debit') : ?>
-                     <input type="text"
-                        name="debit_no"
-                        value="<?= esc($debitNote['debit_no']); ?>"
-                        style="width:180px; padding:4px;"
-                        required>
-                        <?php elseif ($debitNote['note_type'] === 'credit') : ?>
-                             <input type="text"
+                    <strong>Credit Note No. :</strong><br>
+                   <input type="text"
                         name="credit_no"
-                        value="<?= esc($debitNote['credit_no']); ?>"
+                        value="<?= esc($creditNo); ?>"
                         style="width:180px; padding:4px;"
                         required>
-                    <?php endif; ?>
                 </td>
             </tr>
 
@@ -144,33 +106,35 @@ function toRoman($number)
                     </tr>
 
                     <!-- Existing Expense Rows -->
-                    <?php if(!empty($expenses)): ?>
-                    <?php foreach($expenses as $index => $exp): ?>
-                    <tr class="expense-row" style="background:#e9f5fb;">
-                        <td style="text-align:center;"><?= $index + 1 ?></td>
-                        <td>
-                            <input type="text" placeholder="Expense Recoverable" style="width:100%;"
-                                name="expense_description[]" value="<?= esc($exp['expense_description']) ?>">
-                        </td>
-                        <td>
-                            <input type="number" class="expense" style="width:85%; text-align:right;"
-                                name="expense_amount[]" value="<?= esc($exp['expense_amount']) ?>">
-                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php else: ?>
                     <tr class="expense-row" style="background:#e9f5fb;">
                         <td style="text-align:center;">i</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
                         <td><input type="number" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
-                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+                            <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+
                             </td>
-                                
                     </tr>
-                    <?php endif; ?>
+
+                    <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">ii</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
+                                name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                                name="expense_amount[]">
+                             <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
+
+                            </td>
+                    </tr>
+
+                    <tr class="expense-row" style="background:#e9f5fb;">
+                        <td style="text-align:center;">iii</td>
+                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
+                                name="expense_description[]"></td>
+                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                                name="expense_amount[]">
+                            <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
                     <!-- Hidden Template Row -->
                     <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
@@ -179,7 +143,8 @@ function toRoman($number)
                                 name="expense_description[]"></td>
                         <td><input type="number" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
-                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+                             <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
+
                             </td>
                     </tr>
 
@@ -206,8 +171,7 @@ function toRoman($number)
                         <td style="padding:8px; border:1px solid #ccc;">B</td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;">(-) Advances Received</td>
                         <td style="padding:8px; border:1px solid #ccc;">
-                            <input type="number" value="<?= esc($debitNote['advance_amount'] ?? 0) ?>" id="advance"
-                                name="advance_received"
+                            <input type="number" value="0" id="advance" name="advance_received"
                                 style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
                         </td>
                     </tr>
@@ -227,34 +191,29 @@ function toRoman($number)
                 </tbody>
             </table>
 
-             <div class="debitnotepdf-bank">
-        <div>
-          <b>Banker's Details</b><br />
-          <?php echo $company['bank_name']; ?><br />
-          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+            <div class="debitnotepdf-bank">
+            <div>
+            <b>Banker's Details</b><br />
+            <?php echo $company['bank_name']; ?><br />
+            Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
+            IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+            </div>
         </div>
-      </div>
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
-              <textarea
-    style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
-    name="term_condition"><?= esc($debitNote['terms_and_conditions'] ?? '') ?></textarea>
-
+                <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
+                    name="term_condition">
 
     </textarea>
             </div>
             <input type="hidden" name="expense_total" id="expenseTotalInput" value="0">
             <input type="hidden" name="grand_total" id="grandTotalInput" value="0">
             <input type="hidden" name="net_amount" id="netAmountInput" value="0">
-            <input type="hidden" name="debit_no" value="<?= esc($debitNote['debit_no']); ?>">
-
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="debit_date" value="<?= esc(date('Y-m-d')) ?>">
+            <input type="hidden" name="debit_date" value="<?= date('Y-m-d') ?>">
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
-
 
             <div style="margin-top:20px; text-align:center;">
                 <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Debit</button>
@@ -270,77 +229,66 @@ function toRoman($number)
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script>
-document.getElementById('debitForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+    <script>
+    document.getElementById('debitForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // prevent normal form submit
 
-    const form = this;
+        const form = this;
 
-    fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        if (data.status === 'success') {
-
-            Swal.fire({
-                title: data.mode === 'update'
-                    ? 'Debit Updated!'
-                    : 'Debit Saved!',
-                text: 'Debit Note processed successfully.',
-                icon: 'success',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Print Invoice',
-                denyButtonText: 'Download PDF',
-                cancelButtonText: 'Close'
-            }).then(result => {
-
-                if (result.isConfirmed) {
-                    window.open(
-                        '<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                        '_blank'
-                    );
-                }
-
-                else if (result.isDenied) {
-                    window.open(
-                        '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
-                        '_blank'
-                    );
-                }
-
-                else if (result.isDismissed) {
+        // Submit form via AJAX
+        fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
                     Swal.fire({
-                        title: 'Redirect?',
-                        text: 'Go back to invoice list?',
-                        icon: 'question',
+                        title: 'Debit Saved!',
+                        text: 'Your Debit has been saved successfully.',
+                        icon: 'success',
+                        showDenyButton: true,
                         showCancelButton: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: 'No'
-                    }).then(res => {
-                        if (res.isConfirmed) {
-                            window.location.href =
-                                '<?= site_url("InvoiceManagment") ?>';
+                        confirmButtonText: 'Print Debit',
+                        denyButtonText: 'Download PDF',
+                        cancelButtonText: 'Close'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Print invoice
+                            window.open('<?= site_url("DebitNote/") ?>' + data.invoice_id,
+                                '_blank');
+                        } else if (result.isDenied) {
+                            // Download PDF
+                            window.open('<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
+                                '_blank');
+                        } else if (result.isDismissed) {
+                            // Check if user clicked cancel
+                            // Optional: redirect to invoice list
+                            Swal.fire({
+                                title: 'Redirect?',
+                                text: 'Do you want to go back to invoice list?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, Redirect',
+                                cancelButtonText: 'No'
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.href =
+                                        '<?= site_url("InvoiceManagment") ?>';
+                                }
+                                // else just close popup
+                            });
                         }
                     });
+                } else {
+                    Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
                 }
+            })
+            .catch(err => {
+                Swal.fire('Error!', 'Network or server error', 'error');
             });
-
-        } else {
-            Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
-        }
-    })
-    .catch(() => {
-        Swal.fire('Error!', 'Network or server error', 'error');
     });
 
-});
     function numberToWords(num) {
         if (num === 0) return 'ZERO';
 
@@ -493,19 +441,27 @@ document.getElementById('debitForm').addEventListener('submit', function (e) {
         return result;
     }
 
-/* ================= INPUT LISTENERS ================= */
-function attachInputListeners() {
-    document.querySelectorAll('.expense, #advance').forEach(el => {
-        el.removeEventListener('input', calculateTotals);
-        el.addEventListener('input', calculateTotals);
-    });
-}
 
-/* ================= INIT ================= */
-attachInputListeners();
-calculateTotals();
+    function addExpenseRow() {
+        const tbody = document.getElementById('expenseBody');
+        const hiddenRow = document.getElementById('hiddenRow');
 
-document.addEventListener('click', function (e) {
+        // Count existing visible expense rows
+        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
+
+        // Clone the hidden row
+        const newRow = hiddenRow.cloneNode(true);
+        newRow.style.display = ''; // make it visible
+        newRow.id = ''; // remove id to avoid duplicates
+
+        // Set the first cell to dynamic Roman numeral
+        newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
+
+        // Append before totals row
+        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
+        tbody.insertBefore(newRow, totalsRow);
+    }
+      document.addEventListener('click', function (e) {
     if (!e.target.classList.contains('delete-row')) return;
 
     const row = e.target.closest('tr');
@@ -569,6 +525,4 @@ function removeRow(row, tbody) {
 
     calculateTotals();
 }
-
-
-</script>
+    </script>

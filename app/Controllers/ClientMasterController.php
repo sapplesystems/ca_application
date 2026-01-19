@@ -90,7 +90,7 @@ class ClientMasterController extends BaseController
                 $html .= '<div><label>PAN</label><input type="text" name="pan" class="input" value="' . $client['pan'] . '"></div>';
                 $html .= '<div><label>GSTIN</label><input type="text" name="gstin" class="input" value="' . $client['gstin'] . '"></div>';
                 $html .= '<div><label>ESI Number</label><input type="text" name="esi_no" class="input" value="' . $client['esi_no'] . '"></div>';
-
+                $html .= '<div><label>GST State</label><input type="text" name="gst_state" class="input" value="' . $client['gst_state'] . '"></div>';
                 // IEC / Bank
                 $html .= '<div><label>Export & Import Code</label><input type="text" name="iec_code" class="input" value="' . $client['iec_code'] . '"></div>';
                 $html .= '<div class="form-row-full"><label>Bank Account Number</label><input type="text" name="bank_account_no" class="input" value="' . $client['bank_account_no'] . '"></div>';
@@ -193,6 +193,7 @@ class ClientMasterController extends BaseController
             'nature_of_product'        =>$this->request->getPost('nature_of_product'),
             'billing_emails'           => $this->request->getPost('billing_emails'),
             'payment_terms'            => $this->request->getPost('payment_terms'),
+            'gst_state'               => $this->request->getPost('gst_state'),
         ];
 
         $result = $clientModel->insert($data);
@@ -264,6 +265,7 @@ class ClientMasterController extends BaseController
             'nature_of_product'        => $this->request->getPost('nature_of_product'),
             'billing_emails'           => $this->request->getPost('billing_emails'),
             'payment_terms'            => $this->request->getPost('payment_terms'),
+            'gst_state'               => $this->request->getPost('gst_state'),
         ];
 
         // Update the client

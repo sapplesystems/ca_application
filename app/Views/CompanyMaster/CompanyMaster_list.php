@@ -256,6 +256,11 @@
                                     <label class="cmg-label">IEC</label>
                                     <input type="text" class="cmg-input" name="iec" placeholder="Import Export Code">
                                 </div>
+                                <div class="cmg-field">
+                                    <label class="cmg-label">GST State<span class="cmg-required">*</span></label>
+                                    <input type="text" class="cmg-input" name="gst_state"
+                                        placeholder="Enter gst state">
+                                </div>
 
                                 <!-- Sister Concerns -->
                                 <div class="cmg-field cmg-field--full">
@@ -370,7 +375,7 @@
                                 <!-- Bank Account (pehle se hai) -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">Bank Account<span class="cmg-required">*</span></label>
-                                    <input type="text" class="cmg-input" name="bankaccount"
+                                    <input type="text" class="cmg-input" name="bank_account"
                                         placeholder="23456789012345">
                                     <p class="cmg-help-text">Select default bank account for this company.</p>
                                 </div>
@@ -382,6 +387,7 @@
                                         placeholder="Enter bank branch name">
                                     <p class="cmg-help-text">Enter bank branch name (e.g., Main Branch Delhi).</p>
                                 </div>
+
 
                                 <!-- Bank IFSC - Updated -->
                                 <div class="cmg-field">

@@ -37,13 +37,13 @@ class InvoiceMasterController extends BaseController
         $clientModel = new ClientModel();
 
         $clients = $clientModel
-            ->select('id, legal_name')
+            ->select('id, legal_name,gst_state')
             ->where('id', $id)
             ->findAll();
 
         $companyModel = new CompanyMasterModel();
         $companies = $companyModel
-        ->select('id, name,type_of_company')
+        ->select('id, name,type_of_company,gst_state')
         ->findAll();
         $workModel = new WorkMasterModel();
         $works = $workModel->select('id, service_name ,sac_code,frequency')->findAll();
@@ -51,6 +51,8 @@ class InvoiceMasterController extends BaseController
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
         $receiptModel=new ReciptDetailsModel();
         $receipt=$receiptModel->select('*')->findAll();
+        $debitModel=new DebitNotes();
+        $debit=$debitModel->select('note_type,total_amount')->findAll();
 
         echo view('common/header');
         
@@ -60,6 +62,7 @@ class InvoiceMasterController extends BaseController
             'works' => $works,
             'invoices' => $invoice,
             'receipt'=>$receipt,
+            'debit'=>$debit
              
         ]);
         echo view('common/footer');
@@ -417,8 +420,10 @@ public function pdf($id)
         }
     }
 
-    return redirect()->to(site_url('ManageInvoice/1'))
-                     ->with('success', 'Invoice updated successfully');
+   return $this->response->setJSON([
+    'status'     => 'success',
+    'invoice_id' => $id
+]);
 }
 
     public function delete($id)
@@ -473,23 +478,32 @@ public function pdf($id)
 
 public function storeDebitNote()
     {
-        
+        // print_r($this->request->getPost());exit;
          $companyId = $this->request->getPost('company_debit');
          $clientId = $this->request->getPost('client_id');
-
-         $clientModel = new ClientModel();
+        $noteType = $this->request->getPost('note_type');
+        $clientModel = new ClientModel();
         $client = $clientModel->find($clientId);
         //  print_r($companyId); exit;
         $companyModel = new CompanyMasterModel();
         $company = $companyModel->find($companyId);
-        
+        if($noteType==='debit'){{
+            $DebitModel = new DebitNotes();
+             $debitNo = $DebitModel->generateInvoiceNo('DN', '001');
         return view('common/header')
-            . view('InvoiceMaster/DebitNote', ['company' => $company, 'client' => $client])
-            . view('common/footer');
+            . view('InvoiceMaster/DebitNote', ['company' => $company, 'client' => $client,'debitNo'=>$debitNo])
+            . view('common/footer');};
+        }else{
+             $DebitModel = new DebitNotes();
+             $creditNo = $DebitModel->generateInvoiceNo('CN', '001');
+            return view('common/header')
+                . view('InvoiceMaster/CreditNote', ['company' => $company, 'client' => $client,'creditNo'=>$creditNo])
+                . view('common/footer');};
     }
 
    public function saveDebitNote()
 {
+    // print_r($this->request->getPost()); exit;
     // Load models
     $DebitModel   = new DebitNotes();
     $ExpenseModel = new ExpenseModel();
@@ -497,6 +511,7 @@ public function storeDebitNote()
     // Collect debit note data
     $data = [
         'debit_no'                  => $this->request->getPost('debit_no'),
+        'credit_no'                 => $this->request->getPost('credit_no'),
         'total_recoverable_expenses' => $this->request->getPost('expense_total'),
         'advance_amount'            => $this->request->getPost('advance_received'),
         'total_amount'              => $this->request->getPost('net_amount'),
@@ -505,6 +520,7 @@ public function storeDebitNote()
         'terms_and_conditions'      => $this->request->getPost('term_condition'),
         'date'                      => $this->request->getPost('debit_date'),
         'created_by'                => $this->request->getPost('created_by'),
+        'note_type'                 => $this->request->getPost('note_type'),
     ];
 
     // Insert debit note
@@ -929,6 +945,31 @@ public function debitEdit($id)
         'invoice_id' => $id
     ]);
 }
+public function ExpenseDelete()
+{
+    if (!$this->request->isAJAX()) {
+        return $this->response->setJSON(['status' => 'error']);
+    }
 
+    $data = $this->request->getJSON(true);
+    $expenseId = $data['expense_id'] ?? null;
 
+    if (!$expenseId) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Invalid expense ID'
+        ]);
+    }
+
+    $expenseModel = new ExpenseModel();
+
+    if ($expenseModel->delete($expenseId)) {
+        return $this->response->setJSON(['status' => 'success',]);
+    }
+
+    return $this->response->setJSON([
+        'status' => 'error',
+        'message' => 'Unable to delete'
+    ]);
+}
 }
