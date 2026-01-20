@@ -32,11 +32,19 @@
                         <!-- Choose work section -->
                         <div class="Gvoice-section-title">Choose Work For Invoice</div>
                         <div class="Gvoice-box">
-
+                         <input type="text"
+                            id="workSearch"
+                            placeholder="Search work..."
+                            class="Gvoice-search-input">
                             <?php if (!empty($works)): ?>
                             <?php foreach ($works as $work): ?>
 
-                            <div class="Gvoice-option-row">
+                             <div class="Gvoice-option-row work-option-row"
+                                data-search="<?= strtolower(
+                                    $work['service_name'] . ' ' .
+                                    $work['sac_code'] . ' ' .
+                                    $work['frequency']
+                                ); ?>">
                                 <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>" />
 
                                 <div class="Gvoice-option-text">
@@ -60,24 +68,34 @@
 
                         <!-- Choose company section -->
                         <div class="Gvoice-section-title">Choose Company For Invoice</div>
+                        
                         <div class="Gvoice-box">
+                         <input type="text"
+                            id="companySearch"
+                            placeholder="Search company..."
+                            class="Gvoice-search-input">
+                           <?php if (!empty($companies)): ?>
+                                <?php foreach ($companies as $company): ?>
 
-                            <?php if (!empty($companies)): ?>
-                            <?php foreach ($companies as $company): ?>
+                                <div class="Gvoice-option-row"
+                                    data-search="<?= strtolower($company['name'] . ' ' . $company['type_of_company']); ?>">
 
-                            <div class="Gvoice-option-row">
-                                <input type="radio" name="company_id" value="<?= $company['id']; ?>" data-state="<?= esc($company['gst_state']); ?>" />
+                                    <input type="radio"
+                                        name="company_id"
+                                        value="<?= $company['id']; ?>"
+                                        data-state="<?= esc($company['gst_state']); ?>" />
 
-                                <div class="Gvoice-option-text">
-                                    <?= esc($company['name']); ?>
-                                    [<?= esc($company['type_of_company']); ?>]
+                                    <div class="Gvoice-option-text">
+                                        <?= esc($company['name']); ?>
+                                        [<?= esc($company['type_of_company']); ?>]
+                                    </div>
                                 </div>
-                            </div>
 
-                            <?php endforeach; ?>
-                            <?php else: ?>
-                            <p>No companies found</p>
-                            <?php endif; ?>
+                                <?php endforeach; ?>
+                                <?php else: ?>
+                                <p>No companies found</p>
+                                <?php endif; ?>
+
 
                         </div>
 
@@ -987,6 +1005,28 @@ document.querySelector('.Minvoice-btn-reset').addEventListener('click', function
     document.querySelectorAll('.invoice-row').forEach(row => {
         row.style.display = '';
     });
+});
+
+//seaching in company select box
+document.getElementById('companySearch').addEventListener('keyup', function () {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.Gvoice-option-row');
+
+    for (let row of rows) {
+        const text = row.getAttribute('data-search') || '';
+        row.style.display = text.includes(searchValue) ? 'flex' : 'none';
+    }
+});
+
+//seaching in works select box
+document.getElementById('workSearch').addEventListener('keyup', function () {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.work-option-row');
+
+    for (let row of rows) {
+        const text = row.getAttribute('data-search') || '';
+        row.style.display = text.includes(searchValue) ? 'flex' : 'none';
+    }
 });
 
 </script>

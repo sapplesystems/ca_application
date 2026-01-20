@@ -1688,6 +1688,14 @@ label {
   color: #ffffff;
   border-color: #0a6fb5;
 }
+/* Search input for company selection */
+.Gvoice-search-input {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
 /* Responsive */
 @media (max-width: 768px) {

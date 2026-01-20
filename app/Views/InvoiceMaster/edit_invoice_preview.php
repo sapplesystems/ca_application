@@ -20,7 +20,13 @@ function romanNumeral($num) {
 ?>
 
 
-<h2 style="text-align:center;">Edit Invoice</h2>
+<div class="invoiceM-containerr">
+    <div class=" inv-header-main">
+        <h1 class="inv-title-main"> Edit Invoice</h1>
+        <a href="javascript:history.back()" class="inv-back-btn-main">
+            Back to Generate Invoice Grid
+        </a>
+    </div>
 
 <form method="post"
       action="<?= site_url('/updateInvoice/'.$invoice['id']) ?>"
@@ -127,9 +133,9 @@ function romanNumeral($num) {
 
 
 <tr style="background:#0b5c7d;color:#fff;">
-    <td align="center">A</td>
-    <td align="right">Service Value</td>
-    <td align="right"><span id="serviceValue">0</span></td>
+    <td align="center" style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
+    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service Value</td>
+    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;"><span id="serviceValue">0</span></td>
 </tr>
 
 <?php if ($invoice['tax_apply_name'] === 'cgst_sgst'): ?>
@@ -258,7 +264,7 @@ function romanNumeral($num) {
 <tr>
     <td></td>
     <td align="right"><strong>Grand Total</strong></td>
-    <td align="right"><strong id="grandTotal">0</strong></td>
+    <td align="right" style="text-align:right;"><strong id="grandTotal">0</strong></td>
 </tr>
 
 <tr>
@@ -272,12 +278,13 @@ function romanNumeral($num) {
 </tr>
 
 <tr style="background:#0b5c7d;color:#fff;">
-    <td align="center" style="color:black;">C</td>
-    <td style="color:black;">
+    <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">C</td>
+    <td style="padding:8px; border:1px solid #ccc; text-align:left;background:#0b5c7d;">
         <strong>Amount In Words</strong><br>
         <span id="amountInWords"></span>
     </td>
-    <td align="right" style="color:black;" >
+    <td align="right" style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;" >
+         Net Amount Receivable (A+B)<br>
         <strong id="netAmount">0</strong>
     </td>
 </tr>

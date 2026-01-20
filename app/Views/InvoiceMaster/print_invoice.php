@@ -65,22 +65,23 @@ h2 { text-align: center; font-size: 14px; margin: 5px 0; }
             <td class="right"><strong>Service Value</strong></td>
             <td class="right"><strong><?= number_format($invoice['service_value'],2); ?></strong></td>
         </tr>
-        <?php if($invoice['cgst_amount'] > 0 || $invoice['sgst_amount'] > 0): ?>
+        <tr><td colspan="3"><strong>Tax</strong></td></tr> 
+        <?php if($invoice['tax_apply_name']==='cgst_sgst'): ?>
         <tr>
             <td class="center">i</td>
             <td>CGST @ 9%</td>
-            <td class="right"><?= number_format($invoice['cgst_amount'],2); ?></td>
+            <td class="right"><?= number_format($invoice['service_value'] * 0.09, 2); ?></td>
         </tr>
         <tr>
             <td class="center">ii</td>
             <td>SGST @ 9%</td>
-            <td class="right"><?= number_format($invoice['sgst_amount'],2); ?></td>
+            <td class="right"><?= number_format($invoice['service_value'] * 0.09, 2); ?></td>
         </tr>
-        <?php elseif($invoice['igst_amount'] > 0): ?>
+        <?php elseif($invoice['tax_apply_name']==='igst'): ?>
         <tr>
             <td class="center">i</td>
             <td>IGST @ 18%</td>
-            <td class="right"><?= number_format($invoice['igst_amount'],2); ?></td>
+            <td class="right"><?= number_format($invoice['service_value'] * 0.18, 2); ?></td>
         </tr>
         <?php endif; ?>
         <tr><td colspan="3"><strong>Expenses Recoverable</strong></td></tr>

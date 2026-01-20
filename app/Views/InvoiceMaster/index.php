@@ -16,34 +16,40 @@
                         <div class="content">
 
                         <div class="form-group mb-3">
-                            <label><strong>Select Note Type</strong></label>
+                            <label class="title"><strong>Select Note Type</strong></label>
                             <select name="note_type" class="form-control" required>
                                 <option value="">-- Select --</option>
                                 <option value="debit">Debit Note</option>
                                 <option value="credit">Credit Note</option>
                             </select>
                         </div>
-                            <div class="title">Choose Company For Invoice</div>
+                            <div class="title">Choose Company For Generate Note</div>
 
-                            <div class="radio-box">
+                              <div class="Gvoice-box">
+                         <input type="text"
+                            id="companySearch"
+                            placeholder="Search company..."
+                            class="Gvoice-search-input">
+                           <?php if (!empty($companies)): ?>
+                                <?php foreach ($companies as $company): ?>
 
-                                <?php if (!empty($companies)) : ?>
-                                <?php foreach ($companies as $company) : ?>
+                                <div class="Gvoice-option-row"
+                                    data-search="<?= strtolower($company['name'] . ' ' . $company['type_of_company']); ?>">
 
-                                <label>
-                                    <input type="radio" name="company_debit" value="<?= esc($company['id']) ?>"
-                                        required>
 
-                                    <?= esc($company['name']) ?>
-                                    [<?= esc($company['type_of_company']) ?>]
-                                </label>
+                                    <div class="Gvoice-option-text">
+                                        <?= esc($company['name']); ?>
+                                        [<?= esc($company['type_of_company']); ?>]
+                                    </div>
+                                </div>
 
                                 <?php endforeach; ?>
-                                <?php else : ?>
-                                <p>No companies found.</p>
+                                <?php else: ?>
+                                <p>No companies found</p>
                                 <?php endif; ?>
 
-                            </div>
+
+                        </div>
 
                             <div class="buttons">
                                 <button class="btn btn-proceed" type="submit">Proceed</button>
@@ -157,5 +163,14 @@ document.getElementById('debitpopup')
         document.getElementById('client_id').value = clientId;
     });
 
-    
+   //seaching in company select box
+document.getElementById('companySearch').addEventListener('keyup', function () {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.Gvoice-option-row');
+
+    for (let row of rows) {
+        const text = row.getAttribute('data-search') || '';
+        row.style.display = text.includes(searchValue) ? 'flex' : 'none';
+    }
+}); 
 </script>

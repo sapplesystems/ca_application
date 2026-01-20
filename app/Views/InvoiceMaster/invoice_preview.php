@@ -270,12 +270,12 @@
 
                     <!-- Net -->
                     <tr style="background:#0b5c7d; color:#fff;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center; color:black;">C</td>
-                        <td style="padding:8px; border:1px solid #ccc;color:black">
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">C</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:left;background:#0b5c7d;">
                             <strong>(Amount In Words)</strong><br>
                             <span id="amountInWords">ZERO</span>
                         </td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
                             Net Amount Receivable (A+B)
                             <br><strong id="netAmount">0</strong>
                         </td>
