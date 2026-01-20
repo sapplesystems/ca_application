@@ -376,9 +376,10 @@
             data-target="#GenrateVoice">
             Generate Invoice For Pending Work
         </button>
-        <button class="Minvoice-btn Minvoice-btn-primary">
-            Back To Client Grid
-        </button>
+       <a href="<?= base_url('InvoiceManagment'); ?>"
+   class="Minvoice-btn Minvoice-btn-primary">
+    Back To Client Grid
+</a>
     </div>
 
     <!-- Filters -->

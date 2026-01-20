@@ -1523,6 +1523,7 @@ label {
   color: #ffffff;
   transition: background 0.2s ease;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .Minvoice-btn-green {
