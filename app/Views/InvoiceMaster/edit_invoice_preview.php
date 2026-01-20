@@ -186,7 +186,7 @@ function romanNumeral($num) {
     </td>
     <td>
         <input type="number" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
-       <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+       <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
     </td>
 </tr>

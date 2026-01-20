@@ -232,11 +232,22 @@ class InvoiceMasterController extends BaseController
     $company = $companyModel->find($invoice['company_id']);
     $client  = $clientModel->find($invoice['client_id']);
 
+     $invoiceWorkModel=new InvoiceWorksModel();
+    $invoice_works=$invoiceWorkModel->where('invoice_id', $id)->findAll();
+
+    $ExpenseModel = new ExpenseModel();
+
+     $expenses= $ExpenseModel
+    ->where('invoice_id', $id)
+    ->findAll();
+
     // Pass data to view
     $data = [
         'invoice' => $invoice,
         'company' => $company,
-        'client'  => $client
+        'client'  => $client,
+        'invoice_works'=> $invoice_works,
+        'expences'=>$expenses,
     ];
 
     echo view('InvoiceMaster/print_invoice', $data);
@@ -249,6 +260,14 @@ public function pdf($id)
     $clientModel  = new ClientModel();
 
     $invoice = $invoiceModel->find($id);
+     $invoiceWorkModel=new InvoiceWorksModel();
+    $invoice_works=$invoiceWorkModel->where('invoice_id', $id)->findAll();
+
+    $ExpenseModel = new ExpenseModel();
+
+     $expenses= $ExpenseModel
+    ->where('invoice_id', $id)
+    ->findAll();
 
     if (!$invoice) {
         return redirect()->to('/invoice')->with('error', 'Invoice not found');
@@ -257,7 +276,9 @@ public function pdf($id)
     $data = [
         'invoice' => $invoice,
         'company' => $companyModel->find($invoice['company_id']),
-        'client'  => $clientModel->find($invoice['client_id'])
+        'client'  => $clientModel->find($invoice['client_id']),
+        'invoice_works'=> $invoice_works,
+        'expences'=>$expenses,
     ];
 
     // Load HTML view
