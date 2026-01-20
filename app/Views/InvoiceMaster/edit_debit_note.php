@@ -259,7 +259,7 @@ function toRoman($number)
 
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Debit</button>
+                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit' : 'Save Credit'; ?></button>
                 <a href="<?= base_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
                     Cancel
                 </a>

@@ -112,7 +112,7 @@
                                 name="expense_description[]"></td>
                         <td><input type="number" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
-                            <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+                            <button type="button" class="btn btn-danger btn-sm delete-row"style="background-color: red;">✖</button>
 
                             </td>
                     </tr>
@@ -216,7 +216,7 @@
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Debit</button>
+                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Credit</button>
                 <a href="<?= base_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
                     Cancel
                 </a>
@@ -244,12 +244,12 @@
             .then(data => {
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: 'Debit Saved!',
-                        text: 'Your Debit has been saved successfully.',
+                        title: 'Credit Saved!',
+                        text: 'Your Credit has been saved successfully.',
                         icon: 'success',
                         showDenyButton: true,
                         showCancelButton: true,
-                        confirmButtonText: 'Print Debit',
+                        confirmButtonText: 'Print Credit',
                         denyButtonText: 'Download PDF',
                         cancelButtonText: 'Close'
                     }).then((result) => {
