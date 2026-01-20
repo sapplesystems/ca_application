@@ -1,8 +1,7 @@
-
 <div class="invoiceM-containerr">
     <div class="invoiceM-toolbar">
         <div class="invoiceM-toolbar-title">List Of Generated Debit Note for <?php echo  $client['legal_name']?></div>
-        
+
     </div>
 
     <div class="invoiceM-table-container">
@@ -10,15 +9,15 @@
             <table class="invoiceM-table">
                 <thead>
                     <tr>
-                        <th class="invoiceM-sno">Sr No</th>
-                        <th style="width:20%;">Debit Note No /Credit Note No.</th>
-                        <th>Client Name</th>
-                        <th>Company Name</th>
-                        <th>Note Type</th>
-                        <th>Date</th>
-                        <th>TotalAmount</th>
-                        <th>Amount Received</th>
-                        <th class="invoiceM-actions">Action</th>
+                        <th class=" invoiceM-sno" style="width:5%;">Sr No</th>
+                        <th style="width:10%;">Debit Note No /Credit Note No.</th>
+                        <th style="width:10%;">Client Name</th>
+                        <th style="width:15%;">Company Name</th>
+                        <th style="width:10%;">Note Type</th>
+                        <th style="width:10%;">Date</th>
+                        <th style="width:10%;">TotalAmount</th>
+                        <th style="width:10%;">Amount Received</th>
+                        <th class="invoiceM-actions" style="width:10%;">Action</th>
                     </tr>
                 </thead>
 
@@ -29,7 +28,7 @@
                     <tr>
                         <td class="invoiceM-sno"><?= $i++ ?></td>
                         <td class="invoiceM-client-name">
-                              <?= esc(
+                            <?= esc(
         $debit['note_type'] === 'debit'
             ? $debit['debit_no']
             : $debit['credit_no']
@@ -41,19 +40,14 @@
                         <td> <?= esc($debit['date']) ?></td>
                         <td> <?= esc($debit['total_amount']) ?></td>
                         <td><?= esc($debit['advance_amount']) ?></td>
-                       <td class="action">
+                        <td class="action">
                             <!-- Edit -->
-                            <a href="<?= base_url('debits/edit/' . $debit['id']) ?>"
-                            class="edit-btn"
-                            title="Edit">
+                            <a href="<?= base_url('debits/edit/' . $debit['id']) ?>" class="edit-btn" title="Edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
 
                             <!-- Delete -->
-                            <button type="button"
-                                    class="delete-btn"
-                                    title="Delete"
-                                    data-id="<?= $debit['id'] ?>">
+                            <button type="button" class="delete-btn" title="Delete" data-id="<?= $debit['id'] ?>">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
@@ -66,8 +60,7 @@
     </div>
 </div>
 <script>
-
-    document.addEventListener('click', function (e) {
+document.addEventListener('click', function(e) {
     if (e.target.closest('.delete-btn')) {
         const id = e.target.closest('.delete-btn').dataset.id;
 
