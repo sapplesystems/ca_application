@@ -420,7 +420,7 @@
                 <tr>
                     <th style="width: 12%">Invoice No</th>
                     <th style="width: 10%">Invoice Date</th>
-                    <th style="width: 22%">Works</th>
+                    <th style="width: 20%">Works</th>
                     <th style="width: 10%">Company</th>
                     <th style="width: 8%">Total Invoice Amount</th>
                     <th style="width: 10%">Receipt Date</th>
@@ -527,7 +527,7 @@
                     <td class="Minvoice-text-right Minvoice-amount-bold">
                             <?= number_format($debitTotal, 2) ?>
                         </td>
-                     <td  class="Minvoice-text-right">Total Creadit Amount</td>
+                     <td  class="Minvoice-text-right">Total Credit Amount</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
                         <?= number_format($creditTotal, 2) ?>
                     </td>
