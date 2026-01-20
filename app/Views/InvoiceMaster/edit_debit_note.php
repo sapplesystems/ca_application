@@ -146,6 +146,8 @@ function toRoman($number)
                     <!-- Existing Expense Rows -->
                     <?php if(!empty($expenses)): ?>
                     <?php foreach($expenses as $index => $exp): ?>
+                    <input type="hidden" name="expense_id[]" value="<?= $exp['id'] ?>">
+
                     <tr class="expense-row" style="background:#e9f5fb;">
                         <td style="text-align:center;"><?= $index + 1 ?></td>
                         <td>

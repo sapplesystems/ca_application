@@ -439,7 +439,9 @@
                 <?php if (!empty($invoices)) : ?>
                 <?php foreach ($invoices as $row) : ?>
                   
-                <tr>
+                <tr class="invoice-row"
+                  data-company-id="<?= $row['company_id'] ?>"
+                   data-date="<?= $row['invoice_date'] ?>">
                     <td><?= esc($row['invoice_no']) ?></td>
                     <td><?= date('d-m-Y', strtotime($row['invoice_date'])) ?></td>
                     <td class="Minvoice-works-text">
@@ -946,6 +948,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+document.querySelector('.Minvoice-btn-search').addEventListener('click', function () {
 
+    const companyId = document.getElementById('Minvoice-company').value;
+    const fromDate  = document.getElementById('Minvoice-fromDate').value;
+    const toDate    = document.getElementById('Minvoice-toDate').value;
+
+    document.querySelectorAll('.invoice-row').forEach(row => {
+
+        const rowCompany = row.getAttribute('data-company-id');
+        const rowDate    = row.getAttribute('data-date');
+
+        let show = true;
+
+        if (companyId && rowCompany !== companyId) {
+            show = false;
+        }
+
+        if (fromDate && rowDate < fromDate) {
+            show = false;
+        }
+
+        if (toDate && rowDate > toDate) {
+            show = false;
+        }
+
+        row.style.display = show ? '' : 'none';
+    });
+});
+
+document.querySelector('.Minvoice-btn-reset').addEventListener('click', function () {
+
+    document.getElementById('Minvoice-company').value = '';
+    document.getElementById('Minvoice-fromDate').value = '';
+    document.getElementById('Minvoice-toDate').value = '';
+
+    document.querySelectorAll('.invoice-row').forEach(row => {
+        row.style.display = '';
+    });
+});
 
 </script>
