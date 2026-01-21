@@ -106,6 +106,7 @@
         <a href="<?= base_url('pdf_outputs'); ?>" class="menu-link">
             <div class="menu-item">PDF Outputs</div>
         </a>
+<<<<<<< HEAD
         <?php endif; ?>
 
         <?php if ($userRole && hasPermission('role.view', $userRole->role_id, $db)): ?>
@@ -114,6 +115,11 @@
         </a>
         <?php endif; ?>
 
+=======
+        <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
+            <div class="menu-item">Usear Managment</div>
+        </a>
+>>>>>>> origin/akash_invoice
     </nav>
 
     <script>
