@@ -60,9 +60,10 @@ $routes->get('debits/edit/(:num)', 'InvoiceMasterController::debitEdit/$1');
 $routes->post('debits/update/(:num)', 'InvoiceMasterController::debitUpdate/$1');
 $routes->post('Expense/delete', 'InvoiceMasterController::ExpenseDelete');
 
-
-
-
-
-
-
+//UserManagment Routes
+$routes->get('/UserManagment', 'UserManagementController::index');
+$routes->post('user-management/store', 'UserManagementController::store');
+$routes->get('user-management/get-user/(:num)', 'UserManagementController::getUser/$1');
+$routes->post('user-management/update', 'UserManagementController::update');
+$routes->post('user-management/delete', 'UserManagementController::delete');
+$routes->post('user-management/toggle-status', 'UserManagementController::toggleStatus');

@@ -66,6 +66,9 @@
         <a href="<?= base_url('pdf_outputs'); ?>" class="menu-link">
             <div class="menu-item">PDF Outputs</div>
         </a>
+        <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
+            <div class="menu-item">Usear Managment</div>
+        </a>
     </nav>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
