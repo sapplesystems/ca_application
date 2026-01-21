@@ -5,7 +5,7 @@
 <title>Invoice <?= esc($invoice['invoice_no']); ?></title>
 <style>
 body { font-family: Arial, sans-serif; font-size: 12px; }
-.invoice-box { width: 50%; margin: auto; border: 1px solid #000; padding: 10px; }
+.invoice-box { width: 80%; margin: auto; border: 1px solid #000; padding: 10px; }
 table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
 th, td { border: 1px solid #000; padding: 4px; font-size: 12px; }
 th { background: #000; color: #fff; }
@@ -17,6 +17,9 @@ h2 { text-align: center; font-size: 14px; margin: 5px 0; }
 </head>
 <body>
 <div class="invoice-box">
+    <div class="logo">
+        <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" alt="Company Logo" style="max-width:200px; max-height:200px;">
+    </div>
     <table>
         <tr>
             <td>
@@ -63,25 +66,25 @@ h2 { text-align: center; font-size: 14px; margin: 5px 0; }
         <tr>
             <td class="center"><strong>A</strong></td>
             <td class="right"><strong>Service Value</strong></td>
-            <td class="right"><strong><?= number_format($invoice['service_value'],2); ?></strong></td>
+            <td class="right"><strong><?= number_format((float)$service['service_amount'], 2); ?></strong></td>
         </tr>
         <tr><td colspan="3"><strong>Tax</strong></td></tr> 
         <?php if($invoice['tax_apply_name']==='cgst_sgst'): ?>
         <tr>
             <td class="center">i</td>
             <td>CGST @ 9%</td>
-            <td class="right"><?= number_format($invoice['service_value'] * 0.09, 2); ?></td>
+            <td class="right"><?= number_format((float)$invoice['service_value'] * 0.09, 2); ?></td>
         </tr>
         <tr>
             <td class="center">ii</td>
             <td>SGST @ 9%</td>
-            <td class="right"><?= number_format($invoice['service_value'] * 0.09, 2); ?></td>
+            <td class="right"><?= number_format((float)$invoice['service_value'] * 0.09, 2); ?></td>
         </tr>
         <?php elseif($invoice['tax_apply_name']==='igst'): ?>
         <tr>
             <td class="center">i</td>
             <td>IGST @ 18%</td>
-            <td class="right"><?= number_format($invoice['service_value'] * 0.18, 2); ?></td>
+            <td class="right"><?= number_format((float)$invoice['service_value'] * 0.18, 2); ?></td>
         </tr>
         <?php endif; ?>
         <tr><td colspan="3"><strong>Expenses Recoverable</strong></td></tr>
@@ -99,24 +102,24 @@ h2 { text-align: center; font-size: 14px; margin: 5px 0; }
         <tr>
             <td class="center"><strong>B</strong></td>
             <td class="right"><strong>Total Expenses Recoverable</strong></td>
-            <td class="right"><strong><?= number_format($invoice['expense_total'],2); ?></strong></td>
+            <td class="right"><strong><?= number_format((float)$invoice['expense_total'],2); ?></strong></td>
         </tr>
         <tr><td colspan="3"><br></td></tr>
         <tr>
             <td ></td>
             <td class="right"><strong>Grand Total</strong></td>
-            <td class="right"><strong><?= number_format($invoice['grand_total'],2); ?></strong></td>
+            <td class="right"><strong><?= number_format((float)$invoice['grand_total'],2); ?></strong></td>
         </tr>
         <tr>
             <td ></td>
             <td class="right"><strong>(-) Advances Received</strong></td>
-            <td class="right"><strong><?= number_format($invoice['advance_received'],2); ?></strong></td>
+            <td class="right"><strong><?= number_format((float)$invoice['advance_received'],2); ?></strong></td>
         </tr>
          <tr><td colspan="3"><br></td></tr>
         <tr>
             <td class="center"><strong>C</strong></td>
             <td><strong>Amount in Words</strong></td>
-            <td class="right"><strong><?= number_format($invoice['total_invoice_amount'],2); ?></strong></td>
+            <td class="right"><strong><?= number_format((float)$invoice['total_invoice_amount'],2); ?></strong></td>
         </tr>
     </table>
 

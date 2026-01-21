@@ -109,7 +109,9 @@
           Ph. No. : <?php echo $company['telephone']; ?><br />
           E-mail : <?php echo $company['email']; ?><br />
         </div>
-        <div class="debitnotepdf-logo">CA</div>
+        <div class="debitnotepdf-logo">   
+               <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" alt="Company Logo" style="max-width:200px; max-height:200px;">
+        </div>
       </div>
 
    

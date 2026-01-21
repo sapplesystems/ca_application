@@ -355,7 +355,7 @@ $html .= '</div></div></div>';
     public function store()
     {
         $request = $this->request;
-        // print_r( $request->getPost());exit;
+        // print_r( $request->getFile('logo'));exit;
         $branches = $request->getPost('branches'); 
 
         // 2️⃣ 
@@ -388,7 +388,7 @@ $html .= '</div></div></div>';
         $logoFile = $request->getFile('logo');
         if ($logoFile && $logoFile->isValid() && ! $logoFile->hasMoved()) {
             $newName = $logoFile->getRandomName();
-            $logoFile->move(WRITEPATH . 'uploads/company_logo', $newName);
+            $logoFile->move('uploads/company_logo', $newName);
             $data['logo'] = $newName;
         }
 
@@ -470,7 +470,7 @@ $html .= '</div></div></div>';
     $logoFile = $request->getFile('logo');
     if ($logoFile && $logoFile->isValid() && ! $logoFile->hasMoved()) {
         $newName = $logoFile->getRandomName();
-        $logoFile->move(WRITEPATH . 'uploads/company_logo', $newName);
+        $logoFile->move('uploads/company_logo', $newName);
         $data['logo'] = $newName;
     }
 

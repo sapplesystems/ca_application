@@ -110,7 +110,7 @@
                         <td style="text-align:center;">i</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                        <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
                              <button type="button" class="btn btn-danger btn-sm delete-row"style="background-color: red;">✖</button>
 
@@ -121,7 +121,7 @@
                         <td style="text-align:center;">ii</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                        <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
                              <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
@@ -132,7 +132,7 @@
                         <td style="text-align:center;">iii</td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                        <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
                              <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
@@ -141,7 +141,7 @@
                         <td style="text-align:center;"></td>
                         <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
                                 name="expense_description[]"></td>
-                        <td><input type="number" class="expense" style="width:85%; text-align:right;"
+                        <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
                              <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
                     </tr>
@@ -169,7 +169,7 @@
                         <td style="padding:8px; border:1px solid #ccc;">B</td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;">(-) Advances Received</td>
                         <td style="padding:8px; border:1px solid #ccc;">
-                            <input type="number" value="0" id="advance" name="advance_received"
+                            <input type="text" value="0" id="advance" name="advance_received"
                                 style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
                         </td>
                     </tr>

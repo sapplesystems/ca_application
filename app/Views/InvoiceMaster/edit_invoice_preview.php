@@ -120,7 +120,7 @@ function romanNumeral($num) {
     </td>
 
     <td style="padding:8px; border:1px solid #ccc;">
-        <input type="number"
+        <input type="text"
                name="service_amount[]"
                class="service-amount"
                value="<?= esc($service['service_amount'] ?? '') ?>"
@@ -148,16 +148,7 @@ function romanNumeral($num) {
      </button>
  </td>
  </tr>
-<tr>
-    <td align="center"></td>
-    <td>CGST @ 9%</td>
-    <td><input readonly id="cgstAmount" style="width:100%;text-align:right;"></td>
-</tr>
-<tr>
-    <td align="center"></td>
-    <td>SGST @ 9%</td>
-    <td><input readonly id="sgstAmount" style="width:100%;text-align:right;"></td>
-</tr>
+
 <?php if (!empty($expenses)): ?>
     <?php foreach ($expenses as $index => $exp): ?>
         <tr class="expense-row" style="background:#e9f5fb;">
@@ -173,16 +164,36 @@ function romanNumeral($num) {
                        style="width:100%;">
             </td>
             <td>
-                <input type="number"
+                <input type="text"
                        class="expense"
                        name="expense_amount[]"
                        value="<?= esc($exp['expense_amount']); ?>"
                        style="width:85%; text-align:right;">
-              <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+              <button type="button" class="btn btn-danger btn-sm delete-row"data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
 
             </td>
         </tr>
     <?php endforeach; ?>
+    <tr style="background:#0b5c7d; color:#fff;">
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">B</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                            Total Expenses Recoverable
+                        </td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                            <span id="expenseTotal">0</span>
+                        </td>
+                    </tr>
+                    <tr>
+    <tr>
+    <td align="center"></td>
+    <td>CGST @ 9%</td>
+    <td><input readonly id="cgstAmount" style="width:100%;text-align:right;"></td>
+</tr>
+<tr>
+    <td align="center"></td>
+    <td>SGST @ 9%</td>
+    <td><input readonly id="sgstAmount" style="width:100%;text-align:right;"></td>
+</tr>
 <?php endif; ?>
  <!-- Hidden Template Row -->
  <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
@@ -191,7 +202,7 @@ function romanNumeral($num) {
         <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
     </td>
     <td>
-        <input type="number" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
+        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
        <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
     </td>
@@ -208,11 +219,7 @@ function romanNumeral($num) {
      </button>
  </td>
  </tr>
-<tr>
-    <td align="center">i</td>
-    <td>IGST @ 18%</td>
-    <td><input readonly id="igstAmount" style="width:100%;text-align:right;"></td>
-</tr>
+
 <?php if (!empty($expenses)): ?>
     <?php foreach ($expenses as $index => $exp): ?>
         <tr class="expense-row" style="background:#e9f5fb;">
@@ -226,7 +233,7 @@ function romanNumeral($num) {
                        style="width:100%;">
             </td>
             <td>
-                <input type="number"
+                <input type="text"
                        class="expense"
                        name="expense_amount[]"
                        value="<?= esc($exp['expense_amount']); ?>"
@@ -244,12 +251,11 @@ function romanNumeral($num) {
         <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
     </td>
     <td>
-        <input type="number" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
-        <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
+        <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
     </td>
 </tr>
-<?php endif; ?>
 
 <tr style="background:#0b5c7d; color:#fff;">
                         <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">B</td>
@@ -260,6 +266,14 @@ function romanNumeral($num) {
                             <span id="expenseTotal">0</span>
                         </td>
                     </tr>
+                    <tr>
+    <td align="center">i</td>
+    <td>IGST @ 18%</td>
+    <td><input readonly id="igstAmount" style="width:100%;text-align:right;"></td>
+</tr>
+<?php endif; ?>
+
+
 
 <tr>
     <td></td>
@@ -271,7 +285,7 @@ function romanNumeral($num) {
     <td></td>
     <td align="right">(-) Advance</td>
     <td>
-        <input type="number" id="advance" name="advance_received"
+        <input type="text" id="advance" name="advance_received"
                value="<?= esc($invoice['advance_received']); ?>"
                style="width:100%;text-align:right;">
     </td>
@@ -319,9 +333,10 @@ function romanNumeral($num) {
     <button class="Gvoice-btn Gvoice-btn-success">
         Update Invoice
     </button>
-    <a href="<?= site_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
-        Cancel
-    </a>
+    <a href="javascript:history.back()"
+   class="Gvoice-btn Gvoice-btn-danger">
+    Cancel
+</a>
 </div>
 
 </form>
@@ -389,64 +404,62 @@ function romanNumeral($num) {
     });
 function calculateTotals() {
 
-    /* SERVICE TOTAL */
+    /* ✅ SERVICE VALUE */
     let serviceValue = 0;
     document.querySelectorAll('.service-amount').forEach(el => {
-        serviceValue += parseFloat(el.value) || 0;
+        serviceValue += parseFloat(el.value || 0);
     });
-
     document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-    /* TAX */
-    let cgst = 0, sgst = 0, igst = 0;
-
-    const cgstField = document.getElementById('cgstAmount');
-    const sgstField = document.getElementById('sgstAmount');
-    const igstField = document.getElementById('igstAmount');
-
-    if (cgstField && sgstField) {
-        cgst = serviceValue * 0.09;
-        sgst = serviceValue * 0.09;
-
-        cgstField.value = cgst.toFixed(2);
-        sgstField.value = sgst.toFixed(2);
-    }
-
-    if (igstField) {
-        igst = serviceValue * 0.18;
-        igstField.value = igst.toFixed(2);
-    }
-
-    let taxTotal = cgst + sgst + igst;
-
-    /* EXPENSE TOTAL */
+    /* ✅ EXPENSE TOTAL */
     let expenseTotal = 0;
     document.querySelectorAll('.expense').forEach(el => {
-        expenseTotal += parseFloat(el.value) || 0;
+        expenseTotal += parseFloat(el.value || 0);
     });
-
     document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
 
-    /* GRAND TOTAL */
-    let grandTotal = serviceValue + taxTotal + expenseTotal;
+    let cgst = 0, sgst = 0, igst = 0;
+
+    /* ✅ CGST + SGST */
+    if (document.getElementById('cgstAmount')) {
+
+        cgst = (serviceValue + expenseTotal) * 0.09;
+        sgst = (serviceValue + expenseTotal) * 0.09;
+
+        document.getElementById('cgstAmount').value = cgst.toFixed(2);
+        document.getElementById('sgstAmount').value = sgst.toFixed(2);
+    }
+
+    /* ✅ IGST */
+    if (document.getElementById('igstAmount')) {
+
+        igst = (serviceValue + expenseTotal) * 0.18;
+
+        document.getElementById('igstAmount').value = igst.toFixed(2);
+    }
+
+    /* ✅ GRAND TOTAL */
+    let taxTotal = cgst + sgst + igst;
+    let grandTotal = serviceValue + expenseTotal + taxTotal;
+
     document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
 
-    /* ADVANCE & NET */
-    let advance = parseFloat(document.getElementById('advance')?.value) || 0;
+    /* ✅ ADVANCE */
+    let advance = parseFloat(document.getElementById('advance').value || 0);
     let netAmount = grandTotal - advance;
 
     document.getElementById('netAmount').innerText = netAmount.toFixed(2);
     document.getElementById('amountInWords').innerText =
         numberToWords(Math.round(netAmount)).toUpperCase();
 
-    /* HIDDEN INPUTS (MOST IMPORTANT) */
-    document.getElementById('service_value').value = serviceValue.toFixed(2);
-    document.getElementById('expense_total').value = expenseTotal.toFixed(2);
-    document.getElementById('grand_total').value = grandTotal.toFixed(2);
-    document.getElementById('net_amount').value = netAmount.toFixed(2);
-    document.getElementById('cgst_amount').value = cgst.toFixed(2);
-    document.getElementById('sgst_amount').value = sgst.toFixed(2);
-    document.getElementById('igst_amount').value = igst.toFixed(2);
+    /* ✅ HIDDEN INPUTS */
+    serviceValueInput.value = serviceValue.toFixed(2);
+    expenseTotalInput.value = expenseTotal.toFixed(2);
+    cgstInput.value = cgst.toFixed(2);
+    sgstInput.value = sgst.toFixed(2);
+    igstInput.value = igst.toFixed(2);
+    grandTotalInput.value = grandTotal.toFixed(2);
+    netAmountInput.value = netAmount.toFixed(2);
 }
 
 
