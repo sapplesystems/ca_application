@@ -217,8 +217,9 @@
 
             <div style="margin-top:20px; text-align:center;">
                 <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Credit</button>
-                <a href="<?= base_url('InvoiceManagment'); ?>" class="Gvoice-btn Gvoice-btn-danger">
-                    Cancel
+               <a href="javascript:history.back()"
+                    class="Gvoice-btn Gvoice-btn-danger">
+                        Cancel
                 </a>
             </div>
     </form>

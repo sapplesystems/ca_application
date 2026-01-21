@@ -16,12 +16,12 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
-   
 </head>
 
 <body>
     <div class="bg-blur"></div>
 
+    <!-- Header -->
     <header class="top-header">
         <div class="logo-wrap">
             <div class="logo-mark">CA</div>
@@ -36,85 +36,91 @@
         </div>
     </header>
 
-    <!-- NAVBAR -->
-    <?php 
-    $admin = $session->get('admin');
-    $db = \Config\Database::connect();
-
-    // Get user's role
-    $userRole = $db->table('ca_user')->select('role_id')->where('id', $admin['id'])->get()->getRow();
-    
-    // Function to check permission
-    function hasPermission($permissionSlug, $roleId, $db) {
-        if (!$roleId) return false;
-        
-        $role = $db->table('roles')->select('permission_type')->where('id', $roleId)->get()->getRow();
-        
-        if ($role && $role->permission_type === 'all') {
-            return true;
-        }
-
-        $hasPermission = $db->table('role_permissions')
-            ->join('permissions', 'permissions.id = role_permissions.permission_id')
-            ->where('role_permissions.role_id', $roleId)
-            ->where('permissions.permission_slug', $permissionSlug)
-            ->get()
-            ->getRow();
-
-        return $hasPermission ? true : false;
-    }
-    ?>
-
+    <!-- Navigation Bar -->
     <nav class="menu-bar">
-        <?php if ($userRole && hasPermission('work_master.view', $userRole->role_id, $db)): ?>
+        <?php 
+        $db = \Config\Database::connect();
+        $admin = $session->get('admin');
+        
+        if ($admin) {
+            $userRole = $db->table('ca_user')->select('role_id')->where('id', $admin['id'])->get()->getRow();
+            $role = $db->table('roles')->select('permission_type')->where('id', $userRole->role_id ?? 0)->get()->getRow();
+            
+            function hasPermission($permissionSlug, $roleId, $db) {
+                if (!$roleId) return false;
+                
+                $role = $db->table('roles')->select('permission_type')->where('id', $roleId)->get()->getRow();
+                
+                if ($role && $role->permission_type === 'all') {
+                    return true;
+                }
+
+                $hasPermission = $db->table('role_permissions')
+                    ->join('permissions', 'permissions.id = role_permissions.permission_id')
+                    ->where('role_permissions.role_id', $roleId)
+                    ->where('permissions.permission_slug', $permissionSlug)
+                    ->get()
+                    ->getRow();
+
+                return $hasPermission ? true : false;
+            }
+        ?>
+
+        <?php if (isset($userRole) && hasPermission('work_master.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('work_master'); ?>" class="menu-link">
             <div class="menu-item">Master Work List</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('company.view', $userRole->role_id, $db)): ?>
+        <?php if (isset($userRole) && hasPermission('company.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('company_master'); ?>" class="menu-link">
             <div class="menu-item">Company Master</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('client.view', $userRole->role_id, $db)): ?>
+        <?php if (isset($userRole) && hasPermission('client.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('Client_Master'); ?>" class="menu-link">
-            <div class="menu-item"> Client Master</div>
+            <div class="menu-item">Client Master</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('invoice.view', $userRole->role_id, $db)): ?>
+        <?php if (isset($userRole) && hasPermission('invoice.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('InvoiceManagment'); ?>" class="menu-link">
             <div class="menu-item">Invoice Management</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('receipt.view', $userRole->role_id, $db)): ?>
+        <?php if (isset($userRole) && hasPermission('receipt.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('receipt_notes'); ?>" class="menu-link">
-            <div class="menu-item"> Receipt Notes (TDS)</div>
+            <div class="menu-item">Receipt Notes (TDS)</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('report.view', $userRole->role_id, $db)): ?>
+        <?php if (isset($userRole) && hasPermission('debit.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('reports_registers'); ?>" class="menu-link">
             <div class="menu-item">Reports & Registers</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('pdf.view', $userRole->role_id, $db)): ?>
+         <?php if ($userRole && hasPermission('pdf.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('pdf_outputs'); ?>" class="menu-link">
             <div class="menu-item">PDF Outputs</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('role.view', $userRole->role_id, $db)): ?>
+        <?php if (isset($userRole) && hasPermission('role.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('roles'); ?>" class="menu-link">
-            <div class="menu-item"> Manage Roles</div>
+            <div class="menu-item">Manage Roles</div>
         </a>
         <?php endif; ?>
 
+        <?php } ?>
     </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <?= $this->renderSection('content') ?>
+    </main>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -123,12 +129,11 @@
         document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
             const linkPath = new URL(link.href).pathname;
 
-            if (currentPath === linkPath || 
-                currentPath.includes(linkPath) ||
-                (currentPath.includes('/roles') && linkPath.includes('/roles')) ||
-                (currentPath.includes('permissions') && linkPath.includes('permissions'))) {
-                
-                document.querySelectorAll('.menu-bar .menu-item.active').forEach(el => el.classList.remove('active'));
+            if (currentPath === linkPath || currentPath.includes('/roles') || currentPath.includes('roles')) {
+                document
+                    .querySelectorAll('.menu-bar .menu-item.active')
+                    .forEach(el => el.classList.remove('active'));
+
                 link.querySelector('.menu-item').classList.add('active');
             }
         });
