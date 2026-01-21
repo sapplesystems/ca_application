@@ -13,10 +13,11 @@ class UserManagementModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-         'name',
+        'name',
         'email',
         'phone',
-        'role',
+        'role_id',
+        'password',
         'status'
     ];
 

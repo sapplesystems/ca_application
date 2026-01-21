@@ -107,12 +107,19 @@
             <div class="menu-item">PDF Outputs</div>
         </a>
         <?php endif; ?>
+         <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
+        <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
+            <div class="menu-item">Usear Managment</div>
+        </a>
+        <?php endif; ?>
 
         <?php if (isset($userRole) && hasPermission('role.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('roles'); ?>" class="menu-link">
             <div class="menu-item">Manage Roles</div>
         </a>
         <?php endif; ?>
+
+       
 
         <?php } ?>
     </nav>

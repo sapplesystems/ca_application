@@ -7,6 +7,7 @@ use App\Models\UserManagementModel;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\RoleModel;
 
 class UserManagementController extends BaseController
 {
@@ -14,6 +15,10 @@ class UserManagementController extends BaseController
     {
        $model=new UserManagementModel();
         $data['users'] = $model->findAll();
+
+        $rolesModel = new RoleModel();
+        $data['roles'] = $rolesModel->findAll();
+        
         echo view('common/header');
          return view('UserManagment/UserManagment',$data);
         echo view('common/footer');
@@ -24,6 +29,7 @@ class UserManagementController extends BaseController
             'name'  => 'required|min_length[2]',
             'email' => 'required|valid_email|is_unique[user_management.email]',
             'phone' => 'required|min_length[10]',
+            'password' => 'required|min_length[6]',
             'role'  => 'required',
         ];
 
@@ -37,7 +43,8 @@ class UserManagementController extends BaseController
             'name'   => $this->request->getPost('name'),
             'email'  => $this->request->getPost('email'),
             'phone'  => $this->request->getPost('phone'),
-            'role'   => $this->request->getPost('role'),
+            'password' => $this->request->getPost('password'),
+            'role_id'   => $this->request->getPost('role'),
             
         ]);
 
@@ -67,7 +74,8 @@ public function update()
         'name'  => $this->request->getPost('name'),
         'email' => $this->request->getPost('email'),
         'phone' => $this->request->getPost('phone'),
-        'role'  => $this->request->getPost('role'),
+        'password' => $this->request->getPost('password'),
+        'role_id'  => $this->request->getPost('role'),
     ];
 
     $model->update($id, $data);

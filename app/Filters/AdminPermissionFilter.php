@@ -93,6 +93,7 @@ class AdminPermissionFilter implements FilterInterface
             'reports_registers' => 'report.view',
             'pdf_outputs' => 'pdf.view',
             'roles' => 'role.view',
+            'UserManagment' => 'user.view',
             'permissions' => 'permission.view',
         ];
 

@@ -32,22 +32,37 @@
                                 <input type="email" name="email" placeholder="Enter Email">
                             </div>
                         </div>
-
                         <div class="msl-form-row">
                             <div class="msl-form-group">
                                 <label>Phone</label>
                                 <input type="text" name="phone" placeholder="enter your phone number">
                             </div>
 
-                            <div class="msl-form-group">
-                                <label>User Role</label>
-                                <select name="role">
-                                    <option value="">Select User</option>
-                                    <option value="user1">user1</option>
-                                    <option value="user2">user2</option>
-                                </select>
+                           <div class="msl-form-group">
+                                <label>Password</label>
+                                <input type="text" name="password" placeholder="enter your password">
                             </div>
                         </div>
+
+                        <div class="msl-form-row">
+
+                            <div class="msl-form-group">
+                            <label>User Role</label>
+                            <select name="role" required>
+                                <option value="">Select Role</option>
+
+                                <?php if (!empty($roles)): ?>
+                                    <?php foreach ($roles as $role): ?>
+                                        <option value="<?= esc($role['id']) ?>">
+                                            <?= esc($role['role_name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+
+                            </select>
+                        </div>
+                        </div>
+
 
                         <div class="msl-form-actions">
                             <button type="button" class="msl-btn-secondary" data-dismiss="modal">Cancel</button>
@@ -94,15 +109,29 @@
                             <input type="text" name="phone" id="edit_phone" placeholder="Enter phone number">
                         </div>
 
-                        <div class="msl-form-group">
-                            <label>User Role</label>
-                            <select name="role" id="edit_role">
-                                <option value="">Select User</option>
-                                <option value="user1">user1</option>
-                                <option value="user2">user2</option>
-                            </select>
+                         <div class="msl-form-group">
+                                <label>Password</label>
+                                <input type="text" name="password" id="edit_password" placeholder="enter your password">
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="msl-form-row">
+                          <div class="msl-form-group">
+                                <label>User Role</label>
+                                <select name="role" id="edit_role" required>
+                                    <option value="">Select Role</option>
+
+                                    <?php if (!empty($roles)): ?>
+                                        <?php foreach ($roles as $role): ?>
+                                            <option value="<?= esc($role['id']) ?>">
+                                                <?= esc($role['role_name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                </select>
+                         </div>
+                        </div>
 
                     <div class="msl-form-actions">
                         <button type="button" class="msl-btn-secondary" data-bs-dismiss="modal">
@@ -193,9 +222,10 @@
                         </td>
                     </tr>
                     <?php endforeach; ?>
-                    <tr>
-                        <td colspan="6" style="text-align:center;">No users found</td>
-                    </tr>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" style="text-align:center;">No users found</td>
+                        </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -225,7 +255,8 @@ document.querySelectorAll('.action-edit').forEach(btn => {
                 document.getElementById('edit_name').value = user.name;
                 document.getElementById('edit_email').value = user.email;
                 document.getElementById('edit_phone').value = user.phone;
-                document.getElementById('edit_role').value = user.role;
+                document.getElementById('edit_password').value = user.password;
+                document.getElementById('edit_role').value = user.role_id;
 
                 const editModal = bootstrap.Modal.getOrCreateInstance(
                     document.getElementById('usereditpopup')
