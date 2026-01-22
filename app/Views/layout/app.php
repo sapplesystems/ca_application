@@ -109,7 +109,7 @@
         <?php endif; ?>
          <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
-            <div class="menu-item">Usear Managment</div>
+            <div class="menu-item">User Managment</div>
         </a>
         <?php endif; ?>
 
