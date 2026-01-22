@@ -79,6 +79,7 @@ class LoginController extends BaseController
             'id' => $admin['id'],
             'email' => $admin['email'],
             'status' => $admin['status'],
+            'name' => $admin['name'],
             'created_at' => $admin['created_at'],
             'role_id' => $userRole ? $userRole->role_id : null,
         ]);

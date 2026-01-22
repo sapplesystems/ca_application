@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="user-info">
-            Welcome! <span><?= $session->get('admin')['username'] ?? 'Guest'; ?></span>
+            Welcome! <span><?= $session->get('admin')['name'] ?? 'Guest'; ?></span>
             <a href="<?= base_url('logout'); ?>">LOGOUT</a>
         </div>
     </header>

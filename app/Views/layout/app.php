@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="user-info">
-            Welcome! <span><?= $session->get('admin')['username'] ?? 'Guest'; ?></span>
+            Welcome! <span><?= $session->get('admin')['name'] ?? 'Guest'; ?></span>
             <a href="<?= base_url('logout'); ?>">LOGOUT</a>
         </div>
     </header>
@@ -109,7 +109,7 @@
         <?php endif; ?>
          <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
-            <div class="menu-item">User Managment</div>
+            <div class="menu-item">User Management</div>
         </a>
         <?php endif; ?>
 
