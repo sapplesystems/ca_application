@@ -13,8 +13,10 @@ class AdminPermissionFilter implements FilterInterface
         $session = session();
         $admin = $session->get('admin');
 
-        // Allow login routes without filter
+
         $currentUri = $request->getUri()->getPath();
+      
+
         if (strpos($currentUri, '/login') !== false || $currentUri === '/') {
             return;
         }
@@ -23,7 +25,7 @@ class AdminPermissionFilter implements FilterInterface
             return redirect()->route('admin.login.form')->with('error', 'Please login first');
         }
 
-        if (!isset($admin['is_active']) || $admin['is_active'] != 1) {
+        if (!isset($admin['status']) || $admin['status'] != 1) {
             $session->destroy();
             return redirect()->route('admin.login.form')->with('error', 'Your account is inactive');
         }
@@ -43,9 +45,9 @@ class AdminPermissionFilter implements FilterInterface
 
     private function hasPermission($userId, $currentUri)
     {
-        // Get user's role from ca_user table
+        // Get user's role from user_management table
         $db = \Config\Database::connect();
-        $userRole = $db->table('ca_user')->select('role_id')->where('id', $userId)->get()->getRow();
+        $userRole = $db->table('user_management')->select('role_id')->where('id', $userId)->get()->getRow();
 
         if (!$userRole || !$userRole->role_id) {
             return false;
@@ -53,7 +55,8 @@ class AdminPermissionFilter implements FilterInterface
 
         // Check if role has "all" permissions
         $role = $db->table('roles')->select('permission_type')->where('id', $userRole->role_id)->get()->getRow();
-        
+
+      
         if ($role && $role->permission_type === 'all') {
             return true; // Allow all access
         }

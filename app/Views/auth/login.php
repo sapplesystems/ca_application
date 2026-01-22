@@ -35,9 +35,9 @@
     <form id="loginForm" action="<?= site_url('login-for-entry'); ?>" method="POST">
       
   <div class="form-group">
-    <label for="username">User ID / Email</label>
-    <input id="username" name="username" class="input" type="text" value="<?= old('username') ?>" placeholder="e.g. rajesh.kumar" />
-    <small class="error-msg" id="usernameError"></small>
+    <label for="email"> Email</label>
+    <input id="email" name="email" class="input" type="text" value="<?= old('email') ?>" placeholder="e.g. rajesh@gmail.com" />
+    <small class="error-msg" id="email"></small>
   </div>
 
   <div class="form-group">
@@ -64,9 +64,9 @@
   </div>
   <script>
   const form = document.getElementById('loginForm');
-  const username = document.getElementById('username');
+  const email = document.getElementById('email');
   const password = document.getElementById('password');
-  const usernameError = document.getElementById('usernameError');
+  const emailError = document.getElementById('email');
   const passwordError = document.getElementById('passwordError');
 
   form.addEventListener('submit', function (e) {
@@ -76,14 +76,14 @@
     let isValid = true;
 
     // reset previous errors
-    username.classList.remove('input-error');
+    email.classList.remove('input-error');
     password.classList.remove('input-error');
-    usernameError.textContent = '';
+    emailError.textContent = '';
     passwordError.textContent = '';
 
-    if (username.value.trim() === '') {
-      username.classList.add('input-error');
-      usernameError.textContent = 'User ID / Email is required';
+    if (email.value.trim() === '') {
+      email.classList.add('input-error');
+      emailError.textContent = 'User ID / Email is required';
       isValid = false;
     }
 

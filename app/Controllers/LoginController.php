@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\AdminModel;
+use App\Models\UserManagementModel;
 
 class LoginController extends BaseController
 {
@@ -11,7 +11,7 @@ class LoginController extends BaseController
 
     public function __construct()
     {
-        $this->adminModel = new AdminModel();
+        $this->adminModel = new UserManagementModel();
     }
 
     // GET: /login
@@ -31,11 +31,11 @@ class LoginController extends BaseController
     {
         $session = session();
         
-        $username = $this->request->getPost('username');
+        $email = $this->request->getPost('email');
         $password = $this->request->getPost('pass');
 
         $rules = [
-            'username' => 'required|min_length[3]',
+            'email' => 'required|valid_email',
             'pass' => 'required|min_length[6]',
         ];
 
@@ -43,11 +43,11 @@ class LoginController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Check if username exists
-        $admin = $this->adminModel->where('username', $username)->first();
+        // Check if email exists
+        $admin = $this->adminModel->where('email', $email)->first();
 
         if (!$admin) {
-            $session->setFlashdata('error', 'User ID not found');
+            $session->setFlashdata('error', 'Email not found');
             return redirect()->back()->withInput();
         }
 
@@ -65,22 +65,21 @@ class LoginController extends BaseController
             return redirect()->back()->withInput();
         }
 
-        if ($admin['is_active'] != 1) {
+        if ($admin['status'] != 1) {
             $session->setFlashdata('error', 'Your account is inactive');
             return redirect()->back();
         }
 
         // Get user's role
         $db = \Config\Database::connect();
-        $userRole = $db->table('ca_user')->select('role_id')->where('id', $admin['id'])->get()->getRow();
+        $userRole = $db->table('user_management')->select('role_id')->where('id', $admin['id'])->get()->getRow();
 
         // Set session data (use only existing columns)
         $session->set('admin', [
             'id' => $admin['id'],
-            'username' => $admin['username'],
-            'is_active' => $admin['is_active'],
-            'is_enable' => $admin['is_enable'],
-            'created_by' => $admin['created_by'],
+            'email' => $admin['email'],
+            'status' => $admin['status'],
+            'created_at' => $admin['created_at'],
             'role_id' => $userRole ? $userRole->role_id : null,
         ]);
 
