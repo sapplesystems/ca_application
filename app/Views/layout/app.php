@@ -43,7 +43,7 @@
         $admin = $session->get('admin');
         
         if ($admin) {
-            $userRole = $db->table('ca_user')->select('role_id')->where('id', $admin['id'])->get()->getRow();
+            $userRole =  $db->table('user_management')->select('role_id')->where('id', $admin['id'])->get()->getRow();
             $role = $db->table('roles')->select('permission_type')->where('id', $userRole->role_id ?? 0)->get()->getRow();
             
             function hasPermission($permissionSlug, $roleId, $db) {
