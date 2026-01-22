@@ -53,8 +53,37 @@ class PermissionSeeder extends Seeder
             ['permission_name' => 'Create Role', 'permission_slug' => 'role.create', 'module' => 'role', 'description' => 'Create new role', 'status' => 1],
             ['permission_name' => 'Edit Role', 'permission_slug' => 'role.edit', 'module' => 'role', 'description' => 'Edit role details', 'status' => 1],
             ['permission_name' => 'Delete Role', 'permission_slug' => 'role.delete', 'module' => 'role', 'description' => 'Delete role', 'status' => 1],
+
+             // ===================== PDF Output Module =====================
+            ['permission_name' => 'View PDF Output', 'permission_slug' => 'pdf_output.view', 'module' => 'pdf_output', 'description' => 'View PDF output list', 'status' => 1],
+            ['permission_name' => 'Generate PDF', 'permission_slug' => 'pdf_output.generate', 'module' => 'pdf_output', 'description' => 'Generate PDF file', 'status' => 1],
+            ['permission_name' => 'Download PDF', 'permission_slug' => 'pdf_output.download', 'module' => 'pdf_output', 'description' => 'Download PDF file', 'status' => 1],
+            ['permission_name' => 'Print PDF', 'permission_slug' => 'pdf_output.print', 'module' => 'pdf_output', 'description' => 'Print PDF file', 'status' => 1],
+            ['permission_name' => 'Delete PDF', 'permission_slug' => 'pdf_output.delete', 'module' => 'pdf_output', 'description' => 'Delete generated PDF', 'status' => 1],
+            // ===================== Report Register Module =====================
+            ['permission_name' => 'View Report Register', 'permission_slug' => 'report_register.view', 'module' => 'report_register', 'description' => 'View report register list', 'status' => 1],
+            ['permission_name' => 'Generate Report', 'permission_slug' => 'report_register.generate', 'module' => 'report_register', 'description' => 'Generate report', 'status' => 1],
+            ['permission_name' => 'Export Report', 'permission_slug' => 'report_register.export', 'module' => 'report_register', 'description' => 'Export report data', 'status' => 1],
+            ['permission_name' => 'Print Report', 'permission_slug' => 'report_register.print', 'module' => 'report_register', 'description' => 'Print report', 'status' => 1],
+            ['permission_name' => 'Delete Report', 'permission_slug' => 'report_register.delete', 'module' => 'report_register', 'description' => 'Delete report entry', 'status' => 1],
         ];
 
-        $this->db->table('permissions')->insertBatch($data);
-    }
+$table = $this->db->table('permissions');
+
+    foreach ($data as $row) {
+        $existing = $table
+            ->where('permission_slug', $row['permission_slug'])
+            ->get()
+            ->getRowArray();
+
+        if ($existing) {
+            // UPDATE
+            $table
+                ->where('permission_slug', $row['permission_slug'])
+                ->update($row);
+        } else {
+            // INSERT
+            $table->insert($row);
+        }
+    }    }
 }

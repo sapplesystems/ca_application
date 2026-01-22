@@ -96,13 +96,13 @@
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('report.view', $userRole->role_id, $db)): ?>
+        <?php if ($userRole && hasPermission('report_register.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('reports_registers'); ?>" class="menu-link">
             <div class="menu-item">Reports & Registers</div>
         </a>
         <?php endif; ?>
 
-        <?php if ($userRole && hasPermission('pdf.view', $userRole->role_id, $db)): ?>
+        <?php if ($userRole && hasPermission('pdf_output.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('pdf_outputs'); ?>" class="menu-link">
             <div class="menu-item">PDF Outputs</div>
         </a>
