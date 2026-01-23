@@ -16,7 +16,7 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
-   
+
 </head>
 
 <body>
@@ -24,10 +24,8 @@
 
     <header class="top-header">
         <div class="logo-wrap">
-            <div class="logo-mark">CA</div>
             <div>
-                <div class="logo-text-main">Kumar Samantaray &amp; Associates</div>
-                <div class="logo-text-sub">Chartered Accountants</div>
+                <div><img src="<?= base_url('public/images/CA_logo.png') ?>" alt="CA Logo"></div>
             </div>
         </div>
         <div class="user-info">
@@ -107,7 +105,7 @@
             <div class="menu-item">PDF Outputs</div>
         </a>
         <?php endif; ?>
-               <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
+        <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
             <div class="menu-item">User Managment</div>
         </a>
@@ -128,16 +126,18 @@
         document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
             const linkPath = new URL(link.href).pathname;
 
-            if (currentPath === linkPath || 
+            if (currentPath === linkPath ||
                 currentPath.includes(linkPath) ||
                 (currentPath.includes('/roles') && linkPath.includes('/roles')) ||
                 (currentPath.includes('permissions') && linkPath.includes('permissions'))) {
-                
-                document.querySelectorAll('.menu-bar .menu-item.active').forEach(el => el.classList.remove('active'));
+
+                document.querySelectorAll('.menu-bar .menu-item.active').forEach(el => el.classList
+                    .remove('active'));
                 link.querySelector('.menu-item').classList.add('active');
             }
         });
     });
     </script>
 </body>
+
 </html>

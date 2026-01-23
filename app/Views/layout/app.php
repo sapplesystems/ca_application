@@ -102,12 +102,12 @@
         </a>
         <?php endif; ?>
 
-         <?php if ($userRole && hasPermission('pdf_output.view', $userRole->role_id, $db)): ?>
+        <?php if ($userRole && hasPermission('pdf_output.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('pdf_outputs'); ?>" class="menu-link">
             <div class="menu-item">PDF Outputs</div>
         </a>
         <?php endif; ?>
-         <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
+        <?php if ($userRole && hasPermission('user.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('/UserManagment'); ?>" class="menu-link">
             <div class="menu-item">User Management</div>
         </a>
@@ -119,7 +119,7 @@
         </a>
         <?php endif; ?>
 
-       
+
 
         <?php } ?>
     </nav>
@@ -136,7 +136,8 @@
         document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
             const linkPath = new URL(link.href).pathname;
 
-            if (currentPath === linkPath || currentPath.includes('/roles') || currentPath.includes('roles')) {
+            if (currentPath === linkPath || currentPath.includes('/roles') || currentPath.includes(
+                    'roles')) {
                 document
                     .querySelectorAll('.menu-bar .menu-item.active')
                     .forEach(el => el.classList.remove('active'));
@@ -147,4 +148,5 @@
     });
     </script>
 </body>
+
 </html>
