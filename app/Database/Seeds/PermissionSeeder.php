@@ -48,12 +48,6 @@ class PermissionSeeder extends Seeder
             ['permission_name' => 'Delete Debit Note', 'permission_slug' => 'debit.delete', 'module' => 'debit', 'description' => 'Delete debit note', 'status' => 1],
             ['permission_name' => 'Print Debit Note', 'permission_slug' => 'debit.print', 'module' => 'debit', 'description' => 'Print debit note', 'status' => 1],
 
-            // Role Permissions
-            ['permission_name' => 'View Role', 'permission_slug' => 'role.view', 'module' => 'role', 'description' => 'View roles', 'status' => 1],
-            ['permission_name' => 'Create Role', 'permission_slug' => 'role.create', 'module' => 'role', 'description' => 'Create new role', 'status' => 1],
-            ['permission_name' => 'Edit Role', 'permission_slug' => 'role.edit', 'module' => 'role', 'description' => 'Edit role details', 'status' => 1],
-            ['permission_name' => 'Delete Role', 'permission_slug' => 'role.delete', 'module' => 'role', 'description' => 'Delete role', 'status' => 1],
-
              // ===================== PDF Output Module =====================
             ['permission_name' => 'View PDF Output', 'permission_slug' => 'pdf_output.view', 'module' => 'pdf_output', 'description' => 'View PDF output list', 'status' => 1],
             ['permission_name' => 'Generate PDF', 'permission_slug' => 'pdf_output.generate', 'module' => 'pdf_output', 'description' => 'Generate PDF file', 'status' => 1],
