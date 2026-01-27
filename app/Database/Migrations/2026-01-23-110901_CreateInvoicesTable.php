@@ -72,30 +72,72 @@ class CreateInvoicesTable extends Migration
                 'type' => 'DATETIME',
                 'null' => true,
             ],
-           'updated_on' => [
+            'updated_on' => [
                 'type' => 'DATETIME',
                 'null' => true,
             ],
             'is_active' => [
-                'type'       => 'TINYINT',
+                'type'    => 'TINYINT',
                 'constraint' => 1,
-                'default'    => 1,
+                'default' => 1,
             ],
             'report_status' => [
-                'type'       => 'TINYINT',
+                'type'    => 'TINYINT',
                 'constraint' => 1,
-                'default'    => 0,
+                'default' => 0,
+            ],
+            'service_description' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'service_amount' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'expense_total' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'grand_total' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'service_value' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'cgst_amount' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'sgst_amount' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'igst_amount' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
             ],
         ]);
 
         $this->forge->addKey('id', true);
         $this->forge->addKey('company_id');
-
-        $this->forge->createTable('invoices', true);
+        $this->forge->createTable('invoices', true, [
+            'ENGINE' => 'MyISAM',
+            'DEFAULT CHARSET' => 'utf8mb4',
+        ]);
     }
 
     public function down()
     {
-         $this->forge->dropTable('invoices', true);
+        $this->forge->dropTable('invoices', true);
     }
 }

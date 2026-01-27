@@ -6,46 +6,59 @@ use CodeIgniter\Database\Migration;
 
 class CreateInvoiceWorksTable extends Migration
 {
-    public function up()
+   public function up()
     {
         $this->forge->addField([
             'id' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
-                'auto_increment' => true
+                'auto_increment' => true,
             ],
             'invoice_id' => [
                 'type'       => 'INT',
                 'constraint' => 11,
-                'unsigned'   => true
+                'unsigned'   => true,
             ],
             'service_description' => [
                 'type' => 'TEXT',
-                'null' => false
             ],
             'service_amount' => [
                 'type'       => 'DECIMAL',
                 'constraint' => '15,2',
-                'default'    => 0
+                'default'    => '0.00',
+            ],
+            'service_name' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
+            ],
+            'service_unit' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 200,
+                'null'       => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
-                'null' => true
+                'null' => true,
             ],
             'updated_at' => [
                 'type' => 'DATETIME',
-                'null' => true
-            ]
+                'null' => true,
+            ],
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('invoice_id', 'invoice_master', 'id', 'CASCADE', 'CASCADE'); // optional FK
-        $this->forge->createTable('invoice_works');
+        $this->forge->addKey('invoice_id', false, false, 'invoice_works_invoice_id_foreign');
+
+        $this->forge->createTable('invoice_works', true, [
+            'ENGINE' => 'MyISAM',
+            'DEFAULT CHARSET' => 'utf8mb4',
+        ]);
     }
 
     public function down()
     {
-        $this->forge->dropTable('invoice_works');
+        $this->forge->dropTable('invoice_works', true);
     }
 }
