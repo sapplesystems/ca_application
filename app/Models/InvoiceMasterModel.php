@@ -70,10 +70,10 @@ public function getInvoiceWithCompany($clientId)
     return $this->select('
             invoices.*,
             company_master.name AS company_name,
-            recipt_details.date AS recipt_date,
-            recipt_details.recipt_no,
-            recipt_details.tds_amount,
-            GROUP_CONCAT(invoice_works.service_name SEPARATOR ",\n ") AS service_names
+            MAX(recipt_details.date) AS recipt_date,
+            MAX(recipt_details.recipt_no) AS recipt_no,
+            SUM(recipt_details.tds_amount) AS tds_amount,
+            GROUP_CONCAT(DISTINCT invoice_works.service_name SEPARATOR ",\n ") AS service_names
         ')
         ->join('company_master', 'company_master.id = invoices.company_id', 'left')
         ->join('recipt_details', 'recipt_details.invoice_id = invoices.id', 'left')
