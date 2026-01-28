@@ -69,9 +69,12 @@ $routes->get('roles/delete/(:num)', 'RoleController::delete/$1', ['as' => 'roles
 $routes->get('roles/permissions/(:any)', 'RoleController::getPermissionsByModule/$1', ['as' => 'roles.permissions']);
 
 //UserManagment Routes
-$routes->get('/UserManagment', 'UserManagementController::index');
+$routes->get('/UserManagment', 'UserManagementController::index', ['filter' => 'adminPermission']);
 $routes->post('user-management/store', 'UserManagementController::store');
 $routes->get('user-management/get-user/(:num)', 'UserManagementController::getUser/$1');
 $routes->post('user-management/update', 'UserManagementController::update');
 $routes->post('user-management/delete', 'UserManagementController::delete');
 $routes->post('user-management/toggle-status', 'UserManagementController::toggleStatus');
+$routes->post('user-management/reset-password', 'UserManagementController::resetPassword', [
+    'as' => 'reset-password'
+]);

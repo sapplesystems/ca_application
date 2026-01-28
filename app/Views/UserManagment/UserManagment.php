@@ -109,13 +109,6 @@
                             <input type="text" name="phone" id="edit_phone" placeholder="Enter phone number">
                         </div>
 
-                         <div class="msl-form-group">
-                                <label>Password</label>
-                                <input type="text" name="password" id="edit_password" placeholder="enter your password">
-                            </div>
-                        </div>
-
-                        <div class="msl-form-row">
                           <div class="msl-form-group">
                                 <label>User Role</label>
                                 <select name="role" id="edit_role" required>
@@ -148,6 +141,45 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for password reset-->
+<div class="modal fade" id="passwordresetpopup" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="passwordResetForm">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="reset_user_id" name="user_id">
+
+                    <div class="mb-3">
+                        <label>New Password</label>
+                        <input type="password" id="new_password" name="password"
+                               class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirm_password"
+                               class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Update Password
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <main class="content-wrap">
 
@@ -215,6 +247,10 @@
                                 data-bs-target="#usereditpopup" data-id="<?= $user['id'] ?>">
                                 Edit
                             </button>
+                            <button class="action-btn action-resetpassword" data-bs-toggle="modal"
+                                data-bs-target="#passwordresetpopup" data-id="<?= $user['id'] ?>">
+                                Password Reset
+                            </button>
                             <button class="action-btn action-delete" style="background-color:#ee2400;color:#fff"
                                 data-id="<?= $user['id'] ?>">
                                 Delete
@@ -255,7 +291,6 @@ document.querySelectorAll('.action-edit').forEach(btn => {
                 document.getElementById('edit_name').value = user.name;
                 document.getElementById('edit_email').value = user.email;
                 document.getElementById('edit_phone').value = user.phone;
-                document.getElementById('edit_password').value = user.password;
                 document.getElementById('edit_role').value = user.role_id;
 
                 const editModal = bootstrap.Modal.getOrCreateInstance(
@@ -363,4 +398,49 @@ document.querySelectorAll('.toggle').forEach(toggle => {
     });
 
 });
+
+// Load user ID into modal
+document.querySelectorAll('.action-resetpassword').forEach(btn => {
+    btn.addEventListener('click', function () {
+        document.getElementById('reset_user_id').value = this.dataset.id;
+        document.getElementById('passwordResetForm').reset();
+    });
+});
+
+// Submit password reset
+document.getElementById('passwordResetForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const password = document.getElementById('new_password').value;
+    const confirm  = document.getElementById('confirm_password').value;
+
+    if (password !== confirm) {
+        alert('Passwords do not match');
+        return;
+    }
+
+    fetch(`<?= base_url('user-management/reset-password') ?>`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            user_id: document.getElementById('reset_user_id').value,
+            password: password
+        })
+    })
+    .then(res => res.json())
+    .then(resp => {
+        if (resp.status) {
+            alert('Password updated successfully');
+            bootstrap.Modal.getInstance(
+                document.getElementById('passwordresetpopup')
+            ).hide();
+        } else {
+            alert(resp.message || 'Error updating password');
+        }
+    });
+});
+
 </script>

@@ -43,7 +43,7 @@ class UserManagementController extends BaseController
             'name'   => $this->request->getPost('name'),
             'email'  => $this->request->getPost('email'),
             'phone'  => $this->request->getPost('phone'),
-            'password' => $this->request->getPost('password'),
+            'password' => password_hash($this->request->getPost('password'),PASSWORD_DEFAULT),
             'role_id'   => $this->request->getPost('role'),
             
         ]);
@@ -57,6 +57,27 @@ class UserManagementController extends BaseController
 
     return $this->response->setJSON($user);
 }
+
+public function resetPassword()
+{
+    $data = $this->request->getJSON(true);
+
+    if (empty($data['password'])) {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Password required'
+        ]);
+    }
+    $model = new UserManagementModel();
+    $model->update($data['user_id'], [
+        'password' => password_hash($data['password'], PASSWORD_DEFAULT)
+    ]);
+
+    return $this->response->setJSON([
+        'status' => true
+    ]);
+}
+
 public function update()
 {
     $model = new UserManagementModel();
@@ -74,7 +95,7 @@ public function update()
         'name'  => $this->request->getPost('name'),
         'email' => $this->request->getPost('email'),
         'phone' => $this->request->getPost('phone'),
-        'password' => $this->request->getPost('password'),
+        'password' => password_hash($this->request->getPost('password'),PASSWORD_DEFAULT),
         'role_id'  => $this->request->getPost('role'),
     ];
 
