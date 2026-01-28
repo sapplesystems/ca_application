@@ -24,10 +24,9 @@
     <!-- Header -->
     <header class="top-header">
         <div class="logo-wrap">
-            <div class="logo-mark">CA</div>
+
             <div>
-                <div class="logo-text-main">Kumar Samantaray &amp; Associates</div>
-                <div class="logo-text-sub">Chartered Accountants</div>
+                <div><img src="<?= base_url('public/images/CA_logo.png') ?>" alt="CA Logo"></div>
             </div>
         </div>
         <div class="user-info">

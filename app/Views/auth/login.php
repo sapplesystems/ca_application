@@ -39,7 +39,7 @@
             <div class="form-group password-box">
                 <label for="password">Password</label>
                 <input id="password" class="input" name="pass" type="password" placeholder="••••••••" />
-                <span class="eye-icon" id="togglePassword">👁️</span>
+                <span class="eye-icon" id="togglePassword">🙈</span>
                 <small class="error-msg" id="passwordError"></small>
             </div>
 
@@ -66,10 +66,10 @@
     toggle.addEventListener("click", function() {
         if (passwordInput.type === "password") {
             passwordInput.type = "text";
-            this.textContent = "🙈";
+            this.textContent = "👁️";
         } else {
             passwordInput.type = "password";
-            this.textContent = "👁️";
+            this.textContent = "🙈";
         }
     });
 

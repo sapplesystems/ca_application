@@ -14,7 +14,7 @@
     </div>
 
     <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show"><?= session()->getFlashdata('success') ?></div>
+    <div class="alert alert-success alert-dismissible fade show"><?= session()->getFlashdata('success') ?></div>
     <?php endif; ?>
 
     <div class="card">
@@ -37,10 +37,14 @@
                         <td><code><?= esc($permission['permission_slug']) ?></code></td>
                         <td><span class="badge bg-secondary"><?= ucfirst($permission['module']) ?></span></td>
                         <td><?= esc($permission['description']) ?></td>
-                        <td><?= $permission['status'] ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>' ?></td>
+                        <td><?= $permission['status'] ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>' ?>
+                        </td>
                         <td>
-                            <a href="<?= base_url('permissions/edit/' . $permission['id']) ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                            <a href="<?= base_url('permissions/delete/' . $permission['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')"><i class="fas fa-trash"></i></a>
+                            <a href="<?= base_url('permissions/edit/' . $permission['id']) ?>"
+                                class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                            <a href="<?= base_url('permissions/delete/' . $permission['id']) ?>"
+                                class="btn btn-sm btn-danger" onclick="return confirm('Delete?')"><i
+                                    class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
