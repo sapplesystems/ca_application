@@ -220,12 +220,12 @@ class ClientMasterController extends BaseController
             return redirect()->to('/Client_Master')->with('error', 'Client not found');
         }
 
-        // Handle file upload (Certificate of Incorporation)
+        
         $coiFile = $this->request->getFile('coi');
-        $fileName = $client['coi_file']; // Keep old file by default
+        $fileName = $client['coi_file']; 
 
         if ($coiFile && $coiFile->isValid()) {
-            // Delete old file if exists
+            
             if ($fileName && file_exists(WRITEPATH . 'uploads/' . $fileName)) {
                 unlink(WRITEPATH . 'uploads/' . $fileName);
             }
@@ -233,7 +233,7 @@ class ClientMasterController extends BaseController
             $coiFile->move(WRITEPATH . 'uploads', $fileName);
         }
 
-        // Prepare updated data
+        
         $data = [
             'cin_no'                   => $this->request->getPost('cin_no'),
             'legal_name'               => $this->request->getPost('legal_name'),
@@ -281,9 +281,9 @@ if ($result) {
 
    public function show()
 {
-    // Make sure it's a POST request (recommended for AJAX)
+    
     if ($this->request->getMethod() === 'POST') {
-        $clientId = (int) $this->request->getPost('client_id'); // match your AJAX key
+        $clientId = (int) $this->request->getPost('client_id'); 
 
         if (!$clientId) {
             return $this->response->setJSON([
@@ -294,7 +294,7 @@ if ($result) {
         }
 
         $clientModel = new ClientModel();
-        $client = $clientModel->find($clientId); // standard CI4 find
+        $client = $clientModel->find($clientId); 
 
         if (!$client) {
             return $this->response->setJSON([
