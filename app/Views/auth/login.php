@@ -23,9 +23,20 @@
         <?php endif; ?>
 
         <?php if(session()->getFlashdata('error')): ?>
-        <div style="color: red; padding: 10px;">
-            <?= session()->getFlashdata('error'); ?>
+        <div style="
+    background: #fdecea;
+    color: #b71c1c;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border-left: 4px solid #e53935;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+">
+            ⚠️ <?= session()->getFlashdata('error'); ?>
         </div>
+
         <?php endif; ?>
         <form id="loginForm" action="<?= site_url('login-for-entry'); ?>" method="POST">
 
