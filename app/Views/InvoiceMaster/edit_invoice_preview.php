@@ -227,6 +227,7 @@ function romanNumeral($num) {
                 <?= romanNumeral($index + 1); ?>
             </td>
             <td>
+                  <input type="hidden" name="expense_id[]" value="<?= esc($exp['id']) ?>">
                 <input type="text"
                        name="expense_description[]"
                        value="<?= esc($exp['expense_description']); ?>"
@@ -248,6 +249,7 @@ function romanNumeral($num) {
  <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
     <td style="text-align:center;"></td>
     <td>
+        <input type="hidden" name="expense_id[]" value="">
         <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
     </td>
     <td>
@@ -294,9 +296,19 @@ function romanNumeral($num) {
 <tr style="background:#0b5c7d;color:#fff;">
     <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">C</td>
     <td style="padding:8px; border:1px solid #ccc; text-align:left;background:#0b5c7d;">
-        <strong>Amount In Words</strong><br>
-        <span id="amountInWords"></span>
-    </td>
+    <strong>Amount In Words</strong><br>
+
+    <!-- Display -->
+    <span id="amountInWords">
+        <?= esc($invoice['amount_in_words'] ?? 'ZERO'); ?>
+    </span>
+
+    <!-- Hidden field for submit -->
+    <input type="hidden"
+           name="amount_in_words"
+           id="amountInWordsInput"
+           value="<?= esc($invoice['amount_in_words'] ?? 'ZERO'); ?>">
+</td>
     <td align="right" style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;" >
          Net Amount Receivable (A+B)<br>
         <strong id="netAmount">0</strong>
@@ -319,13 +331,24 @@ function romanNumeral($num) {
 </textarea>
 
 <!-- HIDDEN VALUES -->
-<input type="hidden" name="service_value" id="service_value">
+<!-- <input type="hidden" name="service_value" id="service_value">
 <input type="hidden" name="expense_total" id="expense_total">
 <input type="hidden" name="grand_total" id="grand_total">
 <input type="hidden" name="net_amount" id="net_amount">
 <input type="hidden" name="cgst_amount" id="cgst_amount">
 <input type="hidden" name="sgst_amount" id="sgst_amount">
-<input type="hidden" name="igst_amount" id="igst_amount">
+<input type="hidden" name="igst_amount" id="igst_amount"> -->
+
+<input type="hidden" id="serviceValueInput" name="service_value">
+<input type="hidden" id="expenseTotalInput" name="expense_total">
+
+<!-- GST (only one of these may exist depending on tax type) -->
+<input type="hidden" id="cgstInput" name="cgst">
+<input type="hidden" id="sgstInput" name="sgst">
+<input type="hidden" id="igstInput" name="igst">
+
+<input type="hidden" id="grandTotalInput" name="grand_total">
+<input type="hidden" id="netAmountInput" name="net_amount">
 
 <input type="hidden" name="invoice_id" value="<?= esc($invoice['id']); ?>">
 
@@ -344,171 +367,226 @@ function romanNumeral($num) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.getElementById('invoiceForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // prevent normal form submit
+/* ==========================
+   DOM REFERENCES
+========================== */
+document.addEventListener('DOMContentLoaded', function () {
 
-        const form = this;
+    const form = document.getElementById('invoiceForm');
 
-        // Submit form via AJAX
-        fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Invoice Updated!',
-                        text: 'Your invoice has been updated successfully.',
-                        icon: 'success',
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Print Invoice',
-                        denyButtonText: 'Download PDF',
-                        cancelButtonText: 'Close'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Print invoice
-                            window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDenied) {
-                            // Download PDF
-                            window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDismissed) {
-                            // Check if user clicked cancel
-                            // Optional: redirect to invoice list
-                            Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Do you want to go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, Redirect',
-                                cancelButtonText: 'No'
-                            }).then((res) => {
-                                if (res.isConfirmed) {
-                                    window.location.href =
-                                        '<?= site_url("InvoiceManagment") ?>';
-                                }
-                                // else just close popup
-                            });
-                        }
-                    });
-                } else {
-                    Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
-                }
-            })
-            .catch(err => {
-                Swal.fire('Error!', 'Network or server error', 'error');
-            });
-    });
-function calculateTotals() {
+    // Hidden inputs
+    const serviceValueInput = document.getElementById('serviceValueInput');
+    const expenseTotalInput = document.getElementById('expenseTotalInput');
+    const cgstInput         = document.getElementById('cgstInput');
+    const sgstInput         = document.getElementById('sgstInput');
+    const igstInput         = document.getElementById('igstInput');
+    const grandTotalInput   = document.getElementById('grandTotalInput');
+    const netAmountInput    = document.getElementById('netAmountInput');
 
-    /* ✅ SERVICE VALUE */
-    let serviceValue = 0;
-    document.querySelectorAll('.service-amount').forEach(el => {
-        serviceValue += parseFloat(el.value || 0);
-    });
-    document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
+    /* ==========================
+       CALCULATE TOTALS
+    ========================== */
+    function calculateTotals() {
 
-    /* ✅ EXPENSE TOTAL */
-    let expenseTotal = 0;
-    document.querySelectorAll('.expense').forEach(el => {
-        expenseTotal += parseFloat(el.value || 0);
-    });
-    document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
+        /* SERVICE TOTAL */
+        let serviceValue = 0;
+        document.querySelectorAll('.service-amount').forEach(el => {
+            serviceValue += parseFloat(el.value || 0);
+        });
+        document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-    let cgst = 0, sgst = 0, igst = 0;
+        /* EXPENSE TOTAL */
+        let expenseTotal = 0;
+        document.querySelectorAll('.expense').forEach(el => {
+            expenseTotal += parseFloat(el.value || 0);
+        });
+        document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
 
-    /* ✅ CGST + SGST */
-    if (document.getElementById('cgstAmount')) {
+        let cgst = 0, sgst = 0, igst = 0;
 
-        cgst = (serviceValue + expenseTotal) * 0.09;
-        sgst = (serviceValue + expenseTotal) * 0.09;
+        /* CGST / SGST */
+        if (document.getElementById('cgstAmount')) {
+            cgst = (serviceValue + expenseTotal) * 0.09;
+            sgst = (serviceValue + expenseTotal) * 0.09;
 
-        document.getElementById('cgstAmount').value = cgst.toFixed(2);
-        document.getElementById('sgstAmount').value = sgst.toFixed(2);
+            document.getElementById('cgstAmount').value = cgst.toFixed(2);
+            document.getElementById('sgstAmount').value = sgst.toFixed(2);
+        }
+
+        /* IGST */
+        if (document.getElementById('igstAmount')) {
+            igst = (serviceValue + expenseTotal) * 0.18;
+            document.getElementById('igstAmount').value = igst.toFixed(2);
+        }
+
+        /* GRAND TOTAL */
+        const taxTotal  = cgst + sgst + igst;
+        const grandTotal = serviceValue + expenseTotal + taxTotal;
+        document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+
+        /* NET AMOUNT */
+        const advance = parseFloat(document.getElementById('advance')?.value || 0);
+        const netAmount = grandTotal - advance;
+
+        document.getElementById('netAmount').innerText = netAmount.toFixed(2);
+        document.getElementById('amountInWords').innerText =
+            numberToWords(Math.round(netAmount)).toUpperCase();
+
+        /* HIDDEN INPUTS */
+        serviceValueInput.value = serviceValue.toFixed(2);
+        expenseTotalInput.value = expenseTotal.toFixed(2);
+        if (cgstInput) cgstInput.value = cgst.toFixed(2);
+        if (sgstInput) sgstInput.value = sgst.toFixed(2);
+        if (igstInput) igstInput.value = igst.toFixed(2);
+        grandTotalInput.value = grandTotal.toFixed(2);
+        netAmountInput.value  = netAmount.toFixed(2);
     }
 
-    /* ✅ IGST */
-    if (document.getElementById('igstAmount')) {
+    /* ==========================
+       ADD EXPENSE ROW
+    ========================== */
+    window.addExpenseRow = function () {
 
-        igst = (serviceValue + expenseTotal) * 0.18;
+        const template = document.getElementById('hiddenRow');
+        const clone = template.cloneNode(true);
 
-        document.getElementById('igstAmount').value = igst.toFixed(2);
-    }
+        clone.removeAttribute('id');
+        clone.style.display = 'table-row';
 
-    /* ✅ GRAND TOTAL */
-    let taxTotal = cgst + sgst + igst;
-    let grandTotal = serviceValue + expenseTotal + taxTotal;
+        clone.querySelectorAll('input').forEach(i => i.value = '');
 
-    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
-
-    /* ✅ ADVANCE */
-    let advance = parseFloat(document.getElementById('advance').value || 0);
-    let netAmount = grandTotal - advance;
-
-    document.getElementById('netAmount').innerText = netAmount.toFixed(2);
-    document.getElementById('amountInWords').innerText =
-        numberToWords(Math.round(netAmount)).toUpperCase();
-
-    /* ✅ HIDDEN INPUTS */
-    serviceValueInput.value = serviceValue.toFixed(2);
-    expenseTotalInput.value = expenseTotal.toFixed(2);
-    cgstInput.value = cgst.toFixed(2);
-    sgstInput.value = sgst.toFixed(2);
-    igstInput.value = igst.toFixed(2);
-    grandTotalInput.value = grandTotal.toFixed(2);
-    netAmountInput.value = netAmount.toFixed(2);
-}
-
-
-function addExpenseRow() {
-    const template = document.getElementById('hiddenRow');
-    const clone = template.cloneNode(true);
-
-    clone.style.display = 'table-row'; // make it visible
-    clone.removeAttribute('id');
-
-    // Reset all input values
-    clone.querySelectorAll('input').forEach(input => input.value = '');
-
-    // Find all visible expense rows
-    const expenseRows = document.querySelectorAll('.expense-row:not([style*="display:none"])');
-
-    if (expenseRows.length > 0) {
-        // Insert after the last visible expense row
+        const expenseRows = document.querySelectorAll('.expense-row:not([style*="display:none"])');
         const lastRow = expenseRows[expenseRows.length - 1];
-        lastRow.parentNode.insertBefore(clone, lastRow.nextSibling);
-    } else {
-        // If no visible rows, insert before the first hidden row (fallback)
-        template.parentNode.insertBefore(clone, template);
-    }
+        lastRow.after(clone);
 
-    // Recalculate totals after adding
-    calculateTotals();
-}
+        calculateTotals();
+    };
 
+    /* ==========================
+       INPUT EVENTS (delegated)
+    ========================== */
+    document.addEventListener('input', function (e) {
+        if (
+            e.target.classList.contains('service-amount') ||
+            e.target.classList.contains('expense') ||
+            e.target.id === 'advance'
+        ) {
+            calculateTotals();
+        }
+    });
 
-/* EVENTS */
-document.addEventListener('input', function (e) {
-    if (
-        e.target.classList.contains('service-amount') ||
-        e.target.classList.contains('expense') ||
-        e.target.id === 'advance'
-    ) {
+    /* ==========================
+       DELETE EXPENSE ROW
+    ========================== */
+    document.addEventListener('click', function (e) {
+
+        const deleteBtn = e.target.closest('.delete-row');
+        if (!deleteBtn) return;
+
+        const row = deleteBtn.closest('tr');
+        const expenseId = deleteBtn.dataset.expenseId;
+        const tbody = document.getElementById('expenseBody');
+
+        Swal.fire({
+            title: 'Delete this expense?',
+            text: 'This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete'
+        }).then(result => {
+
+            if (!result.isConfirmed) return;
+
+            if (expenseId) {
+                fetch('<?= site_url("Expense/delete") ?>', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ expense_id: expenseId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        removeRow(row, tbody);
+                    } else {
+                        Swal.fire('Error', data.message || 'Delete failed', 'error');
+                    }
+                })
+                .catch(() => Swal.fire('Error', 'Server error', 'error'));
+            } else {
+                removeRow(row, tbody);
+            }
+        });
+    });
+
+    function removeRow(row, tbody) {
+
+        const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
+
+        if (rows.length <= 1) {
+            Swal.fire('Warning', 'At least one expense row is required.', 'warning');
+            return;
+        }
+
+        row.remove();
+
+        tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])')
+            .forEach((tr, i) => tr.cells[0].textContent = i + 1);
+
         calculateTotals();
     }
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('#invoiceForm'); // your form ID
-    form.addEventListener('submit', function() {
-        calculateTotals(); // calculate and populate hidden inputs
+    /* ==========================
+       FORM SUBMIT (AJAX)
+    ========================== */
+    form.addEventListener('submit', function (e) {
+
+        e.preventDefault();
+        calculateTotals();
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.status !== 'success') {
+                Swal.fire('Error', 'Failed to update invoice', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Invoice Updated!',
+                icon: 'success',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Print Invoice',
+                denyButtonText: 'Download PDF'
+            }).then(result => {
+
+                if (result.isConfirmed) {
+                    window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id, '_blank');
+                }
+                if (result.isDenied) {
+                    window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
+                }
+            });
+        })
+        .catch(() => Swal.fire('Error', 'Server error', 'error'));
     });
+
+    /* ==========================
+       INIT
+    ========================== */
+    calculateTotals();
 });
 
-
+/* ==========================
+   NUMBER TO WORDS
+========================== */
 function numberToWords(num) {
     const ones=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"];
     const tens=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
@@ -519,75 +597,5 @@ function numberToWords(num) {
     if(num<100000)return numberToWords(Math.floor(num/1000))+" Thousand "+numberToWords(num%1000);
     if(num<10000000)return numberToWords(Math.floor(num/100000))+" Lakh "+numberToWords(num%100000);
     return numberToWords(Math.floor(num/10000000))+" Crore "+numberToWords(num%10000000);
-}
-
-document.querySelector('.service-amount').addEventListener('input', calculateTotals);
-document.getElementById('advance').addEventListener('input', calculateTotals);
-
-calculateTotals();
-
-document.addEventListener('click', function (e) {
-    if (!e.target.classList.contains('delete-row')) return;
-
-    const row = e.target.closest('tr');
-    const expenseId = e.target.dataset.expenseId; // DB ID
-    const tbody = document.getElementById('expenseBody');
-
-    Swal.fire({
-        title: 'Delete this expense?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete'
-    }).then(result => {
-
-        if (!result.isConfirmed) return;
-
-        // If expense exists in DB → delete via AJAX
-        if (expenseId) {
-            fetch('<?= site_url("Expense/delete") ?>', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ expense_id: expenseId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    removeRow(row, tbody);
-                } else {
-                    Swal.fire('Error', data.message || 'Delete failed', 'error');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Server error', 'error');
-            });
-        } 
-        // If not saved yet → just remove from UI
-        else {
-            removeRow(row, tbody);
-        }
-    });
-});
-
-function removeRow(row, tbody) {
-    const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
-
-    if (rows.length <= 1) {
-        Swal.fire('Warning', 'At least one expense row is required.', 'warning');
-        return;
-    }
-
-    row.remove();
-
-    // Re-index rows
-    tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])')
-        .forEach((tr, index) => {
-            tr.cells[0].textContent = index + 1;
-        });
-
-    calculateTotals();
 }
 </script>
