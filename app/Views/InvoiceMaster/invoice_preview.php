@@ -294,7 +294,10 @@
                         <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">C</td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:left;background:#0b5c7d;">
                             <strong>(Amount In Words)</strong><br>
-                            <span id="amountInWords">ZERO</span>
+                           <span id="amountInWords">ZERO</span>
+
+    <!-- 🔑 Hidden field for DB -->
+    <input type="hidden" name="amount_in_words" id="amountInWordsInput" value="ZERO">
                         </td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
                             Net Amount Receivable (A+B)
@@ -464,6 +467,11 @@ function calculateTotals() {
     igstInput.value = igst.toFixed(2);
     grandTotalInput.value = grandTotal.toFixed(2);
     netAmountInput.value = netAmount.toFixed(2);
+
+    let words = numberToWords(Math.round(netAmount)).toUpperCase();
+
+document.getElementById('amountInWords').innerText = words;
+document.getElementById('amountInWordsInput').value = words;
 }
 
 

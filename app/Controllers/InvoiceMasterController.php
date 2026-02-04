@@ -146,6 +146,7 @@ class InvoiceMasterController extends BaseController
                     'invoice_date'        => $this->request->getPost('invoice_date'),
                     'invoice_status'      => $this->request->getPost('invoice_status') ?? 'new',
                     'created_by'          => $this->request->getPost('created_by'),
+                    'amount_in_words'     => $this->request->getPost('amount_in_words'),
                     'is_active'           => 1,
                     'report_status'       => 0,
                 ];
@@ -234,7 +235,14 @@ class InvoiceMasterController extends BaseController
 
      $invoiceWorkModel=new InvoiceWorksModel();
     $invoice_works=$invoiceWorkModel->where('invoice_id', $id)->findAll();
+  /* 2️⃣ TOTAL of service_amount */
+$totalRow = $invoiceWorkModel
+    ->selectSum('service_amount')
+    ->where('invoice_id', $id)
+    ->get()
+    ->getRowArray();
 
+$serviceTotal = $totalRow['service_amount'] ?? 0;
     $ExpenseModel = new ExpenseModel();
 
      $expenses= $ExpenseModel
@@ -247,6 +255,7 @@ class InvoiceMasterController extends BaseController
         'company' => $company,
         'client'  => $client,
         'invoice_works'=> $invoice_works,
+        'serviceTotal' => $serviceTotal,
         'expences'=>$expenses,
     ];
 
@@ -361,6 +370,7 @@ public function pdf($id)
         'grand_total'          => $this->request->getPost('grand_total'),
         'total_invoice_amount'=> $this->request->getPost('net_amount'),
         'advance_received'     => $this->request->getPost('advance_received'),
+        'amount_in_words'     => $this->request->getPost('amount_in_words'),
         'updated_at'           => date('Y-m-d H:i:s')
     ]);
 

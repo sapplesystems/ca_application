@@ -32,7 +32,8 @@ class InvoiceMasterModel extends Model
         'service_amount',
         'service_value',
         'expense_total',
-        'grand_total'
+        'grand_total',
+        'amount_in_words'
     ];
 
     protected bool $allowEmptyInserts = false;
