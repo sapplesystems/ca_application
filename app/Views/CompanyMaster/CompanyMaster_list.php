@@ -258,8 +258,7 @@
                                 </div>
                                 <div class="cmg-field">
                                     <label class="cmg-label">GST State<span class="cmg-required">*</span></label>
-                                    <input type="text" class="cmg-input" name="gst_state"
-                                        placeholder="Enter gst state">
+                                    <input type="text" class="cmg-input" name="gst_state" placeholder="Enter gst state">
                                 </div>
 
                                 <!-- Sister Concerns -->
@@ -372,7 +371,7 @@
                                 </div>
 
 
-                                <!-- Bank Account (pehle se hai) -->
+                                <!-- Bank Account -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">Bank Account<span class="cmg-required">*</span></label>
                                     <input type="text" class="cmg-input" name="bank_account"
@@ -401,27 +400,24 @@
 
                                 <!-- Logo Upload -->
                                 <div class="cmg-field">
-    <label class="cmg-label">
-        Logo Upload <span class="cmg-required">*</span>
-    </label>
+                                    <label class="cmg-label">
+                                        Logo Upload
+                                    </label>
 
-    <div class="cmg-upload">
-        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
-            ⬆ Upload Logo
-            <input type="file"
-                   name="logo"
-                   class="cmg-upload__input"
-                   accept="image/png, image/jpeg"
-                   required>
-        </label>
+                                    <div class="cmg-upload">
+                                        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
+                                            ⬆ Upload Logo
+                                            <input type="file" name="logo" class="cmg-upload__input"
+                                                accept="image/png, image/jpeg">
+                                        </label>
 
-        <span class="cmg-upload__text">No file chosen</span>
-    </div>
+                                        <span class="cmg-upload__text">No file chosen</span>
+                                    </div>
 
-    <p class="cmg-help-text">
-        Recommended size: 200x200px, Max file size: 2MB.
-    </p>
-</div>
+                                    <p class="cmg-help-text">
+                                        Recommended size: 200x200px, Max file size: 2MB.
+                                    </p>
+                                </div>
 
                                 <!-- Business -->
                                 <div class="form-row-full">
@@ -497,152 +493,100 @@
 
         <script>
         // ===== FRONT-END VALIDATION FOR ADD COMPANY =====
-      $('#companyForm').on('submit', function (e) {
-    e.preventDefault();
+        $('#companyForm').on('submit', function(e) {
+            e.preventDefault();
 
-    // RESET ERRORS
-    $('.text-danger').remove();
-    $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
+            // RESET ERRORS
+            $('.text-danger').remove();
+            $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
 
-    let isValid = true;
-    let firstError = null;
+            let isValid = true;
+            let firstError = null;
 
-    const requiredNames = [
-        'company_type',
-        'name',
-        'bank_account',     // ✅ FIXED NAME
-        'bank_name',
-        'bank_ifsc',
-        'nature_of_business',
-        'nature_of_service',
-        'nature_of_product'
-    ];
+            const requiredNames = [
+                'name',
+                'head_office',
+                'registered_office'
+            ];
 
-    requiredNames.forEach(function (name) {
-        const input = $('[name="' + name + '"]');
-        const wrapper = input.closest('.cmg-field, .form-row-full');
+            requiredNames.forEach(function(name) {
+                const input = $('[name="' + name + '"]');
+                const wrapper = input.closest('.cmg-field, .form-row-full');
 
-        if (!input.length || $.trim(input.val()) === '') {
-            isValid = false;
-            if (!firstError && input.length) firstError = input;
+                if (!input.length || $.trim(input.val()) === '') {
+                    isValid = false;
+                    if (!firstError && input.length) firstError = input;
 
-            input.css('border', '1px solid red');
-            wrapper.find('.text-danger').remove();
-            wrapper.append(
-                '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
-            );
-        }
-    });
+                    input.css('border', '1px solid red');
+                    wrapper.find('.text-danger').remove();
+                    wrapper.append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
+                    );
+                }
+            });
 
-    /* ===== IFSC VALIDATION ===== */
-    const bankIfscInput = $('[name="bank_ifsc"]');
-    const ifsc = bankIfscInput.val()?.trim().toUpperCase();
-    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+            /* ===== SCROLL TO FIRST ERROR ===== */
+            if (!isValid) {
+                if (firstError && firstError.offset()) {
+                    $('html, body').animate({
+                        scrollTop: firstError.offset().top - 100
+                    }, 500);
+                    firstError.focus();
+                }
+                return false;
+            }
 
-    if (bankIfscInput.length && ifsc && !ifscRegex.test(ifsc)) {
-        isValid = false;
-        if (!firstError) firstError = bankIfscInput;
+            // ✅ SUBMIT FORM
+            this.submit();
+        });
 
-        bankIfscInput.css('border', '1px solid red');
-        bankIfscInput.closest('.cmg-field').find('.text-danger').remove();
-        bankIfscInput.closest('.cmg-field').append(
-            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Invalid IFSC (e.g. SBIN0000001)</div>'
-        );
-    }
-
-    /* ===== SCROLL TO FIRST ERROR ===== */
-    if (!isValid) {
-        if (firstError && firstError.offset()) {
-            $('html, body').animate({
-                scrollTop: firstError.offset().top - 100
-            }, 500);
-            firstError.focus();
-        }
-        return false;
-    }
-
-    // ✅ SUBMIT FORM
-    this.submit();
-});
 
 
         // ===== EDIT COMPANY MODAL - PERFECT VALIDATION =====
-      $(document).on('submit', '#editcompanymaster form', function (e) {
-    e.preventDefault();
+        $(document).on('submit', '#editcompanymaster form', function(e) {
+            e.preventDefault();
 
-    $('.text-danger').remove();
-    $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
+            $('.text-danger').remove();
+            $('.cmg-input, .cmg-select, .cmg-textarea').css('border', '');
 
-    let isValid = true;
-    let firstError = null;
+            let isValid = true;
+            let firstError = null;
 
-    const requiredNames = [
-        'company_type', 'name', 'date_of_incorporation', 'category',
-        'registered_office', 'head_office', 'condition_and_terms',
-        'email', 'phone', 'website', 'invoice_format',
-        'pan', 'gstin', 'iec', 'sister_concerns', 'bank_account',
-        'nature_of_business', 'nature_of_service', 'nature_of_product'
-    ];
+            const requiredNames = [
+                'name',
+                'registered_office',
+                'head_office'
+            ];
 
-    requiredNames.forEach(function (name) {
-        const input = $('#editcompanymaster [name="' + name + '"]');
-        const wrapper = input.closest('.cmg-field, .form-row-full');
+            requiredNames.forEach(function(name) {
+                const input = $('#editcompanymaster [name="' + name + '"]');
+                const wrapper = input.closest('.cmg-field, .form-row-full');
 
-        if (!input.length || $.trim(input.val()) === '') {
-            isValid = false;
-            if (!firstError && input.length) firstError = input;
+                if (!input.length || $.trim(input.val()) === '') {
+                    isValid = false;
+                    if (!firstError && input.length) firstError = input;
 
-            input.css('border', '1px solid red');
-            wrapper.find('.text-danger').remove();
-            wrapper.append(
-                '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
-            );
-        }
-    });
+                    input.css('border', '1px solid red');
+                    wrapper.find('.text-danger').remove();
+                    wrapper.append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
+                    );
+                }
+            });
 
-    /* ===== EMAIL VALIDATION ===== */
-    const emailInput = $('#editcompanymaster [name="email"]');
-    const email = emailInput.val();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!isValid) {
+                if (firstError && firstError.offset()) {
+                    $('html, body').animate({
+                        scrollTop: firstError.offset().top - 100
+                    }, 500);
+                    firstError.focus();
+                }
+                return false;
+            }
 
-    if (email && !emailRegex.test(email)) {
-        isValid = false;
-        if (!firstError) firstError = emailInput;
+            this.submit();
+        });
 
-        emailInput.css('border', '1px solid red');
-        emailInput.closest('.cmg-field').find('.text-danger').remove();
-        emailInput.closest('.cmg-field').append(
-            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Invalid email format.</div>'
-        );
-    }
-
-    /* ===== PHONE VALIDATION ===== */
-    const phoneInput = $('#editcompanymaster [name="phone"]');
-    const phone = phoneInput.val()?.replace(/[^\d]/g, '');
-
-    if (phone && phone.length !== 10) {
-        isValid = false;
-        if (!firstError) firstError = phoneInput;
-
-        phoneInput.css('border', '1px solid red');
-        phoneInput.closest('.cmg-field').find('.text-danger').remove();
-        phoneInput.closest('.cmg-field').append(
-            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Phone must be 10 digits.</div>'
-        );
-    }
-
-    if (!isValid) {
-        if (firstError && firstError.offset()) {
-            $('html, body').animate({
-                scrollTop: firstError.offset().top - 100
-            }, 500);
-            firstError.focus();
-        }
-        return false;
-    }
-
-    this.submit();
-});
 
 
         $(document).on('shown.bs.modal', '#editcompanymaster', function() {

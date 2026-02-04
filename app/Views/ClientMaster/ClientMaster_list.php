@@ -307,7 +307,7 @@
                                 <label>ESI Number</label>
                                 <input type="text" name="esi_no" class="input">
                             </div>
-                             <div>
+                            <div>
                                 <label>GST State</label>
                                 <input type="text" name="gst_state" class="input">
                             </div>
@@ -421,7 +421,6 @@ let clientEditModal = new bootstrap.Modal(document.getElementById('clientEditMod
 $('#addclient form').on('submit', function(e) {
     e.preventDefault();
 
-
     $('#addclient .text-danger').remove();
     $('#addclient input, #addclient select, #addclient textarea').css('border', '');
 
@@ -433,116 +432,12 @@ $('#addclient form').on('submit', function(e) {
             msg: 'Legal name is required'
         },
         {
-            name: 'registration_no',
-            msg: 'Registration number is required'
-        },
-        {
-            name: 'company_category',
-            msg: 'Please select company category'
-        },
-        {
-            name: 'company_sub_category',
-            msg: 'Please select sub-category'
-        },
-        {
             name: 'registered_office',
             msg: 'Registered office is required'
         },
         {
             name: 'corporate_office',
             msg: 'Corporate office is required'
-        },
-        {
-            name: 'telephone',
-            msg: 'Telephone number is required'
-        },
-        {
-            name: 'fax',
-            msg: 'Fax number is required'
-        },
-        {
-            name: 'website',
-            msg: 'Website is required'
-        },
-        {
-            name: 'authorised_share_capital',
-            msg: 'Authorised share capital is required'
-        },
-        {
-            name: 'number_of_shares',
-            msg: 'Number of shares is required'
-        },
-        {
-            name: 'face_value',
-            msg: 'Face value is required'
-        },
-        {
-            name: 'paid_up_share_capital',
-            msg: 'Paid-up share capital is required'
-        },
-        {
-            name: 'pan',
-            msg: 'PAN is required'
-        },
-        {
-            name: 'gstin',
-            msg: 'GSTIN is required'
-        },
-        {
-            name: 'esi_no',
-            msg: 'ESI Number is required'
-        },
-        {
-            name: 'iec_code',
-            msg: 'Export & Import Code is required'
-        },
-        {
-            name: 'bank_account_no',
-            msg: 'Bank Account Number is required'
-        },
-        {
-            name: 'directors_count',
-            msg: 'Number of Directors/Shareholders is required'
-        },
-        {
-            name: 'subsidiary_names',
-            msg: 'Name of Subsidiary/Sister Concern is required'
-        },
-        {
-            name: 'nature_of_business',
-            msg: 'Nature of Business is required'
-        },
-        {
-            name: 'nature_of_service',
-            msg: 'Nature of Service is required'
-        },
-        {
-            name: 'nature_of_product',
-            msg: 'Nature of Product is required'
-        },
-        {
-            name: 'billing_emails',
-            msg: 'Billing Emails is required'
-        },
-        {
-            name: 'payment_terms',
-            msg: 'Please select payment terms'
-        },
-        {
-            name: 'roc_code',
-            msg: 'ROC Code is required'
-        },
-        {
-            name: 'cin_no',
-            msg: 'CIN No is required'
-        },
-        {
-            name: 'trade_name',
-            msg: 'Trade Name is required'
-        },
-        {
-            name: 'date_of_incorporation',
-            msg: 'Date of Incorporation is required'
         }
     ];
 
@@ -553,15 +448,14 @@ $('#addclient form').on('submit', function(e) {
         let value = ($input.val() || '').trim();
 
         if (!value) {
-            let wrapper =
-                $input.closest('.input-group').length ? $input.closest('.input-group') :
-                $input.closest('.form-row-full').length ? $input.closest('.form-row-full') :
-                $input.closest('div').length ? $input.closest('div') :
-                $input.parent();
 
             $input.css('border', '1px solid red');
-            wrapper.find('.text-danger').remove();
-            wrapper.append(
+
+            // Remove old error just below input
+            $input.next('.text-danger').remove();
+
+            // Show error directly below input
+            $input.after(
                 '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
                 field.msg +
                 '</div>'
@@ -586,6 +480,7 @@ $('#addclient form').on('submit', function(e) {
         this.submit();
     }, 300);
 });
+
 
 
 $('#addclient').on('show.bs.modal', function() {
@@ -617,116 +512,12 @@ function validateEditClientForm($form) {
             msg: 'Legal name is required'
         },
         {
-            name: 'registration_no',
-            msg: 'Registration number is required'
-        },
-        {
-            name: 'company_category',
-            msg: 'Please select company category'
-        },
-        {
-            name: 'company_sub_category',
-            msg: 'Please select sub-category'
-        },
-        {
             name: 'registered_office',
             msg: 'Registered office is required'
         },
         {
             name: 'corporate_office',
             msg: 'Corporate office is required'
-        },
-        {
-            name: 'telephone',
-            msg: 'Telephone number is required'
-        },
-        {
-            name: 'fax',
-            msg: 'Fax number is required'
-        },
-        {
-            name: 'website',
-            msg: 'Website is required'
-        },
-        {
-            name: 'authorised_share_capital',
-            msg: 'Authorised share capital is required'
-        },
-        {
-            name: 'number_of_shares',
-            msg: 'Number of shares is required'
-        },
-        {
-            name: 'face_value',
-            msg: 'Face value is required'
-        },
-        {
-            name: 'paid_up_share_capital',
-            msg: 'Paid-up share capital is required'
-        },
-        {
-            name: 'pan',
-            msg: 'PAN is required'
-        },
-        {
-            name: 'gstin',
-            msg: 'GSTIN is required'
-        },
-        {
-            name: 'esi_no',
-            msg: 'ESI Number is required'
-        },
-        {
-            name: 'iec_code',
-            msg: 'Export & Import Code is required'
-        },
-        {
-            name: 'bank_account_no',
-            msg: 'Bank Account Number is required'
-        },
-        {
-            name: 'directors_count',
-            msg: 'Number of Directors/Shareholders is required'
-        },
-        {
-            name: 'subsidiary_names',
-            msg: 'Name of Subsidiary/Sister Concern is required'
-        },
-        {
-            name: 'nature_of_business',
-            msg: 'Nature of Business is required'
-        },
-        {
-            name: 'nature_of_service',
-            msg: 'Nature of Service is required'
-        },
-        {
-            name: 'nature_of_product',
-            msg: 'Nature of Product is required'
-        },
-        {
-            name: 'billing_emails',
-            msg: 'Billing Emails is required'
-        },
-        {
-            name: 'payment_terms',
-            msg: 'Please select payment terms'
-        },
-        {
-            name: 'roc_code',
-            msg: 'ROC Code is required'
-        },
-        {
-            name: 'cin_no',
-            msg: 'CIN No is required'
-        },
-        {
-            name: 'trade_name',
-            msg: 'Trade Name is required'
-        },
-        {
-            name: 'date_of_incorporation',
-            msg: 'Date of Incorporation is required'
         }
     ];
 
@@ -737,15 +528,14 @@ function validateEditClientForm($form) {
         let value = ($input.val() || '').trim();
 
         if (!value) {
-            let wrapper =
-                $input.closest('.input-group').length ? $input.closest('.input-group') :
-                $input.closest('.form-row-full').length ? $input.closest('.form-row-full') :
-                $input.closest('div').length ? $input.closest('div') :
-                $input.parent();
 
             $input.css('border', '1px solid red');
-            wrapper.find('.text-danger').remove();
-            wrapper.append(
+
+            // Remove existing error just below input
+            $input.next('.text-danger').remove();
+
+            // Add error directly after input
+            $input.after(
                 '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
                 field.msg +
                 '</div>'
@@ -765,6 +555,8 @@ function validateEditClientForm($form) {
 
     return isValid;
 }
+
+
 
 
 $(document).on('click', '.action-edit', function(e) {

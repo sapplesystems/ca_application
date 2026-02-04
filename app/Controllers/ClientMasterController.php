@@ -29,7 +29,7 @@ class ClientMasterController extends BaseController
                 $html .= '<input type="text" name="cin_no" class="input" value="' . $client['cin_no'] . '"></div>';
 
                 $html .= '<div style="flex:1;"><label>Name (Legal) <span class="req">*</span></label>';
-                $html .= '<input type="text" name="legal_name" class="input" value="' . $client['legal_name'] . '" required></div>';
+                $html .= '<input type="text" name="legal_name" class="input" value="' . $client['legal_name'] . '"></div>';
 
                 $html .= '<div style="flex:0 0 28%;"><label>Trade Name (Alias)</label>';
                 $html .= '<input type="text" name="trade_name" class="input" value="' . $client['trade_name'] . '"></div>';
