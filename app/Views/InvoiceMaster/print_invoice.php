@@ -124,12 +124,39 @@
 
     /* Print View */
     @media print {
-        button {
-            display: none;
+
+        @page {
+            size: A4;
+            margin: 10mm;
         }
 
         body {
             background: #fff;
+            margin: 0;
+        }
+
+        .invoice-box {
+            width: 100%;
+            margin: 0;
+            border: none;
+            box-shadow: none;
+        }
+
+        button {
+            display: none;
+        }
+
+        * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+
+    @media print {
+        .invoice-box {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 10mm;
         }
     }
     </style>
@@ -297,12 +324,17 @@
                     <p><strong style="font-size:16px;float:right"><?= esc($company['name']); ?></strong></p>
                 </td>
             </tr>
+            <tr>
+                <td colspan=2>
+                    <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
+                </td>
+            </tr>
         </table>
 
 
 
 
-        <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
+
 
         <div class="right">
             <button onclick="window.print()">Print Invoice</button>
