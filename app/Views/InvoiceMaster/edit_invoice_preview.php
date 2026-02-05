@@ -440,6 +440,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (igstInput) igstInput.value = igst.toFixed(2);
         grandTotalInput.value = grandTotal.toFixed(2);
         netAmountInput.value  = netAmount.toFixed(2);
+
+        const amountWords = numberToWords(Math.round(netAmount)).toUpperCase();
+
+        document.getElementById('amountInWords').innerText = amountWords;
+        document.getElementById('amountInWordsInput').value = amountWords;
     }
 
     /* ==========================

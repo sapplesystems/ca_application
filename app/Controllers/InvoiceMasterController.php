@@ -381,6 +381,7 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
         'total_invoice_amount'=> $this->request->getPost('net_amount'),
         'advance_received'     => $this->request->getPost('advance_received'),
         'amount_in_words'     => $this->request->getPost('amount_in_words'),
+        'term_condition'      => $this->request->getPost('term_condition'),
         'updated_at'           => date('Y-m-d H:i:s')
     ]);
 
