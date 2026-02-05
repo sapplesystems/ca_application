@@ -124,12 +124,39 @@
 
     /* Print View */
     @media print {
-        button {
-            display: none;
+
+        @page {
+            size: A4;
+            margin: 10mm;
         }
 
         body {
             background: #fff;
+            margin: 0;
+        }
+
+        .invoice-box {
+            width: 100%;
+            margin: 0;
+            border: none;
+            box-shadow: none;
+        }
+
+        button {
+            display: none;
+        }
+
+        * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+
+    @media print {
+        .invoice-box {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 10mm;
         }
     }
     </style>
@@ -312,7 +339,7 @@
 
 </html>
 <script>
-        window.onload = function () {
-            window.print();
-        };
+window.onload = function() {
+    window.print();
+};
 </script>
