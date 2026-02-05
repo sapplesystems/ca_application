@@ -127,19 +127,20 @@
 
         @page {
             size: A4;
-            margin: 10mm;
+            margin: 0;
         }
 
         body {
-            background: #fff;
             margin: 0;
+            background: #fff;
         }
 
         .invoice-box {
-            width: 100%;
-            margin: 0;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 10mm;
             border: none;
-            box-shadow: none;
         }
 
         button {
@@ -149,14 +150,6 @@
         * {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
-        }
-    }
-
-    @media print {
-        .invoice-box {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 10mm;
         }
     }
     </style>
@@ -198,7 +191,13 @@
             </tr>
             <tr>
                 <td> <strong>Type of Company:</strong><?= esc($company['type_of_company']); ?></td>
-                <td> <strong>Date:</strong> <?= esc($invoice['invoice_date']); ?></td>
+                <td>
+                    <strong>Date:</strong>
+                    <?php
+        $date = new DateTime($invoice['invoice_date']);
+        echo esc($date->format('d-m-Y'));
+    ?>
+                </td>
 
             </tr>
 
@@ -324,16 +323,21 @@
                     <p><strong style="font-size:16px;float:right"><?= esc($company['name']); ?></strong></p>
                 </td>
             </tr>
+            <tr>
+                <td colspan="2">
+                    <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
+                </td>
+            </tr>
         </table>
 
 
 
 
-        <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
 
-        <!-- <div class="right">
-            <button onclick="window.print()">Print Invoice</button>
-        </div> -->
+
+        <!-- <div class=" right">
+                    <button onclick="window.print()">Print Invoice</button>
+    </div> -->
     </div>
 </body>
 
