@@ -304,10 +304,15 @@
 
         <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
 
-        <div class="right">
+        <!-- <div class="right">
             <button onclick="window.print()">Print Invoice</button>
-        </div>
+        </div> -->
     </div>
 </body>
 
 </html>
+<script>
+        window.onload = function () {
+            window.print();
+        };
+</script>

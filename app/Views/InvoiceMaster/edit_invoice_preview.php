@@ -568,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }).then(result => {
 
                 if (result.isConfirmed) {
-                    window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id, '_blank');
+                    window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
                 }
                 if (result.isDenied) {
                     window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');

@@ -272,6 +272,15 @@ public function pdf($id)
      $invoiceWorkModel=new InvoiceWorksModel();
     $invoice_works=$invoiceWorkModel->where('invoice_id', $id)->findAll();
 
+     /* 2️⃣ TOTAL of service_amount */
+$totalRow = $invoiceWorkModel
+    ->selectSum('service_amount')
+    ->where('invoice_id', $id)
+    ->get()
+    ->getRowArray();
+
+$serviceTotal = $totalRow['service_amount'] ?? 0;
+
     $ExpenseModel = new ExpenseModel();
 
      $expenses= $ExpenseModel
@@ -288,6 +297,7 @@ public function pdf($id)
         'client'  => $clientModel->find($invoice['client_id']),
         'invoice_works'=> $invoice_works,
         'expences'=>$expenses,
+        'serviceTotal' => $serviceTotal,
     ];
 
     // Load HTML view
