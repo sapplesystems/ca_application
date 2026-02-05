@@ -32,14 +32,14 @@ function toRoman($number)
 
 <div class="invoiceM-containerr">
     <div class=" inv-header-main">
-        <h1 class="inv-title-main">  <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?></h1>
-        
+        <h1 class="inv-title-main"> <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?></h1>
+
         <a href="javascript:history.back()" class="inv-back-btn-main">
             Back to Generate Invoice Grid
         </a>
     </div>
     <form id="debitForm" method="post" action="<?= base_url('debits/update/' . $debitNote['id']) ?>">
-    <?= csrf_field() ?>
+        <?= csrf_field() ?>
         <table width="100%" border="0">
             <tr>
                 <td>
@@ -60,7 +60,7 @@ function toRoman($number)
 
         <hr>
         <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-             <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
+            <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
         </div>
 
         <table width="100%" border="0" cellpadding="6">
@@ -86,19 +86,14 @@ function toRoman($number)
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
                 <td width="40%" align="right">
-                    <strong>  <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note No.' : 'Credit Note No.'; ?></strong><br>
+                    <strong>
+                        <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note No.' : 'Credit Note No.'; ?></strong><br>
                     <?php if ($debitNote['note_type'] === 'debit') : ?>
-                     <input type="text"
-                        name="debit_no"
-                        value="<?= esc($debitNote['debit_no']); ?>"
-                        style="width:180px; padding:4px;"
-                        required>
-                        <?php elseif ($debitNote['note_type'] === 'credit') : ?>
-                             <input type="text"
-                        name="credit_no"
-                        value="<?= esc($debitNote['credit_no']); ?>"
-                        style="width:180px; padding:4px;"
-                        required>
+                    <input type="text" name="debit_no" value="<?= esc($debitNote['debit_no']); ?>"
+                        style="width:180px; padding:4px;" required>
+                    <?php elseif ($debitNote['note_type'] === 'credit') : ?>
+                    <input type="text" name="credit_no" value="<?= esc($debitNote['credit_no']); ?>"
+                        style="width:180px; padding:4px;" required>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -157,7 +152,8 @@ function toRoman($number)
                         <td>
                             <input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]" value="<?= esc($exp['expense_amount']) ?>">
-                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
+                            <button type="button" class="btn btn-danger btn-sm delete-row"
+                                data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -168,9 +164,10 @@ function toRoman($number)
                                 name="expense_description[]"></td>
                         <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
-                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
-                            </td>
-                                
+                            <button type="button" class="btn btn-danger btn-sm delete-row"
+                                data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
+                        </td>
+
                     </tr>
                     <?php endif; ?>
 
@@ -181,8 +178,9 @@ function toRoman($number)
                                 name="expense_description[]"></td>
                         <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
-                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
-                            </td>
+                            <button type="button" class="btn btn-danger btn-sm delete-row"
+                                data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
+                        </td>
                     </tr>
 
                     <!-- Totals / Grand Total / Advance / Net rows -->
@@ -229,23 +227,23 @@ function toRoman($number)
                 </tbody>
             </table>
 
-             <div class="debitnotepdf-bank">
-        <div>
-          <b>Banker's Details</b><br />
-          <?php echo $company['bank_name']; ?><br />
-          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
-        </div>
-      </div>
+            <div class="debitnotepdf-bank">
+                <div>
+                    <b>Banker's Details</b><br />
+                    Bank name:
+                    <?php echo $company['bank_name']; ?><br />
+                    Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
+                    IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+                </div>
+            </div>
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
-              <textarea
-    style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
-    name="term_condition"><?= esc($debitNote['terms_and_conditions'] ?? '') ?></textarea>
+                <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
+                    name="term_condition"><?= esc($debitNote['terms_and_conditions'] ?? '') ?></textarea>
 
 
-    </textarea>
+                </textarea>
             </div>
             <input type="hidden" name="expense_total" id="expenseTotalInput" value="0">
             <input type="hidden" name="grand_total" id="grandTotalInput" value="0">
@@ -259,10 +257,10 @@ function toRoman($number)
 
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit' : 'Save Credit'; ?></button>
-                <a href="javascript:history.back()"
-                    class="Gvoice-btn Gvoice-btn-danger">
-                        Cancel
+                <button class="Gvoice-btn Gvoice-btn-success"
+                    id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit' : 'Save Credit'; ?></button>
+                <a href="javascript:history.back()" class="Gvoice-btn Gvoice-btn-danger">
+                    Cancel
                 </a>
             </div>
     </form>
@@ -273,77 +271,73 @@ function toRoman($number)
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script>
-document.getElementById('debitForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+    <script>
+    document.getElementById('debitForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    const form = this;
+        const form = this;
 
-    fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        if (data.status === 'success') {
-
-            Swal.fire({
-                title: data.mode === 'update'
-                    ? 'Debit Updated!'
-                    : 'Debit Saved!',
-                text: 'Debit Note processed successfully.',
-                icon: 'success',
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Print Invoice',
-                denyButtonText: 'Download PDF',
-                cancelButtonText: 'Close'
-            }).then(result => {
-
-                if (result.isConfirmed) {
-                    window.open(
-                        '<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                        '_blank'
-                    );
+        fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
+            })
+            .then(res => res.json())
+            .then(data => {
 
-                else if (result.isDenied) {
-                    window.open(
-                        '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
-                        '_blank'
-                    );
-                }
+                if (data.status === 'success') {
 
-                else if (result.isDismissed) {
                     Swal.fire({
-                        title: 'Redirect?',
-                        text: 'Go back to invoice list?',
-                        icon: 'question',
+                        title: data.mode === 'update' ?
+                            'Debit Updated!' : 'Debit Saved!',
+                        text: 'Debit Note processed successfully.',
+                        icon: 'success',
+                        showDenyButton: true,
                         showCancelButton: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: 'No'
-                    }).then(res => {
-                        if (res.isConfirmed) {
-                            window.location.href =
-                                '<?= site_url("InvoiceManagment") ?>';
+                        confirmButtonText: 'Print Invoice',
+                        denyButtonText: 'Download PDF',
+                        cancelButtonText: 'Close'
+                    }).then(result => {
+
+                        if (result.isConfirmed) {
+                            window.open(
+                                '<?= site_url("DebitNote/") ?>' + data.invoice_id,
+                                '_blank'
+                            );
+                        } else if (result.isDenied) {
+                            window.open(
+                                '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
+                                '_blank'
+                            );
+                        } else if (result.isDismissed) {
+                            Swal.fire({
+                                title: 'Redirect?',
+                                text: 'Go back to invoice list?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No'
+                            }).then(res => {
+                                if (res.isConfirmed) {
+                                    window.location.href =
+                                        '<?= site_url("InvoiceManagment") ?>';
+                                }
+                            });
                         }
                     });
+
+                } else {
+                    Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
                 }
+            })
+            .catch(() => {
+                Swal.fire('Error!', 'Network or server error', 'error');
             });
 
-        } else {
-            Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
-        }
-    })
-    .catch(() => {
-        Swal.fire('Error!', 'Network or server error', 'error');
     });
 
-});
     function numberToWords(num) {
         if (num === 0) return 'ZERO';
 
@@ -496,82 +490,82 @@ document.getElementById('debitForm').addEventListener('submit', function (e) {
         return result;
     }
 
-/* ================= INPUT LISTENERS ================= */
-function attachInputListeners() {
-    document.querySelectorAll('.expense, #advance').forEach(el => {
-        el.removeEventListener('input', calculateTotals);
-        el.addEventListener('input', calculateTotals);
-    });
-}
-
-/* ================= INIT ================= */
-attachInputListeners();
-calculateTotals();
-
-document.addEventListener('click', function (e) {
-    if (!e.target.classList.contains('delete-row')) return;
-
-    const row = e.target.closest('tr');
-    const expenseId = e.target.dataset.expenseId; // DB ID
-    const tbody = document.getElementById('expenseBody');
-
-    Swal.fire({
-        title: 'Delete this expense?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete'
-    }).then(result => {
-
-        if (!result.isConfirmed) return;
-
-        // If expense exists in DB → delete via AJAX
-        if (expenseId) {
-            fetch('<?= site_url("Expense/delete") ?>', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ expense_id: expenseId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    removeRow(row, tbody);
-                } else {
-                    Swal.fire('Error', data.message || 'Delete failed', 'error');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error', 'Server error', 'error');
-            });
-        } 
-        // If not saved yet → just remove from UI
-        else {
-            removeRow(row, tbody);
-        }
-    });
-});
-
-function removeRow(row, tbody) {
-    const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
-
-    if (rows.length <= 1) {
-        Swal.fire('Warning', 'At least one expense row is required.', 'warning');
-        return;
+    /* ================= INPUT LISTENERS ================= */
+    function attachInputListeners() {
+        document.querySelectorAll('.expense, #advance').forEach(el => {
+            el.removeEventListener('input', calculateTotals);
+            el.addEventListener('input', calculateTotals);
+        });
     }
 
-    row.remove();
-
-    // Re-index rows
-    tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])')
-        .forEach((tr, index) => {
-            tr.cells[0].textContent = index + 1;
-        });
-
+    /* ================= INIT ================= */
+    attachInputListeners();
     calculateTotals();
-}
 
+    document.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('delete-row')) return;
 
-</script>
+        const row = e.target.closest('tr');
+        const expenseId = e.target.dataset.expenseId; // DB ID
+        const tbody = document.getElementById('expenseBody');
+
+        Swal.fire({
+            title: 'Delete this expense?',
+            text: 'This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete'
+        }).then(result => {
+
+            if (!result.isConfirmed) return;
+
+            // If expense exists in DB → delete via AJAX
+            if (expenseId) {
+                fetch('<?= site_url("Expense/delete") ?>', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            expense_id: expenseId
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            removeRow(row, tbody);
+                        } else {
+                            Swal.fire('Error', data.message || 'Delete failed', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire('Error', 'Server error', 'error');
+                    });
+            }
+            // If not saved yet → just remove from UI
+            else {
+                removeRow(row, tbody);
+            }
+        });
+    });
+
+    function removeRow(row, tbody) {
+        const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
+
+        if (rows.length <= 1) {
+            Swal.fire('Warning', 'At least one expense row is required.', 'warning');
+            return;
+        }
+
+        row.remove();
+
+        // Re-index rows
+        tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])')
+            .forEach((tr, index) => {
+                tr.cells[0].textContent = index + 1;
+            });
+
+        calculateTotals();
+    }
+    </script>
