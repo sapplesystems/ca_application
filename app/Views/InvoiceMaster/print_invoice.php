@@ -239,7 +239,7 @@
             <tr>
                 <th class="center"><strong>A</strong></th>
                 <th class="right"><strong>Service Value</strong></th>
-                <td class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></td>
+                <th class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></th>
             </tr>
             <?=
        
