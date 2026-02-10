@@ -2,6 +2,31 @@
     <html lang="en">
 
     <head>
+        <style>
+        .cmg-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: none !important;
+
+            .cmg-select {
+                cursor: text !important;
+
+            }
+
+            .cmg-select,
+            .cmg-select:hover,
+            .cmg-select:focus {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                background: none !important;
+                cursor: text !important;
+            }
+
+
+        }
+        </style>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
@@ -164,7 +189,7 @@
                             <div class="cmg-grid">
 
                                 <!-- Type of Company -->
-                                <div class="cmg-field">
+                                <!-- <div class="cmg-field">
                                     <label class="cmg-label">
                                         Type of Company <span class="cmg-required">*</span>
                                     </label>
@@ -172,7 +197,21 @@
                                         <option value="Consultancy Master">Consultancy Master</option>
                                         <option value="Charted Account Master">Charted Account Master</option>
                                     </select>
+                                </div> -->
+                                <div class="cmg-field cmg-field--full">
+                                    <label class="cmg-label">
+                                        Type of Company
+
+
+                                        <input list="company_type_list" class="cmg-select" name="company_type"
+                                            placeholder="Select or type company type">
+
+                                        <!-- <datalist id="company_type_list">
+                                            <option value="Consultancy Master">
+                                            <option value="Charted Account Master">
+                                        </datalist> -->
                                 </div>
+
 
                                 <!-- Name -->
                                 <div class="cmg-field cmg-field--full">

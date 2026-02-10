@@ -39,13 +39,25 @@ class CompanyMasterController extends BaseController
                 $html .= '<div class="cmg-grid">';
 
                 /* ================= Type of Company ================= */
-                $html .= '<div class="cmg-field">
-                    <label class="cmg-label">Type of Company <span class="cmg-required">*</span></label>
-                    <select class="cmg-select" name="company_type">
-                        <option value="Consultancy Master" ' . ($company['type_of_company']=='Consultancy Master'?'selected':'') . '>Consultancy Master</option>
-                        <option value="Charted Account Master" ' . ($company['type_of_company']=='Charted Account Master'?'selected':'') . '>Charted Account Master</option>
-                    </select>
-                </div>';
+                // $html .= '<div class="cmg-field">
+                //     <label class="cmg-label">Type of Company <span class="cmg-required">*</span></label>
+                //     <select class="cmg-select" name="company_type">
+                //         <option value="Consultancy Master" ' . ($company['type_of_company']=='Consultancy Master'?'selected':'') . '>Consultancy Master</option>
+                //         <option value="Charted Account Master" ' . ($company['type_of_company']=='Charted Account Master'?'selected':'') . '>Charted Account Master</option>
+                //     </select>
+                // </div>';
+              $html .= '<div class="cmg-field">
+    <label class="cmg-label">Type of Company <span class="cmg-required">*</span></label>
+    
+    <input type="text"
+           class="cmg-select"
+           name="company_type"
+           value="' . esc($company['type_of_company']) . '"
+           placeholder="Enter company type"
+           required>
+
+</div>';
+
 
                 /* ================= Name ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
@@ -551,13 +563,27 @@ $html .= '</div></div></div>';
         $html .= '<div class="cmg-grid">';
 
         /* ================= Type of Company ================= */
-        $html .= '<div class="cmg-field">
-            <label class="cmg-label">Type of Company <span class="cmg-required">*</span></label>
-            <select class="cmg-select" name="company_type">
-                <option value="Consultancy Master" ' . ($company['type_of_company']=='Consultancy Master'?'selected':'') . '>Consultancy Master</option>
-                <option value="Charted Account Master" ' . ($company['type_of_company']=='Charted Account Master'?'selected':'') . '>Charted Account Master</option>
-      </select>
-        </div>';
+    //     $html .= '<div class="cmg-field">
+    //         <label class="cmg-label">Type of Company <span class="cmg-required">*</span></label>
+    //         <select class="cmg-select" name="company_type">
+    //             <option value="Consultancy Master" ' . ($company['type_of_company']=='Consultancy Master'?'selected':'') . '>Consultancy Master</option>
+    //             <option value="Charted Account Master" ' . ($company['type_of_company']=='Charted Account Master'?'selected':'') . '>Charted Account Master</option>
+    //   </select>
+    //     </div>';
+    $html .= '<div class="cmg-field">
+    <label class="cmg-label">Type of Company <span class="cmg-required">*</span></label>
+    
+    <input type="text"
+           class="cmg-select"
+           value="' . esc($company['type_of_company']) . '"
+           disabled>
+
+    <input type="hidden"
+           name="company_type"
+           value="' . esc($company['type_of_company']) . '">
+
+</div>';
+
 
         /* ================= Name ================= */
         $html .= '<div class="cmg-field cmg-field--full">

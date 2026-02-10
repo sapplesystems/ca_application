@@ -35,14 +35,14 @@
                 <thead>
                     <tr>
                         <th style="width:24px;"><input type="checkbox" /></th>
-                        <th>Service Code</th>
+                        <!-- <th>Service Code</th> -->
                         <th>Service Name</th>
-                        <th>SAC Code</th>
-                        <th>Unit</th>
+                        <th>SAC Code/ HSN</th>
+                        <!-- <th>Unit</th> -->
                         <th>Default Rate (₹)</th>
                         <th>GST?</th>
                         <th>GST %</th>
-                        <th>Frequency</th>
+                        <!-- <th>Frequency</th> -->
                         <th>Status</th>
                         <th style="text-align:right;">Actions</th>
                     </tr>
@@ -52,14 +52,14 @@
 
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td><?= $worklist['service_code']; ?></td>
+                        <!-- <td><?//= $worklist['service_code']; ?></td> -->
                         <td><?= $worklist['service_name']; ?></td>
                         <td><?= $worklist['sac_code']; ?></td>
-                        <td><?= $worklist['unit']; ?></td>
+                        <!-- <td><?//= $worklist['unit']; ?></td> -->
                         <td><?= $worklist['default_rate']; ?></td>
                         <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td>
                         <td><?= $worklist['gst_percent']; ?></td>
-                        <td><?= $worklist['frequency']; ?></td>
+                        <!-- <td><//?= $worklist['frequency']; ?></td> -->
                         <td>
                             <div class="toggle <?= $worklist['status'] == 0 ? 'inactive' : '' ?>"
                                 data-id="<?= $worklist['id'] ?>">
@@ -120,10 +120,10 @@
 
                         <!-- Row 1 -->
                         <div class="msl-form-row">
-                            <div class="msl-form-group">
+                            <!-- <div class="msl-form-group">
                                 <label for="serviceCode">Service Code</label>
                                 <input type="text" id="serviceCode" name="service_code" placeholder="GST01">
-                            </div>
+                            </div> -->
 
                             <div class="msl-form-group">
                                 <label for="serviceName">Service Name</label>
@@ -134,11 +134,11 @@
                         <!-- Row 2 -->
                         <div class="msl-form-row">
                             <div class="msl-form-group">
-                                <label for="sacCode">SAC Code</label>
+                                <label for="sacCode">SAC Code/ HSN</label>
                                 <input type="text" id="sacCode" name="sac_code" placeholder="998300">
                             </div>
 
-                            <div class="msl-form-group">
+                            <!-- <div class="msl-form-group">
                                 <label for="unit">Unit</label>
                                 <select id="unit" name="unit">
                                     <option value="">Select unit</option>
@@ -146,7 +146,7 @@
                                     <option value="YEAR">YEAR</option>
                                     <option value="MONTH">MONTH</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Row 3 -->
@@ -180,7 +180,7 @@
                                 </select>
                             </div>
 
-                            <div class="msl-form-group">
+                            <!-- <div class="msl-form-group">
                                 <label for="frequency">Frequency</label>
                                 <select id="frequency" name="frequency">
                                     <option value="">Select frequency</option>
@@ -188,7 +188,7 @@
                                     <option value="Quarterly">Quarterly</option>
                                     <option value="Annually">Annually</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Row 5 -->
