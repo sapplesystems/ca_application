@@ -545,24 +545,79 @@
             const requiredNames = [
                 'name',
                 'head_office',
-                'registered_office'
+                'registered_office',
+                'email',
+                'phone',
+                'gst_state'
             ];
 
             requiredNames.forEach(function(name) {
                 const input = $('[name="' + name + '"]');
                 const wrapper = input.closest('.cmg-field, .form-row-full');
 
-                if (!input.length || $.trim(input.val()) === '') {
+                if (input.length && $.trim(input.val()) === '') {
                     isValid = false;
-                    if (!firstError && input.length) firstError = input;
+                    if (!firstError) firstError = input;
 
                     input.css('border', '1px solid red');
-                    wrapper.find('.text-danger').remove();
                     wrapper.append(
                         '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
                     );
                 }
             });
+
+            /* ===== EMAIL FORMAT VALIDATION ===== */
+            const emailInput = $('[name="email"]');
+            if (emailInput.length) {
+                const emailVal = $.trim(emailInput.val());
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (emailVal !== '' && !emailPattern.test(emailVal)) {
+                    isValid = false;
+                    if (!firstError) firstError = emailInput;
+
+                    emailInput.css('border', '1px solid red');
+                    emailInput.closest('.cmg-field, .form-row-full')
+                        .append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid email.</div>'
+                        );
+                }
+            }
+
+            /* ===== PHONE VALIDATION ===== */
+            const phoneInput = $('[name="phone"]');
+            if (phoneInput.length) {
+                const phoneVal = $.trim(phoneInput.val());
+                const phonePattern = /^[6-9]\d{9}$/; // Indian mobile
+
+                if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
+                    isValid = false;
+                    if (!firstError) firstError = phoneInput;
+
+                    phoneInput.css('border', '1px solid red');
+                    phoneInput.closest('.cmg-field, .form-row-full')
+                        .append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid 10 digit mobile.</div>'
+                        );
+                }
+            }
+
+            /* ===== GST STATE VALIDATION ===== */
+            const gstStateInput = $('[name="gst_state"]');
+            if (gstStateInput.length) {
+                const gstStateVal = $.trim(gstStateInput.val());
+
+                if (gstStateVal === '' || gstStateVal === null) {
+                    isValid = false;
+                    if (!firstError) firstError = gstStateInput;
+
+                    gstStateInput.css('border', '1px solid red');
+                    gstStateInput.closest('.cmg-field, .form-row-full')
+                        .append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;"></div>'
+                        );
+                }
+            }
 
             /* ===== SCROLL TO FIRST ERROR ===== */
             if (!isValid) {
@@ -581,6 +636,7 @@
 
 
 
+
         // ===== EDIT COMPANY MODAL - PERFECT VALIDATION =====
         $(document).on('submit', '#editcompanymaster form', function(e) {
             e.preventDefault();
@@ -594,25 +650,81 @@
             const requiredNames = [
                 'name',
                 'registered_office',
-                'head_office'
+                'head_office',
+                'email',
+                'phone',
+                'gst_state'
             ];
 
             requiredNames.forEach(function(name) {
                 const input = $('#editcompanymaster [name="' + name + '"]');
                 const wrapper = input.closest('.cmg-field, .form-row-full');
 
-                if (!input.length || $.trim(input.val()) === '') {
+                if (input.length && $.trim(input.val()) === '') {
                     isValid = false;
-                    if (!firstError && input.length) firstError = input;
+                    if (!firstError) firstError = input;
 
                     input.css('border', '1px solid red');
-                    wrapper.find('.text-danger').remove();
                     wrapper.append(
                         '<div class="text-danger" style="font-size:12px;margin-top:4px;">This field is required.</div>'
                     );
                 }
             });
 
+            /* ===== EMAIL FORMAT VALIDATION ===== */
+            const emailInput = $('#editcompanymaster [name="email"]');
+            if (emailInput.length) {
+                const emailVal = $.trim(emailInput.val());
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (emailVal !== '' && !emailPattern.test(emailVal)) {
+                    isValid = false;
+                    if (!firstError) firstError = emailInput;
+
+                    emailInput.css('border', '1px solid red');
+                    emailInput.closest('.cmg-field, .form-row-full')
+                        .append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid email.</div>'
+                        );
+                }
+            }
+
+            /* ===== PHONE VALIDATION (Indian 10 Digit) ===== */
+            const phoneInput = $('#editcompanymaster [name="phone"]');
+            if (phoneInput.length) {
+                const phoneVal = $.trim(phoneInput.val());
+                const phonePattern = /^[6-9]\d{9}$/;
+
+                if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
+                    isValid = false;
+                    if (!firstError) firstError = phoneInput;
+
+                    phoneInput.css('border', '1px solid red');
+                    phoneInput.closest('.cmg-field, .form-row-full')
+                        .append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid 10 digit mobile.</div>'
+                        );
+                }
+            }
+
+            /* ===== GST STATE VALIDATION ===== */
+            const gstStateInput = $('#editcompanymaster [name="gst_state"]');
+            if (gstStateInput.length) {
+                const gstStateVal = $.trim(gstStateInput.val());
+
+                if (gstStateVal === '' || gstStateVal === null) {
+                    isValid = false;
+                    if (!firstError) firstError = gstStateInput;
+
+                    gstStateInput.css('border', '1px solid red');
+                    gstStateInput.closest('.cmg-field, .form-row-full')
+                        .append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">++</div>'
+                        );
+                }
+            }
+
+            /* ===== SCROLL TO FIRST ERROR ===== */
             if (!isValid) {
                 if (firstError && firstError.offset()) {
                     $('html, body').animate({
@@ -625,6 +737,7 @@
 
             this.submit();
         });
+
 
 
 

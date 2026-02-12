@@ -162,12 +162,13 @@
         <table>
             <tr>
                 <td>
-                    <div style="padding:15px 20px; line-height:1.6;">
-                        <strong style="font-size:18px;"><?= esc($company['name']); ?></strong><br>
+                    <div style="padding:5px 0px; line-height:1.6;">
+                        <strong style="font-size:26px;"><?= esc($company['name']); ?></strong><br>
 
-                        Address: <?= esc($company['registered_office']); ?><br>
-                        PH: <?= esc($company['telephone']); ?><br>
-                        Email: <?= esc($company['email']); ?><br>
+                        <strong>Address: <?= esc($company['registered_office']); ?></strong> <br>
+                        <strong>PH: <?= esc($company['telephone']); ?></strong> <br>
+                        <strong> Email: <?= esc($company['email']); ?></strong><br>
+                        <strong>GSTIN: <?= esc($company['gstin']); ?></strong>
                     </div>
                 </td>
                 <td class="right">
@@ -180,17 +181,18 @@
             </tr>
             <tr>
                 <th colspan=2>
-                    <p>Professional Invoice</p>
+
+                    <p style="font-size: 18px;">Tax Invoice</p>
                 </th>
 
             </tr>
             <tr>
-                <td> <strong>GSTIN:</strong> <?= esc($company['gstin']); ?></td>
+                <td> </td>
                 <td> <strong>Invoice No:</strong> <?= esc($invoice['invoice_no']); ?></td>
 
             </tr>
             <tr>
-                <td> <strong>Type of Company:</strong><?= esc($company['type_of_company']); ?></td>
+                <td> </td>
                 <td>
                     <strong>Date:</strong>
                     <?php
@@ -211,16 +213,25 @@
 
             <tr>
                 <td><strong>Bill
-                        To:</strong><br><?= esc($client['legal_name']); ?><br><?= esc($client['registered_office']); ?>
+                        To:</strong><br><?= esc($client['legal_name']); ?><br><?= esc($client['registered_office']); ?><br>
+                    E-mail ID: <br>
+                    GST No:
                 </td>
             </tr>
         </table>
 
         <table>
             <tr>
-                <th>SL No.</th>
-                <th>Nature of Services</th>
-                <th class="right">Amount (Rs)</th>
+                <th style="width:10%;text-align:left">SL No.</th>
+                <th style="width:40%;text-align:left">Particulars of Services</th>
+                <th style="width:50%" class="right">
+                    <table>
+                        <tr>
+                            <th style="background: #155e75;text-align: left;">Sac Code</th>
+                            <th style="background: #155e75;text-align: right;">Amount (Rs)</th>
+                        </tr>
+                    </table>
+                </th>
             </tr>
             <tr>
                 <td colspan="3"><strong>Nature of Services</strong></td>
@@ -230,9 +241,17 @@
 
             <tr>
 
-                <td class="center"><?= $sl++; ?></td>
-                <td><?= esc($service['service_description']); ?></td>
-                <td class="right"><?= number_format($service['service_amount'],2); ?></td>
+                <td style="width:10% ;text-align:left" class="center"><?= $sl++; ?></td>
+                <td style="width:40%;text-align:left"><?= esc($service['service_description']); ?></td>
+                <td style="width:50%;padding:0px" class="right">
+                    <table>
+                        <tr>
+                            <td style="width: 50%;
+    border-right: 1px solid #ddd;text-align:left"><strong>Sac Code</strong></td>
+                            <td><?= number_format($service['service_amount'],2); ?></td>
+                        </tr>
+                    </table>
+                </td>
 
             </tr>
             <?php endforeach; ?>
@@ -271,12 +290,12 @@
             <?php if($invoice['tax_apply_name']==='cgst_sgst'): ?>
             <tr>
                 <td class="center">i</td>
-                <td>CGST @ 9%</td>
+                <td style="text-align:right;">CGST @ 9%</td>
                 <td class="right"><?= number_format((float)$subTotal * 0.09, 2); ?></td>
             </tr>
             <tr>
                 <td class="center">ii</td>
-                <td>SGST @ 9%</td>
+                <td style="text-align:right;">SGST @ 9%</td>
                 <td class="right"><?= number_format((float)$subTotal * 0.09, 2); ?></td>
             </tr>
             <?php elseif($invoice['tax_apply_name']==='igst'): ?>
@@ -313,14 +332,24 @@
             <tr>
                 <td>
                     <p><strong>Banker Details:<br>
-                            Branch name:<?= esc($company['bank_name']); ?>
-                            <br>Ac No: <?= esc($company['bank_ac_no']); ?><br>
+
+                            Ac No: <?= esc($company['bank_ac_no']); ?><br>
+                            IFSC:<?= esc($company['bank_ifsc']); ?> <br>
+                            Bank name:<?= esc($company['bank_name']); ?><br>
                             Address:
-                            <?= esc($company['head_office']); ?><br>IFSC:<?= esc($company['bank_ifsc']); ?>
+                            <?= esc($company['head_office']); ?><br>
                         </strong></p>
                 </td>
-                <td>
-                    <p><strong style="font-size:16px;float:right"><?= esc($company['name']); ?></strong></p>
+                <td style="vertical-align: top; height:120px;">
+                    <div style="display:flex; flex-direction:column; height:100%; justify-content:space-between;">
+
+                        <p style="font-size:16px; margin:0;">
+                            <strong><?= esc($company['name']); ?></strong>
+                        </p>
+
+                        <p style="margin:0;">Auth. Sign.</p>
+
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -328,6 +357,12 @@
                     <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
                 </td>
             </tr>
+            <tr>
+                <td colspan=3>
+                    <h3 style="text-align:center">For more information reach us @wwwksaca.in</h3>
+                </td>
+            </tr>
+
         </table>
 
 
