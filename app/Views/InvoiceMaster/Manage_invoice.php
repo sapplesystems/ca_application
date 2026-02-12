@@ -32,15 +32,11 @@
                         <!-- Choose work section -->
                         <div class="Gvoice-section-title">Choose Work For Invoice</div>
                         <div class="Gvoice-box">
-                         <input type="text"
-                            id="workSearch"
-                            placeholder="Search work..."
-                            class="Gvoice-search-input">
+                            <input type="text" id="workSearch" placeholder="Search work..." class="Gvoice-search-input">
                             <?php if (!empty($works)): ?>
                             <?php foreach ($works as $work): ?>
 
-                             <div class="Gvoice-option-row work-option-row"
-                                data-search="<?= strtolower(
+                            <div class="Gvoice-option-row work-option-row" data-search="<?= strtolower(
                                     $work['service_name'] . ' ' .
                                     $work['sac_code'] . ' ' .
                                     $work['frequency']
@@ -68,33 +64,29 @@
 
                         <!-- Choose company section -->
                         <div class="Gvoice-section-title">Choose Company For Invoice</div>
-                        
+
                         <div class="Gvoice-box">
-                         <input type="text"
-                            id="companySearch"
-                            placeholder="Search company..."
-                            class="Gvoice-search-input">
-                           <?php if (!empty($companies)): ?>
-                                <?php foreach ($companies as $company): ?>
+                            <input type="text" id="companySearch" placeholder="Search company..."
+                                class="Gvoice-search-input">
+                            <?php if (!empty($companies)): ?>
+                            <?php foreach ($companies as $company): ?>
 
-                                <div class="Gvoice-option-row"
-                                    data-search="<?= strtolower($company['name'] . ' ' . $company['type_of_company']); ?>">
+                            <div class="Gvoice-option-row"
+                                data-search="<?= strtolower($company['name'] . ' ' . $company['type_of_company']); ?>">
 
-                                    <input type="radio"
-                                        name="company_id"
-                                        value="<?= $company['id']; ?>"
-                                        data-state="<?= esc($company['gst_state']); ?>" />
+                                <input type="radio" name="company_id" value="<?= $company['id']; ?>"
+                                    data-state="<?= esc($company['gst_state']); ?>" />
 
-                                    <div class="Gvoice-option-text">
-                                        <?= esc($company['name']); ?>
-                                        [<?= esc($company['type_of_company']); ?>]
-                                    </div>
+                                <div class="Gvoice-option-text">
+                                    <?= esc($company['name']); ?>
+                                    [<?= esc($company['type_of_company']); ?>]
                                 </div>
+                            </div>
 
-                                <?php endforeach; ?>
-                                <?php else: ?>
-                                <p>No companies found</p>
-                                <?php endif; ?>
+                            <?php endforeach; ?>
+                            <?php else: ?>
+                            <p>No companies found</p>
+                            <?php endif; ?>
 
 
                         </div>
@@ -394,10 +386,9 @@
             data-target="#GenrateVoice">
             Generate Invoice For Pending Work
         </button>
-       <a href="<?= base_url('InvoiceManagment'); ?>"
-   class="Minvoice-btn Minvoice-btn-primary">
-    Back To Client Grid
-</a>
+        <a href="<?= base_url('InvoiceManagment'); ?>" class="Minvoice-btn Minvoice-btn-primary">
+            Back To Client Grid
+        </a>
     </div>
 
     <!-- Filters -->
@@ -457,10 +448,9 @@
 
                 <?php if (!empty($invoices)) : ?>
                 <?php foreach ($invoices as $row) : ?>
-                  
-                <tr class="invoice-row"
-                  data-company-id="<?= $row['company_id'] ?>"
-                   data-date="<?= $row['invoice_date'] ?>">
+
+                <tr class="invoice-row" data-company-id="<?= $row['company_id'] ?>"
+                    data-date="<?= $row['invoice_date'] ?>">
                     <td><?= esc($row['invoice_no']) ?></td>
                     <td><?= date('d-m-Y', strtotime($row['invoice_date'])) ?></td>
                     <td class="Minvoice-works-text">
@@ -513,15 +503,15 @@
 
                 <!-- Total row -->
                 <tr class="Minvoice-total-row">
-                    <td  class="Minvoice-text-right">Total Invoice Amount</td>
+                    <td class="Minvoice-text-right">Total Invoice Amount</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
                         <?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?>
                     </td>
-                    <td  class="Minvoice-text">Total Recipt Amount</td>
+                    <td class="Minvoice-text">Total Recipt Amount</td>
                     <td class="Minvoice-text Minvoice-amount-bold">
                         <?= number_format(array_sum(array_column($receipt, 'tds_amount')), 2) ?>
                     </td>
-                  <?php
+                    <?php
                     $debitTotal = array_sum(
                         array_column(
                             array_filter($debit, function ($row) {
@@ -542,11 +532,11 @@
                     ?>
 
 
-                   <td  class="Minvoice-text-right">Total Debit Amount</td>
+                    <td class="Minvoice-text-right">Total Debit Amount</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
-                            <?= number_format($debitTotal, 2) ?>
-                        </td>
-                     <td  class="Minvoice-text-right">Total Credit Amount</td>
+                        <?= number_format($debitTotal, 2) ?>
+                    </td>
+                    <td class="Minvoice-text-right">Total Credit Amount</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
                         <?= number_format($creditTotal, 2) ?>
                     </td>
@@ -556,13 +546,30 @@
 
                         $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
                         ?>
-                    <td  class="Minvoice-closing-balance">Closing<br>Balance</td>
+                    <td class="Minvoice-closing-balance">Closing<br>Balance</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
-    <?= number_format($closingBalance, 2) ?>
-</td>
+                        <?= number_format($closingBalance, 2) ?>
+                    </td>
                     <td></td>
                 </tr>
             </tbody>
+
+        </table>
+        <table>
+            <tr>
+                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
+            </tr>
+            <tr>
+                <td>jgdgsh</td>
+                <td>sdfgh</td>
+                <td>sdfh</td>
+                <td>sdh</td>
+                <td>sdfh</td>
+            </tr>
 
         </table>
     </div>
@@ -967,16 +974,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-document.querySelector('.Minvoice-btn-search').addEventListener('click', function () {
+document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
 
     const companyId = document.getElementById('Minvoice-company').value;
-    const fromDate  = document.getElementById('Minvoice-fromDate').value;
-    const toDate    = document.getElementById('Minvoice-toDate').value;
+    const fromDate = document.getElementById('Minvoice-fromDate').value;
+    const toDate = document.getElementById('Minvoice-toDate').value;
 
     document.querySelectorAll('.invoice-row').forEach(row => {
 
         const rowCompany = row.getAttribute('data-company-id');
-        const rowDate    = row.getAttribute('data-date');
+        const rowDate = row.getAttribute('data-date');
 
         let show = true;
 
@@ -996,7 +1003,7 @@ document.querySelector('.Minvoice-btn-search').addEventListener('click', functio
     });
 });
 
-document.querySelector('.Minvoice-btn-reset').addEventListener('click', function () {
+document.querySelector('.Minvoice-btn-reset').addEventListener('click', function() {
 
     document.getElementById('Minvoice-company').value = '';
     document.getElementById('Minvoice-fromDate').value = '';
@@ -1008,7 +1015,7 @@ document.querySelector('.Minvoice-btn-reset').addEventListener('click', function
 });
 
 //seaching in company select box
-document.getElementById('companySearch').addEventListener('keyup', function () {
+document.getElementById('companySearch').addEventListener('keyup', function() {
     const searchValue = this.value.toLowerCase();
     const rows = document.querySelectorAll('.Gvoice-option-row');
 
@@ -1019,7 +1026,7 @@ document.getElementById('companySearch').addEventListener('keyup', function () {
 });
 
 //seaching in works select box
-document.getElementById('workSearch').addEventListener('keyup', function () {
+document.getElementById('workSearch').addEventListener('keyup', function() {
     const searchValue = this.value.toLowerCase();
     const rows = document.querySelectorAll('.work-option-row');
 
@@ -1028,5 +1035,4 @@ document.getElementById('workSearch').addEventListener('keyup', function () {
         row.style.display = text.includes(searchValue) ? 'flex' : 'none';
     }
 });
-
 </script>
