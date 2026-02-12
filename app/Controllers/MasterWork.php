@@ -36,14 +36,14 @@ class MasterWork extends BaseController
         }
 
         $rules = [
-            'service_code'  => 'required',
+            // 'service_code'  => 'required',
             'service_name'  => 'required',
             'sac_code'      => 'required|numeric',
-            'unit'          => 'required',
+            // 'unit'          => 'required',
             'default_rate'  => 'required|numeric',
             'gst_percent'   => 'required|numeric',
             'gst'           => 'required',
-            'frequency'     => 'required',
+            // 'frequency'     => 'required',
         ];
 
         if (! $this->validate($rules)) {
@@ -54,14 +54,14 @@ class MasterWork extends BaseController
         }
 
         $work_master_data = [
-            'service_code'   => $this->request->getPost('service_code'),
+            // 'service_code'   => $this->request->getPost('service_code'),
             'service_name'   => $this->request->getPost('service_name'),
             'sac_code'       => $this->request->getPost('sac_code'),
-            'unit'           => $this->request->getPost('unit'),
+            // 'unit'           => $this->request->getPost('unit'),
             'default_rate'   => $this->request->getPost('default_rate'),
             'gst_percent'    => $this->request->getPost('gst_percent'),
             'gst_applicable' => $this->request->getPost('gst'),
-            'frequency'      => $this->request->getPost('frequency'),
+            // 'frequency'      => $this->request->getPost('frequency'),
             'status'         => 1,
         ];
 
@@ -115,14 +115,14 @@ class MasterWork extends BaseController
         }
 
         $rules = [
-            'service_code'  => 'required',
+            // 'service_code'  => 'required',
             'service_name'  => 'required',
             'sac_code'      => 'required|numeric',
-            'unit'          => 'required',
+            // 'unit'          => 'required',
             'default_rate'  => 'required|numeric',
             'gst_percent'   => 'required|numeric',
             'gst'           => 'required',
-            'frequency'     => 'required',
+            // 'frequency'     => 'required',
         ];
 
         if (! $this->validate($rules)) {
@@ -133,14 +133,14 @@ class MasterWork extends BaseController
         }
 
         $work_master_data = [
-            'service_code'   => $this->request->getPost('service_code'),
+            // 'service_code'   => $this->request->getPost('service_code'),
             'service_name'   => $this->request->getPost('service_name'),
             'sac_code'       => $this->request->getPost('sac_code'),
-            'unit'           => $this->request->getPost('unit'),
+            // 'unit'           => $this->request->getPost('unit'),
             'default_rate'   => $this->request->getPost('default_rate'),
             'gst_percent'    => $this->request->getPost('gst_percent'),
             'gst_applicable' => $this->request->getPost('gst'),
-            'frequency'      => $this->request->getPost('frequency'),
+            // 'frequency'      => $this->request->getPost('frequency'),
         ];
 
         $this->WorkMaster->update($id, $work_master_data);

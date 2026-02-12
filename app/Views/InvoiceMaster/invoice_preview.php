@@ -97,9 +97,10 @@
     <td style="padding:8px; border:1px solid #ccc; text-align:center;"><?= $sl++; ?></td>
     
     <td style="padding:8px; border:1px solid #ccc;">
-        <?= esc($service['service_name']); ?> [<?= esc($service['unit']); ?>]
+        <?= esc($service['service_name']); ?>
         <input type="hidden" name="service_name[]" value="<?= esc($service['service_name']) ?>">
         <input type="hidden" name="unit[]" value="<?= esc($service['unit']) ?>">
+        <input type="hidden" name="sacCode[]" value="<?= esc($service['sac_code']) ?>">
         <input type="text" 
                name="service_description[]" 
                value=""

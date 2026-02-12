@@ -247,7 +247,7 @@
                     <table>
                         <tr>
                             <td style="width: 50%;
-    border-right: 1px solid #ddd;text-align:left"><strong>Sac Code</strong></td>
+    border-right: 1px solid #ddd;text-align:left"><?= esc($service['sac_code']); ?></td>
                             <td><?= number_format($service['service_amount'],2); ?></td>
                         </tr>
                     </table>

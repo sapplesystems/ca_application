@@ -17,7 +17,8 @@ class InvoiceWorksModel extends Model
         'service_description',
         'service_amount',
         'service_name',
-        'service_unit'
+        'service_unit',
+        'sac_code'
     ];
 
     protected bool $allowEmptyInserts = false;

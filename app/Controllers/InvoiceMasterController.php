@@ -182,6 +182,7 @@ class InvoiceMasterController extends BaseController
     $workTitles   = $this->request->getPost('service_description') ?? [];
     $workAmounts  = $this->request->getPost('service_amount') ?? [];
     $serviceName =$this->request->getPost('service_name') ?? [];
+    $serviceSacCode =$this->request->getPost('sacCode') ?? [];
     $serviceUnit=$this->request->getPost('unit') ?? [];
     $workData = [];
 
@@ -193,6 +194,7 @@ class InvoiceMasterController extends BaseController
                 'service_amount' => $workAmounts[$i],
                 'service_name'       => $serviceName[$i] ?? null,
                 'service_unit'       => $serviceUnit[$i] ?? null,
+                'sac_code'           =>$serviceSacCode[$i] ?? null,
                 'created_at'           => date('Y-m-d H:i:s')
             ];
         }

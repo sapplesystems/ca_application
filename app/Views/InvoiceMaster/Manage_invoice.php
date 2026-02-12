@@ -50,7 +50,6 @@
                                 <div class="Gvoice-option-text">
                                     <?= esc($work['service_name']); ?>
                                     (<?= esc($work['sac_code']); ?>)
-                                    [<?= esc($work['frequency']); ?>]
                                 </div>
 
                                 <div class="Gvoice-option-status">
