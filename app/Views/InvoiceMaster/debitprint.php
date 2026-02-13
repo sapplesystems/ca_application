@@ -213,7 +213,12 @@
         <b>Terms & Conditions</b><br />
         <?php echo nl2br(esc($debitNote['terms_and_conditions'])); ?>
     </div><br />
-    <div class="right">
+    <!-- <div class="right">
         <button onclick="window.print()">Print Invoice</button>
-    </div>
+    </div> -->
 </div>
+<script>
+window.onload = function() {
+    window.print();
+};
+</script>
