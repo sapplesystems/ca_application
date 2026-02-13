@@ -427,16 +427,16 @@
         <table class="Minvoice-table">
             <thead>
                 <tr>
-                    <th style="width: 12%">Invoice No</th>
-                    <th style="width: 10%">Invoice Date</th>
-                    <th style="width: 20%">Works</th>
-                    <th style="width: 10%">Company</th>
-                    <th style="width: 8%">Total Invoice Amount</th>
-                    <th style="width: 10%">Receipt Date</th>
-                    <th style="width: 5%">Receipt No</th>
+                    <th style="width: 10%">Invoice No</th>
+                    <th style="width: 8%">Invoice Date</th>
+                    <th style="width: 14%">Works</th>
+                    <th style="width: 15%">Company</th>
+                    <th style="width: 10%">Total Invoice Amount</th>
+                    <th style="width: 8%">Receipt Date</th>
+                    <th style="width: 10%">Receipt No</th>
                     <th style="width: 10%">Receipt Amount</th>
-                    <th style="width: 32%">Action</th>
-                    <th></th>
+                    <th style="width: 15%">Action</th>
+                    <!-- <th></th> -->
                 </tr>
             </thead>
             <tbody>
@@ -502,13 +502,17 @@
 
                 <!-- Total row -->
                 <tr class="Minvoice-total-row">
-                    <td class="Minvoice-text-right">Total Invoice Amount</td>
-                    <td class="Minvoice-text-right Minvoice-amount-bold">
-                        <?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?>
-                    </td>
-                    <td class="Minvoice-text">Total Recipt Amount</td>
-                    <td class="Minvoice-text Minvoice-amount-bold">
-                        <?= number_format(array_sum(array_column($receipt, 'tds_amount')), 2) ?>
+                    <td></td>
+                    <td></td>
+                    <td ></td>
+                    <td><p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p></td>
+                    <td><?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td ></td>
+                    <td  class="Minvoice-text-center">
+                        
                     </td>
                     <?php
                     $debitTotal = array_sum(
@@ -529,45 +533,60 @@
                         )
                     );
                     ?>
-
-
-                    <td class="Minvoice-text-right">Total Debit Amount</td>
-                    <td class="Minvoice-text-right Minvoice-amount-bold">
-                        <?= number_format($debitTotal, 2) ?>
-                    </td>
-                    <td class="Minvoice-text-right">Total Credit Amount</td>
-                    <td class="Minvoice-text-right Minvoice-amount-bold">
-                        <?= number_format($creditTotal, 2) ?>
-                    </td>
                     <?php
                         $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
                         $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
 
                         $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
                         ?>
-                    <td class="Minvoice-closing-balance">Closing<br>Balance</td>
+                    <!-- <td class="Minvoice-closing-balance">Closing Balance</td>
                     <td class="Minvoice-text-right Minvoice-amount-bold">
                         <?= number_format($closingBalance, 2) ?>
-                    </td>
-                    <td></td>
+                    </td> -->
+                    <!-- <td></td> -->
                 </tr>
             </tbody>
 
         </table>
+        <br><br>
         <table>
             <tr>
-                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">jkhg</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">Total Invoice Amount (A)</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">Total Recipt Amount (B)</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">Total Debit Amount (C)</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">Total Credit Amount (D)</th>
+                <th style="background: #005b8f;color:#fff;padding:15px">Closing Balance (A+C)-(B+D)</th>
             </tr>
+             <?php
+                    $debitTotal = array_sum(
+                        array_column(
+                            array_filter($debit, function ($row) {
+                                return isset($row['note_type']) && $row['note_type'] !== 'credit';
+                            }),
+                            'total_amount'
+                        )
+                    );
+
+                    $creditTotal = array_sum(
+                        array_column(
+                            array_filter($debit, function ($row) {
+                                return isset($row['note_type']) && $row['note_type'] === 'credit';
+                            }),
+                            'total_amount'
+                        )
+                    );
+                    
+                        $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
+                        $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
+
+                        $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
+                        ?>
             <tr>
-                <td>jgdgsh</td>
-                <td>sdfgh</td>
-                <td>sdfh</td>
-                <td>sdh</td>
-                <td>sdfh</td>
+                <td class=" Minvoice-amount-bold"><?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?></td>
+                <td class=" Minvoice-amount-bold"> <?= number_format(array_sum(array_column($receipt, 'tds_amount')), 2) ?></td>
+                <td class=" Minvoice-amount-bold"> <?= number_format($debitTotal, 2) ?></td>
+                <td class="Minvoice-amount-bold"><?= number_format($creditTotal, 2) ?></td>
+                <td class="Minvoice-amount-bold"><?= number_format($closingBalance, 2) ?></td>
             </tr>
 
         </table>
