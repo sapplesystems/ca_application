@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\CompanyMasterModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\BranchModel;
-
+use App\Models\InvoiceMasterModel;
 class CompanyMasterController extends BaseController
 {
     protected $session;
@@ -352,10 +352,13 @@ $html .= '</div></div></div>';
         }else{
             $companies = $this->companyModel
                         ->orderBy('id', 'DESC')
-                        ->findAll();   
+                        ->findAll();  
+    $companyModel = new CompanyMasterModel();
+    $invoiceNo = $companyModel->generateInvoiceNo('KSA','HO');
 
     $data = [
         'companies' => $companies,
+        'invoiceNo' => $invoiceNo
     ];
    
         echo view('common/header');
@@ -394,6 +397,7 @@ $html .= '</div></div></div>';
             'bank_name'      =>$request->getPost('bank_name'),
             'bank_ifsc'      =>$request->getPost('bank_ifsc'),
             'gst_state'      =>$request->getPost('gst_state'),
+            'status'        => 1, // Active by default
         ];
 
         // 3️⃣ Logo upload (optional)

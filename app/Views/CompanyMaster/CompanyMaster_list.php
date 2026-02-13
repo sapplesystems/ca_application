@@ -274,7 +274,7 @@
                                 <div class="cmg-field cmg-field--full">
                                     <label class="cmg-label">Invoice Format</label>
                                     <input type="text" class="cmg-input" name="invoice_format"
-                                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                                        placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $invoiceNo ?>">
                                     <p class="cmg-help-text">
                                         Define how invoice numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
                                     </p>

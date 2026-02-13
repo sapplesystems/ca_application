@@ -266,6 +266,7 @@ class ClientMasterController extends BaseController
             'billing_emails'           => $this->request->getPost('billing_emails'),
             'payment_terms'            => $this->request->getPost('payment_terms'),
             'gst_state'               => $this->request->getPost('gst_state'),
+            'status'        => 1, // Active by default
         ];
 
         // Update the client

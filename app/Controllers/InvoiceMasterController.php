@@ -43,10 +43,11 @@ class InvoiceMasterController extends BaseController
 
         $companyModel = new CompanyMasterModel();
         $companies = $companyModel
-        ->select('id, name,type_of_company,gst_state')
+        ->select('id, name,type_of_company,gst_state,status')
+        ->where('status', 1)
         ->findAll();
         $workModel = new WorkMasterModel();
-        $works = $workModel->select('id, service_name ,sac_code,frequency')->findAll();
+        $works = $workModel->select('id, service_name ,sac_code,frequency,status')->where('status', 1)->findAll();
         $invoiceModel = new InvoiceMasterModel();
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
         $receiptModel=new ReciptDetailsModel();
@@ -69,10 +70,14 @@ class InvoiceMasterController extends BaseController
     }
   public function previewInvoice()
 {
+    // print_r($this->request->getPost()); exit;
+
+     $client_id = $this->request->getPost('client_id');
     $client_id = $this->request->getPost('client_id');
     $workIds   = $this->request->getPost('work_ids');
     $companyId = $this->request->getPost('company_id');
     $taxType   = $this->request->getPost('tax');
+    $expenses  = $this->request->getPost('expenses'); // Assuming this is an array of expenses
 
     if (empty($workIds) || empty($companyId)) {
         return redirect()->back()->with('error', 'Please select company and works');
@@ -117,7 +122,8 @@ class InvoiceMasterController extends BaseController
             'sgst' => $sgst,
             'igst' => $igst,
             'taxType' => $taxType,
-            'invoiceNo' => $invoiceNo 
+            'invoiceNo' => $invoiceNo ,
+            'expenses' => $expenses
         ])
         . view('common/footer');
 }
@@ -156,29 +162,33 @@ class InvoiceMasterController extends BaseController
     // If insert successful, save expenses
     if ($insertId) {
 
-        $descriptions = $this->request->getPost('expense_description');
-        $amounts      = $this->request->getPost('expense_amount');
+    $expenseTotal = $this->request->getPost('expense_total');
+
+    // ✅ Only process expenses if total > 0
+    if (!empty($expenseTotal) && $expenseTotal > 0) {
+
+        $descriptions = $this->request->getPost('expense_description') ?? [];
+        $amounts      = $this->request->getPost('expense_amount') ?? [];
 
         $expenseData = [];
 
         foreach ($descriptions as $i => $desc) {
-            // Skip empty rows
-            if (empty($desc) || empty($amounts[$i])) {
-                continue;
-            }
 
-            $expenseData[] = [
-                'invoice_id'             => $insertId, 
-                'expense_description'  => $desc,
-                'expense_amount'       => $amounts[$i],
-                'created_at'           => date('Y-m-d H:i:s')
-            ];
+            if (!empty($desc) && !empty($amounts[$i]) && $amounts[$i] > 0) {
+
+                $expenseData[] = [
+                    'invoice_id'          => $insertId,
+                    'expense_description' => $desc,
+                    'expense_amount'      => $amounts[$i],
+                    'created_at'          => date('Y-m-d H:i:s')
+                ];
+            }
         }
 
-        // Insert all expenses in batch
         if (!empty($expenseData)) {
             $ExpenseModel->insertBatch($expenseData);
         }
+    }
     $workTitles   = $this->request->getPost('service_description') ?? [];
     $workAmounts  = $this->request->getPost('service_amount') ?? [];
     $serviceName =$this->request->getPost('service_name') ?? [];
@@ -321,7 +331,7 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
 
     // Output PDF (force download)
     $dompdf->stream(
-        'Invoice_' . $invoice['invoice_no'] . '.pdf',
+         $invoice['invoice_no'] . '.pdf',
         ['Attachment' => true]
     );
 }

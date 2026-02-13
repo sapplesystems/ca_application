@@ -103,6 +103,16 @@
                                 <div class="Gvoice-option-text">IGST</div>
                             </div>
                         </div>
+                        <div class="Gvoice-section-title">Add Expenses Recoverable</div>
+                        <div>
+                            <div class="Gvoice-box">
+                                <div class="Gvoice-option-row">
+                                    <input type="checkbox" name="expenses" value="true" />
+                                    <label for="toggleExpenses">Include Expenses</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Buttons -->
                         <div class="Gvoice-actions">
                             <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>

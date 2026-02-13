@@ -138,53 +138,7 @@ function romanNumeral($num) {
     <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;"><span id="serviceValue">0</span></td>
 </tr>
 
-<?php if ($invoice['tax_apply_name'] === 'cgst_sgst'): ?>
- <tr>
- <td></td>
- <td>Add : Expenses Recoverable</td>
- <td>
-     <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
-     ➕ Add Expense
-     </button>
- </td>
- </tr>
-
-<?php if (!empty($expenses)): ?>
-    <?php foreach ($expenses as $index => $exp): ?>
-        <tr class="expense-row" style="background:#e9f5fb;">
-            <td style="text-align:center;">
-                <?= romanNumeral($index + 1); ?>
-            </td>
-
-            <td>
-                 <input type="hidden" name="expense_id[]" value="<?= $exp['id'] ?>">
-                <input type="text"
-                       name="expense_description[]"
-                       value="<?= esc($exp['expense_description']); ?>"
-                       style="width:100%;">
-            </td>
-            <td>
-                <input type="text"
-                       class="expense"
-                       name="expense_amount[]"
-                       value="<?= esc($exp['expense_amount']); ?>"
-                       style="width:85%; text-align:right;">
-              <button type="button" class="btn btn-danger btn-sm delete-row"data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
-
-            </td>
-        </tr>
-    <?php endforeach; ?>
-    <tr style="background:#0b5c7d; color:#fff;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">B</td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                            Total Expenses Recoverable
-                        </td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                            <span id="expenseTotal">0</span>
-                        </td>
-                    </tr>
-                    <tr>
-    <tr>
+<?php if ($invoice['tax_apply_name'] === 'cgst_sgst'): ?> 
     <td align="center"></td>
     <td>CGST @ 9%</td>
     <td><input readonly id="cgstAmount" style="width:100%;text-align:right;"></td>
@@ -194,23 +148,17 @@ function romanNumeral($num) {
     <td>SGST @ 9%</td>
     <td><input readonly id="sgstAmount" style="width:100%;text-align:right;"></td>
 </tr>
-<?php endif; ?>
- <!-- Hidden Template Row -->
- <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
-    <td style="text-align:center;"></td>
-    <td>
-        <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
-    </td>
-    <td>
-        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
-       <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
-
-    </td>
-</tr>
+ 
 <?php endif; ?>
 
 <?php if ($invoice['tax_apply_name'] === 'igst'): ?>
-     <tr>
+    <td align="center">i</td>
+    <td>IGST @ 18%</td>
+    <td><input readonly id="igstAmount" style="width:100%;text-align:right;"></td>
+</tr>
+<?php endif; ?>
+
+<tr>
  <td></td>
  <td>Add : Expenses Recoverable</td>
  <td>
@@ -220,7 +168,7 @@ function romanNumeral($num) {
  </td>
  </tr>
 
-<?php if (!empty($expenses)): ?>
+ <?php if (!empty($expenses)): ?>
     <?php foreach ($expenses as $index => $exp): ?>
         <tr class="expense-row" style="background:#e9f5fb;">
             <td style="text-align:center;">
@@ -269,12 +217,6 @@ function romanNumeral($num) {
                         </td>
                     </tr>
                     <tr>
-    <td align="center">i</td>
-    <td>IGST @ 18%</td>
-    <td><input readonly id="igstAmount" style="width:100%;text-align:right;"></td>
-</tr>
-<?php endif; ?>
-
 
 
 <tr>
@@ -388,84 +330,131 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================== */
     function calculateTotals() {
 
-        /* SERVICE TOTAL */
-        let serviceValue = 0;
-        document.querySelectorAll('.service-amount').forEach(el => {
-            serviceValue += parseFloat(el.value || 0);
-        });
-        document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
+    /* =========================
+       ✅ SERVICE TOTAL
+    ========================== */
+    let serviceValue = 0;
+    document.querySelectorAll('.service-amount').forEach(el => {
+        serviceValue += parseFloat(el.value) || 0;
+    });
 
-        /* EXPENSE TOTAL */
-        let expenseTotal = 0;
-        document.querySelectorAll('.expense').forEach(el => {
-            expenseTotal += parseFloat(el.value || 0);
-        });
-        document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
+    document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-        let cgst = 0, sgst = 0, igst = 0;
 
-        /* CGST / SGST */
-        if (document.getElementById('cgstAmount')) {
-            cgst = (serviceValue + expenseTotal) * 0.09;
-            sgst = (serviceValue + expenseTotal) * 0.09;
+    /* =========================
+       ✅ EXPENSE TOTAL
+    ========================== */
+    let expenseTotal = 0;
 
-            document.getElementById('cgstAmount').value = cgst.toFixed(2);
-            document.getElementById('sgstAmount').value = sgst.toFixed(2);
-        }
+    document.querySelectorAll('.expense').forEach(el => {
+        expenseTotal += parseFloat(el.value) || 0;
+    });
 
-        /* IGST */
-        if (document.getElementById('igstAmount')) {
-            igst = (serviceValue + expenseTotal) * 0.18;
-            document.getElementById('igstAmount').value = igst.toFixed(2);
-        }
-
-        /* GRAND TOTAL */
-        const taxTotal  = cgst + sgst + igst;
-        const grandTotal = serviceValue + expenseTotal + taxTotal;
-        document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
-
-        /* NET AMOUNT */
-        const advance = parseFloat(document.getElementById('advance')?.value || 0);
-        const netAmount = grandTotal - advance;
-
-        document.getElementById('netAmount').innerText = netAmount.toFixed(2);
-        document.getElementById('amountInWords').innerText =
-            numberToWords(Math.round(netAmount)).toUpperCase();
-
-        /* HIDDEN INPUTS */
-        serviceValueInput.value = serviceValue.toFixed(2);
-        expenseTotalInput.value = expenseTotal.toFixed(2);
-        if (cgstInput) cgstInput.value = cgst.toFixed(2);
-        if (sgstInput) sgstInput.value = sgst.toFixed(2);
-        if (igstInput) igstInput.value = igst.toFixed(2);
-        grandTotalInput.value = grandTotal.toFixed(2);
-        netAmountInput.value  = netAmount.toFixed(2);
-
-        const amountWords = numberToWords(Math.round(netAmount)).toUpperCase();
-
-        document.getElementById('amountInWords').innerText = amountWords;
-        document.getElementById('amountInWordsInput').value = amountWords;
+    const expenseElement = document.getElementById('expenseTotal');
+    if (expenseElement) {
+        expenseElement.innerText = expenseTotal.toFixed(2);
     }
+
+
+    /* =========================
+       ✅ TAX (ONLY ON SERVICE)
+    ========================== */
+    let cgst = 0, sgst = 0, igst = 0;
+
+    // CGST + SGST
+    if (document.getElementById('cgstAmount')) {
+
+        cgst = serviceValue * 0.09;  // 🔥 NO expense
+        sgst = serviceValue * 0.09;  // 🔥 NO expense
+
+        document.getElementById('cgstAmount').value = cgst.toFixed(2);
+        document.getElementById('sgstAmount').value = sgst.toFixed(2);
+    }
+
+    // IGST
+    if (document.getElementById('igstAmount')) {
+
+        igst = serviceValue * 0.18;  // 🔥 NO expense
+
+        document.getElementById('igstAmount').value = igst.toFixed(2);
+    }
+
+
+    /* =========================
+       ✅ GRAND TOTAL
+    ========================== */
+    const taxTotal = cgst + sgst + igst;
+    const grandTotal = serviceValue + expenseTotal + taxTotal;
+
+    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+
+
+    /* =========================
+       ✅ NET AMOUNT
+    ========================== */
+    const advance = parseFloat(document.getElementById('advance')?.value) || 0;
+    const netAmount = grandTotal - advance;
+
+    document.getElementById('netAmount').innerText = netAmount.toFixed(2);
+
+    const amountWords = numberToWords(Math.round(netAmount)).toUpperCase();
+
+    document.getElementById('amountInWords').innerText = amountWords;
+    document.getElementById('amountInWordsInput').value = amountWords;
+
+
+    /* =========================
+       ✅ HIDDEN INPUTS
+    ========================== */
+    if (typeof serviceValueInput !== "undefined")
+        serviceValueInput.value = serviceValue.toFixed(2);
+
+    if (typeof expenseTotalInput !== "undefined")
+        expenseTotalInput.value = expenseTotal.toFixed(2);
+
+    if (typeof cgstInput !== "undefined")
+        cgstInput.value = cgst.toFixed(2);
+
+    if (typeof sgstInput !== "undefined")
+        sgstInput.value = sgst.toFixed(2);
+
+    if (typeof igstInput !== "undefined")
+        igstInput.value = igst.toFixed(2);
+
+    if (typeof grandTotalInput !== "undefined")
+        grandTotalInput.value = grandTotal.toFixed(2);
+
+    if (typeof netAmountInput !== "undefined")
+        netAmountInput.value = netAmount.toFixed(2);
+}
+
 
     /* ==========================
        ADD EXPENSE ROW
     ========================== */
-    window.addExpenseRow = function () {
+window.addExpenseRow = function () {
 
-        const template = document.getElementById('hiddenRow');
-        const clone = template.cloneNode(true);
+    const template = document.getElementById('hiddenRow');
+    if (!template) return;
 
-        clone.removeAttribute('id');
-        clone.style.display = 'table-row';
+    const clone = template.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.style.display = 'table-row';
 
-        clone.querySelectorAll('input').forEach(i => i.value = '');
+    clone.querySelectorAll('input').forEach(i => i.value = '');
 
-        const expenseRows = document.querySelectorAll('.expense-row:not([style*="display:none"])');
-        const lastRow = expenseRows[expenseRows.length - 1];
-        lastRow.after(clone);
+    const tbody = document.getElementById('expenseBody');
 
-        calculateTotals();
-    };
+    // 🔥 Find the "B" total row
+    const totalRow = tbody.querySelector('#expenseTotal').closest('tr');
+
+    // Insert BEFORE total row
+    tbody.insertBefore(clone, totalRow);
+
+    calculateTotals();
+};
+
+
 
     /* ==========================
        INPUT EVENTS (delegated)
