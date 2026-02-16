@@ -2,381 +2,417 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Invoice <?= esc($invoice['invoice_no']); ?></title>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 13px;
-        background: #f2f2f2;
-    }
+<meta charset="UTF-8">
+<title>Invoice <?= esc($invoice['invoice_no']); ?></title>
 
-    /* Main Box */
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    background: #f2f2f2;
+}
+
+/* Main Box */
+.invoice-box {
+    width: 85%;
+    margin: 20px auto;
+    background: #fff;
+    border: 1px solid #cfcfcf;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Header Section */
+.invoice-box table:first-child td {
+    border: none;
+    padding: 12px 15px;
+    vertical-align: top;
+    font-size:14px!important;
+}
+
+.logo img {
+    max-width: 180px;
+    height: auto;
+}
+.logo {
+    width: 200px;   /* fixed width */
+    height: 120px;   /* fixed height */
+    /* display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden; */
+    float:right;
+}
+
+.logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+
+/* Tax Invoice Bar */
+.invoice-box table:first-child th {
+    background: #1f5d6b;
+    color: #fff;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Bill To Section */
+.invoice-box table:nth-child(2) td {
+    border: 1px solid #d5d5d5;
+    padding: 12px 15px;
+    background: #f3f3f3;
+}
+
+/* Invoice Info Right Box */
+.invoice-info {
+    display: inline-block;
+    background: #f3f3f3;
+    /* border: 1px solid #d5d5d5; */
+    padding: 10px 15px;
+    text-align: left;
+    min-width: 240px;
+}
+
+.invoice-info strong {
+    display: inline-block;
+    width: 110px;
+}
+
+/* Main Table Header */
+th {
+    background: #1f5d6b;
+    color: #fff;
+    padding: 7px;
+    font-weight: bold;
+    text-align: center;
+    font-size:14px !important;
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 7px;
+    font-size:14px !important;
+}
+
+/* Section Headings */
+td[colspan="3"] {
+    background: #e8f1f5;
+    font-weight: bold;
+}
+
+/* Alternate Row Color */
+table tr:nth-child(even) td {
+    background: #f7fbfd;
+}
+
+/* Alignment */
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+/* Footer */
+p {
+    padding: 10px 15px;
+    margin: 0;
+    font-size: 12px;
+}
+
+/* Print */
+@media print {
+
+    @page {
+        size: A4;
+        margin: 5mm;
+    }
+     p {
+        padding: 4px 10px !important;
+    }
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+}
+
     .invoice-box {
-        width: 85%;
-        margin: 20px auto;
-        background: #fff;
-        border: 1px solid #cfcfcf;
-        padding: 0;
-    }
-
-    /* Tables */
-    table {
         width: 100%;
-        border-collapse: collapse;
-    }
-
-    /* Top Company Table */
-    .invoice-box table:first-child td {
-        border: none;
-        padding: 15px;
-        vertical-align: top;
-    }
-
-    /* Logo Right */
-    .logo img {
-        max-width: 180px;
-        height: auto;
-    }
-
-    /* Professional Invoice Black Strip */
-    .invoice-box table:first-child th {
-        background: #000;
-        color: #fff;
-        padding: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    /* GST / Invoice Row */
-    .invoice-box table:first-child tr:nth-child(3) td,
-    .invoice-box table:first-child tr:nth-child(4) td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-
-    /* Bill To Section */
-    .invoice-box table:nth-child(2) td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        background: #f9f9f9;
-    }
-
-    /* Main Service Table */
-    th {
-        background: #155e75;
-        color: #fff;
-        padding: 8px;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    td {
-        border: 1px solid #ddd;
-        padding: 7px;
-    }
-
-    /* Section Heading Rows like Nature, Tax etc */
-    td[colspan="3"] {
-        background: #e6eef2;
-        font-weight: bold;
-    }
-
-    /* Alternate rows light blue */
-    table tr:nth-child(even) td {
-        background: #eef5f8;
-    }
-
-    /* Strong rows A B C darker */
-    tr td strong {
-        font-weight: bold;
-    }
-
-    /* Alignment */
-    .right {
-        text-align: right;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    /* Footer text */
-    p {
-        padding: 10px 15px;
         margin: 0;
-        font-size: 12px;
-    }
-
-    /* Print Button */
-    button {
-        background: #155e75;
-        color: #fff;
         border: none;
-        padding: 6px 14px;
-        cursor: pointer;
+        box-shadow: none;
     }
 
-    button:hover {
-        background: #0e3f4f;
+    /* table {
+        page-break-inside: avoid !important;
+    } */
+
+    tr, td, th {
+        page-break-inside: avoid !important;
     }
 
-    /* Print View */
-    @media print {
+}
 
-        @page {
-            size: A4;
-            margin: 0;
-        }
 
-        body {
-            margin: 0;
-            background: #fff;
-        }
-
-        .invoice-box {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
-            padding: 10mm;
-            border: none;
-        }
-
-        button {
-            display: none;
-        }
-
-        * {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-    }
-    </style>
-
+</style>
 </head>
 
 <body>
-    <div class="invoice-box">
 
-        <table>
-            <tr>
-                <td>
-                    <div style="padding:5px 0px; line-height:1.6;">
-                        <strong style="font-size:26px;"><?= esc($company['name']); ?></strong><br>
+<div class="invoice-box">
 
-                        <strong>Address: <?= esc($company['registered_office']); ?></strong> <br>
-                        <strong>PH: <?= esc($company['telephone']); ?></strong> <br>
-                        <strong> Email: <?= esc($company['email']); ?></strong><br>
-                        <strong>GSTIN: <?= esc($company['gstin']); ?></strong>
-                    </div>
-                </td>
-                <td class="right">
-                    <div class="logo">
-                        <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>"
-                            alt="Company Logo" style="max-width:200px; max-height:200px;">
-                    </div>
+<!-- HEADER -->
+<table>
+<tr>
+<td>
+<div style="line-height:1.6;">
+<strong style="font-size:24px;">
+<?= esc($company['name']); ?>
+</strong><br>
+<span style="font-weight:600;font-size:16px"><?= esc($company['type_of_company']); ?></span><br>
+Address: <?= esc($company['registered_office']); ?><br>
+PH: <?= esc($company['telephone']); ?><br>
+Email: <?= esc($company['email']); ?><br>
+GSTIN: <?= esc($company['gstin']); ?>
 
-                </td>
-            </tr>
-            <tr>
-                <th colspan=2>
+</div>
+</td>
 
-                    <p style="font-size: 18px;">Tax Invoice</p>
-                </th>
+<td class="right">
+<div class="logo">
+<img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>">
+</div>
+</td>
+</tr>
 
-            </tr>
-            <tr>
-                <td> </td>
-                <td> <strong>Invoice No:</strong> <?= esc($invoice['invoice_no']); ?></td>
-
-            </tr>
-            <tr>
-                <td> </td>
-                <td>
-                    <strong>Date:</strong>
-                    <?php
-        $date = new DateTime($invoice['invoice_date']);
-        echo esc($date->format('d-m-Y'));
-    ?>
-                </td>
-
-            </tr>
-
-        </table>
+<tr>
+<th colspan="2">Tax Invoice</th>
+</tr>
+</table>
 
 
+<!-- BILL TO + INVOICE INFO -->
+<table>
+<tr>
 
-        <table>
+<td style="width:60%; vertical-align:top;border-right: 0;">
+<strong>Bill To:</strong><br>
+<?= esc($client['legal_name']); ?><br>
+<?= esc($client['registered_office']); ?><br>
+E-mail ID:<br>
+GST No:
+</td>
 
+<td style="width:40%; vertical-align:top; text-align:right;border-left: 0;">
 
+<div class="invoice-info">
 
-            <tr>
-                <td><strong>Bill
-                        To:</strong><br><?= esc($client['legal_name']); ?><br><?= esc($client['registered_office']); ?><br>
-                    E-mail ID: <br>
-                    GST No:
-                </td>
-            </tr>
-        </table>
+<div>
+<strong>Invoice No:</strong>
+<?= esc($invoice['invoice_no']); ?>
+</div>
 
-        <table>
-            <tr>
-                <th style="width:10%;text-align:left">SL No.</th>
-                <th style="width:40%;text-align:left">Particulars of Services</th>
-                <th style="width:50%" class="right">
-                    <table>
-                        <tr>
-                            <th style="background: #155e75;text-align: left;">Sac Code</th>
-                            <th style="background: #155e75;text-align: right;">Amount (Rs)</th>
-                        </tr>
-                    </table>
-                </th>
-            </tr>
-            <tr>
-                <td colspan="3"><strong>Nature of Services</strong></td>
-            </tr>
-            <?php $sl = 1; ?>
-            <?php foreach ($invoice_works as $service): ?>
+<div>
+<strong>Date :</strong>
+<?php
+$date = new DateTime($invoice['invoice_date']);
+echo esc($date->format('d.m.Y'));
+?>
+</div>
 
-            <tr>
+</div>
 
-                <td style="width:10% ;text-align:left" class="center"><?= $sl++; ?></td>
-                <td style="width:40%;text-align:left"><?= esc($service['service_description']); ?></td>
-                <td style="width:50%;padding:0px" class="right">
-                    <table>
-                        <tr>
-                            <td style="width: 50%;
-    border-right: 1px solid #ddd;text-align:left"><?= esc($service['sac_code']); ?></td>
-                            <td><?= number_format($service['service_amount'],2); ?></td>
-                        </tr>
-                    </table>
-                </td>
-
-            </tr>
-            <?php endforeach; ?>
-            <tr>
-                <th class="center"><strong>A</strong></th>
-                <th class="right"><strong>Service Value</strong></th>
-                <th class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></th>
-            </tr>
-            <?=
-       
-        $serviceTotal  = (float) $serviceTotal;
-        $expenseTotal  = (float) ($invoice['expense_total'] ?? 0);
-        $subTotal = $serviceTotal + $expenseTotal; ?>
-            <tr>
-                <td colspan="3"><strong>Expenses Recoverable</strong></td>
-            </tr>
-            <?php $sl = 1; ?>
-            <?php foreach ($expences as $exp): ?>
-
-            <tr>
-
-                <td class="center"><?= $sl++; ?></td>
-                <td><?= esc($exp['expense_description']); ?></td>
-                <td class="right"><?= number_format($exp['expense_amount'],2); ?></td>
-
-            </tr>
-            <?php endforeach; ?>
-            <tr>
-                <th class="center"><strong>B</strong></th>
-                <th class="right"><strong>Total Expenses Recoverable</strong></th>
-                <th class="right"><strong><?= number_format((float)$invoice['expense_total'],2); ?></strong></th>
-            </tr>
-            <tr>
-                <td colspan="3"><strong>Tax</strong></td>
-            </tr>
-            <?php if($invoice['tax_apply_name']==='cgst_sgst'): ?>
-            <tr>
-                <td class="center">i</td>
-                <td style="text-align:right;">CGST @ 9%</td>
-                <td class="right"><?= number_format((float)$subTotal * 0.09, 2); ?></td>
-            </tr>
-            <tr>
-                <td class="center">ii</td>
-                <td style="text-align:right;">SGST @ 9%</td>
-                <td class="right"><?= number_format((float)$subTotal * 0.09, 2); ?></td>
-            </tr>
-            <?php elseif($invoice['tax_apply_name']==='igst'): ?>
-            <tr>
-                <td class="center">i</td>
-                <td>IGST @ 18%</td>
-                <td class="right"><?= number_format((float)$subTotal* 0.18, 2); ?></td>
-            </tr>
-            <?php endif; ?>
-
-            <tr>
-                <td colspan="3"><br></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="right"><strong>Grand Total</strong></td>
-                <td class="right"><strong><?= number_format((float)$invoice['grand_total'],2); ?></strong></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="right"><strong>(-) Advances Received</strong></td>
-                <td class="right"><strong><?= number_format((float)$invoice['advance_received'],2); ?></strong></td>
-            </tr>
-            <tr>
-                <td colspan="3"><br></td>
-            </tr>
-            <tr>
-                <th class="center"><strong>C</strong></th>
-                <th>(Amount in Words)<strong> <?= esc($invoice['amount_in_words']); ?></strong></th>
-                <th class="right"><strong><?= number_format((float)$invoice['total_invoice_amount'],2); ?></strong></th>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <td>
-                    <p><strong>Banker Details:<br>
-
-                            Ac No: <?= esc($company['bank_ac_no']); ?><br>
-                            IFSC:<?= esc($company['bank_ifsc']); ?> <br>
-                            Bank name:<?= esc($company['bank_name']); ?><br>
-                            Address:
-                            <?= esc($company['head_office']); ?><br>
-                        </strong></p>
-                </td>
-                <td style="vertical-align: top; height:120px;">
-                    <div style="display:flex; flex-direction:column; height:100%; justify-content:space-between;">
-
-                        <p style="font-size:16px; margin:0;">
-                            <strong><?= esc($company['name']); ?></strong>
-                        </p>
-
-                        <p style="margin:0;">Auth. Sign.</p>
-
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <p><strong>Terms & Conditions:</strong><br><?= nl2br(esc($invoice['term_condition'])); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <td colspan=3>
-                    <h3 style="text-align:center">For more information reach us @wwwksaca.in</h3>
-                </td>
-            </tr>
-
-        </table>
+</td>
+</tr>
+</table>
 
 
+<!-- SERVICE TABLE -->
+<table>
+
+<tr>
+<th style="width:10%">SL No.</th>
+<th style="width:55%">Particulars of Services</th>
+<th style="width:15%;text-align: right;">Sac Code</th>
+<th style="width:20%" class="right">Amount (Rs)</th>
+</tr>
+
+<?php $sl = 1; ?>
+<?php foreach ($invoice_works as $service): ?>
+
+<tr>
+<td class="center"><?= $sl++; ?></td>
+
+<td>
+<strong><?= esc($service['service_name']); ?></strong><br>
+<?= esc($service['service_description']); ?>
+</td>
+
+<td class="center"style="text-align:right">
+    <strong >
+       <?= esc($service['sac_code']); ?> 
+   </strong>
+
+ 
+</td>
+
+<td class="right">
+<?= number_format($service['service_amount'],2); ?>
+</td>
+</tr>
+
+<?php endforeach; ?>
 
 
+<tr>
+<th colspan="3" class="right">Service Value</th>
+<th class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></th>
+</tr>
+
+<!-- <?=
+$serviceTotal  = (float) $serviceTotal;
+$expenseTotal  = (float) ($invoice['expense_total'] ?? 0);
+$subTotal = $serviceTotal + $expenseTotal;
+?> -->
+
+<tr>
+<td colspan="4"><strong>Expenses Recoverable</strong></td>
+</tr>
+
+<?php foreach ($expences as $exp): ?>
+
+<tr>
+<td></td>
+<td><?= esc($exp['expense_description']); ?></td>
+<td style="border=0"></td>
+<td class="right"><?= number_format($exp['expense_amount'],2); ?></td>
+</tr>
+
+<?php endforeach; ?>
 
 
-        <!-- <div class=" right">
-                    <button onclick="window.print()">Print Invoice</button>
-    </div> -->
-    </div>
+<tr>
+<th colspan="3" class="right">Total Expenses</th>
+<th class="right"><?= number_format((float)$invoice['expense_total'],2); ?></th>
+</tr>
+
+
+<tr>
+<td colspan="4"><strong>Tax</strong></td>
+</tr>
+
+
+<?php if($invoice['tax_apply_name']==='cgst_sgst'): ?>
+
+<tr>
+<td></td>
+<td colspan="2" class="right">CGST @ 9%</td>
+<td class="right"><?= number_format($serviceTotal * 0.09, 2); ?></td>
+</tr>
+
+<tr>
+<td></td>
+<td colspan="2" class="right">SGST @ 9%</td>
+<td class="right"><?= number_format($serviceTotal * 0.09, 2); ?></td>
+</tr>
+
+<?php elseif($invoice['tax_apply_name']==='igst'): ?>
+
+<tr>
+<td></td>
+<td colspan="2" class="right">IGST @ 18%</td>
+<td class="right"><?= number_format($serviceTotal * 0.18, 2); ?></td>
+</tr>
+
+<?php endif; ?>
+
+
+<tr>
+<td colspan="3" class="right"><strong>Grand Total</strong></td>
+<td class="right"><strong><?= number_format((float)$invoice['grand_total'],2); ?></strong></td>
+</tr>
+
+<tr>
+<td colspan="3" class="right"><strong>(-) Advances Received</strong></td>
+<td class="right"><?= number_format((float)$invoice['advance_received'],2); ?></td>
+</tr>
+
+<tr>
+<th colspan="3" style="text-align:left">(Amount in Words) <?= esc($invoice['amount_in_words']); ?></th>
+<th class="right"><?= number_format((float)$invoice['total_invoice_amount'],2); ?></th>
+</tr>
+
+</table>
+
+
+<!-- FOOTER -->
+<table>
+
+<tr>
+    <!-- Left Side : Banker Details -->
+    <td style="width:65%; vertical-align:top; padding:10px;">
+        <p style="font-size:15px; font-weight:400; margin:0;">
+            <strong>Banker Details:</strong><br>
+            Ac No: <?= esc($company['bank_ac_no']); ?><br>
+            IFSC: <?= esc($company['bank_ifsc']); ?><br>
+            Bank : <?= esc($company['bank_name']); ?><br>
+            Branch name : <?= esc($company['head_office']); ?>
+        </p>
+    </td>
+
+    <!-- Right Side : Company + Signature -->
+    <td style="width:35%; vertical-align:top; padding:10px;height:120px;">
+        
+        <!-- Company Name Top Right -->
+        <p style="font-size:16px; margin:0;">
+            <strong>For <?= esc($company['name']); ?></strong>
+        </p>
+
+        <!-- Space for Signature -->
+        <div style="height:40px;"></div>
+
+        <!-- Auth Sign Bottom Right -->
+        <p style="margin:0;">Auth. Sign.</p>
+
+    </td>
+</tr>
+
+
+<tr>
+<td colspan="2" style="vertical-align:top;">
+<p style="font-size:13px; padding:0; margin:0;">
+<strong>Terms & Conditions:</strong><br>
+<?= nl2br(esc($invoice['term_condition'])); ?>
+</p>
+</td>
+</tr>
+
+<tr>
+<td colspan="2">
+<h3 style="text-align:center">
+For more information reach us @ www.ksaca.in
+</h3>
+</td>
+</tr>
+
+</table>
+
+</div>
+
 </body>
-
 </html>
+
 <script>
 window.onload = function() {
     window.print();

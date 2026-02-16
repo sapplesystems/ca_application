@@ -97,7 +97,7 @@
     <td style="padding:8px; border:1px solid #ccc; text-align:center;"><?= $sl++; ?></td>
     
     <td style="padding:8px; border:1px solid #ccc;">
-        <?= esc($service['service_name']); ?>
+       <leval><?= esc($service['service_name']); ?></leval> 
         <input type="hidden" name="service_name[]" value="<?= esc($service['service_name']) ?>">
         <input type="hidden" name="unit[]" value="<?= esc($service['unit']) ?>">
         <input type="hidden" name="sacCode[]" value="<?= esc($service['sac_code']) ?>">
@@ -112,6 +112,7 @@
       
     
     <td style="padding:8px; border:1px solid #ccc;">
+        <leval style="visibility:hidden;">Hidden</leval>
         <input type="text" 
                name="service_amount[]" 
                class="service-amount" 
@@ -126,7 +127,7 @@
 
                     <!-- A -->
                     <tr style="background:#0b5c7d; color:#fff;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;"></td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service
                             Value
                         </td>
@@ -308,7 +309,7 @@
                         </tr>
                              <!-- B -->
                     <tr style="background:#0b5c7d; color:#fff;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">B</td>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;"></td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
                             Total Expenses Recoverable
                         </td>
@@ -355,7 +356,7 @@
     <input type="hidden" name="amount_in_words" id="amountInWordsInput" value="ZERO">
                         </td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                            Net Amount Receivable (A+B)
+                            Net Amount Receivable
                             <br><strong id="netAmount">0</strong>
                         </td>
                     </tr>
@@ -364,9 +365,10 @@
 
              <div>
           <b>Banker's Details</b><br />
-          <?php echo $company['bank_name']; ?><br />
+         Bank name:<?php echo $company['bank_name']; ?><br />
           Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
           IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+          Branch name:<?php echo $company['registered_office']; ?>
         </div>
 
             <div>

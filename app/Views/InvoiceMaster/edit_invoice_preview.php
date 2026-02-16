@@ -107,32 +107,35 @@ function romanNumeral($num) {
     <td style="padding:8px; border:1px solid #ccc; text-align:center;">
         <?= $sl++; ?>
     </td>
+    
     <input type="hidden" name="work_id[]" value="<?= esc($service['id']); ?>">
 
     <td style="padding:8px; border:1px solid #ccc;">
-        <?= esc($service['service_name']); ?> [<?= esc($service['service_unit']); ?>]
+        <leval><?= esc($service['service_name']); ?></leval>
 
         <input type="text"
                name="service_description[]"
                value="<?= esc($service['service_description'] ?? '') ?>"
-               style="width:100%; margin-top:6px; padding:6px; border:1px solid #bbb;"
+               style="width:100%; margin-top:6px; padding:8px; border:1px solid #bbb;"
                placeholder="Description">
     </td>
 
     <td style="padding:8px; border:1px solid #ccc;">
+        <leval style="visibility:hidden">Hidden</leval>
         <input type="text"
                name="service_amount[]"
                class="service-amount"
                value="<?= esc($service['service_amount'] ?? '') ?>"
-               style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
+               style="width:100%; padding:8px; border:1px solid #bbb; text-align:right;margin-top: 5px;">
     </td>
 </tr>
+
      <input type="hidden" name="service_name[]" value="<?= esc($service['service_name']) ?>">
     <input type="hidden" name="service_unit[]" value="<?= esc($service['service_unit']) ?>">
 <?php endforeach; ?>
 
 
-<tr style="background:#0b5c7d;color:#fff;">
+<tr style="background:#0b5c7d;color:#fff;padding:8px;border:1px solid #ccc">
     <td align="center" style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
     <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service Value</td>
     <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;"><span id="serviceValue">0</span></td>
@@ -141,12 +144,12 @@ function romanNumeral($num) {
 <?php if ($invoice['tax_apply_name'] === 'cgst_sgst'): ?> 
     <td align="center"></td>
     <td>CGST @ 9%</td>
-    <td><input readonly id="cgstAmount" style="width:100%;text-align:right;"></td>
+    <td><input readonly id="cgstAmount" style="width:100%;text-align:right;padding:8px;border:1px solid #ccc"></td>
 </tr>
 <tr>
     <td align="center"></td>
     <td>SGST @ 9%</td>
-    <td><input readonly id="sgstAmount" style="width:100%;text-align:right;"></td>
+    <td><input readonly id="sgstAmount" style="width:100%;text-align:right;padding:8px;border:1px solid #ccc"></td>
 </tr>
  
 <?php endif; ?>
@@ -154,7 +157,7 @@ function romanNumeral($num) {
 <?php if ($invoice['tax_apply_name'] === 'igst'): ?>
     <td align="center">i</td>
     <td>IGST @ 18%</td>
-    <td><input readonly id="igstAmount" style="width:100%;text-align:right;"></td>
+    <td><input readonly id="igstAmount" style="width:100%;text-align:right;padding:8px;border:1px solid #ccc"></td>
 </tr>
 <?php endif; ?>
 
@@ -179,14 +182,14 @@ function romanNumeral($num) {
                 <input type="text"
                        name="expense_description[]"
                        value="<?= esc($exp['expense_description']); ?>"
-                       style="width:100%;">
+                       style="width:100%;padding:8px;border:1px solid #ccc">
             </td>
             <td>
                 <input type="text"
                        class="expense"
                        name="expense_amount[]"
                        value="<?= esc($exp['expense_amount']); ?>"
-                       style="width:85%; text-align:right;">
+                       style="width:85%; text-align:right;padding:8px;border:1px solid #ccc">
               <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>"style="background-color: red;">✖</button>
 
             </td>
@@ -231,7 +234,7 @@ function romanNumeral($num) {
     <td>
         <input type="text" id="advance" name="advance_received"
                value="<?= esc($invoice['advance_received']); ?>"
-               style="width:100%;text-align:right;">
+               style="width:100%;text-align:right;padding:8px;border:1px solid #ccc">
     </td>
 </tr>
 
@@ -252,7 +255,7 @@ function romanNumeral($num) {
            value="<?= esc($invoice['amount_in_words'] ?? 'ZERO'); ?>">
 </td>
     <td align="right" style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;" >
-         Net Amount Receivable (A+B)<br>
+         Net Amount Receivable<br>
         <strong id="netAmount">0</strong>
     </td>
 </tr>
