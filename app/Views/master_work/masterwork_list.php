@@ -40,7 +40,7 @@
                         <th>SAC Code/ HSN</th>
                         <!-- <th>Unit</th> -->
                         <th>Default Rate (₹)</th>
-                        <th>GST?</th>
+                        <!-- <th>GST?</th> -->
                         <th>GST %</th>
                         <!-- <th>Frequency</th> -->
                         <th>Status</th>
@@ -57,7 +57,7 @@
                         <td><?= $worklist['sac_code']; ?></td>
                         <!-- <td><?//= $worklist['unit']; ?></td> -->
                         <td><?= $worklist['default_rate']; ?></td>
-                        <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td>
+                        <!-- <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td> -->
                         <td><?= $worklist['gst_percent']; ?></td>
                         <!-- <td><//?= $worklist['frequency']; ?></td> -->
                         <td>
@@ -170,7 +170,7 @@
                         </div>
 
                         <!-- Row 4 -->
-                        <div class="msl-form-row">
+                        <!-- <div class="msl-form-row">
                             <div class="msl-form-group">
                                 <label for="gstYesNo">GST?</label>
                                 <select id="gstYesNo" name="gst">
@@ -178,7 +178,7 @@
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- <div class="msl-form-group">
                                 <label for="frequency">Frequency</label>
@@ -189,7 +189,7 @@
                                     <option value="Annually">Annually</option>
                                 </select>
                             </div> -->
-                        </div>
+                        <!-- </div> -->
 
                         <!-- Row 5 -->
                         <!-- <div class="msl-form-row">

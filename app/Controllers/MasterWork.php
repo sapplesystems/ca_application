@@ -42,7 +42,7 @@ class MasterWork extends BaseController
             // 'unit'          => 'required',
             'default_rate'  => 'required|numeric',
             'gst_percent'   => 'required|numeric',
-            'gst'           => 'required',
+            // 'gst'           => 'required',
             // 'frequency'     => 'required',
         ];
 
@@ -60,7 +60,7 @@ class MasterWork extends BaseController
             // 'unit'           => $this->request->getPost('unit'),
             'default_rate'   => $this->request->getPost('default_rate'),
             'gst_percent'    => $this->request->getPost('gst_percent'),
-            'gst_applicable' => $this->request->getPost('gst'),
+            // 'gst_applicable' => $this->request->getPost('gst'),
             // 'frequency'      => $this->request->getPost('frequency'),
             'status'         => 1,
         ];
@@ -121,7 +121,7 @@ class MasterWork extends BaseController
             // 'unit'          => 'required',
             'default_rate'  => 'required|numeric',
             'gst_percent'   => 'required|numeric',
-            'gst'           => 'required',
+            // 'gst'           => 'required',
             // 'frequency'     => 'required',
         ];
 
@@ -139,7 +139,7 @@ class MasterWork extends BaseController
             // 'unit'           => $this->request->getPost('unit'),
             'default_rate'   => $this->request->getPost('default_rate'),
             'gst_percent'    => $this->request->getPost('gst_percent'),
-            'gst_applicable' => $this->request->getPost('gst'),
+            // 'gst_applicable' => $this->request->getPost('gst'),
             // 'frequency'      => $this->request->getPost('frequency'),
         ];
 
