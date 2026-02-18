@@ -34,25 +34,33 @@ function romanNumeral($num) {
 
 <table width="100%" border="0">
     <tr>
-        <td>
-            <strong><?= esc($company['name']); ?></strong><br>
-            <?= esc($company['type_of_company']); ?><br>
-            <?= esc($company['registered_office']); ?><br>
-            PH: <?= esc($company['telephone']); ?><br>
-            Email: <?= esc($company['email']); ?><br>
-            GSTIN: <?= esc($company['gstin']); ?>
-        </td>
+       <td style="font-size:14px; line-height:1.5;">
+    
+    <strong style="font-size:16px;">
+        <?= esc($company['name']); ?>
+    </strong><br>
 
-        <td align="right">
-            <strong>Invoice No:</strong> <?= esc($invoice['invoice_no']); ?><br>
-            <strong>Date:</strong> <?= esc($invoice['invoice_date']); ?>
-        </td>
+    <?= esc($company['type_of_company']); ?><br>
+    <?= esc($company['registered_office']); ?><br>
+
+    <strong>Ph:</strong> <?= esc($company['telephone']); ?><br>
+    <strong>Email:</strong> <?= esc($company['email']); ?><br>
+    <strong>GSTIN:</strong> <?= esc($company['gstin']); ?>
+
+</td>
+
+       <td align="right" style="vertical-align: top; padding: 12px 15px; width: 200px;">
+    <div style="display: inline-block; max-width: 200px; line-height: 0; text-align: right;">
+        <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
+             style="max-width: 100%; max-height: 200px; width: auto; height: auto; display: inline-block; margin: 0; padding: 0; vertical-align: top;">
+    </div>
+</td>
     </tr>
 </table>
 
 <hr>
 
-<div style="text-align:center;font-weight:bold;">SERVICE INVOICE</div>
+<div style="text-align:center;font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff;">SERVICE INVOICE</div>
 
 <hr>
 
@@ -61,10 +69,14 @@ function romanNumeral($num) {
         <td width="60%">
             <strong>PAN:</strong> <?= esc($company['pan']); ?>
         </td>
-        <td width="40%" align="right">
-            <strong>Invoice No:</strong><br>
-            <?= esc($invoice['invoice_no']); ?>
-        </td>
+       <td width="40%" align="right">
+    <strong>Invoice No:</strong><br>
+
+    <input type="text" 
+           name="invoice_no" 
+           value="<?= esc($invoice['invoice_no']); ?>" 
+           style="width: 150px; padding: 4px;">
+</td>
     </tr>
     <tr>
         <td>
@@ -201,10 +213,10 @@ function romanNumeral($num) {
     <td style="text-align:center;"></td>
     <td>
         <input type="hidden" name="expense_id[]" value="">
-        <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
+        <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;margin-top:6px; padding:8px; border:1px solid #bbb;">
     </td>
     <td>
-        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
+        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;margin-top:6px; padding:8px; border:1px solid #bbb;">
         <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
     </td>
@@ -265,24 +277,18 @@ function romanNumeral($num) {
 <br>
         <div>
           <b>Banker's Details</b><br />
-          <?php echo $company['bank_name']; ?><br />
+          bank name :<?php echo $company['bank_name']; ?><br />
           Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
           IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
         </div>
 
 <strong>Terms & Conditions</strong>
 <textarea name="term_condition" style="width:100%;height:80px;">
-<?= esc($invoice['term_condition']); ?>
+<?= esc($invoice['term_condition']);?>
 </textarea>
 
 <!-- HIDDEN VALUES -->
-<!-- <input type="hidden" name="service_value" id="service_value">
-<input type="hidden" name="expense_total" id="expense_total">
-<input type="hidden" name="grand_total" id="grand_total">
-<input type="hidden" name="net_amount" id="net_amount">
-<input type="hidden" name="cgst_amount" id="cgst_amount">
-<input type="hidden" name="sgst_amount" id="sgst_amount">
-<input type="hidden" name="igst_amount" id="igst_amount"> -->
+
 
 <input type="hidden" id="serviceValueInput" name="service_value">
 <input type="hidden" id="expenseTotalInput" name="expense_total">
@@ -297,14 +303,20 @@ function romanNumeral($num) {
 
 <input type="hidden" name="invoice_id" value="<?= esc($invoice['id']); ?>">
 
-<div style="text-align:center;margin-top:20px;">
-    <button class="Gvoice-btn Gvoice-btn-success">
+
+<div style="text-align:center; margin-top:25px;">
+
+    <button class="Gvoice-btn Gvoice-btn-success"
+        style="padding:10px 22px; font-size:14px; border-radius:5px; margin-right:10px; cursor:pointer;">
         Update Invoice
     </button>
+
     <a href="javascript:history.back()"
-   class="Gvoice-btn Gvoice-btn-danger">
-    Cancel
-</a>
+        class="Gvoice-btn Gvoice-btn-danger"
+        style="padding:10px 22px; font-size:14px; border-radius:5px; text-decoration:none; display:inline-block;">
+        Cancel
+    </a>
+
 </div>
 
 </form>
@@ -522,10 +534,10 @@ window.addExpenseRow = function () {
 
         const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
 
-        if (rows.length <= 1) {
-            Swal.fire('Warning', 'At least one expense row is required.', 'warning');
-            return;
-        }
+        // if (rows.length <= 1) {
+        //     Swal.fire('Warning', 'At least one expense row is required.', 'warning');
+        //     return;
+        // }
 
         row.remove();
 

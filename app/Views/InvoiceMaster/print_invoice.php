@@ -42,18 +42,28 @@ table {
 }
 
 
+.logo-container {
+    text-align: right;
+    vertical-align: top;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 .logo {
-    width: 200px;
-    float: right;
-    margin-top: 0;
-    padding-top: 0;
+    display: inline-block;
+    max-width: 180px;
+    margin: 0;
+    padding: 0;
     line-height: 0;
 }
 
 .logo img {
-    max-width: 180px;
+    max-width: 100%;
     height: auto;
     display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
     vertical-align: top;
 }
 
@@ -171,25 +181,24 @@ p {
         background: #e8f1f5 !important;
     }
     
+    .logo-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        vertical-align: top !important;
+    }
     
     .logo {
-        margin-top: 0;
-        padding-top: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 0 !important;
     }
     
     .logo img {
         max-width: 160px;
+        margin: 0 !important;
+        padding: 0 !important;
+        vertical-align: top !important;
     }
-    
-    
-    table {
-        page-break-inside: avoid;
-    }
-    
-    tr {
-        page-break-inside: avoid;
-    }
-    
     
     td[style*="padding:10px;height:90px"] {
         padding: 5px !important;
@@ -217,7 +226,7 @@ p {
 
 <table>
 <tr>
-<td>
+<td style="vertical-align: top;">
 <div style="line-height:1.3; font-size:14px;">
     <strong style="font-size:22px;">
         <?= esc($company['name']); ?>
@@ -234,9 +243,9 @@ p {
 </div>
 </td>
 
-<td class="right">
+<td class="right logo-container" style="vertical-align: top; padding: 12px 15px;">
 <div class="logo">
-<img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>">
+<img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" style="display: block; margin: 0; padding: 0;">
 </div>
 </td>
 </tr>

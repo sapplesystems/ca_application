@@ -8,24 +8,45 @@
     <form method="post" action="<?= site_url('/saveInvoice') ?>" id="invoiceForm">
         <table width="100%" border="0">
             <tr>
-                <td>
-                    <h2><?= esc($company['name']); ?></h2>
-                    <br>
-                    <?= esc($company['type_of_company']); ?><br>
-                    <?= esc($company['registered_office'] ?? ''); ?><br>
-                    PH: <?= esc($company['telephone'] ?? ''); ?><br>
-                    Email: <?= esc($company['email'] ?? ''); ?><br>
-                    GSTIN: <?= esc($company['gstin'] ?? ''); ?>
-                </td>
+              <td style="font-size:14px; line-height:1.5;">
+    
+    <h2 style="margin:0; font-size:18px;">
+        <?= esc($company['name']); ?>
+    </h2>
 
-                <td align="right">
-                    <strong>Date:</strong><?= date('d-m-Y', strtotime($company['date_of_incorp'])); ?>
-                </td>
+    <div style="margin-top:5px;">
+        <?= esc($company['type_of_company']); ?>
+    </div>
+
+    <div>
+        <?= esc($company['registered_office'] ?? ''); ?>
+    </div>
+
+    <div>
+        <strong>Ph:</strong> <?= esc($company['telephone'] ?? ''); ?>
+    </div>
+
+    <div>
+        <strong>Email:</strong> <?= esc($company['email'] ?? ''); ?>
+    </div>
+
+    <div>
+        <strong>GSTIN:</strong> <?= esc($company['gstin'] ?? ''); ?>
+    </div>
+
+</td>
+
+                <td align="right" style="vertical-align: top; padding: 12px 15px; width: 200px;">
+    <div style="display: inline-block; max-width: 200px; line-height: 0; text-align: right;">
+        <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
+             style="max-width: 100%; max-height: 200px; width: auto; height: auto; display: inline-block; margin: 0; padding: 0; vertical-align: top;">
+    </div>
+</td>
             </tr>
         </table>
 
         <hr>
-        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
+        <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
             Service Invoice
         </div>
 
@@ -34,7 +55,10 @@
                 <td width="60%">
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
-                
+                 <td width="40%">
+                   <strong>Date :</strong><br>
+                    <?= date('d-m-Y'); ?>
+                </td>
             </tr>
 
             <tr>
@@ -42,18 +66,7 @@
                     <strong>Category Of Service :</strong> CONSULTANCY
                 </td>
                 <td align="right">
-                    <strong>Date :</strong><br>
-                    <?= date('d-m-Y'); ?>
-                </td>
-            </tr>
-        </table>
-        <table width="100%" border="0" cellpadding="6">
-            <tr>
-                <td width="60%">
-                    <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-                </td>
-                <td width="40%" align="right">
-                    <strong>Invoice No. :</strong><br>
+                     <strong>Invoice No. :</strong><br>
                     <input type="text"
                         name="invoice_no"
                         value="<?= esc($company['invoice_format']) ?>"
@@ -61,13 +74,16 @@
                         required>
                 </td>
             </tr>
+        </table>
+        <table width="100%" border="0" cellpadding="6">
+            
 
             <hr>
 
             <!-- Bill To Section -->
             <table width="100%" border="0" cellpadding="6">
                 <tr>
-                    <td>
+                    <td >
                         <strong>Bill To,</strong><br><br>
 
                         <strong>Name :</strong>
@@ -391,13 +407,20 @@
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
 
-            <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Invoice</button>
-                <a href="javascript:history.back()"
-                    class="Gvoice-btn Gvoice-btn-danger">
-                        Cancel
-                </a>
-            </div>
+            <div style="margin-top:25px; text-align:center;">
+
+    <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn"
+        style="padding:10px 22px; font-size:14px; border-radius:5px; margin-right:10px; cursor:pointer;">
+        Save Invoice
+    </button>
+
+    <a href="javascript:history.back()"
+        class="Gvoice-btn Gvoice-btn-danger"
+        style="padding:10px 22px; font-size:14px; border-radius:5px; text-decoration:none; display:inline-block;">
+        Cancel
+    </a>
+
+</div>
     </form>
 
 
