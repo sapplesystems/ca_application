@@ -34,25 +34,33 @@ function romanNumeral($num) {
 
 <table width="100%" border="0">
     <tr>
-        <td>
-            <strong><?= esc($company['name']); ?></strong><br>
-            <?= esc($company['type_of_company']); ?><br>
-            <?= esc($company['registered_office']); ?><br>
-            PH: <?= esc($company['telephone']); ?><br>
-            Email: <?= esc($company['email']); ?><br>
-            GSTIN: <?= esc($company['gstin']); ?>
-        </td>
+       <td style="font-size:14px; line-height:1.5;">
+    
+    <strong style="font-size:16px;">
+        <?= esc($company['name']); ?>
+    </strong><br>
 
-        <td align="right">
-            <strong>Invoice No:</strong> <?= esc($invoice['invoice_no']); ?><br>
-            <strong>Date:</strong> <?= esc($invoice['invoice_date']); ?>
-        </td>
+    <?= esc($company['type_of_company']); ?><br>
+    <?= esc($company['registered_office']); ?><br>
+
+    <strong>Ph:</strong> <?= esc($company['telephone']); ?><br>
+    <strong>Email:</strong> <?= esc($company['email']); ?><br>
+    <strong>GSTIN:</strong> <?= esc($company['gstin']); ?>
+
+</td>
+
+       <td align="right" style="vertical-align: top; padding: 12px 15px; width: 200px;">
+    <div style="display: inline-block; max-width: 200px; line-height: 0; text-align: right;">
+        <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
+             style="max-width: 100%; max-height: 200px; width: auto; height: auto; display: inline-block; margin: 0; padding: 0; vertical-align: top;">
+    </div>
+</td>
     </tr>
 </table>
 
 <hr>
 
-<div style="text-align:center;font-weight:bold;">SERVICE INVOICE</div>
+<div style="text-align:center;font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff;">SERVICE INVOICE</div>
 
 <hr>
 
@@ -297,14 +305,20 @@ function romanNumeral($num) {
 
 <input type="hidden" name="invoice_id" value="<?= esc($invoice['id']); ?>">
 
-<div style="text-align:center;margin-top:20px;">
-    <button class="Gvoice-btn Gvoice-btn-success">
+
+<div style="text-align:center; margin-top:25px;">
+
+    <button class="Gvoice-btn Gvoice-btn-success"
+        style="padding:10px 22px; font-size:14px; border-radius:5px; margin-right:10px; cursor:pointer;">
         Update Invoice
     </button>
+
     <a href="javascript:history.back()"
-   class="Gvoice-btn Gvoice-btn-danger">
-    Cancel
-</a>
+        class="Gvoice-btn Gvoice-btn-danger"
+        style="padding:10px 22px; font-size:14px; border-radius:5px; text-decoration:none; display:inline-block;">
+        Cancel
+    </a>
+
 </div>
 
 </form>
