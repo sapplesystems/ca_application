@@ -213,10 +213,10 @@ function romanNumeral($num) {
     <td style="text-align:center;"></td>
     <td>
         <input type="hidden" name="expense_id[]" value="">
-        <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;">
+        <input type="text"  placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;margin-top:6px; padding:8px; border:1px solid #bbb;">
     </td>
     <td>
-        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;">
+        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;margin-top:6px; padding:8px; border:1px solid #bbb;">
         <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
     </td>
@@ -277,24 +277,18 @@ function romanNumeral($num) {
 <br>
         <div>
           <b>Banker's Details</b><br />
-          <?php echo $company['bank_name']; ?><br />
+          bank name :<?php echo $company['bank_name']; ?><br />
           Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
           IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
         </div>
 
 <strong>Terms & Conditions</strong>
 <textarea name="term_condition" style="width:100%;height:80px;">
-<?= esc($invoice['term_condition']); ?>
+<?= esc($invoice['term_condition']);?>
 </textarea>
 
 <!-- HIDDEN VALUES -->
-<!-- <input type="hidden" name="service_value" id="service_value">
-<input type="hidden" name="expense_total" id="expense_total">
-<input type="hidden" name="grand_total" id="grand_total">
-<input type="hidden" name="net_amount" id="net_amount">
-<input type="hidden" name="cgst_amount" id="cgst_amount">
-<input type="hidden" name="sgst_amount" id="sgst_amount">
-<input type="hidden" name="igst_amount" id="igst_amount"> -->
+
 
 <input type="hidden" id="serviceValueInput" name="service_value">
 <input type="hidden" id="expenseTotalInput" name="expense_total">
@@ -540,10 +534,10 @@ window.addExpenseRow = function () {
 
         const rows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])');
 
-        if (rows.length <= 1) {
-            Swal.fire('Warning', 'At least one expense row is required.', 'warning');
-            return;
-        }
+        // if (rows.length <= 1) {
+        //     Swal.fire('Warning', 'At least one expense row is required.', 'warning');
+        //     return;
+        // }
 
         row.remove();
 
