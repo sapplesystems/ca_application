@@ -69,10 +69,14 @@ function romanNumeral($num) {
         <td width="60%">
             <strong>PAN:</strong> <?= esc($company['pan']); ?>
         </td>
-        <td width="40%" align="right">
-            <strong>Invoice No:</strong><br>
-            <?= esc($invoice['invoice_no']); ?>
-        </td>
+       <td width="40%" align="right">
+    <strong>Invoice No:</strong><br>
+
+    <input type="text" 
+           name="invoice_no" 
+           value="<?= esc($invoice['invoice_no']); ?>" 
+           style="width: 150px; padding: 4px;">
+</td>
     </tr>
     <tr>
         <td>
