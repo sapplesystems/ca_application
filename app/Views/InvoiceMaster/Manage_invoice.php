@@ -1,4 +1,8 @@
-<!-------------------------------- Modal for genrate invoice------------------------------------->
+<style>
+      .print-only {
+        display: none;
+    }
+</style><!-------------------------------- Modal for genrate invoice------------------------------------->
 <!-- Modal1 -->
 <div class="modal fade" id="GenrateVoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -193,7 +197,7 @@
                             <?php endforeach; ?>
                             <?php else : ?>
                             <tr>
-                                <td colspan="9" class="Minvoice-text-center">No invoices found</td>
+                                <td colspan="8" class="Minvoice-text-center">No invoices found</td>
                             </tr>
                             <?php endif; ?>
                         </tbody>
@@ -434,7 +438,14 @@
 
     <!-- Table -->
     <div class="Minvoice-table-wrapper" id="ledger-print-area">
+        <div class="print-only">
+            <h3>Ledger For <?= esc($clients[0]['legal_name']) ?></h3>
+        </div>
         <table class="Minvoice-table">
+            <div>
+
+            </div>
+           
             <thead>
                 <tr>
                     <th style="width: 10%">Invoice No</th>
@@ -445,8 +456,8 @@
                     <th style="width: 8%">Receipt Date</th>
                     <th style="width: 10%">Receipt No</th>
                     <th style="width: 10%">Receipt Amount</th>
-                    <th style="width: 15%">Action</th>
-                    <!-- <th></th> -->
+                    <th style="width: 15%"class="no-print">Action</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -477,7 +488,7 @@
                     <td><?= esc($row['recipt_no']) ?></td>
                     <td><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
 
-                    <td>
+                    <td class="no-print">
                         <!-- Edit -->
                         <a href="<?= site_url('invoice/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit"
                             title="Edit Invoice">
@@ -501,7 +512,7 @@
                             Print &amp; Preview
                         </button>
                     </td>
-                    <td></td>
+                    
                 </tr>
                 <?php endforeach; ?>
                 <?php else : ?>
@@ -509,6 +520,31 @@
                     <td colspan="9" class="Minvoice-text-center">No invoices found</td>
                 </tr>
                 <?php endif; ?>
+                   <?php
+                    $debitTotal = array_sum(
+                        array_column(
+                            array_filter($debit, function ($row) {
+                                return isset($row['note_type']) && $row['note_type'] !== 'credit';
+                            }),
+                            'total_amount'
+                        )
+                    );
+
+                    $creditTotal = array_sum(
+                        array_column(
+                            array_filter($debit, function ($row) {
+                                return isset($row['note_type']) && $row['note_type'] === 'credit';
+                            }),
+                            'total_amount'
+                        )
+                    );
+                    ?>
+                 <?php
+                        $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
+                        $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
+
+                        $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
+                        ?>
 
                 <!-- Total row -->
                 <tr class="Minvoice-total-row">
@@ -518,12 +554,12 @@
                     <td><p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p></td>
                     <td><?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td ></td>
+                    <td>Closing Balance</td>
+                    <td><?= $closingBalance ?></td>
+                    <!-- <td ></td>
                     <td  class="Minvoice-text-center">
                         
-                    </td>
+                    </td> -->
                     <?php
                     $debitTotal = array_sum(
                         array_column(
@@ -559,7 +595,7 @@
 
         </table>
         <br><br>
-        <table>
+        <!-- <table>
             <tr>
                 <th style="background: #005b8f;color:#fff;padding:15px">Total Invoice Amount (A)</th>
                 <th style="background: #005b8f;color:#fff;padding:15px">Total Recipt Amount (B)</th>
@@ -599,7 +635,7 @@
                 <td class="Minvoice-amount-bold"><?= number_format($closingBalance, 2) ?></td>
             </tr>
 
-        </table>
+        </table> -->
     </div>
 
     <!-- Pagination -->
@@ -643,13 +679,44 @@ function printLedger() {
         <html>
         <head>
             <title>Invoice Ledger</title>
-            <style>
-                body { font-family: Arial, sans-serif; }
-                table { width: 100%; border-collapse: collapse; }
-                th, td { border: 1px solid #000; padding: 6px; }
-                .Minvoice-text-right { text-align: right; }
-                .no-print { display: none !important; }
-            </style>
+           <style>
+    body { font-family: Arial, sans-serif; }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th, td { border: 1px solid #000; padding: 6px; }
+
+    .Minvoice-text-right { text-align: right; }
+
+  
+
+    @media print {
+
+        .print-only {
+            display: block !important;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        body { 
+            margin: 0;
+            padding: 0;
+        }
+
+        table { 
+            width: 100% !important; 
+            border-collapse: collapse; 
+            border: 2px solid #000;
+        }
+
+        th, td { 
+            border: 1px solid #000;  
+            padding: 6px; 
+        }
+    }
+</style>
         </head>
         <body>
             ${printContents}
