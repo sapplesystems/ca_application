@@ -39,7 +39,7 @@
                         <th>Service Name</th>
                         <th>SAC Code/ HSN</th>
                         <!-- <th>Unit</th> -->
-                        <th>Default Rate (₹)</th>
+                        <!-- <th>Default Rate (₹)</th> -->
                         <!-- <th>GST?</th> -->
                         <th>GST %</th>
                         <!-- <th>Frequency</th> -->
@@ -56,7 +56,7 @@
                         <td><?= $worklist['service_name']; ?></td>
                         <td><?= $worklist['sac_code']; ?></td>
                         <!-- <td><?//= $worklist['unit']; ?></td> -->
-                        <td><?= $worklist['default_rate']; ?></td>
+                        <!-- <td><?= $worklist['default_rate']; ?></td> -->
                         <!-- <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td> -->
                         <td><?= $worklist['gst_percent']; ?></td>
                         <!-- <td><//?= $worklist['frequency']; ?></td> -->
@@ -151,13 +151,13 @@
 
                         <!-- Row 3 -->
                         <div class="msl-form-row">
-                            <div class="msl-form-group">
+                            <!-- <div class="msl-form-group">
                                 <label for="defaultRate">Default Rate (₹)</label>
                                 <div class="msl-input-with-prefix">
                                     <span class="msl-prefix">₹</span>
                                     <input type="number" id="defaultRate" name="default_rate" placeholder="2500.00">
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="msl-form-group">
                                 <label for="gstPercent">GST %</label>

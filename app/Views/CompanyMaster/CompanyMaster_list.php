@@ -235,14 +235,14 @@
 
                                 <!-- Registered Office -->
                                 <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Registered Office</label>
+                                    <label class="cmg-label">Registered Office <span class="cmg-required">*</span></label>
                                     <textarea class="cmg-textarea" name="registered_office"
                                         placeholder="Enter registered office address"></textarea>
                                 </div>
 
                                 <!-- Head Office -->
                                 <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Head Office</label>
+                                    <label class="cmg-label">Head Office <span class="cmg-required">*</span></label>
                                     <textarea class="cmg-textarea" name="head_office"
                                         placeholder="Enter head office address (if different)"></textarea>
                                 </div>
@@ -261,13 +261,34 @@
                                 </div>
 
                                 <div class="cmg-field">
-                                    <label class="cmg-label">Phone / Tel</label>
+                                    <label class="cmg-label">Phone / Tel  <span class="cmg-required">*</span></label>
                                     <input type="text" class="cmg-input" name="phone" placeholder="+91-9876543210">
                                 </div>
 
                                 <div class="cmg-field">
                                     <label class="cmg-label">Website</label>
                                     <input type="text" class="cmg-input" name="website" placeholder="www.company.com">
+                                </div>
+
+                                     <!-- Logo Upload -->
+                                <div class="cmg-field">
+                                    <label class="cmg-label">
+                                        Logo Upload
+                                    </label>
+
+                                    <div class="cmg-upload">
+                                        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
+                                            ⬆ Upload Logo
+                                            <input type="file" name="logo" class="cmg-upload__input"
+                                                accept="image/png, image/jpeg">
+                                        </label>
+
+                                        <span class="cmg-upload__text">No file chosen</span>
+                                    </div>
+
+                                    <p class="cmg-help-text">
+                                        Recommended size: 200x200px, Max file size: 2MB.
+                                    </p>
                                 </div>
 
                                 <!-- Invoice Format -->
@@ -412,7 +433,7 @@
 
                                 <!-- Bank Account -->
                                 <div class="cmg-field">
-                                    <label class="cmg-label">Bank Account<span class="cmg-required">*</span></label>
+                                    <label class="cmg-label">Bank Account</label>
                                     <input type="text" class="cmg-input" name="bank_account"
                                         placeholder="23456789012345">
                                     <p class="cmg-help-text">Select default bank account for this company.</p>
@@ -420,58 +441,39 @@
 
                                 <!-- Bank Branch - Updated -->
                                 <div class="cmg-field">
-                                    <label class="cmg-label">Bank Branch <span class="cmg-required">*</span></label>
+                                    <label class="cmg-label">Bank Name</label>
                                     <input type="text" class="cmg-input" name="bank_name"
-                                        placeholder="Enter bank branch name">
-                                    <p class="cmg-help-text">Enter bank branch name (e.g., Main Branch Delhi).</p>
+                                        placeholder="Enter bank name">
+                                    <p class="cmg-help-text">Enter bank name (e.g., SBI,HDFC,etc.)</p>
                                 </div>
 
 
                                 <!-- Bank IFSC - Updated -->
                                 <div class="cmg-field">
-                                    <label class="cmg-label">Bank IFSC <span class="cmg-required">*</span></label>
+                                    <label class="cmg-label">Bank IFSC</label>
                                     <input type="text" class="cmg-input" name="bank_ifsc" placeholder="SBIN0000001"
                                         maxlength="11">
                                     <p class="cmg-help-text">Enter 11-character IFSC code (e.g., SBIN0000001).</p>
                                 </div>
 
-
-
-                                <!-- Logo Upload -->
+                                 <!-- Branch Address -->
                                 <div class="cmg-field">
-                                    <label class="cmg-label">
-                                        Logo Upload
-                                    </label>
-
-                                    <div class="cmg-upload">
-                                        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
-                                            ⬆ Upload Logo
-                                            <input type="file" name="logo" class="cmg-upload__input"
-                                                accept="image/png, image/jpeg">
-                                        </label>
-
-                                        <span class="cmg-upload__text">No file chosen</span>
-                                    </div>
-
-                                    <p class="cmg-help-text">
-                                        Recommended size: 200x200px, Max file size: 2MB.
-                                    </p>
+                                    <label class="cmg-label">Bank Branch Address</label>
+                                    <input type="text" class="cmg-input" name="branch_address" placeholder="Enter branch address">
                                 </div>
+
 
                                 <!-- Business -->
                                 <div class="form-row-full">
-                                    <label class="cmg-label">Nature of Business<span
-                                            class="cmg-required">*</span></label>
+                                    <label class="cmg-label">Nature of Business</label>
                                     <textarea name="nature_of_business" class="cmg-textarea"></textarea>
                                 </div>
                                 <div>
-                                    <label class="cmg-label">Nature of Service<span
-                                            class="cmg-required">*</span></label>
+                                    <label class="cmg-label">Nature of Service</label>
                                     <textarea name="nature_of_service" class="cmg-textarea"></textarea>
                                 </div>
                                 <div class="cmg-field--full">
-                                    <label class="cmg-label">Nature of Product<span
-                                            class="cmg-required">*</span></label>
+                                    <label class="cmg-label">Nature of Product</label>
                                     <textarea name="nature_of_product" class="cmg-textarea"></textarea>
                                 </div>
 
