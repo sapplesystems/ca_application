@@ -464,8 +464,9 @@ window.onload = function() {
 };
 
 window.onafterprint = function() {
-    window.location.href = "http://localhost/ca_application/ManageInvoice/<?php echo $invoice['client_id']; ?>";
+    window.location.href = "<?= base_url('ManageInvoice/'.$invoice['client_id']); ?>";
 };
+
 </script>
 
 </body>
