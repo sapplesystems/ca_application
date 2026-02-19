@@ -588,7 +588,7 @@
             const phoneInput = $('[name="phone"]');
             if (phoneInput.length) {
                 const phoneVal = $.trim(phoneInput.val());
-                const phonePattern = /^[6-9]\d{9}$/; // Indian mobile
+                const phonePattern = /^[0-9]{10,11}$/;
 
                 if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
                     isValid = false;
@@ -597,7 +597,7 @@
                     phoneInput.css('border', '1px solid red');
                     phoneInput.closest('.cmg-field, .form-row-full')
                         .append(
-                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid 10 digit mobile.</div>'
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid phone.</div>'
                         );
                 }
             }
@@ -693,7 +693,7 @@
             const phoneInput = $('#editcompanymaster [name="phone"]');
             if (phoneInput.length) {
                 const phoneVal = $.trim(phoneInput.val());
-                const phonePattern = /^[6-9]\d{9}$/;
+                const phonePattern = /^[0-9]{10,11}$/;
 
                 if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
                     isValid = false;
@@ -702,7 +702,7 @@
                     phoneInput.css('border', '1px solid red');
                     phoneInput.closest('.cmg-field, .form-row-full')
                         .append(
-                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid 10 digit mobile.</div>'
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid phone.</div>'
                         );
                 }
             }

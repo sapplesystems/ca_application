@@ -407,7 +407,7 @@ echo esc($date->format('d.m.Y'));
 
 <tr>
    
-    <td style="width:65%; vertical-align:top; padding:10px;">
+    <td style="width:55%; vertical-align:top; padding:10px;">
         <p style="font-size:15px; font-weight:400; margin:0;">
             <strong>Banker Details:</strong><br>
             Ac No: <?= esc($company['bank_ac_no']); ?><br>
@@ -418,17 +418,17 @@ echo esc($date->format('d.m.Y'));
     </td>
 
     
-    <td style="width:35%; vertical-align:top; padding:10px; height:90px;">
+    <td style="width:45%; vertical-align:top; padding:10px; height:90px;">
         
         
-        <p style="font-size:16px; margin:0;">
-            <strong>For <?= esc($company['name']); ?></strong>
+        <p style="font-size:14px; margin:0;">
+            For <?= esc($company['name']); ?>
         </p>
 
         
         <div style="height:40px;"></div>
 
-        <p style="margin:0;">Auth. Sign.</p>
+        <p style="margin:0;font-size:14px;">Auth. Sign.</p>
 
     </td>
 </tr>
