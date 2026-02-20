@@ -470,6 +470,22 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                     // ✅ DUPLICATE INVOICE NUMBER
+                    if (data.status === 'duplicate') {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Invoice Number',
+                            text: data.message
+                        });
+
+                        // Highlight invoice field
+                        const invoiceInput = document.querySelector("input[name='invoice_no']");
+                        invoiceInput.style.border = "2px solid red";
+                        invoiceInput.focus();
+
+                        return;
+                    }
                     if (data.status === 'success') {
                         Swal.fire({
                             title: 'Invoice Saved!',
