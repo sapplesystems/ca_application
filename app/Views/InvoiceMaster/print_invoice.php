@@ -245,7 +245,10 @@ p {
 
 <td class="right logo-container" style="vertical-align: top; padding: 12px 15px;">
 <div class="logo">
-<img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" style="display: block; margin: 0; padding: 0;">
+<?php if (!empty($company['logo']) && file_exists(FCPATH . 'public/uploads/company_logo/' . $company['logo'])): ?>
+    <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" style="display: block; margin: 0; padding: 0;">
+
+<?php endif; ?>
 </div>
 </td>
 </tr>
