@@ -249,7 +249,7 @@
 
                                 <!-- condition and terms-->
                                 <div class="cmg-field cmg-field--full">
-                                    <label class="cmg-label">Condition And Terms</label>
+                                    <label class="cmg-label">Terms & Conditions</label>
                                     <textarea class="cmg-textarea" name="condition_and_terms"
                                         placeholder="Enter condition and terms"></textarea>
                                 </div>
@@ -533,7 +533,16 @@
 
 
         <script>
+            //=====add image name during upload image ====
+                  document.querySelector('.cmg-upload__input').addEventListener('change', function () {
+
+    const fileName = this.files.length ? this.files[0].name : 'No file chosen';
+
+    document.querySelector('.cmg-upload__text').textContent = fileName;
+
+});
         // ===== FRONT-END VALIDATION FOR ADD COMPANY =====
+        
         $('#companyForm').on('submit', function(e) {
             e.preventDefault();
 
@@ -1015,6 +1024,7 @@
                 setTimeout(() => popup.remove(), 500);
             }
         }, 10000);
+  
         </script>
     </body>
 
