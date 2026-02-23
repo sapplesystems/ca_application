@@ -38,8 +38,10 @@
 
                 <td align="right" style="vertical-align: top; padding: 12px 15px; width: 200px;">
                     <div style="display: inline-block; max-width: 200px; line-height: 0; text-align: right;">
+                      <?php if (!empty($company['logo']) && file_exists(FCPATH . 'public/uploads/company_logo/' . $company['logo'])): ?>
                         <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>"
                             style="max-width: 100%; max-height: 200px; width: auto; height: auto; display: inline-block; margin: 0; padding: 0; vertical-align: top;">
+                    <?php endif; ?>
                     </div>
                 </td>
             </tr>
