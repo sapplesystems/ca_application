@@ -1,3 +1,32 @@
+<style>
+    /* Remove DataTable header arrows completely */
+    #searchmasterwork thead th {
+        background-image: none !important;
+    }
+
+    /* Alignment fix */
+    #searchmasterwork th,
+    #searchmasterwork td {
+        vertical-align: middle;
+    }
+
+    #searchmasterwork td:nth-child(2),
+    #searchmasterwork th:nth-child(2) {
+        text-align: left;
+        /* Service Name */
+    }
+
+    #searchmasterwork td:nth-child(3),
+    #searchmasterwork th:nth-child(3),
+    #searchmasterwork td:nth-child(4),
+    #searchmasterwork th:nth-child(4),
+    #searchmasterwork td:nth-child(6),
+    #searchmasterwork th:nth-child(6) {
+        text-align: right;
+        /* SAC, GST, Actions */
+    }
+</style>
+
 <main class="content-wrap">
 
     <section id="screen-list" class="screen active">
@@ -15,7 +44,7 @@
                     <input class="search-input" placeholder="Search by Service Code / Name / SAC..." />
                 </div>
                 <div style="flex:0 0 260px;display:flex;gap:6px;justify-content:flex-end;">
-                    <select class="select-sm">
+                    <select class="select-sm status-filter">
                         <option>Status: All</option>
                         <option>Active</option>
                         <option>Inactive</option>
@@ -31,7 +60,7 @@
                 </div>
             </div>
 
-            <table>
+            <table id="searchmasterwork">
                 <thead>
                     <tr>
                         <th style="width:24px;"><input type="checkbox" /></th>
@@ -48,34 +77,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($workListData as $worklist){ ?>
+                    <?php foreach ($workListData as $worklist) { ?>
 
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <!-- <td><?//= $worklist['service_code']; ?></td> -->
-                        <td><?= $worklist['service_name']; ?></td>
-                        <td><?= $worklist['sac_code']; ?></td>
-                        <!-- <td><?//= $worklist['unit']; ?></td> -->
-                        <!-- <td><?= $worklist['default_rate']; ?></td> -->
-                        <!-- <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td> -->
-                        <td><?= $worklist['gst_percent']; ?></td>
-                        <!-- <td><//?= $worklist['frequency']; ?></td> -->
-                        <td>
-                            <div class="toggle <?= $worklist['status'] == 0 ? 'inactive' : '' ?>"
-                                data-id="<?= $worklist['id'] ?>">
-                                <div class="toggle-circle"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="actions">
-                                <button class="action-btn action-edit"
-                                    onclick="openServicePopup('<?php echo $worklist['id'];  ?>')">Edit</button>
-                                <button class="action-btn action-clone">Clone</button>
-                                <button class="action-btn action-deactivate">Deactivate</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php }?>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <!-- <td><? //= $worklist['service_code']; 
+                                        ?></td> -->
+                            <td><?= $worklist['service_name']; ?></td>
+                            <td><?= $worklist['sac_code']; ?></td>
+                            <!-- <td><? //= $worklist['unit']; 
+                                        ?></td> -->
+                            <!-- <td><?= $worklist['default_rate']; ?></td> -->
+                            <!-- <td><span class="pill pill-green"><?= $worklist['gst_applicable']; ?></span></td> -->
+                            <td><?= $worklist['gst_percent']; ?></td>
+                            <!-- <td><//?= $worklist['frequency']; ?></td> -->
+                            <td>
+                                 <span class="status-text" style="display:none;">
+        <?= $worklist['status'] == 1 ? 'Active' : 'Inactive' ?>
+    </span>
+                                <div class="toggle <?= $worklist['status'] == 0 ? 'inactive' : '' ?>"
+                                    data-id="<?= $worklist['id'] ?>">
+                                    <div class="toggle-circle"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn action-edit"
+                                        onclick="openServicePopup('<?php echo $worklist['id'];  ?>')">Edit</button>
+                                    <button class="action-btn action-clone">Clone</button>
+                                    <button class="action-btn action-deactivate">Deactivate</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
 
@@ -102,10 +136,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <?php if(isset($validation)): ?>
-                <div style="color:red; margin-bottom:10px;">
-                    <?= $validation->listErrors(); ?>
-                </div>
+                <?php if (isset($validation)): ?>
+                    <div style="color:red; margin-bottom:10px;">
+                        <?= $validation->listErrors(); ?>
+                    </div>
                 <?php endif; ?>
                 <div class="msl-add-service-wrapper">
                     <div class="msl-popup-header">
@@ -180,7 +214,7 @@
                                 </select>
                             </div> -->
 
-                            <!-- <div class="msl-form-group">
+                        <!-- <div class="msl-form-group">
                                 <label for="frequency">Frequency</label>
                                 <select id="frequency" name="frequency">
                                     <option value="">Select frequency</option>
@@ -218,141 +252,141 @@
 </div>
 
 <script>
-let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+    let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
 
 
-$('#addServiceForm').on('submit', function(e) {
-    e.preventDefault();
+    $('#addServiceForm').on('submit', function(e) {
+        e.preventDefault();
 
 
-    $('.text-danger').remove();
-    $('input, select').css('border', '');
+        $('.text-danger').remove();
+        $('input, select').css('border', '');
 
-    const id = $('#serviceId').val();
-    const url = id ?
-        "<?= base_url('update-service'); ?>/" + id :
-        "<?= base_url('add-services'); ?>";
+        const id = $('#serviceId').val();
+        const url = id ?
+            "<?= base_url('update-service'); ?>/" + id :
+            "<?= base_url('add-services'); ?>";
 
-    $.ajax({
-        url: url,
-        method: "POST",
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function(res) {
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(res) {
 
-            if (res.status === 'error') {
+                if (res.status === 'error') {
 
-                $.each(res.errors, function(field, msg) {
+                    $.each(res.errors, function(field, msg) {
 
-                    let input = $('[name="' + field + '"]');
-                    let wrapper = input.closest('.msl-form-group');
+                        let input = $('[name="' + field + '"]');
+                        let wrapper = input.closest('.msl-form-group');
 
-                    input.css('border', '1px solid red');
+                        input.css('border', '1px solid red');
 
-                    wrapper.find('.text-danger').remove();
+                        wrapper.find('.text-danger').remove();
 
-                    wrapper.append(
-                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
-                        msg +
-                        '</div>'
-                    );
-                });
+                        wrapper.append(
+                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
+                            msg +
+                            '</div>'
+                        );
+                    });
 
-            } else if (res.status === 'success') {
+                } else if (res.status === 'success') {
 
-                alert(res.message);
-                serviceModal.hide();
-                location.reload();
+                    alert(res.message);
+                    serviceModal.hide();
+                    location.reload();
+                }
             }
-        }
+        });
     });
-});
 
 
-<?php if(isset($validation)): ?>
-document.addEventListener("DOMContentLoaded", function() {
-    serviceModal.show();
-});
-<?php endif; ?>
+    <?php if (isset($validation)): ?>
+        document.addEventListener("DOMContentLoaded", function() {
+            serviceModal.show();
+        });
+    <?php endif; ?>
 
 
-function openServicePopup(id) {
+    function openServicePopup(id) {
 
 
-    $("#addServiceForm")[0].reset();
-    $("#serviceId").val('');
+        $("#addServiceForm")[0].reset();
+        $("#serviceId").val('');
 
-    $("input, select").css("border", "");
-    $(".text-danger").remove();
+        $("input, select").css("border", "");
+        $(".text-danger").remove();
 
 
-    serviceModal.show();
+        serviceModal.show();
 
-    if (id === 0 || id === '0') {
+        if (id === 0 || id === '0') {
 
-        $("#saveBtn").text("Save Service");
-        $(".msl-popup-title").text("Add Service");
-        return;
+            $("#saveBtn").text("Save Service");
+            $(".msl-popup-title").text("Add Service");
+            return;
+        }
+
+
+        $("#serviceId").val(id);
+        $("#saveBtn").text("Update Service");
+        $(".msl-popup-title").text("Edit Service");
+
+
+        $.ajax({
+            url: "<?= base_url('get-service'); ?>",
+            type: "POST",
+            data: {
+                id: id
+            },
+            dataType: "json",
+            success: function(response) {
+                $("#serviceCode").val(response.service_code);
+                $("#serviceName").val(response.service_name);
+                $("#sacCode").val(response.sac_code);
+                $("#unit").val(response.unit);
+                $("#defaultRate").val(response.default_rate);
+                $("#gstPercent").val(response.gst_percent);
+                $("#gstYesNo").val(response.gst_applicable);
+                $("#frequency").val(response.frequency);
+            }
+        });
     }
 
+    // ===== Status toggle =====
+    document.querySelectorAll('.toggle').forEach(toggle => {
 
-    $("#serviceId").val(id);
-    $("#saveBtn").text("Update Service");
-    $(".msl-popup-title").text("Edit Service");
+        toggle.addEventListener('click', function() {
 
+            this.classList.toggle('inactive');
 
-    $.ajax({
-        url: "<?= base_url('get-service'); ?>",
-        type: "POST",
-        data: {
-            id: id
-        },
-        dataType: "json",
-        success: function(response) {
-            $("#serviceCode").val(response.service_code);
-            $("#serviceName").val(response.service_name);
-            $("#sacCode").val(response.sac_code);
-            $("#unit").val(response.unit);
-            $("#defaultRate").val(response.default_rate);
-            $("#gstPercent").val(response.gst_percent);
-            $("#gstYesNo").val(response.gst_applicable);
-            $("#frequency").val(response.frequency);
-        }
-    });
-}
+            const status = this.classList.contains('inactive') ? 0 : 1;
+            const id = this.dataset.id;
 
-// ===== Status toggle =====
-document.querySelectorAll('.toggle').forEach(toggle => {
-
-    toggle.addEventListener('click', function() {
-
-        this.classList.toggle('inactive');
-
-        const status = this.classList.contains('inactive') ? 0 : 1;
-        const id = this.dataset.id;
-
-        fetch("<?= base_url('/work_master/update-status') ?>", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: JSON.stringify({
-                    id: id,
-                    status: status
+            fetch("<?= base_url('/work_master/update-status') ?>", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        status: status
+                    })
                 })
-            })
-            .then(res => res.json())
-            .then(data => {
+                .then(res => res.json())
+                .then(data => {
 
 
-                document.getElementById('successPopup')?.remove();
-                document.getElementById('errorPopup')?.remove();
+                    document.getElementById('successPopup')?.remove();
+                    document.getElementById('errorPopup')?.remove();
 
-                const popup = document.createElement('div');
-                popup.id = data.status ? 'successPopup' : 'errorPopup';
+                    const popup = document.createElement('div');
+                    popup.id = data.status ? 'successPopup' : 'errorPopup';
 
-                popup.style.cssText = `
+                    popup.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -366,7 +400,7 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         min-width: 260px;
     `;
 
-                popup.innerHTML = `
+                    popup.innerHTML = `
         <span
             onclick="this.parentElement.remove()"
             style="
@@ -381,13 +415,80 @@ document.querySelectorAll('.toggle').forEach(toggle => {
         ${data.message}
     `;
 
-                document.body.appendChild(popup);
+                    document.body.appendChild(popup);
 
 
-                setTimeout(() => popup.remove(), 10000);
-            })
-            .catch(err => console.error(err));
+                    setTimeout(() => popup.remove(), 10000);
+                })
+                .catch(err => console.error(err));
+        });
+
     });
+    $(document).ready(function() {
 
-});
+        if ($('#searchmasterwork').length) {
+
+            const table = new DataTable('#searchmasterwork', {
+                paging: false,
+                searching: true,
+                info: false,
+                ordering: false,
+                dom: 't',
+
+                columnDefs: [{
+                        targets: 0,
+                        orderable: false
+                    },
+                    {
+                        targets: -1,
+                        orderable: false
+                    },
+
+                    // ✅ status column search from hidden text
+                    {
+                        targets: 4,
+                        render: function(data, type, row, meta) {
+
+                            if (type === 'filter') {
+
+                                let div = document.createElement("div");
+                                div.innerHTML = data;
+
+                                let text = div.querySelector('.status-text')?.innerText || '';
+
+                                return text.trim();
+                            }
+
+                            return data;
+                        }
+                    }
+                ]
+            });
+
+            // search input
+            $('.search-input').on('keyup', function() {
+                table.search(this.value).draw();
+            });
+
+            // status filter
+            $('.status-filter').on('change', function() {
+
+                let value = $(this).val();
+
+                if (value === "Active" || value === "Inactive") {
+
+                    table.column(4)
+                        .search('^' + value + '$', true, false)
+                        .draw();
+
+                } else {
+
+                    table.column(4).search('').draw();
+                }
+
+            });
+
+        }
+
+    });
 </script>
