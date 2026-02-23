@@ -120,7 +120,7 @@
                         <td><?= esc($client['registration_no']) ?></td>
                         <td><?= esc($client['registered_office']) ?></td>
                         <td><?= esc($client['website']) ?></td>
-                        <td><span class="pill pill-green"><?= esc($client['company_category']) ?></span></td>
+                        <td><span class="pill"><?= esc($client['company_category']) ?></span></td>
                         <td><?= esc($client['company_sub_category']) ?></td>
                         <td><?= esc($client['corporate_office']) ?></td>
                         <td>
@@ -187,7 +187,7 @@
                             <div class="form-row-full">
                                 <div class="input-group">
                                     <div style="flex:0 0 28%;">
-                                        <label>CIN No</label>
+                                        <label>CIN No.</label>
                                         <input type="text" name="cin_no" class="input"
                                             placeholder="Enter CIN (optional)">
                                     </div>
@@ -264,11 +264,11 @@
 
                             <!-- Contact -->
                             <div>
-                                <label>Tel No</label>
+                                <label>Tel No.</label>
                                 <input type="text" name="telephone" class="input">
                             </div>
                             <div>
-                                <label>Fax No</label>
+                                <label>Fax No.</label>
                                 <input type="text" name="fax" class="input">
                             </div>
                             <div class="form-row-full">

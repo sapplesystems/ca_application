@@ -92,9 +92,9 @@
                             <td><?= $worklist['gst_percent']; ?></td>
                             <!-- <td><//?= $worklist['frequency']; ?></td> -->
                             <td>
-                                 <span class="status-text" style="display:none;">
-        <?= $worklist['status'] == 1 ? 'Active' : 'Inactive' ?>
-    </span>
+                                <span class="status-text" style="display:none;">
+                                    <?= $worklist['status'] == 1 ? 'Active' : 'Inactive' ?>
+                                </span>
                                 <div class="toggle <?= $worklist['status'] == 0 ? 'inactive' : '' ?>"
                                     data-id="<?= $worklist['id'] ?>">
                                     <div class="toggle-circle"></div>

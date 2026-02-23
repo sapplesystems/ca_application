@@ -678,11 +678,15 @@ label {
   font-size: 11px;
   color: #6b7280;
 }
-
+.maxheight
+{
+  max-height: 60px;
+}
 .cmg-input,
 .cmg-select,
 .cmg-textarea {
   width: 100%;
+  
   border-radius: 999px;
   border: 1px solid #d1d5db;
   padding: 9px 12px;
