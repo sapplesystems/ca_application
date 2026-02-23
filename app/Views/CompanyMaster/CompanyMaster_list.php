@@ -366,7 +366,7 @@
                                                         </div>
 
                                                         <div class="cmg-branches__field">
-                                                            <textarea class="cmg-input" name="branches[__i__][address]"
+                                                            <textarea class="cmg-input maxheight" name="branches[__i__][address]"
                                                                 placeholder="Address"></textarea>
                                                         </div>
                                                     </div>
