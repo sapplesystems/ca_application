@@ -134,6 +134,20 @@ class InvoiceMasterController extends BaseController
         $invoiceModel = new InvoiceMasterModel();
         $ExpenseModel=new ExpenseModel();
         $workModel=new InvoiceWorksModel();
+
+         $invoiceNo = $this->request->getPost('invoice_no');
+
+        // ✅ 1. Check if invoice number already exists
+        $existingInvoice = $invoiceModel
+            ->where('invoice_no', $invoiceNo)
+            ->first();
+
+        if ($existingInvoice) {
+            return $this->response->setJSON([
+                'status'  => 'duplicate',
+                'message' => 'Invoice number already exists!'
+            ]);
+        }
                 // Collect POST data
                 $data = [
                     'service_value' => $this->request->getPost('service_value'),

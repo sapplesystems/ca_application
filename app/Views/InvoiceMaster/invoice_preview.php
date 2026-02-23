@@ -386,18 +386,18 @@
                 </tbody>
             </table>
 
-            <div>
-                <b>Banker's Details</b><br />
-                Bank name:<?php echo $company['bank_name']; ?><br />
-                Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-                IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
-                Branch name:<?php echo $company['registered_office']; ?>
-            </div>
+             <div>
+          <b>Banker's Details</b><br />
+         Bank name:<?php echo $company['bank_name']; ?><br />
+          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
+          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+          Branch :<?php echo $company['branch_address']; ?>
+        </div>
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
-                <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
-                    name="term_condition">
+                    <textarea style="width:100%; height:100px; border:1px solid #bbb; padding:6px; margin:10px;"
+    name="term_condition"><?php echo htmlspecialchars($company['condition_and_terms']); ?></textarea>
 
     </textarea>
             </div>
@@ -470,6 +470,22 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                     // ✅ DUPLICATE INVOICE NUMBER
+                    if (data.status === 'duplicate') {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Invoice Number',
+                            text: data.message
+                        });
+
+                        // Highlight invoice field
+                        const invoiceInput = document.querySelector("input[name='invoice_no']");
+                        invoiceInput.style.border = "2px solid red";
+                        invoiceInput.focus();
+
+                        return;
+                    }
                     if (data.status === 'success') {
                         Swal.fire({
                             title: 'Invoice Saved!',

@@ -41,6 +41,7 @@ class CompanyMasterModel extends Model
         'created_at',
         'updated_at',
         'gst_state',
+        'branch_address',
     ];
 
     protected bool $allowEmptyInserts = false;

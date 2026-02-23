@@ -40,7 +40,7 @@ class MasterWork extends BaseController
             'service_name'  => 'required',
             'sac_code'      => 'required|numeric',
             // 'unit'          => 'required',
-            'default_rate'  => 'required|numeric',
+            // 'default_rate'  => 'required|numeric',
             'gst_percent'   => 'required|numeric',
             // 'gst'           => 'required',
             // 'frequency'     => 'required',
@@ -58,7 +58,7 @@ class MasterWork extends BaseController
             'service_name'   => $this->request->getPost('service_name'),
             'sac_code'       => $this->request->getPost('sac_code'),
             // 'unit'           => $this->request->getPost('unit'),
-            'default_rate'   => $this->request->getPost('default_rate'),
+            // 'default_rate'   => $this->request->getPost('default_rate'),
             'gst_percent'    => $this->request->getPost('gst_percent'),
             // 'gst_applicable' => $this->request->getPost('gst'),
             // 'frequency'      => $this->request->getPost('frequency'),
@@ -86,11 +86,11 @@ class MasterWork extends BaseController
     if ($model->update($userId, ['status' => $status])) {
 
         $statusText = ($status == 1) ? 'Activated' : 'Deactivated';
-        $workName = $WorkMaster['service_code']; 
+        // $workName = $WorkMaster['service_code']; 
 
         return $this->response->setJSON([
             'status'  => true,
-            'message' => "{$workName} {$statusText} successfully"
+            'message' => " {$statusText} successfully"
         ]);
     } else {
         return $this->response->setJSON([
@@ -119,7 +119,7 @@ class MasterWork extends BaseController
             'service_name'  => 'required',
             'sac_code'      => 'required|numeric',
             // 'unit'          => 'required',
-            'default_rate'  => 'required|numeric',
+            // 'default_rate'  => 'required|numeric',
             'gst_percent'   => 'required|numeric',
             // 'gst'           => 'required',
             // 'frequency'     => 'required',
@@ -137,7 +137,7 @@ class MasterWork extends BaseController
             'service_name'   => $this->request->getPost('service_name'),
             'sac_code'       => $this->request->getPost('sac_code'),
             // 'unit'           => $this->request->getPost('unit'),
-            'default_rate'   => $this->request->getPost('default_rate'),
+            // 'default_rate'   => $this->request->getPost('default_rate'),
             'gst_percent'    => $this->request->getPost('gst_percent'),
             // 'gst_applicable' => $this->request->getPost('gst'),
             // 'frequency'      => $this->request->getPost('frequency'),

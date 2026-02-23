@@ -22,16 +22,16 @@
                         <div class="Gvoice-title">Choose Works And Company For Invoice</div>
 
                         <!-- Invoice type row -->
-                        <div class="Gvoice-row">
+                        <!-- <div class="Gvoice-row">
                             <div class="Gvoice-label">
                                 Select Invoice Type: <span class="Gvoice-required">*</span>
                             </div>
                             <select class="Gvoice-select">
                                 <option>Automatic Invoice</option>
-                                <option>Manual Invoice</option>
+                                <option>Manual Invoice</option> -->
                                 <!-- other options -->
-                            </select>
-                        </div>
+                            <!-- </select>
+                        </div> -->
 
                         <!-- Choose work section -->
                         <div class="Gvoice-section-title">Choose Work For Invoice</div>

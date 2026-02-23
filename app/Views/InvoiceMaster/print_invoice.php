@@ -264,8 +264,8 @@ p {
 <strong>Bill To:</strong><br>
 <?= esc($client['legal_name']); ?><br>
 <?= esc($client['registered_office']); ?><br>
-E-mail ID:<br>
-GST No:
+E-mail ID: <?= esc($client['billing_emails']); ?><br>
+GST No:<?= esc($client['gstin']); ?>
 </td>
 
 <td style="width:40%; vertical-align:top; text-align:right;border-left: 0;">
@@ -332,26 +332,27 @@ echo esc($date->format('d.m.Y'));
 <th class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></th>
 </tr>
 
+<?php if (!empty($invoice['expense_total']) && (float)$invoice['expense_total'] > 0): ?>
+
 <tr>
-<td colspan="4"><strong>Expenses Recoverable</strong></td>
+    <td colspan="4"><strong>Expenses Recoverable</strong></td>
 </tr>
 
 <?php foreach ($expences as $exp): ?>
-
 <tr>
-<td></td>
-<td><?= esc($exp['expense_description']); ?></td>
-<td></td>
-<td class="right"><?= number_format($exp['expense_amount'],2); ?></td>
+    <td></td>
+    <td><?= esc($exp['expense_description']); ?></td>
+    <td></td>
+    <td class="right"><?= number_format($exp['expense_amount'],2); ?></td>
 </tr>
-
 <?php endforeach; ?>
 
-
 <tr>
-<th colspan="3" class="right">Total Expenses</th>
-<th class="right"><?= number_format((float)$invoice['expense_total'],2); ?></th>
+    <th colspan="3" class="right">Total Expenses</th>
+    <th class="right"><?= number_format((float)$invoice['expense_total'],2); ?></th>
 </tr>
+
+<?php endif; ?>
 
 
 <tr>
@@ -413,7 +414,7 @@ echo esc($date->format('d.m.Y'));
             Ac No: <?= esc($company['bank_ac_no']); ?><br>
             IFSC: <?= esc($company['bank_ifsc']); ?><br>
             Bank : <?= esc($company['bank_name']); ?><br>
-            Branch name : <?= esc($company['head_office']); ?>
+            Branch : <?= esc($company['branch_address']); ?>
         </p>
     </td>
 
@@ -446,7 +447,7 @@ echo esc($date->format('d.m.Y'));
 <tr>
 <td colspan="2">
 <h3 style="text-align:center">
-For more information reach us @ www.ksaca.in
+For more information reach us at: <?= esc($company['website']); ?> 
 </h3>
 </td>
 </tr>
@@ -461,6 +462,11 @@ window.onload = function() {
         window.print();
     }, 300);
 };
+
+window.onafterprint = function() {
+    window.location.href = "<?= base_url('ManageInvoice/'.$invoice['client_id']); ?>";
+};
+
 </script>
 
 </body>

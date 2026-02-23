@@ -119,6 +119,7 @@ class CompanyMasterController extends BaseController
                     <label class="cmg-label">Website</label>
                     <input type="text" class="cmg-input" name="website" value="' . esc($company['website']) . '">
                 </div>';
+
                  $html .= '<div class="cmg-field">
                     <label class="cmg-label">IEC</label>
                     <input type="text" class="cmg-input" name="iec" value="' . esc($company['iec']) . '">
@@ -156,7 +157,24 @@ class CompanyMasterController extends BaseController
                 $html .='<div class="cmg-field">
                     <label class="cmg-label">GST State</label>
                     <input type="text" class="cmg-input" name="gst_state" value="' . esc($company['gst_state']) . '">
-                </div>'   ;            
+                </div>'   ;
+                
+                 /* ================= Logo Upload ================= */
+                $html .= '<div class="cmg-field">
+                    <label class="cmg-label">Logo Upload</label>
+                    <div class="cmg-upload">
+                        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
+                            ⬆ Upload Logo
+                            <input type="file" name="logo" class="cmg-upload__input" value="' . esc($company['logo']) . '">
+                        </label>
+                        <span class="cmg-upload__text"><a href="' . esc($company['logo']) . '" target="_blank">
+                                    ' . esc($company['logo']) . '
+                                </a></span>
+                    </div>
+                    <p class="cmg-help-text">
+                        Recommended size: 200x200px, Max file size: 2MB.
+                    </p></div>
+                     ';
 
                 /* ================= Branches ================= */
                 $html .= '<div class="cmg-field cmg-field--full">
@@ -286,22 +304,14 @@ $html .= '</div></div></div>';
                     placeholder="SBIN0000001">
                
             </div>';
-                /* ================= Logo Upload ================= */
-                $html .= '<div class="cmg-field">
-                    <label class="cmg-label">Logo Upload</label>
-                    <div class="cmg-upload">
-                        <label class="cmg-btn cmg-btn--primary cmg-btn--small">
-                            ⬆ Upload Logo
-                            <input type="file" name="logo" class="cmg-upload__input" value="' . esc($company['logo']) . '">
-                        </label>
-                        <span class="cmg-upload__text"><a href="' . esc($company['logo']) . '" target="_blank">
-                                    ' . esc($company['logo']) . '
-                                </a></span>
-                    </div>
-                    <p class="cmg-help-text">
-                        Recommended size: 200x200px, Max file size: 2MB.
-                    </p></div>
-                     ';
+                
+            $html .= '<div class="cmg-field">
+                <label class="cmg-label">Branch Address</label>
+                <input type="text" class="cmg-input" name="branch_address" 
+                    value="' . esc($company['branch_address']) . '" 
+                    placeholder="Branch Address">
+               
+            </div>';
                     
 
                     
@@ -353,8 +363,8 @@ $html .= '</div></div></div>';
             $companies = $this->companyModel
                         ->orderBy('id', 'DESC')
                         ->findAll();  
-    $companyModel = new CompanyMasterModel();
-    $invoiceNo = $companyModel->generateInvoiceNo('KSA','HO');
+        $invoiceModel = new InvoiceMasterModel();
+        $invoiceNo = $invoiceModel->generateInvoiceNo('KSA','HO');
 
     $data = [
         'companies' => $companies,
@@ -369,6 +379,7 @@ $html .= '</div></div></div>';
     }
     public function store()
     {
+         // print_r($this->request->getPost());exit;
         $request = $this->request;
         // print_r( $request->getFile('logo'));exit;
         $branches = $request->getPost('branches'); 
@@ -397,6 +408,7 @@ $html .= '</div></div></div>';
             'bank_name'      =>$request->getPost('bank_name'),
             'bank_ifsc'      =>$request->getPost('bank_ifsc'),
             'gst_state'      =>$request->getPost('gst_state'),
+            'branch_address' => $request->getPost('branch_address'),
             'status'        => 1, // Active by default
         ];
 
