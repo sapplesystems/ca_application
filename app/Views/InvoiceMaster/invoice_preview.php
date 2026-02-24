@@ -586,8 +586,17 @@
             if (netAmountEl) {
                 netAmountEl.innerText = netAmount.toFixed(2);
             }
+            
+            let amount = parseFloat(netAmount) || 0;
+            let rupees = Math.floor(amount);
+            let paise = Math.round((amount - rupees) * 100);
 
-            let words = numberToWords(Math.round(netAmount)).toUpperCase();
+            // Convert to words
+            let words = numberToWords(rupees) + " Rupees";
+
+            if (paise > 0) {
+                words += " " + numberToWords(paise) + " Paise";
+            }
 
             if (document.getElementById('amountInWords')) {
                 document.getElementById('amountInWords').innerText = words;

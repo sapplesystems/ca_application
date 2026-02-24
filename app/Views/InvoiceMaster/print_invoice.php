@@ -301,7 +301,7 @@ echo esc($date->format('d.m.Y'));
 <tr>
 <th style="width:10%">SL No.</th>
 <th style="width:55%">Particulars of Services</th>
-<th style="width:20%;text-align: right;">Sac Code/ HSN</th>
+<th style="width:20%;text-align: right;">SAC Code/ HSN</th>
 <th style="width:15%" class="right">Amount (Rs)</th>
 </tr>
 

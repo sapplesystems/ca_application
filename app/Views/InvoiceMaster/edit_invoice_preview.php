@@ -426,10 +426,32 @@ function romanNumeral($num)
                 const advance = parseFloat(document.getElementById('advance')?.value) || 0;
                 const netAmount = grandTotal - advance;
 
-                document.getElementById('netAmount').innerText = netAmount.toFixed(2);
+                // document.getElementById('netAmount').innerText = netAmount.toFixed(2);
 
-                const amountWords = numberToWords(Math.round(netAmount)).toUpperCase();
+                // const amountWords = numberToWords(Math.round(netAmount));
 
+                // document.getElementById('amountInWords').innerText = amountWords;
+                // document.getElementById('amountInWordsInput').value = amountWords;
+
+                document.getElementById('netAmount').innerText = parseFloat(netAmount).toFixed(2);
+
+                let amount = parseFloat(netAmount) || 0;
+
+                // Separate rupees and paise properly
+                let rupees = Math.floor(amount);
+                let paise = Math.round((amount * 100) % 100);
+
+                // Convert to words
+                let amountWords = numberToWords(rupees) + " Rupees";
+
+                if (paise > 0) {
+                    amountWords += " " + numberToWords(paise) + " Paise";
+                }
+
+                // Capitalize first letter
+                // amountWords = amountWords.toLowerCase().replace(/^./, c => c.toUpperCase());
+
+                // Set values
                 document.getElementById('amountInWords').innerText = amountWords;
                 document.getElementById('amountInWordsInput').value = amountWords;
 
