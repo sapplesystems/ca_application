@@ -397,7 +397,7 @@
             </tr>
 
             <tr>
-                <th colspan="3" style="text-align:left">(Amount in Words) <?= esc($invoice['amount_in_words']); ?></th>
+                <th colspan="3" style="text-align:left">(Amount in Words) <?= esc(ucwords(strtolower($invoice['amount_in_words']))); ?></th>
                 <th class="right"><?= number_format((float)$invoice['total_invoice_amount'], 2); ?></th>
             </tr>
 
