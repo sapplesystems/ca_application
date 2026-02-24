@@ -420,7 +420,7 @@
 
                 <td style="width:45%; vertical-align:top; padding:0; text-align:right; position:relative; height:100px;">
                     <p style="font-size:14px; margin:0;">
-                        For <?= esc($company['name']); ?>
+                         <?= esc($company['name']); ?>
                     </p>
 
                     <p style="margin:0; font-size:14px; position:absolute; bottom:0; right:0;">
