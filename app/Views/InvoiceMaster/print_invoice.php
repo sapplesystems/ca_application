@@ -309,12 +309,12 @@
 
         <table>
 
-            <tr>
-                <th style="width:10%">SL No.</th>
-                <th style="width:55%">Particulars of Services</th>
-                <th style="width:20%;text-align: right;">SAC Code/ HSN</th>
-                <th style="width:15%" class="right">Amount (Rs)</th>
-            </tr>
+<tr>
+<th style="width:10%">SL No.</th>
+<th style="width:55%">Particulars</th>
+<th style="width:20%;text-align: right;">SAC Code/ HSN</th>
+<th style="width:15%" class="right">Amount (Rs)</th>
+</tr>
 
             <?php $sl = 1; ?>
             <?php foreach ($invoice_works as $service): ?>
@@ -369,9 +369,9 @@
             <?php endif; ?>
 
 
-            <tr>
+            <!-- <tr>
                 <td colspan="4"><strong>Tax</strong></td>
-            </tr>
+            </tr> -->
 
 
             <?php if ($invoice['tax_apply_name'] === 'cgst_sgst'): ?>
@@ -410,8 +410,9 @@
             </tr>
 
             <tr>
-                <th colspan="3" style="text-align:left"><?= esc(ucwords(strtolower($invoice['amount_in_words']))); ?></th>
-                <th class="right"><?= number_format((float)$invoice['total_invoice_amount'], 2); ?></th>
+                <th colspan="2" style="text-align:left"><?= esc(ucwords(strtolower($invoice['amount_in_words']))); ?></th>
+                <th  class="right"><strong>Total</strong></th> 
+                <th class="right"><?= number_format((float)$invoice['total_invoice_amount'], 0); ?></th>
             </tr>
 
         </table>
@@ -424,7 +425,8 @@
                 <td style="width:55%; vertical-align:top; padding:0px; position:relative;">
 
                     <p style="font-size:15px; font-weight:400; margin:0;">
-                        <strong>Banker Details:</strong><br>
+                        <strong>Bank Details:</strong><br>
+                         <?= esc($company['name']); ?><br>
                         Ac No: <?= esc($company['bank_ac_no']); ?><br>
                         IFSC: <?= esc($company['bank_ifsc']); ?><br>
                         Bank : <?= esc($company['bank_name']); ?><br>

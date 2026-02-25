@@ -49,7 +49,7 @@
 
         <hr>
         <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
-            Service Invoice
+            TAX INVOICE
         </div>
 
         <table width="100%" border="0" cellpadding="6">
@@ -389,8 +389,9 @@
             </table>
 
              <div>
-          <b>Banker's Details</b><br />
-         Bank name:<?php echo $company['bank_name']; ?><br />
+          <b>Bank Details</b><br />
+          <?= esc($company['name']); ?></br>
+          Bank name:<?php echo $company['bank_name']; ?><br />
           Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
           IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
           Branch :<?php echo $company['branch_address']; ?>
@@ -412,7 +413,7 @@
             <input type="hidden" name="net_amount" id="netAmountInput">
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>">
+            <!-- <input type="hidden" name="invoice_date" value="<?= date('Y-m-d') ?>"> -->
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="tax_apply_name" value="<?= esc($taxType) ?>">
 
@@ -583,20 +584,39 @@
             let netAmount = grandTotal - advance;
 
             const netAmountEl = document.getElementById('netAmount');
+            // if (netAmountEl) {
+            //     netAmountEl.innerText = netAmount.toFixed(2);
+            // }
             if (netAmountEl) {
-                netAmountEl.innerText = netAmount.toFixed(2);
+                netAmountEl.innerText = Math.round(netAmount);
             }
             
+            // let amount = parseFloat(netAmount) || 0;
+            // let rupees = Math.floor(amount);
+            // let paise = Math.round((amount - rupees) * 100);
+
+            // // Convert to words
+            // let words = numberToWords(rupees) + " Rupees";
+
+            // if (paise > 0) {
+            //     words += " " + numberToWords(paise) + " Paise";
+            // }
+
+            // if (document.getElementById('amountInWords')) {
+            //     document.getElementById('amountInWords').innerText = words;
+            // }
+
+            // if (document.getElementById('amountInWordsInput')) {
+            //     document.getElementById('amountInWordsInput').value = words;
+            // }
+
             let amount = parseFloat(netAmount) || 0;
-            let rupees = Math.floor(amount);
-            let paise = Math.round((amount - rupees) * 100);
+
+            // Round to nearest whole number
+            let roundedAmount = Math.round(amount);
 
             // Convert to words
-            let words = numberToWords(rupees) + " Rupees";
-
-            if (paise > 0) {
-                words += " " + numberToWords(paise) + " Paise";
-            }
+            let words = numberToWords(roundedAmount) + " Rupees Only";
 
             if (document.getElementById('amountInWords')) {
                 document.getElementById('amountInWords').innerText = words;
