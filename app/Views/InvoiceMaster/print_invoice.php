@@ -13,6 +13,19 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
+
+        }
+
+        body,
+        table,
+        td,
+        th,
+        p,
+        div,
+        span,
+        strong,
+        h3 {
+            font-size: 1em !important;
         }
 
 
@@ -226,7 +239,7 @@
             <tr>
                 <td style="vertical-align: top;">
                     <div style="line-height:1.3; font-size:14px;">
-                        <strong style="font-size:22px;">
+                        <strong style="font-size:22px!important;">
                             <?= esc($company['name']); ?>
                         </strong><br>
 
@@ -234,17 +247,17 @@
                             <?= esc($company['type_of_company']); ?>
                         </span><br>
 
-                        Address: <?= esc($company['registered_office']); ?><br>
+                        Address: <?= nl2br(esc($company['registered_office'])); ?><br>
                         PH: <?= esc($company['telephone']); ?><br>
                         Email: <?= esc($company['email']); ?><br>
                         GSTIN: <?= esc($company['gstin']); ?>
                     </div>
                 </td>
 
-<td class="right logo-container" style="vertical-align: top; padding: 12px 15px;">
-<div class="logo">
- <?php if (!empty($company['logo']) && file_exists(FCPATH . 'uploads/company_logo/' . $company['logo'])): ?>
-    <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" style="display: block; margin: 0; padding: 0;">
+                <td class="right logo-container" style="vertical-align: top; padding: 12px 15px;">
+                    <div class="logo">
+                        <?php if (!empty($company['logo']) && file_exists(FCPATH . 'uploads/company_logo/' . $company['logo'])): ?>
+                            <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" style="display: block; margin: 0; padding: 0;">
 
                         <?php endif; ?>
                     </div>
@@ -296,12 +309,12 @@
 
         <table>
 
-<tr>
-<th style="width:10%">SL No.</th>
-<th style="width:55%">Particulars of Services</th>
-<th style="width:20%;text-align: right;">SAC Code/ HSN</th>
-<th style="width:15%" class="right">Amount (Rs)</th>
-</tr>
+            <tr>
+                <th style="width:10%">SL No.</th>
+                <th style="width:55%">Particulars of Services</th>
+                <th style="width:20%;text-align: right;">SAC Code/ HSN</th>
+                <th style="width:15%" class="right">Amount (Rs)</th>
+            </tr>
 
             <?php $sl = 1; ?>
             <?php foreach ($invoice_works as $service): ?>
@@ -397,7 +410,7 @@
             </tr>
 
             <tr>
-                <th colspan="3" style="text-align:left">(Amount in Words) <?= esc(ucwords(strtolower($invoice['amount_in_words']))); ?></th>
+                <th colspan="3" style="text-align:left"><?= esc(ucwords(strtolower($invoice['amount_in_words']))); ?></th>
                 <th class="right"><?= number_format((float)$invoice['total_invoice_amount'], 2); ?></th>
             </tr>
 
@@ -408,7 +421,8 @@
         <table style="page-break-inside:auto;" cellspacin="0" cellpadding="0">
 
             <tr>
-                <td style="width:55%; vertical-align:top; padding:0px;">
+                <td style="width:55%; vertical-align:top; padding:0px; position:relative;">
+
                     <p style="font-size:15px; font-weight:400; margin:0;">
                         <strong>Banker Details:</strong><br>
                         Ac No: <?= esc($company['bank_ac_no']); ?><br>
@@ -416,11 +430,23 @@
                         Bank : <?= esc($company['bank_name']); ?><br>
                         Branch : <?= esc($company['branch_address']); ?>
                     </p>
+
+                    <!-- QR RIGHT -->
+                    <div style="position:absolute; top:15px; right:10px; text-align:center;">
+                        <img src="<?= base_url('public/images/qr.jpeg'); ?>"
+                            alt="QR Code"
+                            style="width:60px; height:60px; display:block; margin:0 auto;">
+
+                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; margin-top:2px; text-decoration:none; color:#000;">
+                            Scan & Pay
+                        </a>
+                    </div>
+
                 </td>
 
                 <td style="width:45%; vertical-align:top; padding:0; text-align:right; position:relative; height:100px;">
                     <p style="font-size:14px; margin:0;">
-                         <?= esc($company['name']); ?>
+                        <?= esc($company['name']); ?>
                     </p>
 
                     <p style="margin:0; font-size:14px; position:absolute; bottom:0; right:0;">
@@ -428,7 +454,6 @@
                     </p>
                 </td>
             </tr>
-
 
             <tr>
                 <td colspan="2" style="vertical-align:top;">
