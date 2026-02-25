@@ -71,7 +71,7 @@ function romanNumeral($num)
 
         <hr>
 
-        <div style="text-align:center;font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff;">SERVICE INVOICE</div>
+        <div style="text-align:center;font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff;">TAX INVOICE</div>
 
         <hr>
 
@@ -290,16 +290,18 @@ function romanNumeral($num)
 
         <br>
         <div>
-            <b>Banker's Details</b><br />
-            bank name :<?php echo $company['bank_name']; ?><br />
+            <b>Bank Details</b><br />
+             <?= esc($company['name']); ?></br>
+            Bank name :<?php echo $company['bank_name']; ?><br />
             Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
             IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+            Branch :<?php echo $company['branch_address']; ?>
         </div>
 
         <strong>Terms & Conditions</strong>
         <textarea name="term_condition" style="width:100%;height:80px;">
-<?= esc($invoice['term_condition']); ?>
-</textarea>
+         <?= esc($invoice['term_condition']); ?>
+        </textarea>
 
         <!-- HIDDEN VALUES -->
 
@@ -426,34 +428,35 @@ function romanNumeral($num)
                 const advance = parseFloat(document.getElementById('advance')?.value) || 0;
                 const netAmount = grandTotal - advance;
 
-                // document.getElementById('netAmount').innerText = netAmount.toFixed(2);
+                document.getElementById('netAmount').innerText = netAmount.toFixed(2);
+                
 
-                // const amountWords = numberToWords(Math.round(netAmount));
+                const amountWords = numberToWords(Math.round(netAmount)) + " Rupees Only";
 
-                // document.getElementById('amountInWords').innerText = amountWords;
-                // document.getElementById('amountInWordsInput').value = amountWords;
+                document.getElementById('amountInWords').innerText = amountWords;
+                document.getElementById('amountInWordsInput').value = amountWords;
 
-                document.getElementById('netAmount').innerText = parseFloat(netAmount).toFixed(2);
 
-                let amount = parseFloat(netAmount) || 0;
+               document.getElementById('netAmount').innerText = Math.round(netAmount);
+                // let amount = parseFloat(netAmount) || 0;
 
-                // Separate rupees and paise properly
-                let rupees = Math.floor(amount);
-                let paise = Math.round((amount * 100) % 100);
+                // // Separate rupees and paise properly
+                // let rupees = Math.floor(amount);
+                // let paise = Math.round((amount * 100) % 100);
 
-                // Convert to words
-                let amountWords = numberToWords(rupees) + " Rupees";
+                // // Convert to words
+                // let amountWords = numberToWords(rupees) + " Rupees";
 
-                if (paise > 0) {
-                    amountWords += " " + numberToWords(paise) + " Paise";
-                }
+                // if (paise > 0) {
+                //     amountWords += " " + numberToWords(paise) + " Paise";
+                // }
 
                 // Capitalize first letter
                 // amountWords = amountWords.toLowerCase().replace(/^./, c => c.toUpperCase());
 
                 // Set values
-                document.getElementById('amountInWords').innerText = amountWords;
-                document.getElementById('amountInWordsInput').value = amountWords;
+                // document.getElementById('amountInWords').innerText = amountWords;
+                // document.getElementById('amountInWordsInput').value = amountWords;
 
 
                 /* =========================

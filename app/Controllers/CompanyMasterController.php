@@ -493,6 +493,7 @@ $html .= '</div></div></div>';
         'bank_name'      =>$request->getPost('bank_name'),
         'bank_ifsc'      =>$request->getPost('bank_ifsc'),
         'gst_state'      =>$request->getPost('gst_state'),
+        'branch_address' => $request->getPost('branch_address'),
     ];
 
     $logoFile = $request->getFile('logo');
