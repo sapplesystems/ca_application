@@ -169,6 +169,7 @@
                         <tbody>
                             <?php if (!empty($receipt)) : ?>
                             <?php foreach ($receipt as $rec) : ?>
+                                
                             <tr>
                                 <td><?= esc($rec['id']) ?></td>
                                 <td><?= esc($rec['recipt_no']) ?></td>
@@ -224,6 +225,7 @@
                 <div class="modal-body">
                     <input type="hidden" name="invoice_id" id="current_invoice_id">
                     <input type="hidden" name="receipt_id" id="receipt_id">
+                    <input type="hidden" name="client_id" value="<?= esc($clients[0]['id']); ?>">
                     <div class="receiptnote-container ReciptNoteData">
 
                         <!-- Header -->
@@ -451,11 +453,12 @@
                     <th style="width: 10%">Invoice No</th>
                     <th style="width: 8%">Invoice Date</th>
                     <th style="width: 14%">Works</th>
-                    <th style="width: 15%">Company</th>
+                    <th style="width: 10%">Company</th>
                     <th style="width: 10%">Total Invoice Amount</th>
                     <th style="width: 8%">Receipt Date</th>
-                    <th style="width: 10%">Receipt No</th>
-                    <th style="width: 10%">Receipt Amount</th>
+                    <th style="width: 8%">Receipt No</th>
+                    <th style="width: 8%">Receipt Amount</th>
+                    <th style="width: 10%">Running Amount</th>
                     <th style="width: 15%"class="no-print">Action</th>
                     
                 </tr>
@@ -463,12 +466,37 @@
             <tbody>
                 <!-- Opening balance row -->
                 <tr class="Minvoice-opening-row">
-                    <td colspan="9" class="Minvoice-opening-label">Opening Balance</td>
+                    <td class="Minvoice-opening-label">Opening Balance</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><?= number_format($openingBalance, 2) ?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
 
                 <?php if (!empty($invoices)) : ?>
+                     <?php $runningBalance = 0;
+                     $isFirstRow = true;
+                      ?>
+
+                    
                 <?php foreach ($invoices as $row) : ?>
 
+                     <?php
+                            $invoice = $row['total_invoice_amount'] ?? 0;
+                            $tds     = $row['tds_amount'] ?? 0;
+
+                            if ($isFirstRow) {
+                                $runningBalance = $openingBalance + $invoice - $tds;
+                                $isFirstRow = false; // next rows won't enter here
+                            } else {
+                                $runningBalance += $invoice - $tds;
+                            }
+                    ?>
                 <tr class="invoice-row" data-company-id="<?= $row['company_id'] ?>"
                     data-date="<?= $row['invoice_date'] ?>">
                     <td><?= esc($row['invoice_no']) ?></td>
@@ -487,7 +515,7 @@
                     </td>
                     <td><?= esc($row['recipt_no']) ?></td>
                     <td><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
-
+                    <td><strong><?= number_format($runningBalance, 2) ?></strong></td>
                     <td class="no-print">
                         <!-- Edit -->
                         <a href="<?= site_url('invoice/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit"
@@ -543,7 +571,8 @@
                         $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
                         $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
 
-                        $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
+                        $closingBalance = $totalInvoice-$totalReceipt ;
+
                         ?>
 
                 <!-- Total row -->
@@ -552,8 +581,13 @@
                     <td></td>
                     <td ></td>
                     <td><p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p></td>
-                    <td><?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?></td>
+                    <td><?= number_format(
+    $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
+    2
+) ?></td>
                     <td></td>
+                    <td>Total Receipt Amount</td>
+                    <td><?= number_format($totalReceipt, 2) ?></td>
                     <td>Closing Balance</td>
                     <td><?= $closingBalance ?></td>
                     <!-- <td ></td>
@@ -769,6 +803,7 @@ function loadReceiptData(invoiceId) {
             $('#receiptDate').val(res.invoice.invoice_date);
             $('#billAmount').val(res.invoice.total_invoice_amount);
             $('#current_invoice_id').val(res.invoice.id);
+
         }
     });
 }
