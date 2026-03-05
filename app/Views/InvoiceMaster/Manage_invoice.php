@@ -1,6 +1,6 @@
 <style>
       .print-only {
-        display: none;
+        display: none !important;
     }
 </style><!-------------------------------- Modal for genrate invoice------------------------------------->
 <!-- Modal1 -->
@@ -407,6 +407,7 @@
     </div>
 
     <!-- Filters -->
+     
     <div class="Minvoice-filter-row">
         <div class="Minvoice-filter-group">
             <label for="Minvoice-company">Select Company</label>
@@ -440,6 +441,18 @@
 
     <!-- Table -->
     <div class="Minvoice-table-wrapper" id="ledger-print-area">
+        <div  class="print-only">
+           <h1 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name"> <?= esc($company['name']); ?></h1>
+              <h3 style="margin-top: -10px;text-align: center;">
+                    <?= esc($company['registered_office']); ?><br>
+                    PHONE No.: <?= esc($company['telephone']); ?><br>
+                    E-MAIL Id: <?= esc($company['email']); ?>
+                </h3>
+                <h3 id="ledger-date-range" style="text-align: center;">
+                    
+                </h3>
+                
+         </div>
         <div class="print-only">
             <h3>Ledger For <?= esc($clients[0]['legal_name']) ?></h3>
         </div>
@@ -453,8 +466,8 @@
                     <th style="width: 10%">Invoice No</th>
                     <th style="width: 8%">Invoice Date</th>
                     <th style="width: 14%">Works</th>
-                    <th style="width: 10%">Company</th>
-                    <th style="width: 10%">Total Invoice Amount</th>
+                    <th style="width: 10%" class="print-hide">Company</th>
+                    <th style="width: 10%" class="print-width">Total Invoice Amount</th>
                     <th style="width: 8%">Receipt Date</th>
                     <th style="width: 8%">Receipt No</th>
                     <th style="width: 8%">Receipt Amount</th>
@@ -469,13 +482,13 @@
                     <td class="Minvoice-opening-label">Opening Balance</td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td><?= number_format($openingBalance, 2) ?></td>
-                    <td></td>
-                    <td></td>
+                    <td class="print-hide"></td>
+                    <td ><?= number_format($openingBalance, 2) ?></td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td class="print-hide"></td>
                 </tr>
 
                 <?php if (!empty($invoices)) : ?>
@@ -504,7 +517,7 @@
                     <td class="Minvoice-works-text">
                         <?= esc($row['service_names']) ?>
                     </td>
-                    <td><?= esc($row['company_name']) ?></td>
+                    <td class="print-hide"><?= esc($row['company_name']) ?></td>
                     <td>
                         <?= number_format($row['total_invoice_amount'], 2) ?>
                     </td>
@@ -516,7 +529,7 @@
                     <td><?= esc($row['recipt_no']) ?></td>
                     <td><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
                     <td><strong><?= number_format($runningBalance, 2) ?></strong></td>
-                    <td class="no-print">
+                    <td class="no-print" >
                         <!-- Edit -->
                         <a href="<?= site_url('invoice/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit"
                             title="Edit Invoice">
@@ -540,7 +553,7 @@
                             Print &amp; Preview
                         </button>
                     </td>
-                    
+                    <td></td>
                 </tr>
                 <?php endforeach; ?>
                 <?php else : ?>
@@ -579,17 +592,17 @@
                 <tr class="Minvoice-total-row">
                     <td></td>
                     <td></td>
-                    <td ></td>
+                    <td class="print-hide"></td>
                     <td><p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p></td>
                     <td><?= number_format(
-    $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
-    2
-) ?></td>
+                        $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
+                        2
+                    ) ?></td>
                     <td></td>
                     <td>Total Receipt Amount</td>
                     <td><?= number_format($totalReceipt, 2) ?></td>
-                    <td>Closing Balance</td>
-                    <td><?= $closingBalance ?></td>
+                    <td class="Minvoice-text-right print-hide">Closing Balance</td>
+                    <td class="Minvoice-text-right print-hide"><?= number_format($closingBalance, 2) ?></td>
                     <!-- <td ></td>
                     <td  class="Minvoice-text-center">
                         
@@ -613,21 +626,14 @@
                         )
                     );
                     ?>
-                    <?php
-                        $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
-                        $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
-
-                        $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
-                        ?>
-                    <!-- <td class="Minvoice-closing-balance">Closing Balance</td>
-                    <td class="Minvoice-text-right Minvoice-amount-bold">
-                        <?= number_format($closingBalance, 2) ?>
-                    </td> -->
-                    <!-- <td></td> -->
                 </tr>
+
             </tbody>
 
         </table>
+        <div class="Minvoice-text-right print-only" style="font-weight:bold; margin-top:10px;">
+                   <h2> Closing Balance: <?= number_format($closingBalance, 2) ?></h2>
+                </div>
         <br><br>
         <!-- <table>
             <tr>
@@ -729,7 +735,13 @@ function printLedger() {
         .print-only {
             display: block !important;
         }
+        .print-hide {
+            display: none !important;
+        }
 
+       .print-width {
+            width: 40% !important;
+        }
         .no-print {
             display: none !important;
         }
@@ -762,6 +774,7 @@ function printLedger() {
     document.body.innerHTML = originalContents;
     location.reload();
 }
+
 $(document).on('click', '.open-receipt', function() {
     let invoiceId = $(this).data('id');
     $('#currentInvoiceId').val(invoiceId);
@@ -1104,33 +1117,98 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
+document.querySelector('.Minvoice-btn-search').addEventListener('click', function () {
 
     const companyId = document.getElementById('Minvoice-company').value;
-    const fromDate = document.getElementById('Minvoice-fromDate').value;
-    const toDate = document.getElementById('Minvoice-toDate').value;
+    const fromInput = document.getElementById('Minvoice-fromDate').value;
+    const toInput   = document.getElementById('Minvoice-toDate').value;
 
-    document.querySelectorAll('.invoice-row').forEach(row => {
+    const rows = document.querySelectorAll('.invoice-row');
 
-        const rowCompany = row.getAttribute('data-company-id');
-        const rowDate = row.getAttribute('data-date');
+    let visibleDates = [];
+
+    rows.forEach(row => {
+
+        const rowCompany = row.dataset.companyId;
+        const rowDate    = row.dataset.date;
 
         let show = true;
 
+        // Company Filter
         if (companyId && rowCompany !== companyId) {
             show = false;
         }
 
-        if (fromDate && rowDate < fromDate) {
+        // Date From Filter
+        if (fromInput && new Date(rowDate) < new Date(fromInput)) {
             show = false;
         }
 
-        if (toDate && rowDate > toDate) {
+        // Date To Filter
+        if (toInput && new Date(rowDate) > new Date(toInput)) {
             show = false;
         }
 
         row.style.display = show ? '' : 'none';
+
+        // Collect visible dates
+        if (show) {
+            visibleDates.push(new Date(rowDate));
+        }
     });
+
+    // -------- UPDATE PRINT HEADER DATE RANGE --------
+    if (visibleDates.length > 0) {
+
+        visibleDates.sort((a, b) => a - b);
+
+        const firstDate = visibleDates[0];
+        const lastDate  = visibleDates[visibleDates.length - 1];
+
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+
+        const formattedFrom = firstDate.toLocaleDateString('en-GB', options);
+        const formattedTo   = lastDate.toLocaleDateString('en-GB', options);
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `${formattedFrom} TO ${formattedTo}`;
+
+    } else {
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `Ledger (No records found)`;
+    }
+
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const rows = document.querySelectorAll('.invoice-row');
+    let allDates = [];
+
+    rows.forEach(row => {
+        const rowDate = row.dataset.date;
+        if (rowDate) {
+            allDates.push(new Date(rowDate));
+        }
+    });
+
+    if (allDates.length > 0) {
+
+        allDates.sort((a, b) => a - b);
+
+        const firstDate = allDates[0];
+        const lastDate  = allDates[allDates.length - 1];
+
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+
+        const formattedFrom = firstDate.toLocaleDateString('en-GB', options);
+        const formattedTo   = lastDate.toLocaleDateString('en-GB', options);
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `${formattedFrom} TO ${formattedTo}`;
+    }
+
 });
 
 document.querySelector('.Minvoice-btn-reset').addEventListener('click', function() {

@@ -342,7 +342,7 @@
 
 
             <tr>
-                <th colspan="3" class="right">Service Value</th>
+                <th colspan="3" class="right">Taxable</th>
                 <th class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></th>
             </tr>
 
@@ -434,13 +434,15 @@
                     </p>
 
                     <!-- QR RIGHT -->
-                    <div style="position:absolute; top:15px; right:10px; text-align:center;">
-                        <img src="<?= base_url('public/images/qr.jpeg'); ?>"
-                            alt="QR Code"
-                            style="width:60px; height:60px; display:block; margin:0 auto;">
-
+                    <div style="position:absolute; top:5px; right:10px; text-align:center;bottom:10px;">
                         <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; margin-top:2px; text-decoration:none; color:#000;">
                             Scan & Pay
+                        </a>
+                        <img src="<?= base_url('public/images/qr.jpeg'); ?>"
+                            alt="QR Code"
+                            style="width:80px; height:80px; display:block; margin:0 auto;">      
+                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; margin-top:2px;">
+                            https://caapp.sapple.co.in/ca_application/
                         </a>
                     </div>
 
@@ -458,7 +460,7 @@
             </tr>
 
             <tr>
-                <td colspan="2" style="vertical-align:top;">
+                <td colspan="2" style="vertical-align:top; bottom:15px;">
                     <p style="font-size:13px; padding:0; margin:0;">
                         <strong>Terms & Conditions:</strong><br>
                         <?= nl2br(esc($invoice['term_condition'])); ?>

@@ -44,7 +44,7 @@ class InvoiceMasterController extends BaseController
 
         $companyModel = new CompanyMasterModel();
         $companies = $companyModel
-        ->select('id, name,type_of_company,gst_state,status')
+        ->select('*')
         ->where('status', 1)
         ->findAll();
         $workModel = new WorkMasterModel();
@@ -56,6 +56,7 @@ class InvoiceMasterController extends BaseController
         $debitModel=new DebitNotes();
         $debit=$debitModel->select('note_type,total_amount')->findAll();
         $openingBalance = 0;
+        
 
         echo view('common/header');
         
@@ -114,6 +115,17 @@ class InvoiceMasterController extends BaseController
     $invoiceModel = new InvoiceMasterModel();
     $invoiceNo = $invoiceModel->generateInvoiceNo('INV', '001');
 
+
+    $invoiceModel = new InvoiceMasterModel();
+
+    $lastInvoice = $invoiceModel
+                    ->orderBy('id', 'DESC')
+                    ->first();
+
+    $nextId = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
+
+    $invoiceNo = $company['invoice_format'] . $nextId;
+
     return view('common/header')
         . view('InvoiceMaster/invoice_preview', [
             'company' => $company,
@@ -126,7 +138,7 @@ class InvoiceMasterController extends BaseController
             'igst' => $igst,
             'taxType' => $taxType,
             'invoiceNo' => $invoiceNo ,
-            'expenses' => $expenses
+            'expenses' => $expenses,
         ])
         . view('common/footer');
 }

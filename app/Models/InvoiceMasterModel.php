@@ -100,12 +100,12 @@ public function getInvoiceWithCompany($clientId)
         }
 
         // Get last sequence
-        $lastInvoice = $this->select('id')
-            ->orderBy('id', 'DESC')
-            ->first();
+        // $lastInvoice = $this->select('id')
+        //     ->orderBy('id', 'DESC')
+        //     ->first();
 
-        $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
+        // $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-        return "{$org}/{$branch}/{$fy}/{$seq}";
+        return "{$org}/{$branch}/{$fy}/";
     }
 }

@@ -77,7 +77,7 @@
                     <strong>Invoice No. :</strong>
                     <input type="text"
                         name="invoice_no"
-                        value="<?= esc($company['invoice_format']) ?>"
+                        value="<?= esc($invoiceNo) ?>"
                         style="width:180px; padding:4px;"
                         required>
                 </td>
@@ -152,8 +152,7 @@
                     <!-- A -->
                     <tr style="background:#0b5c7d; color:#fff;">
                         <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;"></td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service
-                            Value
+                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Taxable
                         </td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
                             <span id="serviceValue">0</span>
