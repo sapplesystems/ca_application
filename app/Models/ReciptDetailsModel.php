@@ -22,6 +22,7 @@ class ReciptDetailsModel extends Model
         'bill_amount',
         'tds_amount',
         'invoice_id',
+        'client_id',
     ];
 
     protected bool $allowEmptyInserts = false;
