@@ -434,14 +434,14 @@
                     </p>
 
                     <!-- QR RIGHT -->
-                    <div style="position:absolute; top:5px; right:10px; text-align:center;bottom:10px;">
-                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; margin-top:2px; text-decoration:none; color:#000;">
+                    <div style="position:absolute; top:5px; right:10px; text-align:right;">
+                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; text-decoration:none; color:#000;">
                             Scan & Pay
                         </a>
                         <img src="<?= base_url('public/images/qr.jpeg'); ?>"
                             alt="QR Code"
-                            style="width:80px; height:80px; display:block; margin:0 auto;">      
-                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; margin-top:2px;">
+                            style="width:80px; height:80px; display:block; margin-left:auto;">      
+                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block;">
                             https://caapp.sapple.co.in/ca_application/
                         </a>
                     </div>
