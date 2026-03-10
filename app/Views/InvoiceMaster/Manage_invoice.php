@@ -396,7 +396,12 @@
 
     <!-- Top Buttons -->
     <div class="Minvoice-top-actions">
-        <button class="Minvoice-btn Minvoice-btn-primary" onclick="printLedger()">Print Ledger</button>
+        <button id="printLedgerBtn"
+        class="Minvoice-btn Minvoice-btn-primary"
+        onclick="printLedger()"
+        style="display:none;">
+    Print Ledger
+</button>
         <button type="button" class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
             data-target="#GenrateVoice">
             Generate Invoice For Pending Work
@@ -415,7 +420,12 @@
                 <option value="">Select Company</option>
 
                 <?php foreach ($companies as $company): ?>
-                <option value="<?= $company['id']; ?>">
+                <option  value="<?= $company['id']; ?>"
+        data-name="<?= esc($company['name']); ?>"
+        data-address="<?= esc($company['registered_office']); ?>"
+        data-phone="<?= esc($company['telephone']); ?>"
+        data-email="<?= esc($company['email']); ?>">
+
                     <?= esc($company['name']); ?>
                 </option>
                 <?php endforeach; ?>
@@ -442,11 +452,11 @@
     <!-- Table -->
     <div class="Minvoice-table-wrapper" id="ledger-print-area">
         <div  class="print-only">
-           <h1 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name"> <?= esc($company['name']); ?></h1>
+           <h1 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name"  id="ledger-company-name"></h1>
               <h3 style="margin-top: -10px;text-align: center;">
-                    <?= esc($company['registered_office']); ?><br>
-                    PHONE No.: <?= esc($company['telephone']); ?><br>
-                    E-MAIL Id: <?= esc($company['email']); ?>
+                    <span id="ledger-company-address"></span><br>
+                    PHONE No.:<span id="ledger-company-phone"></span><br>
+                    E-MAIL Id: <span id="ledger-company-email"></span>
                 </h3>
                 <h3 id="ledger-date-range" style="text-align: center;">
                     
@@ -1119,13 +1129,33 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 document.querySelector('.Minvoice-btn-search').addEventListener('click', function () {
 
-    const companyId = document.getElementById('Minvoice-company').value;
+document.getElementById('printLedgerBtn').style.display = 'inline-block';
+   const companySelect = document.getElementById('Minvoice-company');
+    const companyId = companySelect.value;
     const fromInput = document.getElementById('Minvoice-fromDate').value;
     const toInput   = document.getElementById('Minvoice-toDate').value;
 
     const rows = document.querySelectorAll('.invoice-row');
 
     let visibleDates = [];
+
+    // -------- GET SELECTED COMPANY DETAILS --------
+    const selectedOption = companySelect.options[companySelect.selectedIndex];
+
+    if (selectedOption && selectedOption.value !== "") {
+
+        document.getElementById('ledger-company-name').innerText =
+            selectedOption.dataset.name || '';
+
+        document.getElementById('ledger-company-address').innerText =
+            selectedOption.dataset.address || '';
+
+        document.getElementById('ledger-company-phone').innerText =
+            selectedOption.dataset.phone || '';
+
+        document.getElementById('ledger-company-email').innerText =
+            selectedOption.dataset.email || '';
+    }
 
     rows.forEach(row => {
 
@@ -1165,7 +1195,7 @@ document.querySelector('.Minvoice-btn-search').addEventListener('click', functio
         const firstDate = visibleDates[0];
         const lastDate  = visibleDates[visibleDates.length - 1];
 
-        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        const options = { day: '2-digit', month: 'short', year: 'numeric' };
 
         const formattedFrom = firstDate.toLocaleDateString('en-GB', options);
         const formattedTo   = lastDate.toLocaleDateString('en-GB', options);
