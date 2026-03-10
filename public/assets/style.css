@@ -3,14 +3,23 @@
   padding: 0;
   box-sizing: border-box;
 }
+@font-face {
+            font-family: 'Cambria';
+            src: url('../public/fonts/Cambria.woff2') format('woff2'),
+                url('../public/fonts/Cambria.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
 body {
-  font-family:
+  /* font-family:
     "Inter",
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
-    sans-serif;
+    sans-serif; */
+     font-family: 'Cambria';
   min-height: 100vh;
   background: url("https://images.pexels.com/photos/3418586/pexels-photo-3418586.jpeg?auto=compress&cs=tinysrgb&w=1600")
     center/cover no-repeat;

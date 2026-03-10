@@ -2,6 +2,15 @@
     .print-only {
         display: none !important;
     }
+
+    @font-face {
+        font-family: 'Cambria';
+        src: url('../public/fonts/Cambria.woff2') format('woff2'),
+            url('../public/fonts/Cambria.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
 </style><!-------------------------------- Modal for genrate invoice------------------------------------->
 <!-- Modal1 -->
 <div class="modal fade" id="GenrateVoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -732,7 +741,7 @@
         <head>
             <title>Invoice Ledger</title>
            <style>
-    body { font-family: Arial, sans-serif; }
+    body { font-family: Cambria, sans-serif; }
 
     table { width: 100%; border-collapse: collapse; }
 
@@ -743,6 +752,7 @@
   
 
     @media print {
+     
 
         .print-only {
             display: block !important;
