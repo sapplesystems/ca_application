@@ -407,8 +407,7 @@
     <div class="Minvoice-top-actions">
         <button id="printLedgerBtn"
             class="Minvoice-btn Minvoice-btn-primary"
-            onclick="printLedger()"
-            style="display:none;">
+            onclick="printLedger()">
             Print Ledger
         </button>
         <button type="button" class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
@@ -461,15 +460,15 @@
     <!-- Table -->
     <div class="Minvoice-table-wrapper" id="ledger-print-area">
         <div class="print-only">
-            <h1 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name" id="ledger-company-name"></h1>
-            <h3 style="margin-top: -10px;text-align: center;">
+            <h4 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name" id="ledger-company-name"></h4>
+            <h4 style="margin-top: -10px;text-align: center;">
                 <span id="ledger-company-address"></span><br>
                 PHONE No.:<span id="ledger-company-phone"></span><br>
                 E-MAIL Id: <span id="ledger-company-email"></span>
-            </h3>
-            <h3 id="ledger-date-range" style="text-align: center;">
+            </h4>
+            <h4 id="ledger-date-range" style="text-align: center;">
 
-            </h3>
+            </h4>
 
         </div>
         <div class="print-only">
@@ -498,7 +497,7 @@
             <tbody>
                 <!-- Opening balance row -->
                 <tr class="Minvoice-opening-row">
-                    <td class="Minvoice-opening-label">Opening Balance</td>
+                    <td class="Minvoice-opening-label" id="openingBalance">Opening Balance</td>
                     <td></td>
                     <td></td>
                     <td class="print-hide"></td>
@@ -537,7 +536,7 @@
                                 <?= esc($row['service_names']) ?>
                             </td>
                             <td class="print-hide"><?= esc($row['company_name']) ?></td>
-                            <td>
+                            <td class="invoice-amount">
                                 <?= number_format($row['total_invoice_amount'], 2) ?>
                             </td>
                             <td>
@@ -546,8 +545,8 @@
                                     : '-' ?>
                             </td>
                             <td><?= esc($row['recipt_no']) ?></td>
-                            <td><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
-                            <td><strong><?= number_format($runningBalance, 2) ?></strong></td>
+                            <td class="receipt-amount"><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
+                            <td class="running-amount"><strong><?= number_format($runningBalance, 2) ?></strong></td>
                             <td class="no-print">
                                 <!-- Edit -->
                                 <a href="<?= site_url('invoice/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit"
@@ -615,15 +614,15 @@
                     <td>
                         <p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p>
                     </td>
-                    <td><?= number_format(
+                    <td id="totalInvoiceAmount"><?= number_format(
                             $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
                             2
                         ) ?></td>
                     <td></td>
                     <td>Total Receipt Amount</td>
-                    <td><?= number_format($totalReceipt, 2) ?></td>
+                    <td id="totalReceiptAmount"><?= number_format($totalReceipt, 2) ?></td>
                     <td class="Minvoice-text-right print-hide">Closing Balance</td>
-                    <td class="Minvoice-text-right print-hide"><?= number_format($closingBalance, 2) ?></td>
+                    <td class="Minvoice-text-right print-hide" id="closingBalance"><?= number_format($closingBalance, 2) ?></td>
                     <!-- <td ></td>
                     <td  class="Minvoice-text-center">
                         
@@ -1171,93 +1170,178 @@
             });
         });
     });
-    document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
+     document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
 
-        document.getElementById('printLedgerBtn').style.display = 'inline-block';
-        const companySelect = document.getElementById('Minvoice-company');
-        const companyId = companySelect.value;
-        const fromInput = document.getElementById('Minvoice-fromDate').value;
-        const toInput = document.getElementById('Minvoice-toDate').value;
+    document.getElementById('printLedgerBtn').style.display = 'inline-block';
 
-        const rows = document.querySelectorAll('.invoice-row');
+    const companySelect = document.getElementById('Minvoice-company');
+    const companyId = companySelect.value;
+    const fromInput = document.getElementById('Minvoice-fromDate').value;
+    const toInput = document.getElementById('Minvoice-toDate').value;
 
-        let visibleDates = [];
+    const rows = document.querySelectorAll('.invoice-row');
 
-        // -------- GET SELECTED COMPANY DETAILS --------
-        const selectedOption = companySelect.options[companySelect.selectedIndex];
+    let visibleDates = [];
 
-        if (selectedOption && selectedOption.value !== "") {
+    // -------- GET SELECTED COMPANY DETAILS --------
+    const selectedOption = companySelect.options[companySelect.selectedIndex];
 
-            document.getElementById('ledger-company-name').innerText =
-                selectedOption.dataset.name || '';
+    if (selectedOption && selectedOption.value !== "") {
 
-            document.getElementById('ledger-company-address').innerText =
-                selectedOption.dataset.address || '';
+        document.getElementById('ledger-company-name').innerText =
+            selectedOption.dataset.name || '';
 
-            document.getElementById('ledger-company-phone').innerText =
-                selectedOption.dataset.phone || '';
+        document.getElementById('ledger-company-address').innerText =
+            selectedOption.dataset.address || '';
 
-            document.getElementById('ledger-company-email').innerText =
-                selectedOption.dataset.email || '';
+        document.getElementById('ledger-company-phone').innerText =
+            selectedOption.dataset.phone || '';
+
+        document.getElementById('ledger-company-email').innerText =
+            selectedOption.dataset.email || '';
+    }
+
+    rows.forEach(row => {
+
+        const rowCompany = row.dataset.companyId;
+        const rowDate = row.dataset.date;
+
+        let show = true;
+
+        // Company Filter
+        if (companyId && rowCompany !== companyId) {
+            show = false;
         }
 
-        rows.forEach(row => {
-
-            const rowCompany = row.dataset.companyId;
-            const rowDate = row.dataset.date;
-
-            let show = true;
-
-            // Company Filter
-            if (companyId && rowCompany !== companyId) {
-                show = false;
-            }
-
-            // Date From Filter
-            if (fromInput && new Date(rowDate) < new Date(fromInput)) {
-                show = false;
-            }
-
-            // Date To Filter
-            if (toInput && new Date(rowDate) > new Date(toInput)) {
-                show = false;
-            }
-
-            row.style.display = show ? '' : 'none';
-
-            // Collect visible dates
-            if (show) {
-                visibleDates.push(new Date(rowDate));
-            }
-        });
-
-        // -------- UPDATE PRINT HEADER DATE RANGE --------
-        if (visibleDates.length > 0) {
-
-            visibleDates.sort((a, b) => a - b);
-
-            const firstDate = visibleDates[0];
-            const lastDate = visibleDates[visibleDates.length - 1];
-
-            const options = {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            };
-
-            const formattedFrom = firstDate.toLocaleDateString('en-GB', options);
-            const formattedTo = lastDate.toLocaleDateString('en-GB', options);
-
-            document.getElementById('ledger-date-range').innerHTML =
-                `${formattedFrom} TO ${formattedTo}`;
-
-        } else {
-
-            document.getElementById('ledger-date-range').innerHTML =
-                `Ledger (No records found)`;
+        // Date From Filter
+        if (fromInput && new Date(rowDate) < new Date(fromInput)) {
+            show = false;
         }
 
+        // Date To Filter
+        if (toInput && new Date(rowDate) > new Date(toInput)) {
+            show = false;
+        }
+
+        row.style.display = show ? '' : 'none';
+
+        if (show) {
+            visibleDates.push(new Date(rowDate));
+        }
     });
+
+    // -------- DATE FORMAT OPTIONS --------
+    const options = {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    };
+
+    let formattedFrom = '';
+    let formattedTo = '';
+
+    // -------- USE INPUT DATES IF PROVIDED --------
+    if (fromInput) {
+        formattedFrom = new Date(fromInput).toLocaleDateString('en-GB', options);
+    }
+
+    if (toInput) {
+        formattedTo = new Date(toInput).toLocaleDateString('en-GB', options);
+    }
+
+    // -------- IF NO INPUT DATE, USE ROW DATES --------
+    if (!fromInput && !toInput && visibleDates.length > 0) {
+
+        visibleDates.sort((a, b) => a - b);
+
+        formattedFrom = visibleDates[0].toLocaleDateString('en-GB', options);
+        formattedTo = visibleDates[visibleDates.length - 1].toLocaleDateString('en-GB', options);
+    }
+
+    // -------- PRINT DATE RANGE --------
+    if (formattedFrom && formattedTo) {
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `${formattedFrom} TO ${formattedTo}`;
+
+    } else if (formattedFrom) {
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `From ${formattedFrom}`;
+
+    } else if (formattedTo) {
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `Up to ${formattedTo}`;
+
+    } else {
+
+        document.getElementById('ledger-date-range').innerHTML =
+            `Ledger (No records found)`;
+    }
+
+    let totalInvoice = 0;
+let totalReceipt = 0;
+
+rows.forEach(row => {
+
+if (row.style.display !== 'none') {
+
+const invoice = parseFloat(
+row.querySelector('.invoice-amount').innerText.replace(/,/g,'')
+) || 0;
+
+const receipt = parseFloat(
+row.querySelector('.receipt-amount').innerText.replace(/,/g,'')
+) || 0;
+
+totalInvoice += invoice;
+totalReceipt += receipt;
+
+}
+});
+
+const openingBalance = parseFloat(
+document.getElementById('openingBalance').dataset.opening
+) || 0;
+
+const closingBalance = openingBalance + totalInvoice - totalReceipt;
+
+document.getElementById('totalInvoiceAmount').innerText =
+(openingBalance + totalInvoice).toFixed(2);
+
+document.getElementById('totalReceiptAmount').innerText =
+totalReceipt.toFixed(2);
+
+document.getElementById('closingBalance').innerText =
+closingBalance.toFixed(2);
+
+let runningBalance = parseFloat(
+document.getElementById('openingBalance').dataset.opening
+) || 0;
+
+document.querySelectorAll('.invoice-row').forEach(row => {
+
+if(row.style.display !== 'none'){
+
+const invoice = parseFloat(
+row.querySelector('.invoice-amount').innerText.replace(/,/g,'')
+) || 0;
+
+const receipt = parseFloat(
+row.querySelector('.receipt-amount').innerText.replace(/,/g,'')
+) || 0;
+
+runningBalance += invoice - receipt;
+
+row.querySelector('.running-amount strong').innerText =
+runningBalance.toFixed(2);
+
+}
+
+});
+
+});
 
     document.addEventListener("DOMContentLoaded", function() {
 
