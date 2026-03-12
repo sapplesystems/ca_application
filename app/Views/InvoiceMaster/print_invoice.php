@@ -14,9 +14,10 @@
             font-style: normal;
             font-display: swap;
         }
+
         body {
             font-family: 'Cambria';
-            font-size: 15px;
+            font-size: 12px!important;
             background: #ffffff;
             margin: 0;
             padding: 0;
@@ -33,7 +34,7 @@
         span,
         strong,
         h3 {
-            font-size: 1em !important;
+            font-size: 12px !important;
         }
 
 
@@ -57,8 +58,16 @@
             border: none;
             padding: 12px 15px;
             vertical-align: top;
-            font-size: 14px !important;
+            font-size: 12px !important;
             background: #ffffff;
+        }
+
+        th {
+            font-size: 12px !important;
+        }
+
+        td {
+            font-size: 12px !important;
         }
 
 
@@ -125,13 +134,13 @@
             padding: 7px;
             font-weight: bold;
             text-align: center;
-            font-size: 14px !important;
+            font-size: 12px !important;
         }
 
         td {
             border: 1px solid #ddd;
             padding: 5px;
-            font-size: 14px !important;
+            font-size: 12px !important;
             background: #ffffff;
         }
 
@@ -160,6 +169,21 @@
             padding: 4px 8px;
             margin: 0;
             font-size: 12px;
+        }
+
+        .footer-cell {
+            position: relative;
+            height: 120px;
+            vertical-align: top;
+            padding: 5px;
+        }
+
+        .authorised-signatory {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            margin: 0;
+            font-size: 14px;
         }
 
 
@@ -233,6 +257,15 @@
             h3 {
                 font-size: 12px !important;
                 margin: 2px 0 !important;
+            }
+
+            .footer-cell {
+                height: 100px;
+            }
+
+            .authorised-signatory {
+                bottom: 2px;
+                right: 2px;
             }
         }
     </style>
@@ -317,12 +350,12 @@
 
         <table>
 
-<tr>
-<th style="width:10%">SL No.</th>
-<th style="width:55%">Particulars</th>
-<th style="width:20%;text-align: right;">SAC Code/ HSN</th>
-<th style="width:15%" class="right">Amount (Rs)</th>
-</tr>
+            <tr>
+                <th style="width:10%">SL No.</th>
+                <th style="width:53%">Particulars</th>
+                <th style="width:20%;text-align: right;">SAC Code/ HSN</th>
+                <th style="width:17%" class="right">Amount (Rs)</th>
+            </tr>
 
             <?php $sl = 1; ?>
             <?php foreach ($invoice_works as $service): ?>
@@ -419,7 +452,7 @@
 
             <tr>
                 <th colspan="2" style="text-align:left"><?= esc(ucwords(strtolower($invoice['amount_in_words']))); ?></th>
-                <th  class="right"><strong>Total</strong></th> 
+                <th class="right"><strong>Total</strong></th>
                 <th class="right"><?= number_format((float)$invoice['total_invoice_amount'], 0); ?></th>
             </tr>
 
@@ -434,7 +467,7 @@
 
                     <p style="font-size:15px; font-weight:400; margin:0;">
                         <strong>Bank Details:</strong><br>
-                         <?= esc($company['name']); ?><br>
+                        <?= esc($company['name']); ?><br>
                         Ac No: <?= esc($company['bank_ac_no']); ?><br>
                         IFSC: <?= esc($company['bank_ifsc']); ?><br>
                         Bank : <?= esc($company['bank_name']); ?><br>
@@ -444,11 +477,11 @@
                     <!-- QR RIGHT -->
                     <div style="position:absolute; top:5px; right:10px; text-align:right;">
                         <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block; text-decoration:none; color:#000;">
-                            Scan & Pay
+                            <span style="padding-right: 8px;">Scan & Pay</span>
                         </a>
                         <img src="<?= base_url('public/images/qr.jpeg'); ?>"
                             alt="QR Code"
-                            style="width:80px; height:80px; display:block; margin-left:auto;">      
+                            style="width:80px; height:80px; display:block; margin-left:auto;">
                         <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block;">
                             https://caapp.sapple.co.in/ca_application/
                         </a>
@@ -456,12 +489,12 @@
 
                 </td>
 
-                <td style="width:45%; vertical-align:top; padding:0; text-align:right; position:relative; height:100px;">
+                <td style="width:45%; vertical-align:top; padding:5px; text-align:right; position:relative; height:120px;">
                     <p style="font-size:14px; margin:0;">
                         <?= esc($company['name']); ?>
                     </p>
 
-                    <p style="margin:0; font-size:14px; position:absolute; bottom:0; right:0;">
+                    <p class="authorised-signatory">
                         Authorised Signatory
                     </p>
                 </td>

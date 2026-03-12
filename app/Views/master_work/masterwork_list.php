@@ -252,243 +252,305 @@
 </div>
 
 <script>
-    let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
 
+let serviceModal = new bootstrap.Modal(document.getElementById('addServiceModal'));
 
-    $('#addServiceForm').on('submit', function(e) {
-        e.preventDefault();
+$('#addServiceForm').on('submit', function(e) {
 
+    e.preventDefault();
 
-        $('.text-danger').remove();
-        $('input, select').css('border', '');
+    $('.text-danger').remove();
+    $('input, select').css('border', '');
 
-        const id = $('#serviceId').val();
-        const url = id ?
-            "<?= base_url('update-service'); ?>/" + id :
-            "<?= base_url('add-services'); ?>";
+    const id = $('#serviceId').val();
 
-        $.ajax({
-            url: url,
-            method: "POST",
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(res) {
+    const url = id
+        ? "<?= base_url('update-service'); ?>/" + id
+        : "<?= base_url('add-services'); ?>";
 
-                if (res.status === 'error') {
+    $.ajax({
+        url: url,
+        method: "POST",
+        data: $(this).serialize(),
+        dataType: "json",
+        success: function(res) {
 
-                    $.each(res.errors, function(field, msg) {
+            if (res.status === 'error') {
 
-                        let input = $('[name="' + field + '"]');
-                        let wrapper = input.closest('.msl-form-group');
+                $.each(res.errors, function(field, msg) {
 
-                        input.css('border', '1px solid red');
+                    let input = $('[name="' + field + '"]');
+                    let wrapper = input.closest('.msl-form-group');
 
-                        wrapper.find('.text-danger').remove();
+                    input.css('border', '1px solid red');
 
-                        wrapper.append(
-                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">' +
-                            msg +
-                            '</div>'
-                        );
-                    });
+                    wrapper.find('.text-danger').remove();
 
-                } else if (res.status === 'success') {
+                    wrapper.append(
+                        '<div class="text-danger" style="font-size:12px;margin-top:4px;">'
+                        + msg +
+                        '</div>'
+                    );
+                });
 
-                    alert(res.message);
-                    serviceModal.hide();
-                    location.reload();
-                }
             }
-        });
-    });
+            else if (res.status === 'success') {
 
+                alert(res.message);
+                serviceModal.hide();
+                location.reload();
 
-    <?php if (isset($validation)): ?>
-        document.addEventListener("DOMContentLoaded", function() {
-            serviceModal.show();
-        });
-    <?php endif; ?>
+            }
 
-
-    function openServicePopup(id) {
-
-
-        $("#addServiceForm")[0].reset();
-        $("#serviceId").val('');
-
-        $("input, select").css("border", "");
-        $(".text-danger").remove();
-
-
-        serviceModal.show();
-
-        if (id === 0 || id === '0') {
-
-            $("#saveBtn").text("Save Service");
-            $(".msl-popup-title").text("Add Service");
-            return;
         }
 
+    });
 
-        $("#serviceId").val(id);
-        $("#saveBtn").text("Update Service");
-        $(".msl-popup-title").text("Edit Service");
+});
 
 
-        $.ajax({
-            url: "<?= base_url('get-service'); ?>",
-            type: "POST",
-            data: {
-                id: id
-            },
-            dataType: "json",
-            success: function(response) {
-                $("#serviceCode").val(response.service_code);
-                $("#serviceName").val(response.service_name);
-                $("#sacCode").val(response.sac_code);
-                $("#unit").val(response.unit);
-                $("#defaultRate").val(response.default_rate);
-                $("#gstPercent").val(response.gst_percent);
-                $("#gstYesNo").val(response.gst_applicable);
-                $("#frequency").val(response.frequency);
-            }
-        });
+<?php if (isset($validation)): ?>
+document.addEventListener("DOMContentLoaded", function() {
+    serviceModal.show();
+});
+<?php endif; ?>
+
+
+
+function openServicePopup(id) {
+
+    $("#addServiceForm")[0].reset();
+    $("#serviceId").val('');
+
+    $("input, select").css("border", "");
+    $(".text-danger").remove();
+
+    serviceModal.show();
+
+    if (id === 0 || id === '0') {
+
+        $("#saveBtn").text("Save Service");
+        $(".msl-popup-title").text("Add Service");
+
+        return;
+
     }
 
-    // ===== Status toggle =====
-    document.querySelectorAll('.toggle').forEach(toggle => {
+    $("#serviceId").val(id);
 
-        toggle.addEventListener('click', function() {
+    $("#saveBtn").text("Update Service");
+    $(".msl-popup-title").text("Edit Service");
 
-            this.classList.toggle('inactive');
 
-            const status = this.classList.contains('inactive') ? 0 : 1;
-            const id = this.dataset.id;
+    $.ajax({
 
-            fetch("<?= base_url('/work_master/update-status') ?>", {
+        url: "<?= base_url('get-service'); ?>",
+
+        type: "POST",
+
+        data: {
+            id: id
+        },
+
+        dataType: "json",
+
+        success: function(response) {
+
+            $("#serviceCode").val(response.service_code);
+            $("#serviceName").val(response.service_name);
+            $("#sacCode").val(response.sac_code);
+            $("#unit").val(response.unit);
+            $("#defaultRate").val(response.default_rate);
+            $("#gstPercent").val(response.gst_percent);
+            $("#gstYesNo").val(response.gst_applicable);
+            $("#frequency").val(response.frequency);
+
+        }
+
+    });
+
+}
+
+
+
+
+$(document).ready(function() {
+
+    if ($('#searchmasterwork').length) {
+
+        window.table = new DataTable('#searchmasterwork', {
+
+            paging: false,
+
+            searching: true,
+
+            info: false,
+
+            ordering: false,
+
+            dom: 't',
+
+            columnDefs: [
+
+                {
+                    targets: 0,
+                    orderable: false
+                },
+
+                {
+                    targets: -1,
+                    orderable: false
+                },
+
+                {
+                    targets: 4,
+
+                    render: function(data, type) {
+
+                        if (type === 'filter') {
+
+                            let div = document.createElement("div");
+                            div.innerHTML = data;
+
+                            let text = div.querySelector('.status-text')?.innerText || '';
+
+                            return text.trim();
+
+                        }
+
+                        return data;
+
+                    }
+
+                }
+
+            ]
+
+        });
+
+
+        $('.search-input').on('keyup', function() {
+
+            table.search(this.value).draw();
+
+        });
+
+
+
+        $('.status-filter').on('change', function() {
+
+            let value = $(this).val();
+
+            if (value === "Active" || value === "Inactive") {
+
+                table.column(4)
+                    .search('^' + value + '$', true, false)
+                    .draw();
+
+            }
+            else {
+
+                table.column(4).search('').draw();
+
+            }
+
+        });
+
+
+        // ===== STATUS TOGGLE =====
+
+        document.querySelectorAll('.toggle').forEach(toggle => {
+
+            toggle.addEventListener('click', function() {
+
+                this.classList.toggle('inactive');
+
+                const status = this.classList.contains('inactive') ? 0 : 1;
+                const id = this.dataset.id;
+
+                let statusText = this.parentElement.querySelector('.status-text');
+
+                statusText.innerText = status ? 'Active' : 'Inactive';
+
+
+                table.draw(false);
+
+
+                fetch("<?= base_url('/work_master/update-status') ?>", {
+
                     method: "POST",
+
                     headers: {
+
                         "Content-Type": "application/json",
+
                         "X-Requested-With": "XMLHttpRequest"
+
                     },
+
                     body: JSON.stringify({
+
                         id: id,
                         status: status
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
 
+                    })
+
+                })
+
+                .then(res => res.json())
+
+                .then(data => {
 
                     document.getElementById('successPopup')?.remove();
                     document.getElementById('errorPopup')?.remove();
 
                     const popup = document.createElement('div');
+
                     popup.id = data.status ? 'successPopup' : 'errorPopup';
 
                     popup.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: ${data.status ? '#79e47cff' : '#f44336'};
-        color: #000;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 9999;
-        font-weight: 500;
-        min-width: 260px;
-    `;
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background-color: ${data.status ? '#79e47cff' : '#f44336'};
+                        color: #000;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                        z-index: 9999;
+                        font-weight: 500;
+                        min-width: 260px;
+                    `;
 
                     popup.innerHTML = `
-        <span
-            onclick="this.parentElement.remove()"
-            style="
-                position:absolute;
-                top:6px;
-                right:10px;
-                cursor:pointer;
-                font-size:18px;
-                font-weight:bold;
-            "
-        >&times;</span>
-        ${data.message}
-    `;
+                        <span
+                            onclick="this.parentElement.remove()"
+                            style="
+                                position:absolute;
+                                top:6px;
+                                right:10px;
+                                cursor:pointer;
+                                font-size:18px;
+                                font-weight:bold;
+                            "
+                        >&times;</span>
+                        ${data.message}
+                    `;
 
                     document.body.appendChild(popup);
 
-
                     setTimeout(() => popup.remove(), 10000);
+
                 })
+
                 .catch(err => console.error(err));
+
+            });
+
         });
 
-    });
-    $(document).ready(function() {
+    }
 
-        if ($('#searchmasterwork').length) {
+});
 
-            const table = new DataTable('#searchmasterwork', {
-                paging: false,
-                searching: true,
-                info: false,
-                ordering: false,
-                dom: 't',
-
-                columnDefs: [{
-                        targets: 0,
-                        orderable: false
-                    },
-                    {
-                        targets: -1,
-                        orderable: false
-                    },
-
-                    // ✅ status column search from hidden text
-                    {
-                        targets: 4,
-                        render: function(data, type, row, meta) {
-
-                            if (type === 'filter') {
-
-                                let div = document.createElement("div");
-                                div.innerHTML = data;
-
-                                let text = div.querySelector('.status-text')?.innerText || '';
-
-                                return text.trim();
-                            }
-
-                            return data;
-                        }
-                    }
-                ]
-            });
-
-            // search input
-            $('.search-input').on('keyup', function() {
-                table.search(this.value).draw();
-            });
-
-            // status filter
-            $('.status-filter').on('change', function() {
-
-                let value = $(this).val();
-
-                if (value === "Active" || value === "Inactive") {
-
-                    table.column(4)
-                        .search('^' + value + '$', true, false)
-                        .draw();
-
-                } else {
-
-                    table.column(4).search('').draw();
-                }
-
-            });
-
-        }
-
-    });
 </script>
