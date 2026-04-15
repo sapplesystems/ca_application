@@ -143,6 +143,11 @@
                                         </button>
                                         <button class="action-btn action-view" data-id="<?= $row['id'] ?>"> view
                                         </button>
+                                         <button class="action-btn action-delete"
+                                        onclick="deleteRecord('<?php echo $row['id']; ?>')">
+                                        Delete
+                                    </button>
+
                                     </div>
                                 </td>
                             </tr>
@@ -1024,6 +1029,32 @@
                 setTimeout(() => popup.remove(), 500);
             }
         }, 10000);
+
+        function deleteRecord(id) {
+    if (confirm("Are you sure you want to delete this record?")) {
+
+        let formData = new FormData();
+        formData.append("id", id);
+
+        fetch("<?= base_url('company-master/delete') ?>", {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+}
   
         </script>
     </body>

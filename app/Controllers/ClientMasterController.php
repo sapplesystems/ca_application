@@ -522,6 +522,31 @@ $clientName = $client['legal_name'] ?? 'Client';
     ]);
 }
 
+ public function deleteClient()
+{
+
+    // ✅ USE THIS
+    $id = $this->request->getPost('id');
+
+    if (!$id) {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Invalid ID'
+        ]);
+    }
+$model = new ClientModel();
+    if ($model->delete($id)) {
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Record deleted successfully'
+        ]);
+    } else {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Failed to delete record'
+        ]);
+    }
+}
 
 
 }

@@ -44,7 +44,8 @@ class ClientModel extends Model
         'billing_emails',
         'payment_terms',
         'status',
-        'gst_state'
+        'gst_state',
+        'opening_balance',
     ];
 
     protected bool $allowEmptyInserts = false;

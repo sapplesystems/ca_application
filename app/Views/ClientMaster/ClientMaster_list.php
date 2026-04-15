@@ -138,6 +138,10 @@
                                 <button class=" action-btn action-view btn" data-toggle="modal"
                                     data-target="#exampleModal" data-id="<?= $client['id'] ?>">View</button>
                                 <!-- <button class="action-btn action-deactivate">Deactivate</button> -->
+                                <button class="action-btn action-delete btn "
+                                    onclick="deleteRecord('<?php echo $client['id']; ?>')">
+                                    Delete
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -715,4 +719,29 @@ function closeErrorPopup() {
 
 
 setTimeout(closeErrorPopup, 10000);
+
+function deleteRecord(id) {
+    if (confirm("Are you sure you want to delete this record?")) {
+        let formData = new FormData();
+        formData.append("id", id);
+
+        fetch("<?= base_url('client/delete') ?>", {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    alert(data.message || 'Record deleted successfully');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to delete record');
+                }
+            })
+            .catch(err => console.error(err));
+    }
+}
 </script>

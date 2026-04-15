@@ -18,6 +18,7 @@ $routes->post('/work_master/update-status', 'MasterWork::updateStatus', ['filter
 $routes->post('add-services', 'MasterWork::addServices', ['filter' => 'adminPermission']);
 $routes->post('get-service', 'MasterWork::getService', ['filter' => 'adminPermission']);
 $routes->post('update-service/(:num)', 'MasterWork::updateServices/$1', ['filter' => 'adminPermission']);
+$routes->post('work_master/delete', 'MasterWork::deleteService', ['filter' => 'adminPermission']);
 
 // Client Master Routes
 $routes->match(['get', 'post'], 'Client_Master', 'ClientMasterController::index', ['as' => 'client.master', 'filter' => 'adminPermission']);
@@ -25,6 +26,7 @@ $routes->post('clients/store', 'ClientMasterController::store', ['filter' => 'ad
 $routes->post('clients/update', 'ClientMasterController::update', ['filter' => 'adminPermission']);
 $routes->post('clients/show', 'ClientMasterController::show', ['filter' => 'adminPermission']);
 $routes->post('client/update-status', 'ClientMasterController::updateStatus', ['filter' => 'adminPermission']);
+$routes->post('client/delete', 'ClientMasterController::deleteClient', ['filter' => 'adminPermission']);
 
 // Company Master Routes
 $routes->match(['get', 'post'], 'company_master', 'CompanyMasterController::index',['as' => 'company.master', 'filter' => 'adminPermission']);
@@ -32,6 +34,7 @@ $routes->post('company-master/store', 'CompanyMasterController::store', ['filter
 $routes->post('company-master/update', 'CompanyMasterController::update', ['filter' => 'adminPermission']);
 $routes->post('company-master/update-status', 'CompanyMasterController::updateStatus', ['filter' => 'adminPermission']);
 $routes->post('company-master/show', 'CompanyMasterController::show', ['filter' => 'adminPermission']);
+$routes->post('company-master/delete', 'CompanyMasterController::deleteCompany', ['filter' => 'adminPermission']);
 // Invoice Management Routes//Invoice Master Routes
 $routes->get('/InvoiceManagment', 'InvoiceMasterController::index',['as' => 'invoice.index', 'filter' => 'adminPermission']);
 $routes->get('/ManageInvoice/(:num)', 'InvoiceMasterController::manageInvoice/$1', ['filter' => 'adminPermission']);
@@ -58,6 +61,7 @@ $routes->get('debits/delete/(:num)', 'InvoiceMasterController::debitDelete/$1', 
 $routes->get('debits/edit/(:num)', 'InvoiceMasterController::debitEdit/$1', ['filter' => 'adminPermission']);
 $routes->post('debits/update/(:num)', 'InvoiceMasterController::debitUpdate/$1', ['filter' => 'adminPermission']);
 $routes->post('Expense/delete', 'InvoiceMasterController::ExpenseDelete', ['filter' => 'adminPermission']);
+$routes->post('invoice/saveOpeningBalance', 'InvoiceMasterController::saveOpeningBalance', ['filter' => 'adminPermission']);
 
 // Role Management Routes
 $routes->get('roles', 'RoleController::index', ['as' => 'roles.index', 'filter' => 'adminPermission']);

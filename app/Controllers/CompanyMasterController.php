@@ -799,5 +799,30 @@ $html .= '</div></div></div>';
     ]);
 }
 
+  public function deleteCompany()
+{
+
+    // ✅ USE THIS
+    $id = $this->request->getPost('id');
+
+    if (!$id) {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Invalid ID'
+        ]);
+    }
+$model = new CompanyMasterModel();
+    if ($model->delete($id)) {
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Record deleted successfully'
+        ]);
+    } else {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Failed to delete record'
+        ]);
+    }
+}
 
 }

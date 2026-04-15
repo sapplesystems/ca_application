@@ -150,4 +150,29 @@ class MasterWork extends BaseController
             'message' => 'Service Updated Successfully',
         ]);
     }
+  public function deleteService()
+{
+
+    // ✅ USE THIS
+    $id = $this->request->getPost('id');
+
+    if (!$id) {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Invalid ID'
+        ]);
+    }
+
+    if ($this->WorkMaster->delete($id)) {
+        return $this->response->setJSON([
+            'status' => true,
+            'message' => 'Record deleted successfully'
+        ]);
+    } else {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Failed to delete record'
+        ]);
+    }
+}
 }

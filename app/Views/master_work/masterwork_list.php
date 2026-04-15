@@ -106,6 +106,10 @@
                                         onclick="openServicePopup('<?php echo $worklist['id'];  ?>')">Edit</button>
                                     <button class="action-btn action-clone">Clone</button>
                                     <button class="action-btn action-deactivate">Deactivate</button>
+                                    <button class="action-btn action-delete"
+                                        onclick="deleteRecord('<?php echo $worklist['id']; ?>')">
+                                        Delete
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -552,5 +556,31 @@ $(document).ready(function() {
     }
 
 });
+
+function deleteRecord(id) {
+    if (confirm("Are you sure you want to delete this record?")) {
+
+        let formData = new FormData();
+        formData.append("id", id);
+
+        fetch("<?= base_url('work_master/delete') ?>", {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+}
 
 </script>
