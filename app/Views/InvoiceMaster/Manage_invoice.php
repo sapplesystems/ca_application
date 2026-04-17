@@ -460,10 +460,11 @@
     <!-- Table -->
     <div class="Minvoice-table-wrapper" id="ledger-print-area">
         <div class="print-only">
+            <h3></h3>
             <h4 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name" id="ledger-company-name"></h4>
             <h4 style="margin-top: -10px;text-align: center;">
                 <span id="ledger-company-address"></span><br>
-                PHONE No.:<span id="ledger-company-phone"></span><br>
+                PHONE No.:<span id="ledger-company-phone"></span>
                 E-MAIL Id: <span id="ledger-company-email"></span>
             </h4>
             <h4 id="ledger-date-range" style="text-align: center;">
@@ -555,7 +556,7 @@
                                 </a>
 
                                 <!-- Delete -->
-                                <button type="button" class="Minvoice-icon-btn delete" title="Delete Invoice"
+                                <button type="button" style="border: none;" class="Minvoice-icon-btn delete" title="Delete Invoice"
                                     onclick="deleteInvoice(<?= $row['id'] ?>)">
                                     🗑️
                                 </button>
@@ -565,11 +566,19 @@
                                     data-target="#ReciptNote" data-id="<?= $row['id'] ?>">
                                     📥
                                 </a>
+                                <!-- ✅ NEW Download Button -->
+                                <a href="<?= site_url('invoice/pdf/' . $row['id']) ?>"
+                                    target="_blank"
+                                    class="Minvoice-icon-btn download"
+                                    title="Download Invoice">
+                                    ⬇️
+                                </a>
                                 <!-- Print & Preview -->
                                 <button type="button" class="Minvoice-print-btn" onclick="printInvoice(<?= $row['id'] ?>)"
                                     style="padding:2px;border-radius: 10px;border: 2px solid #f1c40f;">
                                     Print &amp; Preview
                                 </button>
+
                             </td>
                             <!-- <td></td> -->
                         </tr>
@@ -615,9 +624,9 @@
                         <p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p>
                     </td>
                     <td id="totalInvoiceAmount"><?= number_format(
-                            $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
-                            2
-                        ) ?></td>
+                                                    $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
+                                                    2
+                                                ) ?></td>
                     <td></td>
                     <td>Total Receipt Amount</td>
                     <td id="totalReceiptAmount"><?= number_format($totalReceipt, 2) ?></td>
@@ -1170,178 +1179,178 @@
             });
         });
     });
-     document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
+    document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
 
-    document.getElementById('printLedgerBtn').style.display = 'inline-block';
+        document.getElementById('printLedgerBtn').style.display = 'inline-block';
 
-    const companySelect = document.getElementById('Minvoice-company');
-    const companyId = companySelect.value;
-    const fromInput = document.getElementById('Minvoice-fromDate').value;
-    const toInput = document.getElementById('Minvoice-toDate').value;
+        const companySelect = document.getElementById('Minvoice-company');
+        const companyId = companySelect.value;
+        const fromInput = document.getElementById('Minvoice-fromDate').value;
+        const toInput = document.getElementById('Minvoice-toDate').value;
 
-    const rows = document.querySelectorAll('.invoice-row');
+        const rows = document.querySelectorAll('.invoice-row');
 
-    let visibleDates = [];
+        let visibleDates = [];
 
-    // -------- GET SELECTED COMPANY DETAILS --------
-    const selectedOption = companySelect.options[companySelect.selectedIndex];
+        // -------- GET SELECTED COMPANY DETAILS --------
+        const selectedOption = companySelect.options[companySelect.selectedIndex];
 
-    if (selectedOption && selectedOption.value !== "") {
+        if (selectedOption && selectedOption.value !== "") {
 
-        document.getElementById('ledger-company-name').innerText =
-            selectedOption.dataset.name || '';
+            document.getElementById('ledger-company-name').innerText =
+                selectedOption.dataset.name || '';
 
-        document.getElementById('ledger-company-address').innerText =
-            selectedOption.dataset.address || '';
+            document.getElementById('ledger-company-address').innerText =
+                selectedOption.dataset.address || '';
 
-        document.getElementById('ledger-company-phone').innerText =
-            selectedOption.dataset.phone || '';
+            document.getElementById('ledger-company-phone').innerText =
+                selectedOption.dataset.phone || '';
 
-        document.getElementById('ledger-company-email').innerText =
-            selectedOption.dataset.email || '';
-    }
-
-    rows.forEach(row => {
-
-        const rowCompany = row.dataset.companyId;
-        const rowDate = row.dataset.date;
-
-        let show = true;
-
-        // Company Filter
-        if (companyId && rowCompany !== companyId) {
-            show = false;
+            document.getElementById('ledger-company-email').innerText =
+                selectedOption.dataset.email || '';
         }
 
-        // Date From Filter
-        if (fromInput && new Date(rowDate) < new Date(fromInput)) {
-            show = false;
+        rows.forEach(row => {
+
+            const rowCompany = row.dataset.companyId;
+            const rowDate = row.dataset.date;
+
+            let show = true;
+
+            // Company Filter
+            if (companyId && rowCompany !== companyId) {
+                show = false;
+            }
+
+            // Date From Filter
+            if (fromInput && new Date(rowDate) < new Date(fromInput)) {
+                show = false;
+            }
+
+            // Date To Filter
+            if (toInput && new Date(rowDate) > new Date(toInput)) {
+                show = false;
+            }
+
+            row.style.display = show ? '' : 'none';
+
+            if (show) {
+                visibleDates.push(new Date(rowDate));
+            }
+        });
+
+        // -------- DATE FORMAT OPTIONS --------
+        const options = {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        };
+
+        let formattedFrom = '';
+        let formattedTo = '';
+
+        // -------- USE INPUT DATES IF PROVIDED --------
+        if (fromInput) {
+            formattedFrom = new Date(fromInput).toLocaleDateString('en-GB', options);
         }
 
-        // Date To Filter
-        if (toInput && new Date(rowDate) > new Date(toInput)) {
-            show = false;
+        if (toInput) {
+            formattedTo = new Date(toInput).toLocaleDateString('en-GB', options);
         }
 
-        row.style.display = show ? '' : 'none';
+        // -------- IF NO INPUT DATE, USE ROW DATES --------
+        if (!fromInput && !toInput && visibleDates.length > 0) {
 
-        if (show) {
-            visibleDates.push(new Date(rowDate));
+            visibleDates.sort((a, b) => a - b);
+
+            formattedFrom = visibleDates[0].toLocaleDateString('en-GB', options);
+            formattedTo = visibleDates[visibleDates.length - 1].toLocaleDateString('en-GB', options);
         }
+
+        // -------- PRINT DATE RANGE --------
+        if (formattedFrom && formattedTo) {
+
+            document.getElementById('ledger-date-range').innerHTML =
+                `${formattedFrom} TO ${formattedTo}`;
+
+        } else if (formattedFrom) {
+
+            document.getElementById('ledger-date-range').innerHTML =
+                `From ${formattedFrom}`;
+
+        } else if (formattedTo) {
+
+            document.getElementById('ledger-date-range').innerHTML =
+                `Up to ${formattedTo}`;
+
+        } else {
+
+            document.getElementById('ledger-date-range').innerHTML =
+                `Ledger (No records found)`;
+        }
+
+        let totalInvoice = 0;
+        let totalReceipt = 0;
+
+        rows.forEach(row => {
+
+            if (row.style.display !== 'none') {
+
+                const invoice = parseFloat(
+                    row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
+                ) || 0;
+
+                const receipt = parseFloat(
+                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
+                ) || 0;
+
+                totalInvoice += invoice;
+                totalReceipt += receipt;
+
+            }
+        });
+
+        const openingBalance = parseFloat(
+            document.getElementById('openingBalance').dataset.opening
+        ) || 0;
+
+        const closingBalance = openingBalance + totalInvoice - totalReceipt;
+
+        document.getElementById('totalInvoiceAmount').innerText =
+            (openingBalance + totalInvoice).toFixed(2);
+
+        document.getElementById('totalReceiptAmount').innerText =
+            totalReceipt.toFixed(2);
+
+        document.getElementById('closingBalance').innerText =
+            closingBalance.toFixed(2);
+
+        let runningBalance = parseFloat(
+            document.getElementById('openingBalance').dataset.opening
+        ) || 0;
+
+        document.querySelectorAll('.invoice-row').forEach(row => {
+
+            if (row.style.display !== 'none') {
+
+                const invoice = parseFloat(
+                    row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
+                ) || 0;
+
+                const receipt = parseFloat(
+                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
+                ) || 0;
+
+                runningBalance += invoice - receipt;
+
+                row.querySelector('.running-amount strong').innerText =
+                    runningBalance.toFixed(2);
+
+            }
+
+        });
+
     });
-
-    // -------- DATE FORMAT OPTIONS --------
-    const options = {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-    };
-
-    let formattedFrom = '';
-    let formattedTo = '';
-
-    // -------- USE INPUT DATES IF PROVIDED --------
-    if (fromInput) {
-        formattedFrom = new Date(fromInput).toLocaleDateString('en-GB', options);
-    }
-
-    if (toInput) {
-        formattedTo = new Date(toInput).toLocaleDateString('en-GB', options);
-    }
-
-    // -------- IF NO INPUT DATE, USE ROW DATES --------
-    if (!fromInput && !toInput && visibleDates.length > 0) {
-
-        visibleDates.sort((a, b) => a - b);
-
-        formattedFrom = visibleDates[0].toLocaleDateString('en-GB', options);
-        formattedTo = visibleDates[visibleDates.length - 1].toLocaleDateString('en-GB', options);
-    }
-
-    // -------- PRINT DATE RANGE --------
-    if (formattedFrom && formattedTo) {
-
-        document.getElementById('ledger-date-range').innerHTML =
-            `${formattedFrom} TO ${formattedTo}`;
-
-    } else if (formattedFrom) {
-
-        document.getElementById('ledger-date-range').innerHTML =
-            `From ${formattedFrom}`;
-
-    } else if (formattedTo) {
-
-        document.getElementById('ledger-date-range').innerHTML =
-            `Up to ${formattedTo}`;
-
-    } else {
-
-        document.getElementById('ledger-date-range').innerHTML =
-            `Ledger (No records found)`;
-    }
-
-    let totalInvoice = 0;
-let totalReceipt = 0;
-
-rows.forEach(row => {
-
-if (row.style.display !== 'none') {
-
-const invoice = parseFloat(
-row.querySelector('.invoice-amount').innerText.replace(/,/g,'')
-) || 0;
-
-const receipt = parseFloat(
-row.querySelector('.receipt-amount').innerText.replace(/,/g,'')
-) || 0;
-
-totalInvoice += invoice;
-totalReceipt += receipt;
-
-}
-});
-
-const openingBalance = parseFloat(
-document.getElementById('openingBalance').dataset.opening
-) || 0;
-
-const closingBalance = openingBalance + totalInvoice - totalReceipt;
-
-document.getElementById('totalInvoiceAmount').innerText =
-(openingBalance + totalInvoice).toFixed(2);
-
-document.getElementById('totalReceiptAmount').innerText =
-totalReceipt.toFixed(2);
-
-document.getElementById('closingBalance').innerText =
-closingBalance.toFixed(2);
-
-let runningBalance = parseFloat(
-document.getElementById('openingBalance').dataset.opening
-) || 0;
-
-document.querySelectorAll('.invoice-row').forEach(row => {
-
-if(row.style.display !== 'none'){
-
-const invoice = parseFloat(
-row.querySelector('.invoice-amount').innerText.replace(/,/g,'')
-) || 0;
-
-const receipt = parseFloat(
-row.querySelector('.receipt-amount').innerText.replace(/,/g,'')
-) || 0;
-
-runningBalance += invoice - receipt;
-
-row.querySelector('.running-amount strong').innerText =
-runningBalance.toFixed(2);
-
-}
-
-});
-
-});
 
     document.addEventListener("DOMContentLoaded", function() {
 
