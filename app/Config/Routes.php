@@ -62,6 +62,7 @@ $routes->get('debits/edit/(:num)', 'InvoiceMasterController::debitEdit/$1', ['fi
 $routes->post('debits/update/(:num)', 'InvoiceMasterController::debitUpdate/$1', ['filter' => 'adminPermission']);
 $routes->post('Expense/delete', 'InvoiceMasterController::ExpenseDelete', ['filter' => 'adminPermission']);
 $routes->post('invoice/saveOpeningBalance', 'InvoiceMasterController::saveOpeningBalance', ['filter' => 'adminPermission']);
+$routes->post('client/updateOpeningBalance', 'InvoiceMasterController::updateOpeningBalance', ['filter' => 'adminPermission']);
 
 // Role Management Routes
 $routes->get('roles', 'RoleController::index', ['as' => 'roles.index', 'filter' => 'adminPermission']);

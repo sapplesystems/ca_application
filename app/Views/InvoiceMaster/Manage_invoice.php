@@ -498,11 +498,24 @@
             <tbody>
                 <!-- Opening balance row -->
                 <tr class="Minvoice-opening-row">
-                    <td class="Minvoice-opening-label" id="openingBalance">Opening Balance</td>
+                    <td class="Minvoice-opening-label">Opening Balance</td>
                     <td></td>
                     <td></td>
                     <td class="print-hide"></td>
-                    <td><?= number_format($openingBalance, 2) ?></td>
+                   <td>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <input type="number"
+                        step="0.01"
+                        id="openingBalanceInput"
+                        value="<?= esc($client['opening_balance'] ?? 0) ?>">
+
+                            <button type="button"
+                                id="saveOpeningBalanceBtn"
+                                class="btn btn-success btn-sm">
+                                Save
+                            </button>
+                        </div>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -511,7 +524,8 @@
                 </tr>
 
                 <?php if (!empty($invoices)) : ?>
-                    <?php $runningBalance = 0;
+                    <?php 
+                    $runningBalance = $client['opening_balance'] ?? 0;
                     $isFirstRow = true;
                     ?>
 
@@ -519,11 +533,12 @@
                     <?php foreach ($invoices as $row) : ?>
 
                         <?php
+                        
                         $invoice = $row['total_invoice_amount'] ?? 0;
                         $tds     = $row['tds_amount'] ?? 0;
 
                         if ($isFirstRow) {
-                            $runningBalance = $openingBalance + $invoice - $tds;
+                            $runningBalance += ($invoice - $tds);
                             $isFirstRow = false; // next rows won't enter here
                         } else {
                             $runningBalance += $invoice - $tds;
@@ -623,10 +638,12 @@
                     <td>
                         <p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p>
                     </td>
-                    <td id="totalInvoiceAmount"><?= number_format(
-                                                    $openingBalance + array_sum(array_column($invoices, 'total_invoice_amount')),
-                                                    2
-                                                ) ?></td>
+                   <td id="totalInvoiceAmount">
+    <?= number_format(
+        ($client['opening_balance'] ?? 0) + array_sum(array_column($invoices, 'total_invoice_amount')),
+        2
+    ) ?>
+</td>
                     <td></td>
                     <td>Total Receipt Amount</td>
                     <td id="totalReceiptAmount"><?= number_format($totalReceipt, 2) ?></td>
@@ -1417,5 +1434,249 @@
             const text = row.getAttribute('data-search') || '';
             row.style.display = text.includes(searchValue) ? 'flex' : 'none';
         }
+    });
+
+    // ===============================
+// 🔁 MAIN RECALCULATION FUNCTION
+// ===============================
+function recalculateLedger() {
+
+    const rows = document.querySelectorAll('.invoice-row');
+
+    let openingBalance = parseFloat(
+        document.getElementById('openingBalanceInput').value
+    ) || 0;
+
+    let totalInvoice = 0;
+    let totalReceipt = 0;
+    let runningBalance = openingBalance;
+
+    rows.forEach(row => {
+
+        // Only calculate visible rows (important for filters)
+        if (row.style.display !== 'none') {
+
+            const invoice = parseFloat(
+                row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
+            ) || 0;
+
+            const receipt = parseFloat(
+                row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
+            ) || 0;
+
+            totalInvoice += invoice;
+            totalReceipt += receipt;
+
+            runningBalance += invoice - receipt;
+
+            row.querySelector('.running-amount strong').innerText =
+                runningBalance.toFixed(2);
+        }
+    });
+
+    // ===============================
+    // UPDATE TOTALS
+    // ===============================
+    document.getElementById('totalInvoiceAmount').innerText =
+        (openingBalance + totalInvoice).toFixed(2);
+
+    document.getElementById('totalReceiptAmount').innerText =
+        totalReceipt.toFixed(2);
+
+    document.getElementById('closingBalance').innerText =
+        (openingBalance + totalInvoice - totalReceipt).toFixed(2);
+}
+
+// ===============================
+// 🔄 AUTO UPDATE WHEN INPUT CHANGES
+// ===============================
+document.addEventListener('DOMContentLoaded', function () {
+
+    const openingInput = document.getElementById('openingBalanceInput');
+
+    if (openingInput) {
+        openingInput.addEventListener('input', function () {
+            recalculateLedger();
+        });
+    }
+
+    // Initial calculation on page load
+    recalculateLedger();
+});
+
+
+// ===============================
+// 🔍 MODIFY SEARCH BUTTON
+// ===============================
+document.querySelector('.Minvoice-btn-search').addEventListener('click', function () {
+
+    document.getElementById('printLedgerBtn').style.display = 'inline-block';
+
+    const companySelect = document.getElementById('Minvoice-company');
+    const companyId = companySelect.value;
+    const fromInput = document.getElementById('Minvoice-fromDate').value;
+    const toInput = document.getElementById('Minvoice-toDate').value;
+
+    const rows = document.querySelectorAll('.invoice-row');
+
+    let visibleDates = [];
+
+    const selectedOption = companySelect.options[companySelect.selectedIndex];
+
+    if (selectedOption && selectedOption.value !== "") {
+
+        document.getElementById('ledger-company-name').innerText =
+            selectedOption.dataset.name || '';
+
+        document.getElementById('ledger-company-address').innerText =
+            selectedOption.dataset.address || '';
+
+        document.getElementById('ledger-company-phone').innerText =
+            selectedOption.dataset.phone || '';
+
+        document.getElementById('ledger-company-email').innerText =
+            selectedOption.dataset.email || '';
+    }
+
+    rows.forEach(row => {
+
+        const rowCompany = row.dataset.companyId;
+        const rowDate = row.dataset.date;
+
+        let show = true;
+
+        if (companyId && rowCompany !== companyId) {
+            show = false;
+        }
+
+        if (fromInput && new Date(rowDate) < new Date(fromInput)) {
+            show = false;
+        }
+
+        if (toInput && new Date(rowDate) > new Date(toInput)) {
+            show = false;
+        }
+
+        row.style.display = show ? '' : 'none';
+
+        if (show) {
+            visibleDates.push(new Date(rowDate));
+        }
+    });
+
+    // ===============================
+    // DATE RANGE
+    // ===============================
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+
+    let formattedFrom = fromInput
+        ? new Date(fromInput).toLocaleDateString('en-GB', options)
+        : '';
+
+    let formattedTo = toInput
+        ? new Date(toInput).toLocaleDateString('en-GB', options)
+        : '';
+
+    if (!fromInput && !toInput && visibleDates.length > 0) {
+        visibleDates.sort((a, b) => a - b);
+
+        formattedFrom = visibleDates[0].toLocaleDateString('en-GB', options);
+        formattedTo = visibleDates[visibleDates.length - 1].toLocaleDateString('en-GB', options);
+    }
+
+    if (formattedFrom && formattedTo) {
+        document.getElementById('ledger-date-range').innerHTML =
+            `${formattedFrom} TO ${formattedTo}`;
+    }
+
+    // ✅ IMPORTANT: Recalculate after filtering
+    recalculateLedger();
+});
+
+
+// ===============================
+// 🔄 RESET BUTTON FIX
+// ===============================
+document.querySelector('.Minvoice-btn-reset').addEventListener('click', function () {
+
+    document.getElementById('Minvoice-company').value = '';
+    document.getElementById('Minvoice-fromDate').value = '';
+    document.getElementById('Minvoice-toDate').value = '';
+
+    document.querySelectorAll('.invoice-row').forEach(row => {
+        row.style.display = '';
+    });
+
+    recalculateLedger();
+});
+// ===============================
+// 💾 SAVE OPENING BALANCE (AUTO)
+// ===============================
+document.getElementById('openingBalanceInput')
+    .addEventListener('change', function () {
+
+        const value = this.value;
+        const clientId = <?= $clients[0]['id']; ?>;
+
+        fetch("<?= site_url('client/updateOpeningBalance') ?>", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify({
+                client_id: clientId,
+                opening_balance: value
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Opening balance saved");
+            } else {
+                alert("Failed to save opening balance");
+            }
+        })
+        .catch(err => console.error(err));
+    });
+
+    // ===============================
+// 💾 SAVE OPENING BALANCE (BUTTON)
+// ===============================
+document.getElementById('saveOpeningBalanceBtn')
+    .addEventListener('click', function () {
+
+        const openingBalance = document.getElementById('openingBalanceInput').value;
+        const clientId = <?= $clients[0]['id']; ?>;
+
+        if (openingBalance === '') {
+            alert('Please enter opening balance');
+            return;
+        }
+
+        fetch("<?= site_url('client/updateOpeningBalance') ?>", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify({
+                client_id: clientId,
+                opening_balance: openingBalance
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Opening balance saved successfully');
+                location.reload();
+            } else {
+                alert('Failed to save opening balance');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Something went wrong');
+        });
     });
 </script>

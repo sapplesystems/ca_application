@@ -38,9 +38,12 @@ class InvoiceMasterController extends BaseController
         $clientModel = new ClientModel();
 
         $clients = $clientModel
-            ->select('id, legal_name,gst_state')
+            ->select('id, legal_name,gst_state, opening_balance')
             ->where('id', $id)
             ->findAll();
+     $client = $clientModel
+    ->select(' opening_balance')
+    ->find($id);
 
         $companyModel = new CompanyMasterModel();
         $companies = $companyModel
@@ -55,7 +58,7 @@ class InvoiceMasterController extends BaseController
         $receipt=$receiptModel->select('*')->where('client_id', $id)->findAll();
         $debitModel=new DebitNotes();
         $debit=$debitModel->select('note_type,total_amount')->findAll();
-        $openingBalance = 0;
+        // $openingBalance = 0;
         
 
         echo view('common/header');
@@ -63,15 +66,40 @@ class InvoiceMasterController extends BaseController
         echo view('InvoiceMaster/Manage_invoice', [
             'companies' => $companies,
             'clients' => $clients,
+            'client' => $client,
             'works' => $works,
             'invoices' => $invoice,
             'receipt'=>$receipt,
             'debit'=>$debit,
-            'openingBalance' => $openingBalance,
+            // 'openingBalance' => $openingBalance,
              
         ]);
         echo view('common/footer');
     }
+    public function updateOpeningBalance()
+{
+    $data = $this->request->getJSON(true);
+
+    $clientId = $data['client_id'] ?? null;
+    $openingBalance = $data['opening_balance'] ?? 0;
+
+    if (!$clientId) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Invalid client ID'
+        ]);
+    }
+
+    $clientModel = new \App\Models\ClientModel();
+
+    $updated = $clientModel->update($clientId, [
+        'opening_balance' => $openingBalance
+    ]);
+
+    return $this->response->setJSON([
+        'success' => $updated ? true : false
+    ]);
+}
   public function previewInvoice()
 {
     // print_r($this->request->getPost()); exit;
