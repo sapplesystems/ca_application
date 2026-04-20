@@ -461,15 +461,18 @@
     <div class="Minvoice-table-wrapper" id="ledger-print-area">
         <div class="print-only">
             <h3></h3>
-            <h4 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name" id="ledger-company-name"></h4>
+            <h3 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name" id="ledger-company-name"></h3>
             <h4 style="margin-top: -10px;text-align: center;">
-                <span id="ledger-company-address"></span><br>
-                PHONE No.:<span id="ledger-company-phone"></span>
+                <span style="text-transform: uppercase;" id="ledger-company-address"></span><br>
+                PHONE No.:<span id="ledger-company-phone"></span>&nbsp;&nbsp;&nbsp;
                 E-MAIL Id: <span id="ledger-company-email"></span>
             </h4>
-            <h4 id="ledger-date-range" style="text-align: center;">
+            <!-- <h4 id="ledger-date-range" style="text-align: center;">
 
-            </h4>
+            </h4> -->
+            <strong>
+                <p id="ledger-date-range" style="text-align: center;font-size:25px;"></p>
+            </strong>
 
         </div>
         <div class="print-only">
