@@ -604,7 +604,7 @@
             const phoneInput = $('[name="phone"]');
             if (phoneInput.length) {
                 const phoneVal = $.trim(phoneInput.val());
-                const phonePattern = /^[0-9]{10,11}$/;
+                const phonePattern = /^([0-9]{10,11}|[0-9]{2,5}-[0-9]{6,8})$/;
 
                 if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
                     isValid = false;
@@ -709,7 +709,7 @@
             const phoneInput = $('#editcompanymaster [name="phone"]');
             if (phoneInput.length) {
                 const phoneVal = $.trim(phoneInput.val());
-                const phonePattern = /^[0-9]{10,11}$/;
+                const phonePattern = /^([0-9]{10,11}|[0-9]{2,5}-[0-9]{6,8})$/;
 
                 if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
                     isValid = false;
