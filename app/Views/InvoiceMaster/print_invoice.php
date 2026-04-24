@@ -478,7 +478,7 @@
                         <strong>Bank Details:</strong><br>
                         <?= esc($company['name']); ?><br>
                         Bank Name : <?= esc($company['bank_name']); ?><br>
-                        Ac No: <?= esc($company['bank_ac_no']); ?><br>
+                        A/C No: <?= esc($company['bank_ac_no']); ?><br>
                         IFSC: <?= esc($company['bank_ifsc']); ?><br>
                         
                         Branch : <?= esc($company['branch_address']); ?>
