@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Cambria';
-            font-size: 12px!important;
+            font-size: 12px !important;
             background: #ffffff;
             margin: 0;
             padding: 0;
@@ -184,7 +184,11 @@
             right: 5px;
             margin: 0;
             font-size: 14px;
+            font-weight: bold;
         }
+          .taxinvoicesize {
+                font-size: 13px !important;
+            }
 
 
         @media print {
@@ -266,6 +270,11 @@
             .authorised-signatory {
                 bottom: 2px;
                 right: 2px;
+                font-weight: bold;
+            }
+
+            .taxinvoicesize {
+                font-size: 13px !important;
             }
         }
     </style>
@@ -306,7 +315,7 @@
             </tr>
 
             <tr>
-                <th colspan="2">Tax Invoice</th>
+                <th colspan="2" class="taxinvoicesize">Tax Invoice</th>
             </tr>
         </table>
 
@@ -316,8 +325,8 @@
             <tr>
 
                 <td style="width:60%; vertical-align:top;border-right: 0;">
-                    <strong>Bill To:</strong><br>
-                    <?= esc($client['legal_name']); ?><br>
+                    <strong style="font-size:13px">Bill To:</strong><br>
+                    <strong><?= esc($client['legal_name']); ?></strong><br>
                     <?= esc($client['registered_office']); ?><br>
                     E-mail ID: <?= esc($client['billing_emails']); ?><br>
                     GST No:<?= esc($client['gstin']); ?>
@@ -468,9 +477,10 @@
                     <p style="font-size:15px; font-weight:400; margin:0;">
                         <strong>Bank Details:</strong><br>
                         <?= esc($company['name']); ?><br>
+                        Bank name : <?= esc($company['bank_name']); ?><br>
                         Ac No: <?= esc($company['bank_ac_no']); ?><br>
                         IFSC: <?= esc($company['bank_ifsc']); ?><br>
-                        Bank : <?= esc($company['bank_name']); ?><br>
+                        
                         Branch : <?= esc($company['branch_address']); ?>
                     </p>
 
@@ -490,7 +500,7 @@
                 </td>
 
                 <td style="width:45%; vertical-align:top; padding:5px; text-align:right; position:relative; height:120px;">
-                    <p style="font-size:14px; margin:0;">
+                    <p style="font-size:14px;font-weight:bold; margin:0;">
                         <?= esc($company['name']); ?>
                     </p>
 
