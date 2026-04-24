@@ -292,7 +292,7 @@ function romanNumeral($num)
         <div>
             <b>Bank Details</b><br />
              <?= esc($company['name']); ?></br>
-            Bank name :<?php echo $company['bank_name']; ?><br />
+            Bank Name :<?php echo $company['bank_name']; ?><br />
             Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
             IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
             Branch :<?php echo $company['branch_address']; ?>
