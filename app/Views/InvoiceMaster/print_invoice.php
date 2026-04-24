@@ -477,7 +477,7 @@
                     <p style="font-size:15px; font-weight:400; margin:0;">
                         <strong>Bank Details:</strong><br>
                         <?= esc($company['name']); ?><br>
-                        Bank name : <?= esc($company['bank_name']); ?><br>
+                        Bank Name : <?= esc($company['bank_name']); ?><br>
                         Ac No: <?= esc($company['bank_ac_no']); ?><br>
                         IFSC: <?= esc($company['bank_ifsc']); ?><br>
                         
