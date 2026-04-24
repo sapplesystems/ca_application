@@ -387,8 +387,10 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
     $dompdf->render();
 
     // Output PDF (force download)
+   $filename = str_replace('/', '-', $invoice['invoice_no']);
+
     $dompdf->stream(
-         $invoice['invoice_no'] . '.pdf',
+        $filename . '.pdf',
         ['Attachment' => true]
     );
 }
