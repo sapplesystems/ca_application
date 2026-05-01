@@ -492,8 +492,8 @@
                         <img src="<?= base_url('public/images/qr.jpeg'); ?>"
                             alt="QR Code"
                             style="width:80px; height:80px; display:block; margin-left:auto;">
-                        <a href="https://caapp.sapple.co.in/ca_application/" target="_blank" style="font-size:11px; display:block;">
-                            https://caapp.sapple.co.in/ca_application/
+                        <a href="https://u.payu.in/Yr6SAsbzLlMm" target="_blank" style="font-size:11px; display:block;">
+                            https://u.payu.in/Yr6SAsbzLlMm
                         </a>
                     </div>
 
@@ -541,6 +541,13 @@
         window.onafterprint = function() {
             window.location.href = "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
         };
+        window.onload = function () {
+    window.print();
+
+    window.onafterprint = function () {
+        window.close();
+    };
+};
     </script>
 
 </body>

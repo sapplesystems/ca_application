@@ -5,7 +5,8 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-
+//home pge 
+$routes->get('home', 'HomepageController::index', ['as' => 'home.index', 'filter' => 'adminPermission']);
 // Login Routes (NO FILTER)
 $routes->get('/login', 'LoginController::login', ['as' => 'admin.login.form']);
 $routes->get('/', 'LoginController::login', ['as' => 'home']);
