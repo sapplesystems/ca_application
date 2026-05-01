@@ -25,7 +25,7 @@
     <header class="top-header">
         <div class="logo-wrap">
             <div>
-        <img src="<?= base_url('public/images/ca_logo.jpeg') ?>" 
+        <img src="<?= base_url('public/images/ca_logo.png') ?>" 
              alt="CA Logo" 
              style="width:100%; height:70px;">
     </div>
