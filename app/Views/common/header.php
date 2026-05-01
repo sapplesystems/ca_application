@@ -25,8 +25,10 @@
     <header class="top-header">
         <div class="logo-wrap">
             <div>
-                <div><img src="<?= base_url('public/images/CA_logo.png') ?>" alt="CA Logo"></div>
-            </div>
+        <img src="<?= base_url('public/images/ca_logo.jpeg') ?>" 
+             alt="CA Logo" 
+             style="width:100%; height:70px;">
+    </div>
         </div>
         <div class="user-info">
             Welcome! <span><?= $session->get('admin')['name'] ?? 'Guest'; ?></span>
@@ -64,6 +66,11 @@
     ?>
 
     <nav class="menu-bar">
+         <?php if ($userRole && hasPermission('work_master.view', $userRole->role_id, $db)): ?>
+        <a href="<?= base_url('home'); ?>" class="menu-link">
+            <div class="menu-item">Home</div>
+        </a>
+        <?php endif; ?>
         <?php if ($userRole && hasPermission('work_master.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('work_master'); ?>" class="menu-link">
             <div class="menu-item">Master Work List</div>

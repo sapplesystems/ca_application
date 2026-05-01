@@ -75,11 +75,11 @@ body.login-body {
   gap: 10px;
 }
 .user-info {
-  font-size: 13px;
+  font-size: 16px;
   color: #374151;
 }
 .user-info span {
-  font-weight: 500;
+  font-weight: 600;
 }
 .user-info a {
   margin-left: 16px;
