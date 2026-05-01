@@ -64,6 +64,11 @@ $routes->post('Expense/delete', 'InvoiceMasterController::ExpenseDelete', ['filt
 $routes->post('invoice/saveOpeningBalance', 'InvoiceMasterController::saveOpeningBalance', ['filter' => 'adminPermission']);
 $routes->post('client/updateOpeningBalance', 'InvoiceMasterController::updateOpeningBalance', ['filter' => 'adminPermission']);
 
+//Receipt Invoice Mangement Routes
+$routes->get('/invoice-mangement', 'ReceiptInvoiceMangementController::index', ['as' => 'receipt.invoice.index', 'filter' => 'adminPermission']);
+$routes->post('invoice-mangement/preview', 'ReceiptInvoiceMangementController::preview');
+$routes->post('invoice-mangement/search', 'ReceiptInvoiceMangementController::search');
+
 // Role Management Routes
 $routes->get('roles', 'RoleController::index', ['as' => 'roles.index', 'filter' => 'adminPermission']);
 $routes->get('roles/create', 'RoleController::create', ['as' => 'roles.create', 'filter' => 'adminPermission']);

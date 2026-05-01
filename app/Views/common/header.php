@@ -84,13 +84,13 @@
 
         <?php if ($userRole && hasPermission('invoice.view', $userRole->role_id, $db)): ?>
         <a href="<?= base_url('InvoiceManagment'); ?>" class="menu-link">
-            <div class="menu-item">Invoice Management</div>
+            <div class="menu-item">Party Ledger</div>
         </a>
         <?php endif; ?>
 
         <?php if ($userRole && hasPermission('receipt.view', $userRole->role_id, $db)): ?>
-        <a href="<?= base_url('receipt_notes'); ?>" class="menu-link">
-            <div class="menu-item"> Receipt Notes (TDS)</div>
+        <a href="<?= base_url('invoice-mangement'); ?>" class="menu-link">
+            <div class="menu-item"> Invoice Management</div>
         </a>
         <?php endif; ?>
 
