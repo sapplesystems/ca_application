@@ -242,9 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${row.tax_apply_name === 'igst' ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(18/100*row.service_value || 0).toFixed(2)}</td>` : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`}
                         <td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(row.grand_total || 0).toFixed(2)}</td>
                         <td style="padding:8px; border:1px solid #ccc; text-align:center; white-space:nowrap;">
-                            <a href="<?= site_url('invoice/edit/') ?>${row.id}" target="_blank" style="margin-right:4px; text-decoration:none; color:#0b5c7d;">✏️ Edit</a>
-                            <a href="<?= site_url('invoice/print/') ?>${row.id}" target="_blank" style="margin-right:4px; text-decoration:none; color:#0b5c7d;">👁️ Preview</a>
-                            <a href="<?= site_url('invoice/pdf/') ?>${row.id}" target="_blank" style="text-decoration:none; color:#0b5c7d;">⬇️ Download</a>
+                            <a href="<?= site_url('invoice/edit/') ?>${row.id}"  style="margin-right:4px; text-decoration:none; color:#0b5c7d;">✏️ Edit</a>
+                            <a href="<?= site_url('invoice/print/') ?>${row.id}"  style="margin-right:4px; text-decoration:none; color:#0b5c7d;">👁️ Preview</a>
+                            <a href="<?= site_url('invoice/pdf/') ?>${row.id}"  style="text-decoration:none; color:#0b5c7d;">⬇️ Download</a>
                         </td>
                     `;
                     searchResultsBody.appendChild(tr);
