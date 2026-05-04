@@ -1,3 +1,6 @@
+<style>
+    
+</style>
 <div class="invoiceM-containerr">
     <!-- Modal1 -->
 <div class="modal fade" id="GenrateVoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,7 +77,10 @@
     </div>
 </div>
     <div class="invoiceM-toolbar">
-        <div class="invoiceM-toolbar-title">Invoice Management</div>
+        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right"class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
+            data-target="#GenrateVoice">
+            Generate Invoice For Pending Work
+ </button></div>
             <div class="Minvoice-filter-row">
         <div class="Minvoice-filter-group">
             <label for="Minvoice-company">Select Company</label>
@@ -106,7 +112,7 @@
         </div>
 
         <div class="Minvoice-filter-buttons">
-            <button class="Minvoice-btn Minvoice-btn-search">Search</button>
+            <button class="Minvoice-btn Minvoice-btn-green">Search</button>
             <button class="Minvoice-btn Minvoice-btn-reset">Reset</button>
         </div>
     </div>
@@ -142,10 +148,7 @@
         <p id="noSearchResults" style="display:none; margin-top:12px; font-weight:bold;">No matching records found.</p>
     </div>
 
-<button type="button" class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
-            data-target="#GenrateVoice">
-            Generate Invoice For Pending Work
- </button>
+
 
  </div>
  <script>
@@ -192,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-    document.querySelector('.Minvoice-btn-search').addEventListener('click', function(e) {
+    document.querySelector('.Minvoice-btn-green').addEventListener('click', function(e) {
         e.preventDefault();
 
         const companySelect = document.getElementById('Minvoice-company');
