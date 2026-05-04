@@ -1,3 +1,13 @@
+<style>
+    @font-face {
+        font-family: 'Cambria';
+        src: url('../public/fonts/Cambria.woff2') format('woff2'),
+            url('../public/fonts/Cambria.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+</style>
 <div class="invoiceM-containerr">
     <div class=" inv-header-main">
         <h1 class="inv-title-main">Invoice</h1>
