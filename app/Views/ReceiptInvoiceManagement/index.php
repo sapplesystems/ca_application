@@ -1,5 +1,35 @@
 <style>
-    
+    .search-popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 6px;
+        padding: 14px 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        font-size: 14px;
+        min-width: 260px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .search-popup__message {
+        flex: 1;
+    }
+    .search-popup__close {
+        cursor: pointer;
+        font-weight: bold;
+        color: #721c24;
+        background: transparent;
+        border: none;
+        font-size: 18px;
+        line-height: 1;
+        padding: 0;
+    }
 </style>
 <div class="invoiceM-containerr">
     <!-- Modal1 -->
@@ -119,9 +149,9 @@
     </div>
 
     <div class="invoice-footer" id="invoice-footer" style="display: none;"> 
-    <div id="company-name"><strong>Your Company Name Pvt Ltd</strong></div> 
-    <div id="company-address">123 Business Street, City, State - 000000</div> 
-    <div id="company-contact">Phone: +91 9876543210 | Email: info@company.com</div>
+    <div id="company-name"><strong></strong></div> 
+    <div id="company-address"></div> 
+    <div id="company-contact"></div>
     <div id="sales"><b>Sales Register</b></div> 
     <div id="date-range">Date: <?= date('d-m-Y') ?></div> 
     </div>
@@ -206,8 +236,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const searchResultsBody = document.getElementById('searchResultsBody');
         const noSearchResults = document.getElementById('noSearchResults');
 
-        searchResultsBody.innerHTML = '';
-        noSearchResults.style.display = 'none';
+        if (!companyId && !fromInput && !toInput) {
+            document.getElementById('searchResultsSection').style.display = 'none';
+            document.getElementById('invoice-footer').style.display = 'none';
+            showSearchPopup('Please select at least one filter before searching.');
+            return;
+        }
+
+        searchResultsBody.innerHTML = '';        noSearchResults.style.display = 'none';
 
         fetch('<?= base_url('invoice-mangement/search') ?>', {
             method: 'POST',
@@ -258,6 +294,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 noSearchResults.textContent = 'Unable to load search results. Please try again.';
                 noSearchResults.style.display = 'block';
             });
+
+        function showSearchPopup(message) {
+            const existing = document.querySelector('.search-popup');
+            if (existing) {
+                existing.remove();
+            }
+
+            const popup = document.createElement('div');
+            popup.className = 'search-popup';
+            popup.innerHTML = `
+                <div class="search-popup__message">${message}</div>
+                <button type="button" class="search-popup__close" aria-label="Close">&times;</button>
+            `;
+
+            popup.querySelector('.search-popup__close').addEventListener('click', () => popup.remove());
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                if (document.body.contains(popup)) {
+                    popup.style.opacity = '0';
+                    setTimeout(() => popup.remove(), 300);
+                }
+            }, 4000);
+        }
     });
 
     function formatDate(value) {
