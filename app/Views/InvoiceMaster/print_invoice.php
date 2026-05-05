@@ -6,17 +6,17 @@
     <title>Invoice <?= esc($invoice['invoice_no']); ?></title>
 
     <style>
-        @font-face {
-            font-family: 'Cambria';
-            src: url('../public/fonts/Cambria.woff2') format('woff2'),
-                url('../public/fonts/Cambria.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
+       @font-face {
+    font-family: 'Cambria';
+    src: url("<?= base_url('public/fonts/Cambria.ttf') ?>") format('truetype'),
+         url("<?= base_url('public/fonts/Cambria.woff') ?>") format('woff'),
+         url("<?= base_url('public/fonts/Cambria.woff2') ?>") format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 
         body {
-            font-family: 'Cambria';
+             font-family: 'Cambria', serif;
             font-size: 12px !important;
             background: #ffffff;
             margin: 0;
