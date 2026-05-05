@@ -70,6 +70,10 @@ $routes->get('/invoice-mangement', 'ReceiptInvoiceMangementController::index', [
 $routes->post('invoice-mangement/preview', 'ReceiptInvoiceMangementController::preview');
 $routes->post('invoice-mangement/search', 'ReceiptInvoiceMangementController::search');
 
+// Reports & Registers Routes
+$routes->get('reports_registers', 'ReportsRegisterController::index', ['as' => 'report.register.index', 'filter' => 'adminPermission']);
+$routes->post('reports_registers/search', 'ReportsRegisterController::search', ['filter' => 'adminPermission']);
+
 // Role Management Routes
 $routes->get('roles', 'RoleController::index', ['as' => 'roles.index', 'filter' => 'adminPermission']);
 $routes->get('roles/create', 'RoleController::create', ['as' => 'roles.create', 'filter' => 'adminPermission']);

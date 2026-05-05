@@ -100,7 +100,7 @@ class LoginController extends BaseController
     {
         // If no role assigned, go to work master
         if (!$userRole) {
-            return redirect()->route('work_master.index');
+            return redirect()->route('home.index');
         }
 
         // Get role details
@@ -108,7 +108,7 @@ class LoginController extends BaseController
 
         // If role has all permissions
         if ($role && $role->permission_type === 'all') {
-            return redirect()->route('work_master.index');
+            return redirect()->route('home.index');
         }
 
         // Check which modules user has access to and redirect to first available
