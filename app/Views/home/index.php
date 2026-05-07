@@ -90,6 +90,6 @@
             <span class="and">&</span>
             <span class="associates">ASSOCIATES</span>
         </h1>
-        <p>CHARTERED ACCOUNTANT</p>
+        <p>CHARTERED ACCOUNTANTS</p>
     </div>
 </div>
