@@ -321,6 +321,10 @@
                                 <label>Export & Import Code</label>
                                 <input type="text" name="iec_code" class="input">
                             </div>
+                            <div>
+                                <label>Email</label>
+                                <input type="email" name="email" class="input">
+                            </div>
                             <div class="form-row-full">
                                 <label>Bank Account Number</label>
                                 <input type="text" name="bank_account_no" class="input">

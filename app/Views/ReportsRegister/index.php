@@ -73,7 +73,7 @@
         <div id="company-address"></div>
         <div id="company-contact"></div>
         <div id="sales"><b>Reports Register</b></div>
-        <div id="date-range">Date: <?= date('d-m-Y') ?></div>
+        <div id="date-range">Period: <?= date('d-m-Y') ?></div>
     </div>
 
     <div id="searchResultsSection" style="margin-top: 24px; display: none;">
@@ -137,7 +137,7 @@
                 .then(results => {
                     searchResultsSection.style.display = 'block';
                     document.getElementById('invoice-footer').style.display = 'block';
-                    document.getElementById('date-range').innerText = 'Date: ' + formatDisplayDate(fromInput) + ' to ' + formatDisplayDate(toInput);
+                    document.getElementById('date-range').innerText = 'Period: ' + formatDisplayDate(fromInput) + ' to ' + formatDisplayDate(toInput);
 
                     if (!Array.isArray(results) || results.length === 0) {
                         noSearchResults.style.display = 'block';
@@ -223,13 +223,16 @@
     }
 
     function formatDisplayDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        const day = date.getDate();
-        const month = date.toLocaleString('default', { month: 'long' });
-        const year = date.getFullYear();
-        return day + '-' + month + '-' + year;
-    }
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+}
 
     document.getElementById('Minvoice-company').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];

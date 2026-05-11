@@ -487,9 +487,9 @@
                 <tr>
                     <th style="width: 10%" class="print-widthinvoiceno">Invoice No</th>
                     <th style="width: 8%" class="print-widthinvoicedate">Invoice Date</th>
-                    <th style="width: 15%" class="print-widtinvoicework">Works</th>
+                    <th style="width: 20%" class="print-widtinvoicework">Works</th>
                     <th style="width: 12%" class="print-hide">Company</th>
-                    <th style="width: 7%" class="print-widthinvoiceamount">Total Invoice Amount</th>
+                    <th style="width: 2%" class="print-widthinvoiceamount">Total Invoice Amount</th>
                     <th style="width: 7%" class="print-widtreciptdate">Receipt Date</th>
                     <th style="width: 8%" class="print-widtreciptno">Receipt No</th>
                     <th style="width: 8%" class="print-widtreciptamount">Receipt Amount</th>
@@ -506,7 +506,7 @@
                     <td></td>
                     <td class="print-hide"></td>
                     <td>
-                        <div class="input-group input-group-sm" style="width:160px;">
+                        <div class="input-group input-group-sm" style="width:130px;">
 
                             <input type="number"
                                 step="0.01"
@@ -1375,6 +1375,16 @@
 
     });
 
+    function formatDate(date) {
+    const d = new Date(date);
+
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+
+    return `${day}-${month}-${year}`;
+}
+
     document.addEventListener("DOMContentLoaded", function() {
 
         const rows = document.querySelectorAll('.invoice-row');
@@ -1394,14 +1404,8 @@
             const firstDate = allDates[0];
             const lastDate = allDates[allDates.length - 1];
 
-            const options = {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            };
-
-            const formattedFrom = firstDate.toLocaleDateString('en-GB', options);
-            const formattedTo = lastDate.toLocaleDateString('en-GB', options);
+            const formattedFrom = formatDate(firstDate);
+const formattedTo = formatDate(lastDate);
 
             document.getElementById('ledger-date-range').innerHTML =
                 `${formattedFrom} TO ${formattedTo}`;
@@ -1573,26 +1577,21 @@
         // ===============================
         // DATE RANGE
         // ===============================
-        const options = {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        };
+       let formattedFrom = fromInput ?
+    formatDate(fromInput) :
+    '';
 
-        let formattedFrom = fromInput ?
-            new Date(fromInput).toLocaleDateString('en-GB', options) :
-            '';
+let formattedTo = toInput ?
+    formatDate(toInput) :
+    '';
 
-        let formattedTo = toInput ?
-            new Date(toInput).toLocaleDateString('en-GB', options) :
-            '';
+if (!fromInput && !toInput && visibleDates.length > 0) {
 
-        if (!fromInput && !toInput && visibleDates.length > 0) {
-            visibleDates.sort((a, b) => a - b);
+    visibleDates.sort((a, b) => a - b);
 
-            formattedFrom = visibleDates[0].toLocaleDateString('en-GB', options);
-            formattedTo = visibleDates[visibleDates.length - 1].toLocaleDateString('en-GB', options);
-        }
+    formattedFrom = formatDate(visibleDates[0]);
+    formattedTo = formatDate(visibleDates[visibleDates.length - 1]);
+}
 
         if (formattedFrom && formattedTo) {
             document.getElementById('ledger-date-range').innerHTML =

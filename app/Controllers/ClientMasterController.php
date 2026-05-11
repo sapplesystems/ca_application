@@ -93,6 +93,7 @@ class ClientMasterController extends BaseController
                 $html .= '<div><label>GST State</label><input type="text" name="gst_state" class="input" value="' . $client['gst_state'] . '"></div>';
                 // IEC / Bank
                 $html .= '<div><label>Export & Import Code</label><input type="text" name="iec_code" class="input" value="' . $client['iec_code'] . '"></div>';
+                $html .= '<div><label>Email</label><input type="email" name="email" class="input" value="' . $client['email'] . '"></div>';
                 $html .= '<div class="form-row-full"><label>Bank Account Number</label><input type="text" name="bank_account_no" class="input" value="' . $client['bank_account_no'] . '"></div>';
 
                 // Directors
@@ -194,6 +195,7 @@ class ClientMasterController extends BaseController
             'billing_emails'           => $this->request->getPost('billing_emails'),
             'payment_terms'            => $this->request->getPost('payment_terms'),
             'gst_state'               => $this->request->getPost('gst_state'),
+            'email'                    => $this->request->getPost('email'),
         ];
 
         $result = $clientModel->insert($data);
