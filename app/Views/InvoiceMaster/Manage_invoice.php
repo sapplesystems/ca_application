@@ -759,9 +759,9 @@
             });
     }
 
-    function printInvoice(id) {
-        window.open(`<?= site_url('invoice/print') ?>/${id}`, '_blank');
-    }
+   function printInvoice(id) {
+    window.location.href = `<?= site_url('invoice/print') ?>/${id}`;
+}
 
     function printLedger() {
         const printContents = document.getElementById('ledger-print-area').innerHTML;

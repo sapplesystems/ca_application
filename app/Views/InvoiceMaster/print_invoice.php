@@ -277,6 +277,52 @@
                 font-size: 13px !important;
             }
         }
+
+          .print-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 25px 0;
+    }
+
+    .action-btn {
+        padding: 12px 28px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        letter-spacing: 0.5px;
+    }
+
+    .print-btn {
+        background: linear-gradient(135deg, #1f5d6b, #2f7f91);
+        color: #fff;
+    }
+
+    .print-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+
+    .cancel-btn {
+        background: linear-gradient(135deg, #999, #777);
+        color: #fff;
+    }
+
+    .cancel-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+
+    /* Hide buttons in print */
+    @media print {
+        .print-actions {
+            display: none !important;
+        }
+    }
     </style>
 </head>
 
@@ -528,27 +574,39 @@
             </tr>
 
         </table>
+        <div class="print-actions">
+    <button class="action-btn print-btn" onclick="printInvoicePage()">
+        🖨 Print Invoice
+    </button>
+
+    <button class="action-btn cancel-btn" onclick="cancelPrint()">
+        ✖ Cancel
+    </button>
+</div>
 
     </div>
+<script>
+    let isPrinting = false;
 
-    <script>
-        window.onload = function() {
-            setTimeout(function() {
-                window.print();
-            }, 300);
-        };
+    function printInvoicePage() {
+        isPrinting = true;
+        window.print();
+    }
 
-        window.onafterprint = function() {
-            window.location.href = "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
-        };
-        window.onload = function () {
-    window.print();
+    function cancelPrint() {
+        window.location.href =
+            "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
+    }
 
     window.onafterprint = function () {
-        window.close();
+
+        // Redirect only if actual print button was clicked
+        if (isPrinting) {
+            window.location.href =
+                "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
+        }
     };
-};
-    </script>
+</script>
 
 </body>
 
