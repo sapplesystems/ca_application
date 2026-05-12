@@ -33,11 +33,11 @@
                     </div>
 
                     <div>
-                        <strong>Ph:</strong> <?= esc($company['telephone'] ?? ''); ?>
+                        <strong>Ph No.:</strong> <?= esc($company['telephone'] ?? ''); ?>
                     </div>
 
                     <div>
-                        <strong>Email:</strong> <?= esc($company['email'] ?? ''); ?>
+                        <strong>Email-Id:</strong> <?= esc($company['email'] ?? ''); ?>
                     </div>
 
                     <div>
@@ -102,13 +102,15 @@
             <table width="100%" border="0" cellpadding="6">
                 <tr>
                     <td>
-                        <strong>Bill To,</strong><br><br>
+                        <strong>Bill To,</strong><br>
 
                         <strong>Name :</strong>
                         <?= esc($client['legal_name']); ?><br>
 
                         <strong>Address :</strong>
-                        <?= esc($client['registered_office']); ?>
+                        <?= esc($client['registered_office']); ?><br>
+                        <strong> Email-Id:</strong> <?= esc($client['email']); ?><br>
+                        <strong>GSTIN:</strong> <?= esc($client['gstin']); ?>
                     </td>
                 </tr>
             </table>
@@ -510,9 +512,11 @@
                             cancelButtonText: 'Close'
                         }).then(result => {
                             if (result.isConfirmed) {
-                                window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
+                                // window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
+                                window.location.href = `<?= site_url('invoice/print') ?>/${data.invoice_id}`;
                             } else if (result.isDenied) {
-                                window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
+                                // window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id);
+                                window.location.href = `<?= site_url('invoice/pdf') ?>/${data.invoice_id}`;
                             }
                         });
                     } else {

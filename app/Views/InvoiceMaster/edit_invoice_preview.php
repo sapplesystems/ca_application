@@ -64,8 +64,8 @@ function romanNumeral($num)
                     <?= esc($company['type_of_company']); ?><br>
                     <?= esc($company['registered_office']); ?><br>
 
-                    <strong>Ph:</strong> <?= esc($company['telephone']); ?><br>
-                    <strong>Email:</strong> <?= esc($company['email']); ?><br>
+                    <strong>Ph No.:</strong> <?= esc($company['telephone']); ?><br>
+                    <strong>Email-Id:</strong> <?= esc($company['email']); ?><br>
                     <strong>GSTIN:</strong> <?= esc($company['gstin']); ?>
 
                     <td align="right" style="vertical-align: top; padding: 12px 15px; width: 200px;">
@@ -119,9 +119,11 @@ function romanNumeral($num)
         <table width="100%" cellpadding="6">
             <tr>
                 <td>
-                    <strong>Bill To</strong><br><br>
+                    <strong>Bill To</strong><br>
                     <strong>Name :</strong> <?= esc($client['legal_name']); ?><br>
-                    <strong>Address :</strong> <?= esc($client['registered_office']); ?>
+                    <strong>Address :</strong> <?= esc($client['registered_office']); ?><br>
+                    <strong> Email-Id:</strong> <?= esc($client['email']); ?><br>
+                    <strong>GSTIN:</strong> <?= esc($client['gstin']); ?>
                 </td>
             </tr>
         </table>
@@ -630,10 +632,12 @@ function romanNumeral($num)
                         }).then(result => {
 
                             if (result.isConfirmed) {
-                                window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
+                                // window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
+                                window.location.href = `<?= site_url('invoice/print') ?>/${data.invoice_id}`;
                             }
                             if (result.isDenied) {
-                                window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
+                                // window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
+                                window.location.href = `<?= site_url('invoice/pdf') ?>/${data.invoice_id}`;
                             }
                         });
                     })

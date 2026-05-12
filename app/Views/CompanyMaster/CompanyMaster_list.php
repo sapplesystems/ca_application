@@ -600,23 +600,32 @@
                 }
             }
 
-            /* ===== PHONE VALIDATION ===== */
-            const phoneInput = $('[name="phone"]');
-            if (phoneInput.length) {
-                const phoneVal = $.trim(phoneInput.val());
-                const phonePattern = /^([0-9]{10,11}|[0-9]{2,5}-[0-9]{6,8})$/;
+           /* ===== PHONE VALIDATION ===== */
 
-                if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
-                    isValid = false;
-                    if (!firstError) firstError = phoneInput;
+const phoneInput = $('[name="phone"]');
 
-                    phoneInput.css('border', '1px solid red');
-                    phoneInput.closest('.cmg-field, .form-row-full')
-                        .append(
-                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid phone.</div>'
-                        );
-                }
-            }
+if (phoneInput.length) {
+
+    const phoneVal = $.trim(phoneInput.val());
+
+    // Allow numbers and multiple dashes
+    const phonePattern = /^[0-9]+(-[0-9]+)*$/;
+
+    if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
+
+        isValid = false;
+
+        if (!firstError) firstError = phoneInput;
+
+        phoneInput.css('border', '1px solid red');
+
+        phoneInput.closest('.cmg-field, .form-row-full')
+            .append(
+                '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid phone number.</div>'
+            );
+    }
+
+}
 
             /* ===== GST STATE VALIDATION ===== */
             const gstStateInput = $('[name="gst_state"]');
@@ -705,23 +714,32 @@
                 }
             }
 
-            /* ===== PHONE VALIDATION (Indian 10 Digit) ===== */
-            const phoneInput = $('#editcompanymaster [name="phone"]');
-            if (phoneInput.length) {
-                const phoneVal = $.trim(phoneInput.val());
-                const phonePattern = /^([0-9]{10,11}|[0-9]{2,5}-[0-9]{6,8})$/;
+            /* ===== PHONE VALIDATION ===== */
 
-                if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
-                    isValid = false;
-                    if (!firstError) firstError = phoneInput;
+const phoneInput = $('[name="phone"]');
 
-                    phoneInput.css('border', '1px solid red');
-                    phoneInput.closest('.cmg-field, .form-row-full')
-                        .append(
-                            '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid phone.</div>'
-                        );
-                }
-            }
+if (phoneInput.length) {
+
+    const phoneVal = $.trim(phoneInput.val());
+
+    // Allow numbers and multiple dashes
+    const phonePattern = /^[0-9]+(-[0-9]+)*$/;
+
+    if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
+
+        isValid = false;
+
+        if (!firstError) firstError = phoneInput;
+
+        phoneInput.css('border', '1px solid red');
+
+        phoneInput.closest('.cmg-field, .form-row-full')
+            .append(
+                '<div class="text-danger" style="font-size:12px;margin-top:4px;">Enter valid phone number.</div>'
+            );
+    }
+
+}
 
             /* ===== GST STATE VALIDATION ===== */
             const gstStateInput = $('#editcompanymaster [name="gst_state"]');

@@ -30,6 +30,50 @@
         line-height: 1;
         padding: 0;
     }
+    .dropdown-box{
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-list{
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.dropdown-search{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    outline: none;
+}
+
+.dropdown-item{
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover{
+    background: #0d6efd;
+    color: #fff;
+}
+
+.selected-company{
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    width:200px;
+}
+
 </style>
 <div class="invoiceM-containerr">
     <!-- Modal1 -->
@@ -112,24 +156,52 @@
             Generate Invoice For Pending Work
  </button></div>
             <div class="Minvoice-filter-row">
-        <div class="Minvoice-filter-group">
-            <label for="Minvoice-company">Select Company</label>
-            <select id="Minvoice-company" name="company_id">
-                <option value="">Select Company</option>
+      <div class="Minvoice-filter-group">
 
-                <?php foreach ($companies as $company): ?>
-                    <option value="<?= $company['id']; ?>"
-                        data-name="<?= esc($company['name']); ?>"
-                        data-address="<?= esc($company['registered_office']); ?>"
-                        data-phone="<?= esc($company['telephone']); ?>"
-                        data-email="<?= esc($company['email']); ?>">
+    <label>Select Company</label>
 
-                        <?= esc($company['name']); ?>
-                    </option>
-                <?php endforeach; ?>
+    <div class="dropdown-box">
 
-            </select>
+        <!-- Selected Company -->
+        <div class="selected-company" id="selectedCompany">
+            Select Company
         </div>
+
+        <!-- Dropdown -->
+        <div class="dropdown-list" id="companyDropdown">
+
+            <!-- Search Input -->
+            <input 
+                type="text"
+                id="companySearch"
+                class="dropdown-search"
+                placeholder="Search company...">
+
+            <!-- Company List -->
+            <?php foreach ($companies as $company): ?>
+
+                <div 
+                    class="dropdown-item"
+                    data-id="<?= $company['id']; ?>"
+                    data-name="<?= esc($company['name']); ?>"
+                    data-address="<?= esc($company['registered_office']); ?>"
+                    data-phone="<?= esc($company['telephone']); ?>"
+                    data-email="<?= esc($company['email']); ?>">
+
+                    <?= esc($company['name']); ?>
+
+                </div>
+
+            <?php endforeach; ?>
+
+        </div>
+
+    </div>
+
+    <!-- Hidden Input -->
+    <input type="hidden" id="company_id" name="company_id">
+
+</div>
 
         <div class="Minvoice-filter-group">
             <label for="Minvoice-fromDate">From:</label>
@@ -182,189 +254,517 @@
 
  </div>
  <script>
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ================================
+    // CLIENT + COMPANY TAX LOGIC
+    // ================================
 
     let clientState = null;
 
     document.querySelectorAll('input[name="client_id"]').forEach(el => {
+
         el.addEventListener('change', function () {
+
             clientState = this.dataset.state;
+
         });
+
     });
 
+
     document.querySelectorAll('input[name="company_id"]').forEach(el => {
+
         el.addEventListener('change', function () {
 
             if (!clientState) {
+
                 alert('Select client first');
+
                 return;
+
             }
 
             let companyState = this.dataset.state;
 
             if (clientState === companyState) {
+
                 document.querySelector('input[value="cgst_sgst"]').checked = true;
+
             } else {
+
                 document.querySelector('input[value="igst"]').checked = true;
+
             }
+
         });
+
     });
 
-    // Form validation
+
+
+    // ================================
+    // FORM VALIDATION
+    // ================================
+
     document.querySelector('form').addEventListener('submit', function(e) {
 
-        let works = document.querySelectorAll('input[name="work_ids[]"]:checked').length;
-        let company = document.querySelector('input[name="company_id"]:checked');
-        let client = document.querySelector('input[name="client_id"]:checked');
+        let works =
+            document.querySelectorAll('input[name="work_ids[]"]:checked').length;
+
+        let company =
+            document.querySelector('input[name="company_id"]:checked');
+
+        let client =
+            document.querySelector('input[name="client_id"]:checked');
 
         if (!client || !company || works === 0) {
+
             e.preventDefault();
+
             alert('Select client, company and at least one work');
+
         }
+
+    });
+
+
+
+
+    // ================================
+    // SEARCHABLE COMPANY DROPDOWN
+    // ================================
+
+    const selectedCompany =
+        document.getElementById('selectedCompany');
+
+    const companyDropdown =
+        document.getElementById('companyDropdown');
+
+    const companySearch =
+        document.getElementById('companySearch');
+
+    const dropdownItems =
+        document.querySelectorAll('.dropdown-item');
+
+
+
+    // Open dropdown
+    selectedCompany.addEventListener('click', function () {
+
+        companyDropdown.style.display =
+            companyDropdown.style.display === 'block'
+            ? 'none'
+            : 'block';
+
+        companySearch.value = '';
+
+        dropdownItems.forEach(item => {
+
+            item.style.display = 'block';
+
+        });
+
+    });
+
+
+
+    // Search filter
+    companySearch.addEventListener('keyup', function () {
+
+        let value = this.value.toLowerCase();
+
+        dropdownItems.forEach(item => {
+
+            let text = item.innerText.toLowerCase();
+
+            if (text.includes(value)) {
+
+                item.style.display = 'block';
+
+            } else {
+
+                item.style.display = 'none';
+
+            }
+
+        });
+
+    });
+
+
+
+    // Select company
+    dropdownItems.forEach(item => {
+
+        item.addEventListener('click', function () {
+
+            selectedCompany.innerText =
+                this.dataset.name;
+
+            document.getElementById('company_id').value =
+                this.dataset.id;
+
+            // Footer update
+            document.getElementById('company-name').innerHTML =
+                '<strong>' + this.dataset.name + '</strong>';
+
+            document.getElementById('company-address').innerText =
+                this.dataset.address;
+
+            document.getElementById('company-contact').innerText =
+                'Ph No.: ' + this.dataset.phone +
+                ' | Email-Id: ' + this.dataset.email;
+
+            companyDropdown.style.display = 'none';
+
+        });
+
+    });
+
+
+
+    // Close dropdown outside click
+    document.addEventListener('click', function(e){
+
+        if(!e.target.closest('.dropdown-box')){
+
+            companyDropdown.style.display = 'none';
+
+        }
+
+    });
+
+
+
+
+    // ================================
+    // SEARCH BUTTON
+    // ================================
+
+    document.querySelector('.Minvoice-btn-green')
+        .addEventListener('click', function(e) {
+
+        e.preventDefault();
+
+        const companyId =
+            document.getElementById('company_id').value;
+
+        const fromInput =
+            document.getElementById('Minvoice-fromDate').value;
+
+        const toInput =
+            document.getElementById('Minvoice-toDate').value;
+
+        const searchResultsSection =
+            document.getElementById('searchResultsSection');
+
+        const searchResultsBody =
+            document.getElementById('searchResultsBody');
+
+        const noSearchResults =
+            document.getElementById('noSearchResults');
+
+
+
+        // Validation
+        if (!companyId && !fromInput && !toInput) {
+
+            document.getElementById('searchResultsSection')
+                .style.display = 'none';
+
+            document.getElementById('invoice-footer')
+                .style.display = 'none';
+
+            showSearchPopup(
+                'Please select at least one filter before searching.'
+            );
+
+            return;
+
+        }
+
+
+
+        searchResultsBody.innerHTML = '';
+
+        noSearchResults.style.display = 'none';
+
+
+
+        fetch('<?= base_url('invoice-mangement/search') ?>', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+
+            body: new URLSearchParams({
+
+                company_id: companyId,
+                from_date: fromInput,
+                to_date: toInput,
+
+            }),
+
+        })
+
+        .then(response => response.json())
+
+        .then(results => {
+
+            searchResultsSection.style.display = 'block';
+
+            document.getElementById('invoice-footer')
+                .style.display = 'block';
+
+
+
+            // DATE RANGE
+            document.getElementById('date-range').innerText =
+                'Period: ' +
+                formatDisplayDate(fromInput) +
+                ' to ' +
+                formatDisplayDate(toInput);
+
+
+
+            if (!Array.isArray(results) || results.length === 0) {
+
+                noSearchResults.style.display = 'block';
+
+                return;
+
+            }
+
+
+
+            results.forEach(row => {
+
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        ${formatDate(row.invoice_date)}
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        ${row.invoice_no}
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        ${row.party_name || '-'}
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        ${row.party_gstin || '-'}
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc;">
+                        ${row.hsn_code || '-'}
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        ${parseFloat(row.service_value || 0).toFixed(2)}
+                    </td>
+
+                    ${row.tax_apply_name === 'cgst_sgst'
+                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                                ${parseFloat(9/100*row.service_value || 0).toFixed(2)}
+                           </td>`
+                        : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`
+                    }
+
+                    ${row.tax_apply_name === 'cgst_sgst'
+                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                                ${parseFloat(9/100*row.service_value || 0).toFixed(2)}
+                           </td>`
+                        : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`
+                    }
+
+                    ${row.tax_apply_name === 'igst'
+                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                                ${parseFloat(18/100*row.service_value || 0).toFixed(2)}
+                           </td>`
+                        : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`
+                    }
+
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        ${parseFloat(row.grand_total || 0).toFixed(2)}
+                    </td>
+
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center; white-space:nowrap;">
+
+                        <a href="<?= site_url('invoice/edit/') ?>${row.id}"
+                           style="margin-right:4px; text-decoration:none; color:#0b5c7d;">
+                           ✏️ Edit
+                        </a>
+
+                        <a href="<?= site_url('invoice/print/') ?>${row.id}"
+                           style="margin-right:4px; text-decoration:none; color:#0b5c7d;">
+                           👁️ Preview
+                        </a>
+
+                        <a href="<?= site_url('invoice/pdf/') ?>${row.id}"
+                           style="text-decoration:none; color:#0b5c7d;">
+                           ⬇️ Download
+                        </a>
+
+                    </td>
+
+                `;
+
+                searchResultsBody.appendChild(tr);
+
+            });
+
+        })
+
+        .catch(() => {
+
+            searchResultsSection.style.display = 'block';
+
+            noSearchResults.textContent =
+                'Unable to load search results. Please try again.';
+
+            noSearchResults.style.display = 'block';
+
+        });
+
+    });
+
+
+
+
+    // ================================
+    // RESET BUTTON
+    // ================================
+
+    document.querySelector('.Minvoice-btn-reset')
+        .addEventListener('click', function() {
+
+        document.getElementById('company_id').value = '';
+
+        document.getElementById('companySearch').value = '';
+
+        document.getElementById('selectedCompany').innerText =
+            'Select Company';
+
+        document.getElementById('Minvoice-fromDate').value = '';
+
+        document.getElementById('Minvoice-toDate').value = '';
+
+        document.getElementById('searchResultsSection')
+            .style.display = 'none';
+
+        document.getElementById('invoice-footer')
+            .style.display = 'none';
+
+        document.getElementById('searchResultsBody').innerHTML = '';
+
+        document.getElementById('noSearchResults')
+            .style.display = 'none';
+
     });
 
 });
 
-    document.querySelector('.Minvoice-btn-green').addEventListener('click', function(e) {
-        e.preventDefault();
 
-        const companySelect = document.getElementById('Minvoice-company');
-        const companyId = companySelect.value;
-        const fromInput = document.getElementById('Minvoice-fromDate').value;
-        const toInput = document.getElementById('Minvoice-toDate').value;
-        const searchResultsSection = document.getElementById('searchResultsSection');
-        const searchResultsBody = document.getElementById('searchResultsBody');
-        const noSearchResults = document.getElementById('noSearchResults');
 
-        if (!companyId && !fromInput && !toInput) {
-            document.getElementById('searchResultsSection').style.display = 'none';
-            document.getElementById('invoice-footer').style.display = 'none';
-            showSearchPopup('Please select at least one filter before searching.');
-            return;
-        }
 
-        searchResultsBody.innerHTML = '';        noSearchResults.style.display = 'none';
+// ================================
+// POPUP
+// ================================
 
-        fetch('<?= base_url('invoice-mangement/search') ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                company_id: companyId,
-                from_date: fromInput,
-                to_date: toInput,
-            }),
-        })
-            .then(response => response.json())
-            .then(results => {
-                searchResultsSection.style.display = 'block';
-                document.getElementById('invoice-footer').style.display = 'block';
-                document.getElementById('date-range').innerText = 'Period: ' + formatDisplayDate(fromInput) + ' to ' + formatDisplayDate(toInput);
+function showSearchPopup(message) {
 
-                if (!Array.isArray(results) || results.length === 0) {
-                    noSearchResults.style.display = 'block';
-                    return;
-                }
+    const existing =
+        document.querySelector('.search-popup');
 
-                results.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="padding:8px; border:1px solid #ccc;">${formatDate(row.invoice_date)}</td>
-                        <td style="padding:8px; border:1px solid #ccc;">${row.invoice_no}</td>
-                        <td style="padding:8px; border:1px solid #ccc;">${row.party_name || '-'}</td>
-                        <td style="padding:8px; border:1px solid #ccc;">${row.party_gstin || '-'}</td>
-                        <td style="padding:8px; border:1px solid #ccc;">${row.hsn_code || '-'}</td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(row.service_value || 0).toFixed(2)}</td>
-                        ${row.tax_apply_name === 'cgst_sgst' ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(9/100*row.service_value || 0).toFixed(2)}</td>` : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`}
-                        ${row.tax_apply_name === 'cgst_sgst' ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(9/100*row.service_value || 0).toFixed(2)}</td>` : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`}
-                        ${row.tax_apply_name === 'igst' ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(18/100*row.service_value || 0).toFixed(2)}</td>` : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`}
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;">${parseFloat(row.grand_total || 0).toFixed(2)}</td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center; white-space:nowrap;">
-                            <a href="<?= site_url('invoice/edit/') ?>${row.id}"  style="margin-right:4px; text-decoration:none; color:#0b5c7d;">✏️ Edit</a>
-                            <a href="<?= site_url('invoice/print/') ?>${row.id}"  style="margin-right:4px; text-decoration:none; color:#0b5c7d;">👁️ Preview</a>
-                            <a href="<?= site_url('invoice/pdf/') ?>${row.id}"  style="text-decoration:none; color:#0b5c7d;">⬇️ Download</a>
-                        </td>
-                    `;
-                    searchResultsBody.appendChild(tr);
-                });
-            })
-            .catch(() => {
-                searchResultsSection.style.display = 'block';
-                noSearchResults.textContent = 'Unable to load search results. Please try again.';
-                noSearchResults.style.display = 'block';
-            });
+    if (existing) {
 
-        function showSearchPopup(message) {
-            const existing = document.querySelector('.search-popup');
-            if (existing) {
-                existing.remove();
-            }
+        existing.remove();
 
-            const popup = document.createElement('div');
-            popup.className = 'search-popup';
-            popup.innerHTML = `
-                <div class="search-popup__message">${message}</div>
-                <button type="button" class="search-popup__close" aria-label="Close">&times;</button>
-            `;
-
-            popup.querySelector('.search-popup__close').addEventListener('click', () => popup.remove());
-            document.body.appendChild(popup);
-
-            setTimeout(() => {
-                if (document.body.contains(popup)) {
-                    popup.style.opacity = '0';
-                    setTimeout(() => popup.remove(), 300);
-                }
-            }, 4000);
-        }
-    });
-
-    function formatDate(value) {
-        if (!value) {
-            return '-';
-        }
-        const date = new Date(value);
-        return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('en-GB');
     }
+
+    const popup =
+        document.createElement('div');
+
+    popup.className = 'search-popup';
+
+    popup.innerHTML = `
+
+        <div class="search-popup__message">
+            ${message}
+        </div>
+
+        <button type="button"
+                class="search-popup__close">
+
+            &times;
+
+        </button>
+
+    `;
+
+    popup.querySelector('.search-popup__close')
+        .addEventListener('click', () => popup.remove());
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => {
+
+        if (document.body.contains(popup)) {
+
+            popup.remove();
+
+        }
+
+    }, 4000);
+
+}
+
+
+
+
+// ================================
+// DATE FORMAT
+// ================================
+
+function formatDate(value) {
+
+    if (!value) return '-';
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime())
+        ? value
+        : date.toLocaleDateString('en-GB');
+
+}
+
+
+
 function formatDisplayDate(dateString) {
+
     if (!dateString) return '';
 
     const date = new Date(dateString);
 
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+    const day =
+        String(date.getDate()).padStart(2, '0');
+
+    const month =
+        String(date.getMonth() + 1).padStart(2, '0');
+
+    const year =
+        date.getFullYear();
 
     return `${day}-${month}-${year}`;
+
 }
 
-    // Update footer with selected company details
-    document.getElementById('Minvoice-company').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const name = selectedOption.getAttribute('data-name') || 'Your Company Name Pvt Ltd';
-        const address = selectedOption.getAttribute('data-address') || '123 Business Street, City, State - 000000';
-        const phone = selectedOption.getAttribute('data-phone') || '+91 9876543210';
-        const email = selectedOption.getAttribute('data-email') || 'info@company.com';
-        
-        document.getElementById('company-name').innerHTML = '<strong>' + name + '</strong>';
-        document.getElementById('company-address').innerText = address;
-        document.getElementById('company-contact').innerText = 'Phone: ' + phone + ' | Email: ' + email;
-    });
-
-    // Reset button functionality
-    document.querySelector('.Minvoice-btn-reset').addEventListener('click', function() {
-        document.getElementById('Minvoice-company').value = '';
-        document.getElementById('Minvoice-fromDate').value = '';
-        document.getElementById('Minvoice-toDate').value = '';
-        document.getElementById('searchResultsSection').style.display = 'none';
-        document.getElementById('invoice-footer').style.display = 'none';
-        document.getElementById('searchResultsBody').innerHTML = '';
-        document.getElementById('noSearchResults').style.display = 'none';
-        document.getElementById('company-name').innerHTML = '<strong>Your Company Name Pvt Ltd</strong>';
-        document.getElementById('company-address').innerText = '123 Business Street, City, State - 000000';
-        document.getElementById('company-contact').innerText = 'Phone: +91 9876543210 | Email: info@company.com';
-        document.getElementById('sales').innerText = 'Sales Register';
-        document.getElementById('date-range').innerText = 'Date: <?= date('d-m-Y') ?>';
-    });
 </script>

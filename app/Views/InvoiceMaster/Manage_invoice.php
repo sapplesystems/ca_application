@@ -463,15 +463,15 @@
             <h4></h4>
             <h4 style="text-align: center;text-transform: uppercase;font-weight: bold;" class="firm-name" id="ledger-company-name"></h4>
             <h5 style="margin-top: -10px;text-align: center;">
-                <span style="text-transform: uppercase;" id="ledger-company-address"></span><br>
-                PHONE No.:<span id="ledger-company-phone"></span>&nbsp;&nbsp;&nbsp;
-                E-MAIL Id: <span id="ledger-company-email"></span>
+                <span id="ledger-company-address"></span><br>
+                Ph No.:<span id="ledger-company-phone"></span>&nbsp;&nbsp;&nbsp;
+                Email-Id: <span id="ledger-company-email"></span>
             </h5>
             <!-- <h4 id="ledger-date-range" style="text-align: center;">
 
             </h4> -->
             <strong>
-                <p id="ledger-date-range" style="text-align: center;font-size:25px;"></p>
+                <p id="ledger-date-range" style="text-align: center;font-size:20px;"></p>
             </strong>
 
         </div>

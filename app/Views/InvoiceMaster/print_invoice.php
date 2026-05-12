@@ -344,8 +344,8 @@
                         </span><br>
 
                         Address: <?= nl2br(esc($company['registered_office'])); ?><br>
-                        PH: <?= esc($company['telephone']); ?><br>
-                        Email: <?= esc($company['email']); ?><br>
+                        Ph No.: <?= esc($company['telephone']); ?><br>
+                        Email-Id: <?= esc($company['email']); ?><br>
                         GSTIN: <?= esc($company['gstin']); ?>
                     </div>
                 </td>
@@ -374,7 +374,7 @@
                     <strong style="font-size:13px">Bill To:</strong><br>
                     <strong><?= esc($client['legal_name']); ?></strong><br>
                     <?= esc($client['registered_office']); ?><br>
-                    E-mail ID: <?= esc($client['billing_emails']); ?><br>
+                    <strong>Email-Id:</strong> <?= esc($client['billing_emails']); ?><br>
                     GST No:<?= esc($client['gstin']); ?>
                 </td>
 
