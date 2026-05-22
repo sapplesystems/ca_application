@@ -92,6 +92,7 @@
 
                 <div class="Gvoice-section-title">Choose Client</div>
                 <div class="Gvoice-box">
+                    <input type="text" id="" placeholder="Search work..." class="Gvoice-search-input">
                 <?php foreach ($clients as $client): ?>
                     <div class="Gvoice-option-row">
                         <input type="radio" name="client_id"
@@ -105,6 +106,7 @@
 
                 <div class="Gvoice-section-title">Choose Work</div>
                 <div class="Gvoice-box">
+                    <input type="text" id="" placeholder="Search work..." class="Gvoice-search-input">
                 <?php foreach ($works as $work): ?>
                     <div class="Gvoice-option-row">
                         <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>">
@@ -115,6 +117,7 @@
 
                 <div class="Gvoice-section-title">Choose Company</div>
                 <div class="Gvoice-box">
+                      <input type="text" id="" placeholder="Search work..." class="Gvoice-search-input">
                 <?php foreach ($companies as $company): ?>
                     <div class="Gvoice-option-row">
                         <input type="radio" name="company_id"
