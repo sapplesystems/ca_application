@@ -55,6 +55,15 @@
     outline: none;
 }
 
+.search-input{
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    outline: none;
+}
+
 .dropdown-item{
     padding: 10px;
     cursor: pointer;
@@ -92,6 +101,7 @@
 
                 <div class="Gvoice-section-title">Choose Client</div>
                 <div class="Gvoice-box">
+                    <input type="text" id="clientSearch" class="search-input" placeholder="Search client...">
                 <?php foreach ($clients as $client): ?>
                     <div class="Gvoice-option-row">
                         <input type="radio" name="client_id"
@@ -105,6 +115,7 @@
 
                 <div class="Gvoice-section-title">Choose Work</div>
                 <div class="Gvoice-box">
+                    <input type="text" id="workSearch" class="search-input" placeholder="Search work...">
                 <?php foreach ($works as $work): ?>
                     <div class="Gvoice-option-row">
                         <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>">
@@ -115,6 +126,7 @@
 
                 <div class="Gvoice-section-title">Choose Company</div>
                 <div class="Gvoice-box">
+                    <input type="text" id="modalCompanySearch" class="search-input" placeholder="Search company...">
                 <?php foreach ($companies as $company): ?>
                     <div class="Gvoice-option-row">
                         <input type="radio" name="company_id"
@@ -348,6 +360,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdownItems =
         document.querySelectorAll('.dropdown-item');
 
+    const clientSearch =
+        document.getElementById('clientSearch');
+
+    const workSearch =
+        document.getElementById('workSearch');
+
+    const modalCompanySearch =
+        document.getElementById('modalCompanySearch');
+
+    const clientRows =
+        document.querySelectorAll('input[type="radio"][name="client_id"]');
+
+    const workRows =
+        document.querySelectorAll('input[type="checkbox"][name="work_ids[]"]');
+
+    const modalCompanyRows =
+        document.querySelectorAll('.Gvoice-box input[type="radio"][name="company_id"]');
 
 
     // Open dropdown
@@ -393,6 +422,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    clientSearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        clientRows.forEach(input => {
+            const row = input.closest('.Gvoice-option-row');
+            if (!row) return;
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? 'flex'
+                : 'none';
+        });
+    });
+
+    workSearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        workRows.forEach(input => {
+            const row = input.closest('.Gvoice-option-row');
+            if (!row) return;
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? 'flex'
+                : 'none';
+        });
+    });
+
+    modalCompanySearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        modalCompanyRows.forEach(input => {
+            const row = input.closest('.Gvoice-option-row');
+            if (!row) return;
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? 'flex'
+                : 'none';
+        });
+    });
 
 
     // Select company
