@@ -488,8 +488,8 @@
                     <th style="width: 10%" class="print-widthinvoiceno">Invoice No</th>
                     <th style="width: 8%" class="print-widthinvoicedate">Invoice Date</th>
                     <th style="width: 20%" class="print-widtinvoicework">Works</th>
-                    <th style="width: 12%" class="print-hide">Company</th>
-                    <th style="width: 2%" class="print-widthinvoiceamount">Total Invoice Amount</th>
+                    <!-- <th style="width: 12%" class="print-hide">Company</th> -->
+                    <th style="width: 14%" class="print-widthinvoiceamount">Total Invoice Amount</th>
                     <th style="width: 7%" class="print-widtreciptdate">Receipt Date</th>
                     <th style="width: 8%" class="print-widtreciptno">Receipt No</th>
                     <th style="width: 8%" class="print-widtreciptamount">Receipt Amount</th>
@@ -557,7 +557,7 @@
                             <td class="Minvoice-works-text">
                                 <?= esc($row['service_names']) ?>
                             </td>
-                            <td class="print-hide"><?= esc($row['company_name']) ?></td>
+                            <!-- <td class="print-hide"><?= esc($row['company_name']) ?></td> -->
                             <td class="invoice-amount">
                                 <?= number_format($row['total_invoice_amount'], 2) ?>
                             </td>

@@ -22,9 +22,9 @@
                     GSTIN: <?= esc($company['gstin'] ?? ''); ?>
                 </td>
 
-                <td align="right">
+                <!-- <td align="right">
                     <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
-                </td>
+                </td> -->
             </tr>
         </table>
 
@@ -46,8 +46,9 @@
                 </td>
                 <td align="right">
                     <strong>Date :</strong><br>
-                    <?= date('d-m-Y'); ?>
+                    <input type="date" name="debit_date" value="<?= date('Y-m-d'); ?>" style="padding:6px; border:1px solid #bbb;" required>
                 </td>
+                
             </tr>
         </table>
         <table width="100%" border="0" cellpadding="6">
@@ -211,7 +212,6 @@
             <input type="hidden" name="net_amount" id="netAmountInput" value="0">
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="debit_date" value="<?= date('Y-m-d') ?>">
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
             <div style="margin-top:20px; text-align:center;">

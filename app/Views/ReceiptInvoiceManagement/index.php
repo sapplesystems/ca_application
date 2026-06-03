@@ -162,11 +162,72 @@
         </div>
     </div>
 </div>
+
+<!-- Debit/Credit Note Modal -->
+<div class="modal fade" id="noteGenerateModal" tabindex="-1" aria-labelledby="noteGenerateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noteGenerateModalLabel">Generate Note</h5>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="noteGenerateForm" method="post" action="<?= base_url('debit-note/store') ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" name="note_type" id="note_type_hidden" value="">
+                <input type="hidden" name="client_id" id="note_client_id" value="">
+                <input type="hidden" name="company_debit" id="note_company_id" value="">
+                <div class="modal-body">
+                    <div class="debitP">
+                        <div class="content">
+                            <div class="form-group mb-3">
+                                <label><strong>Select Client</strong></label>
+                                <input type="text" id="noteClientSearch" class="search-input" placeholder="Search client...">
+                                <?php foreach ($clients as $client): ?>
+                                <div class="Gvoice-option-row note-client-row">
+                                    <label>
+                                        <input type="radio" name="note_client_choice" value="<?= $client['id']; ?>">
+                                        <?= esc($client['legal_name']); ?>
+                                    </label>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label><strong>Choose Company</strong></label>
+                                <input type="text" id="noteCompanySearch" class="search-input" placeholder="Search company...">
+                                <?php foreach ($companies as $company): ?>
+                                <div class="Gvoice-option-row note-company-row">
+                                    <label>
+                                        <input type="radio" name="note_company_choice" value="<?= esc($company['id']) ?>">
+                                        <?= esc($company['name']) ?> [<?= esc($company['type_of_company']) ?>]
+                                    </label>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                             <div class="Gvoice-actions">
+                    <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
+                    <button class="Gvoice-btn Gvoice-btn-danger" type="button" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+                </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </form>
+        </div>
+    </div>
+</div>
     <div class="invoiceM-toolbar">
-        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right"class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
-            data-target="#GenrateVoice">
+        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right;margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#GenrateVoice" data-bs-toggle="modal" data-bs-target="#GenrateVoice">
             Generate Invoice For Pending Work
- </button></div>
+        </button>
+        <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="credit">
+            Credit Note
+        </button>
+        <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="debit">
+            Debit Note
+        </button>
+        </div>
             <div class="Minvoice-filter-row">
       <div class="Minvoice-filter-group">
 
@@ -341,7 +402,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    const noteTypeButtons = document.querySelectorAll('[data-note-type]');
+    const noteTypeHidden = document.getElementById('note_type_hidden');
+    const noteClientHidden = document.getElementById('note_client_id');
+    const noteCompanyHidden = document.getElementById('note_company_id');
+    const noteClientSearch = document.getElementById('noteClientSearch');
+    const noteCompanySearch = document.getElementById('noteCompanySearch');
+    const noteClientRows = document.querySelectorAll('.note-client-row');
+    const noteCompanyRows = document.querySelectorAll('.note-company-row');
 
+    noteTypeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const noteType = this.dataset.noteType || '';
+            noteTypeHidden.value = noteType;
+            noteClientHidden.value = '';
+            noteCompanyHidden.value = '';
+            document.getElementById('noteGenerateModalLabel').innerText =
+                noteType === 'credit' ? 'Generate Credit Note' : 'Generate Debit Note';
+            document.querySelectorAll('input[name="note_client_choice"]').forEach(input => input.checked = false);
+            document.querySelectorAll('input[name="note_company_choice"]').forEach(input => input.checked = false);
+        });
+    });
+
+    document.querySelectorAll('input[name="note_client_choice"]').forEach(input => {
+        input.addEventListener('change', function() {
+            noteClientHidden.value = this.value;
+        });
+    });
+
+    document.querySelectorAll('input[name="note_company_choice"]').forEach(input => {
+        input.addEventListener('change', function() {
+            noteCompanyHidden.value = this.value;
+        });
+    });
+
+    document.getElementById('noteGenerateForm').addEventListener('submit', function(e) {
+        if (!noteTypeHidden.value || !noteClientHidden.value || !noteCompanyHidden.value) {
+            e.preventDefault();
+            alert('Select note type, client and company before proceeding.');
+        }
+    });
+
+    noteClientSearch.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        noteClientRows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? 'flex' : 'none';
+        });
+    });
+
+    noteCompanySearch.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        noteCompanyRows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? 'flex' : 'none';
+        });
+    });
 
 
     // ================================

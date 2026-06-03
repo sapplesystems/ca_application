@@ -56,7 +56,7 @@ class DebitNotes extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-       public function generateInvoiceNo($org, $branch)
+       public function generateInvoiceNo($org)
     {
         // Financial Year (India style)
         $year = date('Y');
@@ -75,6 +75,6 @@ class DebitNotes extends Model
 
         $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-        return "{$org}/{$branch}/{$fy}/{$seq}";
+        return "{$org}/{$fy}/{$seq}";
     }
 }

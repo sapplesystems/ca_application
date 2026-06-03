@@ -602,13 +602,13 @@ public function storeDebitNote()
         $company = $companyModel->find($companyId);
         if($noteType==='debit'){{
             $DebitModel = new DebitNotes();
-             $debitNo = $DebitModel->generateInvoiceNo('DN', '001');
+             $debitNo = $DebitModel->generateInvoiceNo('DN');
         return view('common/header')
             . view('InvoiceMaster/DebitNote', ['company' => $company, 'client' => $client,'debitNo'=>$debitNo])
             . view('common/footer');};
         }else{
              $DebitModel = new DebitNotes();
-             $creditNo = $DebitModel->generateInvoiceNo('CN', '001');
+             $creditNo = $DebitModel->generateInvoiceNo('CN');
             return view('common/header')
                 . view('InvoiceMaster/CreditNote', ['company' => $company, 'client' => $client,'creditNo'=>$creditNo])
                 . view('common/footer');};
