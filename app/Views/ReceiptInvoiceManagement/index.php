@@ -218,7 +218,7 @@
     </div>
 </div>
     <div class="invoiceM-toolbar">
-        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right;margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#GenrateVoice" data-bs-toggle="modal" data-bs-target="#GenrateVoice">
+        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right;margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#GenrateVoice" data-bs-toggle="modal" data-bs-target="#GenrateVoice"onclick="localStorage.setItem('activeMenu','invoicemanagement')">
             Generate Invoice For Pending Work
         </button>
         <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="credit">

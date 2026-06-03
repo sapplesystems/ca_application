@@ -411,7 +411,7 @@
             Print Ledger
         </button>
         <button type="button" class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
-            data-target="#GenrateVoice">
+            data-target="#GenrateVoice"onclick="localStorage.setItem('activeMenu','partyledger')">
             Generate Invoice For Pending Work
         </button>
         <a href="<?= base_url('InvoiceManagment'); ?>" class="Minvoice-btn Minvoice-btn-primary">

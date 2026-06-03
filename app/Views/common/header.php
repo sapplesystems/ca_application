@@ -127,24 +127,72 @@
     </nav>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentPath = window.location.pathname;
+        
+            document.addEventListener('DOMContentLoaded', function () {
 
-        document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
-            const linkPath = new URL(link.href).pathname;
+                const currentPath = window.location.pathname.toLowerCase();
+                const activeMenu = localStorage.getItem('activeMenu');
+                    const previousUrl = document.referrer.toLowerCase();
 
-            if (currentPath === linkPath ||
-                currentPath.includes(linkPath) ||
-                (currentPath.includes('/roles') && linkPath.includes('/roles')) ||
-                (currentPath.includes('permissions') && linkPath.includes('permissions'))) {
+                document.querySelectorAll('.menu-bar .menu-link').forEach(function (link) {
 
-                document.querySelectorAll('.menu-bar .menu-item.active').forEach(el => el.classList
-                    .remove('active'));
-                link.querySelector('.menu-item').classList.add('active');
-            }
+                    const linkPath = new URL(link.href).pathname.toLowerCase();
+                    const menuItem = link.querySelector('.menu-item');
+
+                    // remove old active
+                    menuItem.classList.remove('active');
+
+                    // HOME
+                    if (
+                        currentPath === '/home' &&
+                        linkPath.includes('/home')
+                    ) {
+                        menuItem.classList.add('active');
+                    }
+
+        // PARTY LEDGER MODULE
+            else if (
+                (
+                    currentPath.includes('/invoicemanagment') ||
+                    currentPath.includes('/manageinvoice') ||
+                    currentPath.includes('/invoice/edit') ||
+
+                    (
+                        currentPath.includes('/preview') &&
+                        localStorage.getItem('activeMenu') === 'partyledger'
+                    )
+                ) &&
+                linkPath.includes('/invoicemanagment')
+            ) {
+                    menuItem.classList.add('active');
+                }
+                    // INVOICE MANAGEMENT MODULE
+                else if (
+                    (
+                        currentPath.includes('/invoice-mangement') ||
+                        currentPath.includes('/debit-note') ||
+                        currentPath.includes('/credit-note') ||
+                        currentPath.includes('/generate-invoice') ||
+
+                        (
+                            currentPath.includes('/preview') &&
+                            localStorage.getItem('activeMenu') === 'invoicemanagement'
+                        )
+                    ) &&
+                    linkPath.includes('/invoice-mangement')
+                ) {
+                    menuItem.classList.add('active');
+                }
+
+                // DEFAULT
+                else if (currentPath === linkPath) {
+                    menuItem.classList.add('active');
+                }
+
+            });
+
         });
-    });
-    </script>
+</script>
 </body>
 
 </html>
