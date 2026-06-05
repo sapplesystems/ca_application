@@ -302,6 +302,13 @@
     </div>
 
     <div id="searchResultsSection" style="margin-top: 24px; display: none;">
+        <!-- Result-level search (client-side) -->
+        <div style="margin-bottom:12px;">
+            <div class="input-group">
+                <input type="text" id="resultSearch" class="form-control" placeholder="Search results by Party Name, Invoice No., GSTIN, HSN..." />
+            </div>
+        </div>
+
         <table style="width:100%; border-collapse: collapse;">
             <thead>
                 <tr style="background:#0b5c7d; color:#fff;">
@@ -326,8 +333,7 @@
 
 
  </div>
- <script>
-
+<script>
 document.addEventListener('DOMContentLoaded', function () {
 
     // ================================
@@ -691,7 +697,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(results => {
 
             searchResultsSection.style.display = 'block';
-
             document.getElementById('invoice-footer')
                 .style.display = 'block';
 
@@ -792,16 +797,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 `;
 
+                // add searchable datasets for client-side filtering
+                tr.dataset.partyName = (row.party_name || '').toString().toLowerCase();
+                tr.dataset.invoiceNo = (row.invoice_no || '').toString().toLowerCase();
+                tr.dataset.gstin = (row.party_gstin || '').toString().toLowerCase();
+                tr.dataset.hsn = (row.hsn_code || '').toString().toLowerCase();
+
                 searchResultsBody.appendChild(tr);
 
             });
+
+            // bind client-side filter to result search input
+            const resultSearch = document.getElementById('resultSearch');
+            if (resultSearch) {
+                resultSearch.addEventListener('input', function () {
+                    const term = this.value.trim().toLowerCase();
+                    const rows = searchResultsBody.querySelectorAll('tr');
+                    let visible = 0;
+
+                    rows.forEach(r => {
+                        if (!term) {
+                            r.style.display = '';
+                            visible++;
+                            return;
+                        }
+
+                        const match = (r.dataset.partyName || '').includes(term)
+                            || (r.dataset.invoiceNo || '').includes(term)
+                            || (r.dataset.gstin || '').includes(term)
+                            || (r.dataset.hsn || '').includes(term);
+
+                        if (match) {
+                            r.style.display = '';
+                            visible++;
+                        } else {
+                            r.style.display = 'none';
+                        }
+
+                    });
+
+                    if (visible === 0) {
+                        noSearchResults.style.display = 'block';
+                        noSearchResults.innerText = 'No matching records found.';
+                    } else {
+                        noSearchResults.style.display = 'none';
+                    }
+
+                });
+
+                // wire the button to trigger same filtering
+                const resultBtn = document.getElementById('resultSearchBtn');
+                if (resultBtn) {
+                    resultBtn.addEventListener('click', function () {
+                        resultSearch.dispatchEvent(new Event('input'));
+                    });
+                }
+            }
 
         })
 
         .catch(() => {
 
             searchResultsSection.style.display = 'block';
-
             noSearchResults.textContent =
                 'Unable to load search results. Please try again.';
 
@@ -845,6 +902,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    // Import/export removed for ReceiptInvoiceManagement
+
 });
 
 
@@ -863,7 +922,7 @@ function showSearchPopup(message) {
 
         existing.remove();
 
-    }
+    }[]
 
     const popup =
         document.createElement('div');
