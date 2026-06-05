@@ -312,17 +312,17 @@
         <table style="width:100%; border-collapse: collapse;">
             <thead>
                 <tr style="background:#0b5c7d; color:#fff;">
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">Date</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">Invoice No.</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">Party Name</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">GSTIN</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">HSN Code</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">Taxable Amount</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">CGST@9%</th>  
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">SGST@9%</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">IGST@18%</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">Gross Total</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">Action</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Date</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Invoice No.</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Party Name</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">GSTIN</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center; width:8%;">HSN Code</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Taxable Amount</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">CGST@9%</th>  
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">SGST@9%</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">IGST@18%</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Gross Total</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Action</th>
                 </tr>
             </thead>
             <tbody id="searchResultsBody"></tbody>
@@ -783,8 +783,10 @@ document.addEventListener('DOMContentLoaded', function () {
                            ✏️ Edit
                         </a>
 
-                        <a href="<?= site_url('invoice/print/') ?>${row.id}"
-                           style="margin-right:4px; text-decoration:none; color:#0b5c7d;">
+                        <a href="javascript:void(0)"
+                           class="preview-link"
+                           data-preview-url="<?= site_url('invoice/print/') ?>${row.id}"
+                           style="margin-right:4px; text-decoration:none; color:#0b5c7d; cursor:pointer;">
                            👁️ Preview
                         </a>
 
@@ -900,6 +902,17 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('noSearchResults')
             .style.display = 'none';
 
+    });
+
+    // Preview link handler - use window.open so it can be closed
+    document.body.addEventListener('click', function (e) {
+        const previewLink = e.target.closest('.preview-link');
+        if (!previewLink) return;
+        e.preventDefault();
+        const url = previewLink.dataset.previewUrl;
+        if (url) {
+            window.open(url, 'InvoicePreview');
+        }
     });
 
     // Import/export removed for ReceiptInvoiceManagement

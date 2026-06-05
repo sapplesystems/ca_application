@@ -594,8 +594,8 @@
     }
 
     function cancelPrint() {
-    window.history.back();
-}
+        window.close();
+    }
 
     // window.onafterprint = function () {
 
