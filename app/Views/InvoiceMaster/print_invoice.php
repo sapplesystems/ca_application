@@ -594,18 +594,17 @@
     }
 
     function cancelPrint() {
-        window.location.href =
-            "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
-    }
+    window.history.back();
+}
 
-    window.onafterprint = function () {
+    // window.onafterprint = function () {
 
-        // Redirect only if actual print button was clicked
-        if (isPrinting) {
-            window.location.href =
-                "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
-        }
-    };
+       
+    //     if (isPrinting) {
+    //         window.location.href =
+    //             "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
+    //     }
+    // };
 </script>
 
 </body>

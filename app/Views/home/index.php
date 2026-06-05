@@ -7,6 +7,40 @@
             font-style: normal;
             font-display: swap;
         }
+.hero-text h1,
+.hero-text p {
+    opacity: 0;
+    transform: scale(0.3);
+    animation: zoomReveal 1.8s ease-out forwards;
+}
+
+.hero-text p {
+    animation-delay: 0.5s;
+}
+.hero-text h1,
+.hero-text p {
+    opacity: 0;
+    transform: scale(0.2);
+    animation: zoomOut 1.5s ease-out forwards;
+}
+
+.hero-text p {
+    animation-delay: 0.3s;
+}
+
+@keyframes zoomOut {
+    0% {
+        opacity: 0;
+        transform: scale(0.2);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
 .hero {
     position: relative;
     height: calc(100vh - 120px); 
