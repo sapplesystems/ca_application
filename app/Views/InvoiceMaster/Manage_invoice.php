@@ -760,6 +760,7 @@
 </div>
 
 <script>
+    localStorage.setItem('activeMenu', 'partyledger');
     function deleteInvoice(id) {
         if (!confirm('Are you sure you want to delete this invoice?')) return;
 

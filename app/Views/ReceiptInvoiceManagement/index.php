@@ -334,6 +334,7 @@
 
  </div>
 <script>
+    localStorage.setItem('activeMenu', 'invoicemanagement');
 document.addEventListener('DOMContentLoaded', function () {
 
     // ================================
