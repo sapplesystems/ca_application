@@ -147,6 +147,7 @@
             Address : <?php echo $company['registered_office']; ?><br />
             Ph. No. : <?php echo $company['telephone']; ?><br />
             E-mail : <?php echo $company['email']; ?><br />
+            GSTIN: <?php echo $company['gstin']; ?><br />
         </div>
         <div class="debitnotepdf-logo">
            <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
@@ -163,10 +164,7 @@ style="width:120px; height:auto; display:block; margin-left:auto;">
 
     <div class="debitnotepdf-info">
         <div class="debitnotepdf-info-row">
-            <div>
-                <b>Service Tax Registration Number:</b><?php echo $client['registration_no']; ?><br />
-                <b>Category Of Service:</b><?php echo $company['type_of_company']; ?><br />
-            </div>
+            
             <div>
                 <?php if ($debitNote['note_type'] === 'debit') : ?>
                 <b>Invoice No.:</b> <?= esc($debitNote['debit_no']); ?><br />
@@ -181,6 +179,8 @@ style="width:120px; height:auto; display:block; margin-left:auto;">
         <b>Issued To,</b><br />
         <b>Name :</b><?php echo $client['legal_name']; ?> <br />
         <b>Address :</b><?php echo $client['registered_office']; ?> <br />
+        <b>Email :</b><?php echo $client['email']; ?> <br />
+        <b>GSTIN :</b><?php echo $client['gstin']; ?> <br />
     </div>
 
     <p class="debitnotepdf-note">
@@ -237,9 +237,11 @@ style="width:120px; height:auto; display:block; margin-left:auto;">
     <div class="debitnotepdf-bank">
         <div>
             <b>Banker's Details</b><br />
-            <?php echo $company['bank_name']; ?><br /><br />
-            Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-            IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+            <?= esc($company['name']); ?></br>
+          Bank Name:<?php echo $company['bank_name']; ?><br />
+          A/C.No. : <?php echo $company['bank_ac_no']; ?><br />
+          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+          Branch :<?php echo $company['branch_address']; ?>
         </div>
         <div class="debitnotepdf-sign">
             <b><?php echo $company['name']; ?></b><br /><br /><br />
@@ -247,11 +249,6 @@ style="width:120px; height:auto; display:block; margin-left:auto;">
         </div>
     </div>
 
-
-    <div class="debitnotepdf-terms">
-        <b>Terms & Conditions</b><br />
-        <?php echo nl2br(esc($debitNote['terms_and_conditions'])); ?>
-    </div><br />
     <!-- <div class="right">
         <button onclick="window.print()">Print Invoice</button>
     </div> -->
