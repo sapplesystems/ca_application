@@ -59,7 +59,7 @@
                     <strong>Credit Note No. :</strong><br>
                    <input type="text"
                         name="credit_no"
-                        value="<?= esc($company['credit_format'] ?? $creditNo); ?>"
+                        value="<?= esc($creditNo); ?>"
                         style="width:180px; padding:4px;"
                         required>
                 </td>

@@ -597,29 +597,50 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
 
 
 public function storeDebitNote()
-    {
-        // print_r($this->request->getPost());exit;
-         $companyId = $this->request->getPost('company_debit');
-         $clientId = $this->request->getPost('client_id');
-        $noteType = $this->request->getPost('note_type');
-        $clientModel = new ClientModel();
-        $client = $clientModel->find($clientId);
-        //  print_r($companyId); exit;
-        $companyModel = new CompanyMasterModel();
-        $company = $companyModel->find($companyId);
-        if($noteType==='debit'){{
-            $DebitModel = new DebitNotes();
-             $debitNo = $DebitModel->generateInvoiceNo('DN');
+{
+    $companyId = $this->request->getPost('company_debit');
+    $clientId  = $this->request->getPost('client_id');
+    $noteType  = $this->request->getPost('note_type');
+
+    $clientModel = new ClientModel();
+    $client = $clientModel->find($clientId);
+
+    $companyModel = new CompanyMasterModel();
+    $company = $companyModel->find($companyId);
+
+    $DebitModel = new DebitNotes();
+
+    $lastRecord = $DebitModel
+        ->orderBy('id', 'DESC')
+        ->first();
+
+    $nextId = $lastRecord ? ($lastRecord['id'] + 1) : 1;
+
+    if ($noteType === 'debit') {
+
+        $debitNo = $company['debit_format'] . $nextId;
+
         return view('common/header')
-            . view('InvoiceMaster/DebitNote', ['company' => $company, 'client' => $client,'debitNo'=>$debitNo])
-            . view('common/footer');};
-        }else{
-             $DebitModel = new DebitNotes();
-             $creditNo = $DebitModel->generateInvoiceNo('CN');
-            return view('common/header')
-                . view('InvoiceMaster/CreditNote', ['company' => $company, 'client' => $client,'creditNo'=>$creditNo])
-                . view('common/footer');};
+            . view('InvoiceMaster/DebitNote', [
+                'company' => $company,
+                'client'  => $client,
+                'debitNo' => $debitNo
+            ])
+            . view('common/footer');
+
+    } else {
+
+        $creditNo = $company['credit_format'] . $nextId;
+
+        return view('common/header')
+            . view('InvoiceMaster/CreditNote', [
+                'company'  => $company,
+                'client'   => $client,
+                'creditNo' => $creditNo
+            ])
+            . view('common/footer');
     }
+}
 
    public function saveDebitNote()
 {
