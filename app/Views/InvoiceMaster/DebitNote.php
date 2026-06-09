@@ -84,9 +84,6 @@
             </tr>
 
             <tr>
-                <td>
-                    <strong>Category Of Service :</strong> CONSULTANCY
-                </td>
                 <td align="right">
                     <strong>Date :</strong><br>
                     <input type="date" name="debit_date" value="<?= date('Y-m-d'); ?>" style="padding:6px; border:1px solid #bbb;" required>
@@ -115,13 +112,19 @@
             <table width="100%" border="0" cellpadding="6">
                 <tr>
                     <td>
-                        <strong>Bill To,</strong><br><br>
+                        <strong>Bill To,</strong><br>
 
                         <strong>Name :</strong>
                         <?= esc($client['legal_name']); ?><br>
 
                         <strong>Address :</strong>
                         <?= esc($client['registered_office']); ?>
+                        <br>
+                        <strong>Email :</strong>
+                        <?= esc($client['email']); ?>
+                        <br>
+                        <strong>GSTIN :</strong>
+                        <?= esc($client['gstin']); ?>
                     </td>
                 </tr>
             </table>
