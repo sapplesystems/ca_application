@@ -1,6 +1,8 @@
 <style>
 .debitnotepdf-invoice {
-    width: 800px;
+    width: 100%;
+    max-width: 750px;
+    box-sizing: border-box;
     margin: 20px auto;
     border: 1px solid #000;
     padding: 15px;
@@ -9,24 +11,21 @@
 }
 
 .debitnotepdf-header {
-    display: flex;
-    justify-content: space-between;
+    width: 100%;
+    display: table;
 }
 
 .debitnotepdf-company-details {
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.debitnotepdf-company-name {
-    margin: 0;
-    font-size: 18px;
+    display: table-cell;
+    width: 75%;
+    vertical-align: top;
 }
 
 .debitnotepdf-logo {
-    font-size: 40px;
-    font-weight: bold;
-    color: #1b4fa3;
+    display: table-cell;
+    width: 25%;
+    text-align: right;
+    vertical-align: top;
 }
 
 .debitnotepdf-title {
@@ -99,20 +98,60 @@
     font-size: 12px;
     margin-top: 15px;
 }
+@media print {
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .debitnotepdf-invoice {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 10px !important;
+        border: 1px solid #000;
+        box-sizing: border-box;
+    }
+
+    img {
+        max-width: 150px !important;
+        height: auto !important;
+    }
+
+    .debitnotepdf-header,
+    .debitnotepdf-info-row,
+    .debitnotepdf-bank {
+        display: table;
+        width: 100%;
+    }
+
+    .debitnotepdf-header > div,
+    .debitnotepdf-info-row > div,
+    .debitnotepdf-bank > div {
+        display: table-cell;
+        vertical-align: top;
+    }
+}
+.debitnotepdf-company-name
+{
+    margin-top:0px;
+}
 </style>
 <div class="debitnotepdf-invoice">
 
     <div class="debitnotepdf-header ">
         <div class="debitnotepdf-company-details">
-            <h2 class="debitnotepdf-company-name"><?php echo $company['name']; ?></h2>
+            <h3 class="debitnotepdf-company-name"><?php echo $company['name']; ?></h3>
             <b><?php echo $company['type_of_company']; ?></b><br />
             Address : <?php echo $company['registered_office']; ?><br />
             Ph. No. : <?php echo $company['telephone']; ?><br />
             E-mail : <?php echo $company['email']; ?><br />
         </div>
         <div class="debitnotepdf-logo">
-            <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" alt="Company Logo"
-                style="max-width:200px; max-height:200px;">
+           <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
+alt="Company Logo"
+style="width:120px; height:auto; display:block; margin-left:auto;">
         </div>
     </div>
 
