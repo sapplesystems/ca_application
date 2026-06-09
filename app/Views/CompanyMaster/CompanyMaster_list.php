@@ -306,6 +306,16 @@
                                     </p>
                                 </div>
 
+                                  <div class="cmg-field">
+                                    <label class="cmg-label">Debit Format</label>
+                                    <input type="text" class="cmg-input" name="debit_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $debitNo ?>">
+                                </div>
+
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Credit Format </label>
+                                    <input type="text" class="cmg-input" name="credit_format" placeholder="e.g. ORG/BRANCH/FY/SEQ"  value="<?= $creditNo ?>">
+                                </div>
+
                                 <!-- PAN / GSTIN / IEC -->
                                 <div class="cmg-field">
                                     <label class="cmg-label">PAN</label>

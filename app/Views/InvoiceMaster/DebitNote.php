@@ -60,7 +60,7 @@
                     <strong> Debit Note No. :</strong><br>
                     <input type="text"
                         name="debit_no"
-                        value="<?= esc($debitNo); ?>"
+                        value="<?= esc($company['debit_format'] ?? $debitNo); ?>"
                         style="width:180px; padding:4px;"
                         required>
                 </td>

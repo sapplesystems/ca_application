@@ -250,6 +250,7 @@
                                 E-Mail : <span id="companyEmail"></span><br />
                             </div>
                         </div>
+                        
 
                         <!-- Title -->
                         <div class="receiptnote-title title">Receipt Note</div>
@@ -272,7 +273,7 @@
 
                                 <td class="receiptnote-label">Date :</td>
                                 <td>
-                                    <input type="text" name="date" id="receiptDate" class="receiptnote-input" />
+                                    <input type="date" name="date" id="receiptDate" class="receiptnote-input" />
                                 </td>
                             </tr>
                         </table>
@@ -301,6 +302,7 @@
                                     <select name="mode_of_payment" id="modeOfPayment" class="receiptnote-select">
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
+                                        <option value="TDS">TDS</option>
                                     </select>
                                 </td>
                             </tr>
@@ -486,13 +488,14 @@
             <thead>
                 <tr>
                     <th style="width: 10%" class="print-widthinvoiceno">Invoice No</th>
-                    <th style="width: 8%" class="print-widthinvoicedate">Invoice Date</th>
+                    <th style="width: 7%" class="print-widthinvoicedate">Invoice Date</th>
                     <th style="width: 20%" class="print-widtinvoicework">Works</th>
                     <!-- <th style="width: 12%" class="print-hide">Company</th> -->
-                    <th style="width: 14%" class="print-widthinvoiceamount">Total Invoice Amount</th>
+                    <th style="width: 9%" class="print-widthinvoiceamount">Total Invoice Amount</th>
                     <th style="width: 7%" class="print-widtreciptdate">Receipt Date</th>
                     <th style="width: 8%" class="print-widtreciptno">Receipt No</th>
-                    <th style="width: 8%" class="print-widtreciptamount">Receipt Amount</th>
+                    <th style="width: 8%" class="print-widtreciptamount">TDS Amount</th>
+                    <th style="width: 8%" class="print-widtreceivedamount">Received Amount</th>
                     <th style="width: 8%" class="print-widtrunningamount">Running Amount</th>
                     <th style="width: 17%" class="no-print">Action</th>
 
@@ -541,14 +544,30 @@
                         <?php
 
                         $invoice = $row['total_invoice_amount'] ?? 0;
-                        $tds     = $row['tds_amount'] ?? 0;
+                        // $tds     = $row['tds_amount'] ?? 0;
+                        $totalTds = 0;
 
-                        if ($isFirstRow) {
-                            $runningBalance += ($invoice - $tds);
+                        foreach ($receipt as $r) {
+                            if ($r['invoice_id'] == $row['id']) {
+                                $totalTds += $r['tds_amount'];
+                            }
+                        }
+
+                       
+                        $totalReceivedAmount = 0;
+                        foreach ($receipt as $r) {
+                            if ($r['invoice_id'] == $row['id']) {
+                                $totalReceivedAmount += $r['bill_amount'];
+                            }
+                        }
+
+                         if ($isFirstRow) {
+                            $runningBalance += ($invoice - ($totalTds+$totalReceivedAmount));
                             $isFirstRow = false; // next rows won't enter here
                         } else {
-                            $runningBalance += $invoice - $tds;
+                            $runningBalance += $invoice - ($totalTds+$totalReceivedAmount);
                         }
+                      
                         ?>
                         <tr class="invoice-row" data-company-id="<?= $row['company_id'] ?>"
                             data-date="<?= $row['invoice_date'] ?>">
@@ -567,7 +586,8 @@
                                     : '-' ?>
                             </td>
                             <td><?= esc($row['recipt_no']) ?></td>
-                            <td class="receipt-amount"><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
+                            <td class="receipt-amount"> <?= number_format($totalTds, 2) ?></td>
+                            <td class="received-amount"> <?= number_format($totalReceivedAmount, 2) ?></td>
                             <td class="running-amount"><strong><?= number_format($runningBalance, 2) ?></strong></td>
                             <td class="no-print">
                                 <!-- Edit -->
@@ -650,9 +670,10 @@
                             2
                         ) ?>
                     </td>
-                    <td></td>
-                    <td>Total Receipt Amount</td>
+                    
+                    <td>Total TDS Amount</td>
                     <td id="totalReceiptAmount"><?= number_format($totalReceipt, 2) ?></td>
+                    <td></td>
                     <td class="Minvoice-text-right print-hide">Closing Balance</td>
                     <td class="Minvoice-text-right print-hide" id="closingBalance"><?= number_format($closingBalance, 2) ?></td>
                     <!-- <td ></td>
@@ -820,6 +841,10 @@
              { 
                 width: 10% !important;
             }
+                .print-widtreceivedamount
+                 {
+                    width: 10% !important;
+                 }
         .print-widtrunningamount
                  
         {
@@ -897,7 +922,7 @@
                 $('#clientPan').text(res.client.pan);
 
                 // Invoice
-                $('#receiptNo').val(res.invoice.invoice_no);
+                // $('#receiptNo').val(res.invoice.invoice_no);
                 $('#receiptDate').val(res.invoice.invoice_date);
                 $('#billAmount').val(res.invoice.total_invoice_amount);
                 $('#current_invoice_id').val(res.invoice.id);
@@ -1352,26 +1377,28 @@
             document.getElementById('openingBalance').dataset.opening
         ) || 0;
 
-        document.querySelectorAll('.invoice-row').forEach(row => {
+       document.querySelectorAll('.invoice-row').forEach(row => {
 
-            if (row.style.display !== 'none') {
+    if (row.style.display !== 'none') {
 
-                const invoice = parseFloat(
-                    row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        const invoice = parseFloat(
+            row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
+        ) || 0;
 
-                const receipt = parseFloat(
-                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        const received = parseFloat(
+            row.querySelector('.received-amount').innerText.replace(/,/g, '')
+        ) || 0;
 
-                runningBalance += invoice - receipt;
+        const tds = parseFloat(
+            row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
+        ) || 0;
 
-                row.querySelector('.running-amount strong').innerText =
-                    runningBalance.toFixed(2);
+        runningBalance += invoice - (received + tds);
 
-            }
-
-        });
+        row.querySelector('.running-amount strong').innerText =
+            runningBalance.toFixed(2);
+    }
+});
 
     });
 
@@ -1461,28 +1488,33 @@ const formattedTo = formatDate(lastDate);
         let totalReceipt = 0;
         let runningBalance = openingBalance;
 
-        rows.forEach(row => {
+       rows.forEach(row => {
 
-            // Only calculate visible rows (important for filters)
-            if (row.style.display !== 'none') {
+    if (row.style.display !== 'none') {
 
-                const invoice = parseFloat(
-                    row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        const invoice = parseFloat(
+            row.querySelector('.invoice-amount')?.innerText.replace(/,/g, '')
+        ) || 0;
 
-                const receipt = parseFloat(
-                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        const received = parseFloat(
+            row.querySelector('.received-amount')?.innerText.replace(/,/g, '')
+        ) || 0;
 
-                totalInvoice += invoice;
-                totalReceipt += receipt;
+        const tds = parseFloat(
+            row.querySelector('.receipt-amount')?.innerText.replace(/,/g, '')
+        ) || 0;
 
-                runningBalance += invoice - receipt;
+        totalInvoice += invoice;
+        totalReceipt += (received + tds);
 
-                row.querySelector('.running-amount strong').innerText =
-                    runningBalance.toFixed(2);
-            }
-        });
+        runningBalance += invoice - (received + tds);
+
+        const balanceCell = row.querySelector('.running-amount strong');
+        if (balanceCell) {
+            balanceCell.innerText = runningBalance.toFixed(2);
+        }
+    }
+});
 
         // ===============================
         // UPDATE TOTALS
@@ -1689,5 +1721,55 @@ if (!fromInput && !toInput && visibleDates.length > 0) {
                 });
         });
         
+        const nextReceiptId = <?= $nextReceiptId ?>;
+
+function getFinancialYear() {
+    const today = new Date();
+    let startYear, endYear;
+
+    if (today.getMonth() >= 3) { // April onwards
+        startYear = today.getFullYear() % 100;
+        endYear = (today.getFullYear() + 1) % 100;
+    } else {
+        startYear = (today.getFullYear() - 1) % 100;
+        endYear = today.getFullYear() % 100;
+    }
+
+    return `${startYear}${endYear}`;
+}
+
+function generateReceiptNo() {
+    const mode = document.getElementById('modeOfPayment').value;
+    const receiptNo = document.getElementById('receiptNo');
+
+    let prefix = 'CH'; // Default Cash
+
+    if (mode === 'Cheque') {
+        prefix = 'CHQ';
+    } else if (mode === 'TDS') {
+        prefix = 'TDS';
+    }
+
+    const serial = String(nextReceiptId).padStart(2, '0');
+
+    receiptNo.value = `${prefix}/${getFinancialYear()}/${serial}`;
+}
+
+document.getElementById('modeOfPayment')
+    .addEventListener('change', generateReceiptNo);
+
+// Generate on page load (Cash selected by default)
+window.onload = generateReceiptNo;
+
+function calculateTDS() {
+    let billAmount = parseFloat(document.getElementById('billAmount').value) || 0;
+
+    let tdsAmount = billAmount * 10 / 100;
+
+    document.getElementById('tdsAmount').value = tdsAmount.toFixed(2);
+}
+
+document.getElementById('billAmount')
+    .addEventListener('input', calculateTDS);
         
 </script>

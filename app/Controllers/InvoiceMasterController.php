@@ -56,6 +56,13 @@ class InvoiceMasterController extends BaseController
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
         $receiptModel=new ReciptDetailsModel();
         $receipt=$receiptModel->select('*')->where('client_id', $id)->findAll();
+
+        $lastReceipt = $receiptModel
+                        ->select('id')
+                        ->orderBy('id', 'DESC')
+                        ->first();
+
+        $nextReceiptId = $lastReceipt ? ($lastReceipt['id'] + 1) : 1;
         $debitModel=new DebitNotes();
         $debit=$debitModel->select('note_type,total_amount')->findAll();
         // $openingBalance = 0;
@@ -72,7 +79,7 @@ class InvoiceMasterController extends BaseController
             'receipt'=>$receipt,
             'debit'=>$debit,
             // 'openingBalance' => $openingBalance,
-             
+            'nextReceiptId' => $nextReceiptId
         ]);
         echo view('common/footer');
     }

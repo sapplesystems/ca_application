@@ -42,6 +42,8 @@ class CompanyMasterModel extends Model
         'updated_at',
         'gst_state',
         'branch_address',
+        'debit_format',
+        'credit_format'
     ];
 
     protected bool $allowEmptyInserts = false;
