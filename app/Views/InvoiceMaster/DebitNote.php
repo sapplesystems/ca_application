@@ -1,4 +1,47 @@
-<div class="invoiceM-containerr">
+<style>
+
+@media print {
+
+    @page{
+        size:A4 portrait;
+        margin:10px;
+    }
+
+    body{
+        margin:0;
+        padding:0;
+    }
+
+    .invoiceM-containerr{
+        width:100% !important;
+        overflow:hidden !important;
+        box-sizing:border-box;
+    }
+
+    table{
+        width:100% !important;
+        border-collapse:collapse !important;
+        table-layout:fixed !important;
+    }
+
+    td, th{
+        word-break:break-word;
+        font-size:11px !important;
+    }
+
+    .invoice-table input{
+        width:100% !important;
+        box-sizing:border-box !important;
+    }
+
+    button,
+    .inv-back-btn-main,
+    .Gvoice-btn{
+        display:none !important;
+    }
+}
+
+</style><div class="invoiceM-containerr">
     <div class=" inv-header-main">
        <h1 class="inv-title-main">
     <span id="noteTitle">Debit Note</span>
@@ -136,7 +179,8 @@
                         <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
                              <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
-
+                        </td>
+                    </tr>
                     <!-- Hidden Template Row -->
                     <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
                         <td style="text-align:center;"></td>
@@ -358,7 +402,7 @@
         newRow.cells[0].textContent = existingRows + 1; // simple counting
 
         // Insert before totals row
-        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
+        const totalsRow = document.getElementById('totalsRow');
         tbody.insertBefore(newRow, totalsRow);
 
         // Attach input listener to the new input
@@ -458,7 +502,7 @@
         newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
 
         // Append before totals row
-        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
+        const totalsRow = document.getElementById('totalsRow');
         tbody.insertBefore(newRow, totalsRow);
     }
     document.addEventListener('click', function (e) {
