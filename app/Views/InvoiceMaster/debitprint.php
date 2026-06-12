@@ -40,7 +40,7 @@
     vertical-align: top;
 }
 
-.debitnotepdf-title {
+.debitnotepdf-title-note {
     background: #000;
     color: #fff;
     text-align: center;
@@ -80,7 +80,7 @@
 .debitnotepdf-table th,
 .debitnotepdf-table td {
     padding: 6px;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .debitnotepdf-table th {
@@ -145,13 +145,16 @@
 
 .debitnotepdf-sign{
     position: absolute;
-    bottom: 0;
+    bottom: 20px;
     right: 10px;
     font-size: 16px;
     margin: 0;
     padding: 0;
     font-weight: bold;
     
+}
+.right{
+    text-align:right;
 }
 @media print {
 
@@ -190,7 +193,7 @@
 }
 .debitnotepdf-company-name
 {
-    margin-top:0px;
+    margin-top:-10px;
 }
 .debitnotepdf-info-row {
     width: 100%;
@@ -210,6 +213,9 @@
     vertical-align: top;
     text-align: left;
     padding-left: 40px;
+}
+.right{
+    text-align:right;
 }
 </style>
 <div class="debitnotepdf-invoice">
@@ -234,7 +240,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
     </div>
 
 
-    <div class="debitnotepdf-title">
+    <div class="debitnotepdf-title-note">
         <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
     </div>
 
@@ -262,13 +268,6 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
 </div>
 
-    <p class="debitnotepdf-note">
-        Kindly acknowledge the expenses incurred by us on your behalf, given
-        below are details of the expenses, we request you to send us the payment
-        at an early date.
-    </p>
-
-
     <table class="debitnotepdf-table">
         <tr>
             <th>SL No.</th>
@@ -282,7 +281,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
             <td class="debitnotepdf-text-left">
                 <?= esc($exp['expense_description']) ?>
             </td>
-            <td>
+            <td class="right">
                 <?= number_format($exp['expense_amount'], 2) ?>
             </td>
         </tr>
@@ -294,29 +293,32 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
         <?php endif; ?>
 
         <tr class="debitnotepdf-summary">
-            <td>A</td>
-            <td class="debitnotepdf-text-left">
+            <td class="right">A</td>
+            <td class="right">
                 Total Recoverable Expenses
             </td>
-            <td><?php echo $debitNote['total_recoverable_expenses']; ?></td>
+            <td class="right"><?php echo $debitNote['total_recoverable_expenses']; ?></td>
         </tr>
         
                         <?php if ($debitNote['tax'] === 'cgst_sgst'): ?>
 
                 <tr >
-                    <td colspan="2" class="right"><strong>CGST @ 9%</strong></td>
+                    <td></td>
+                    <td  class="right"><strong>CGST @ 9%</strong></td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
                 </tr>
 
                 <tr>
-                    <td colspan="2" class="right"><strong>SGST @ 9%</strong></td>
+                    <td></td>
+                    <td  class="right"><strong>SGST @ 9%</strong></td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
                 </tr>
 
             <?php elseif ($debitNote['tax'] === 'igst'): ?>
 
                 <tr>
-                    <td colspan="2" class="right"><strong>IGST @ 18%</strong></td>
+                    <td></td>
+                    <td class="right"><strong>IGST @ 18%</strong></td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.18, 2); ?></strong></td>
                 </tr>
 
@@ -340,22 +342,26 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
             ?>
             <tr class="debitnotepdf-summary">
                 <td></td>
-                <td class="debitnotepdf-text-left">Taxable Amount</td>
-                <td><?php echo $grandTotal  ?></td>
+                <td class="right"><strong>Total Amount</strong></td>
+                <td class="right"><strong><?php echo $grandTotal  ?></strong></td>
            </tr>
         <tr class="debitnotepdf-summary">
-            <td>B</td>
-            <td class="debitnotepdf-text-left">(-) Advances Received</td>
-            <td><?php echo $debitNote['advance_amount']; ?></td>
+            <td class="right">B</td>
+            <td class="right">(-) Advances Received</td>
+            <td class="right"><?php echo $debitNote['advance_amount']; ?></td>
         </tr>
         <tr class="debitnotepdf-summary">
-            <td>C</td>
-            <td class="debitnotepdf-text-left">Net Amount(A+B)</td>
-            <td><?php echo $debitNote['total_amount']; ?></td>
+            <td class="right">C</td>
+            <td class="right">Net Amount(A+B)</td>
+            <td class="right"><?php echo $debitNote['total_amount']; ?></td>
         </tr>
 
     </table>
-
+<p class="debitnotepdf-note">
+        Kindly acknowledge the expenses incurred by us on your behalf, given
+        below are details of the expenses, we request you to send us the payment
+        at an early date.
+    </p>
 
   <div class="debitnotepdf-bank">
 

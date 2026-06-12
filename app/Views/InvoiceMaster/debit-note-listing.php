@@ -63,7 +63,6 @@
 document.addEventListener('click', function(e) {
     if (e.target.closest('.delete-btn')) {
         const id = e.target.closest('.delete-btn').dataset.id;
-
         if (confirm('Are you sure you want to delete this record?')) {
             window.location.href = "<?= base_url('debits/delete/') ?>" + id;
         }

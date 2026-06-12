@@ -1022,10 +1022,21 @@ public function debitlist($id)
 
 public function debitDelete($id)
 {
-     $debitModel = new DebitNotes();
-     $debitModel->delete($id);
+    $debitModel = new DebitNotes();
 
-        return redirect()->to('DebitNoteList/1')->with('success', 'Debit deleted successfully');
+    // Get record before deleting
+    $debit = $debitModel->find($id);
+
+    if (!$debit) {
+        return redirect()->back()->with('error', 'Record not found');
+    }
+
+    $clientId = $debit['client_id'];
+
+    $debitModel->delete($id);
+
+    return redirect()->to('DebitNoteList/' . $clientId)
+                     ->with('success', 'Debit deleted successfully');
 }
 
 public function debitEdit($id)
