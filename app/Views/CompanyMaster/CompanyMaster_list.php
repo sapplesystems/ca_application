@@ -1083,6 +1083,38 @@ if (phoneInput.length) {
         .catch(error => console.error("Error:", error));
     }
 }
+// ===== SHOW ONLY 10 ROWS INITIALLY =====
+const companyRows = document.querySelectorAll("#example tbody tr");
+
+companyRows.forEach((row, index) => {
+    row.style.display = index < 10 ? "" : "none";
+});
+
+// ===== SEARCH =====
+document.querySelector(".search-input").addEventListener("input", function () {
+
+    const term = this.value.toLowerCase();
+    const rows = document.querySelectorAll("#example tbody tr");
+
+    if (term === "") {
+
+        rows.forEach((row, index) => {
+            row.style.display = index < 10 ? "" : "none";
+        });
+
+    } else {
+
+        rows.forEach((row) => {
+
+            const rowText = row.textContent.toLowerCase();
+
+            row.style.display = rowText.includes(term) ? "" : "none";
+
+        });
+
+    }
+
+});
   
         </script>
     </body>

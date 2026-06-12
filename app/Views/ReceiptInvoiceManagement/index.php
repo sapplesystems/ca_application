@@ -181,7 +181,7 @@
                 <div class="modal-body">
                     <div class="debitP">
                         <div class="content">
-                            <div class="form-group mb-3">
+                            <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
                                 <label><strong>Select Client</strong></label>
                                 <input type="text" id="noteClientSearch" class="search-input" placeholder="Search client...">
                                 <?php foreach ($clients as $client): ?>
@@ -193,7 +193,7 @@
                                 </div>
                                 <?php endforeach; ?>
                             </div>
-                            <div class="form-group mb-3">
+                            <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
                                 <label><strong>Choose Company</strong></label>
                                 <input type="text" id="noteCompanySearch" class="search-input" placeholder="Search company...">
                                 <?php foreach ($companies as $company): ?>

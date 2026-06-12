@@ -25,6 +25,9 @@
         text-align: right;
         /* SAC, GST, Actions */
     }
+    .dt-paging {
+    display: none !important;
+}
 </style>
 
 <main class="content-wrap">
@@ -207,38 +210,6 @@
                             </div>
                         </div>
 
-                        <!-- Row 4 -->
-                        <!-- <div class="msl-form-row">
-                            <div class="msl-form-group">
-                                <label for="gstYesNo">GST?</label>
-                                <select id="gstYesNo" name="gst">
-                                    <option value="">Select</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
-                            </div> -->
-
-                        <!-- <div class="msl-form-group">
-                                <label for="frequency">Frequency</label>
-                                <select id="frequency" name="frequency">
-                                    <option value="">Select frequency</option>
-                                    <option value="Monthly">Monthly</option>
-                                    <option value="Quarterly">Quarterly</option>
-                                    <option value="Annually">Annually</option>
-                                </select>
-                            </div> -->
-                        <!-- </div> -->
-
-                        <!-- Row 5 -->
-                        <!-- <div class="msl-form-row">
-                            <div class="msl-form-group">
-                                <label for="status">Status</label>
-                                <select id="status" name="status">
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div> -->
 
                         <!-- Buttons -->
                         <div class="msl-form-actions">
@@ -382,19 +353,21 @@ $(document).ready(function() {
 
     if ($('#searchmasterwork').length) {
 
-        window.table = new DataTable('#searchmasterwork', {
+      window.table = new DataTable('#searchmasterwork', {
 
-            paging: false,
+    paging: true,
 
-            searching: true,
+    pageLength: 10,
 
-            info: false,
+    searching: true,
 
-            ordering: false,
+    info: false,
 
-            dom: 't',
+    ordering: false,
 
-            columnDefs: [
+    dom: 't',
+
+    columnDefs: [
 
                 {
                     targets: 0,

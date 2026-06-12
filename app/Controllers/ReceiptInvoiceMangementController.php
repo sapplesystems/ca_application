@@ -18,11 +18,16 @@ class ReceiptInvoiceMangementController extends BaseController
         $workModel     = new WorkMasterModel();
         $companyModel  = new CompanyMasterModel();
 
+        // $data = [
+        //     'clients'   => $clientModel->findAll(),
+        //     'works'     => $workModel->findAll(),
+        //     'companies' => $companyModel->findAll(),
+        // ];
         $data = [
-            'clients'   => $clientModel->findAll(),
-            'works'     => $workModel->findAll(),
-            'companies' => $companyModel->findAll(),
-        ];
+    'clients'   => $clientModel->orderBy('legal_name', 'ASC')->findAll(),
+    'works'     => $workModel->findAll(),
+    'companies' => $companyModel->orderBy('name', 'ASC')->findAll(),
+];
 
         return view('common/header')
             . view('ReceiptInvoiceManagement/index', $data)
