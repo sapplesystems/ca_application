@@ -114,6 +114,121 @@ class ReceiptInvoiceMangementController extends BaseController
 
         $results = $query->findAll();
 
+       
         return $this->response->setJSON($results);
     }
+
+   public function getReceiptDetails()
+{
+    $clientId  = $this->request->getPost('client_id');
+    $companyId = $this->request->getPost('company_id');
+
+    $clientModel = new \App\Models\ClientModel();
+    $companyModel = new \App\Models\CompanyMasterModel();
+
+    $client = $clientModel->find($clientId);
+    $company = $companyModel->find($companyId);
+
+    return $this->response->setJSON([
+        'status'  => true,
+        'client'  => $client,
+        'company' => $company
+    ]);
+}
+
+public function getReceiptNumber()
+{
+    $mode = $this->request->getPost('mode_of_payment');
+
+    switch ($mode) {
+
+        case 'Cash':
+            $prefix = 'CH';
+            break;
+
+        case 'Cheque':
+            $prefix = 'CHQ';
+            break;
+
+        case 'TDS':
+            $prefix = 'TDS';
+            break;
+
+        default:
+            $prefix = 'CH';
+    }
+
+    $receiptModel = new \App\Models\ReciptDetailsModel();
+
+    // Get latest receipt for this payment mode
+    $lastReceipt = $receiptModel
+        ->orderBy('id', 'DESC')
+        ->first();
+
+    // $nextSerial = 1;
+
+    if ($lastReceipt) {
+
+        $parts = explode('/', $lastReceipt['recipt_no']);
+
+        if (isset($parts[2])) {
+            $nextSerial = ((int)$parts[2]) + 1;
+        }
+    }
+
+  $currentMonth = date('n'); // 1 to 12
+$currentYear  = date('Y');
+
+if ($currentMonth >= 4) {
+    // April onwards
+    $startYear = substr($currentYear, -2);
+    $endYear   = substr($currentYear + 1, -2);
+} else {
+    // Jan to March
+    $startYear = substr($currentYear - 1, -2);
+    $endYear   = substr($currentYear, -2);
+}
+
+$financialYear = $startYear . $endYear; // or generate dynamically
+
+    $receiptNo =
+        $prefix . '/' .
+        $financialYear . '/' .
+        str_pad($nextSerial, 2, '0', STR_PAD_LEFT);
+
+    return $this->response->setJSON([
+        'receipt_no' => $receiptNo
+    ]);
+}
+
+public function saveReceipt()
+{
+    // print_r($this->request->getPost());exit;
+    $data = [
+
+        'company_id'      => $this->request->getPost('company_id'),
+        'client_id'       => $this->request->getPost('client_id'),
+        'recipt_no'       => $this->request->getPost('recipt_no'),
+        'date'            => $this->request->getPost('date'),
+        'mode_of_payment' => $this->request->getPost('mode_of_payment'),
+        'cheque_date'     => $this->request->getPost('cheque_date'),    
+        'cheque_number'   => $this->request->getPost('cheque_number'),
+        'drawen_bank'     => $this->request->getPost('drawen_bank'),
+        'bill_amount'     => $this->request->getPost('bill_amount'),
+
+    ];
+    if($this->request->getPost('mode_of_payment') === 'TDS') {
+        $data['tds_amount'] = $this->request->getPost('tds_amount_only');
+    } else {
+        $data['tds_amount'] = $this->request->getPost('tds_amount');
+    }
+
+    $receiptModel = new \App\Models\ReciptDetailsModel();
+    $receiptId = $receiptModel->insert($data);
+
+    return $this->response->setJSON([
+        'success'    => true,
+        'receipt_id' => $receiptId
+    ]);
+}
 }

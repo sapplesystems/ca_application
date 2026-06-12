@@ -34,6 +34,8 @@ class InvoiceMasterController extends BaseController
 
     public function manageInvoice($id)
     {
+        // $invoiceId = $this->request->getGet('invoice_id');
+        // print_r($invoiceId);exit;
         
         $clientModel = new ClientModel();
 
@@ -56,6 +58,9 @@ class InvoiceMasterController extends BaseController
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
         $receiptModel=new ReciptDetailsModel();
         $receipt=$receiptModel->select('*')->where('client_id', $id)->findAll();
+        $companyReceipt = $receiptModel->select('*')->where('company_id IS NOT NULL')->findAll();   
+        $debitModel=new DebitNotes();
+        $debit=$debitModel->select('total_amount,debit_no,note_type,date,credit_no')->where('client_id', $id)->findAll();
 
         $lastReceipt = $receiptModel
                         ->select('id')
@@ -63,8 +68,7 @@ class InvoiceMasterController extends BaseController
                         ->first();
 
         $nextReceiptId = $lastReceipt ? ($lastReceipt['id'] + 1) : 1;
-        $debitModel=new DebitNotes();
-        $debit=$debitModel->select('note_type,total_amount')->findAll();
+       
         // $openingBalance = 0;
         
 
@@ -79,10 +83,22 @@ class InvoiceMasterController extends BaseController
             'receipt'=>$receipt,
             'debit'=>$debit,
             // 'openingBalance' => $openingBalance,
-            'nextReceiptId' => $nextReceiptId
+            'nextReceiptId' => $nextReceiptId,
+                'companyReceipt' => $companyReceipt,
         ]);
         echo view('common/footer');
     }
+
+    public function getReceiptByInvoice($invoiceId)
+{
+    $receiptModel = new ReciptDetailsModel();
+
+    $receipt = $receiptModel
+        ->where('invoice_id', $invoiceId)
+        ->findAll();
+
+    return $this->response->setJSON($receipt);
+}
     public function updateOpeningBalance()
 {
     $data = $this->request->getJSON(true);

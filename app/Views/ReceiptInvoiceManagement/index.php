@@ -91,7 +91,7 @@
         <div class="modal-content">
             <div class="modal-header">
 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"  onclick="reloadPageAfterClose()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -169,7 +169,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="noteGenerateModalLabel">Generate Note</h5>
-                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" onclick="reloadPageAfterClose()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -217,9 +217,268 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="receiptGenerateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Receipt Note</h5>
+
+                 <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"  onclick="reloadPageAfterClose()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="receiptGenerateForm">
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="client_id" id="receipt_client_id">
+                    <input type="hidden" name="company_id" id="receipt_company_id">
+
+                    <!-- Client -->
+
+                    <div class="form-group mb-3">
+
+                        <label><strong>Select Client</strong></label>
+
+                        <input type="text"
+                               id="receiptClientSearch"
+                               class="form-control"
+                               placeholder="Search client...">
+
+                        <div style="max-height:200px;overflow-y:auto;">
+
+                            <?php foreach ($clients as $client): ?>
+
+                            <div class="receipt-client-row mt-2">
+
+                                <label>
+
+                                    <input type="radio"
+                                           name="receipt_client_choice"
+                                           value="<?= $client['id']; ?>">
+
+                                    <?= esc($client['legal_name']); ?>
+
+                                </label>
+
+                            </div>
+
+                            <?php endforeach; ?>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Company -->
+
+                    <div class="form-group mb-3">
+
+                        <label><strong>Select Company</strong></label>
+
+                        <input type="text"
+                               id="receiptCompanySearch"
+                               class="form-control"
+                               placeholder="Search company...">
+
+                        <div style="max-height:200px;overflow-y:auto;">
+
+                            <?php foreach ($companies as $company): ?>
+
+                            <div class="receipt-company-row mt-2">
+
+                                <label>
+
+                                    <input type="radio"
+                                           name="receipt_company_choice"
+                                           value="<?= $company['id']; ?>">
+
+                                    <?= esc($company['name']); ?>
+                                    [<?= esc($company['type_of_company']); ?>]
+
+                                </label>
+
+                            </div>
+
+                            <?php endforeach; ?>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            id="receiptProceedBtn"
+                            class="btn btn-success">
+                        Proceed
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            data-dismiss="modal" data-bs-dismiss="modal" onclick="reloadPageAfterClose()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addreciptnote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                 <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" onclick="reloadPageAfterClose()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="receiptForm">
+                <div class="modal-body">
+                   <input type="hidden" name="client_id" id="receipt_client_id">
+                   <input type="hidden" name="company_id" id="receipt_company_id">
+                    <div class="receiptnote-container ReciptNoteData">
+
+                        <!-- Header -->
+                        <div class="receiptnote-header top">
+                            <div class="receiptnote-company-name company">
+                                <h2 id="companyName"></h2>
+                                <span id="companyType"></span>
+                            </div>
+
+                            <div class="receiptnote-address contact">
+                                Address : <span id="companyAddress"></span><br />
+                                Ph. No. : <span id="companyPhone"></span><br />
+                                E-Mail : <span id="companyEmail"></span><br />
+                            </div>
+                        </div>
+                        
+
+                        <!-- Title -->
+                        <div class="receiptnote-title title">Receipt Note</div>
+
+                        <!-- Receipt Info -->
+                        <table class="receiptnote-table section">
+                            <tr>
+                                <td class="receiptnote-label">PAN :</td>
+                                <td id="clientPan"></td>
+
+                                <td class="receiptnote-label">Receipt Note No. :</td>
+                                <td>
+                                    <input type="text" name="recipt_no" id="receiptNo" class="receiptnote-input" />
+                                </td>
+                            </tr>
+
+                            <tr class="receiptnote-light highlight">
+                                <td></td>
+                                <td></td>
+
+                                <td class="receiptnote-label">Date :</td>
+                                <td>
+                                    <input type="date" name="date" id="receiptDate" class="receiptnote-input" value="<?= date('Y-m-d') ?>"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Issued To -->
+                        <table class="receiptnote-table section">
+                            <tr class="receiptnote-light highlight">
+                                <td colspan="4"><strong>Issued To,</strong></td>
+                            </tr>
+
+                            <tr>
+                                <td class="receiptnote-label">Name :</td>
+                                <td colspan="3" id="clientName"></td>
+                            </tr>
+
+                            <tr class="receiptnote-light highlight">
+                                <td class="receiptnote-label">Address :</td>
+                                <td colspan="3">
+                                    <span id="clientAddress"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="receiptnote-label">Mode Of Payment :</td>
+                                <td colspan="3">
+                                    <select name="mode_of_payment" id="modeOfPayment" class="receiptnote-select">
+                                        <option value="">Select Mode Of Payment</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="TDS">TDS</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Cheque Fields -->
+                        <div id="chequeFields" style="display:none;" class="section">
+                            <label>Cheque Date</label>
+                            <input type="date" name="cheque_date" class="receiptnote-input">
+
+                            <label>Cheque Number</label>
+                            <input type="text" name="cheque_number" class="receiptnote-input"
+                                placeholder="Cheque Number">
+
+                            <label>Drawn Bank</label>
+                            <input type="text" name="drawen_bank" class="receiptnote-input" placeholder="Drawn Bank">
+                        </div>
+
+                        <!-- Amount Text -->
+                        <div id="paymentTextBlock" class="receiptnote-text section highlight text">
+                            Received with thanks from M/s/Mr/Mrs/Ms 
+                            <span id="clientName"></span> 
+                            the sum of Rs.
+                            
+                            <input type="text" name="bill_amount" id="billAmount" class="receiptnote-inline-input" />
+                            
+                            /- Amount in Words <b>Zero Rupees</b> Against Cash after deduction of TDS Rs
+                            
+                            <input type="text" name="tds_amount" id="tdsAmount" class="receiptnote-inline-input" />
+                            
+                            /- Amount In Words <b>Zero Rupees</b> for professional Services Rendered /
+                            Advance Against invoice Raised vide Bill No <span id="invoiceNo"></span> /
+                            dated <span id="invoiceDate"></span>.
+                        </div>
+                        <div id="tdsOnlyBlock" style="display:none;">
+                            TDS Amount:
+                            <input type="text" name="tds_amount_only" id="tdsAmountOnly" class="receiptnote-inline-input" />
+                        </div>
+                        
+
+                        <!-- Footer -->
+                        <div class="receiptnote-footer footer">
+                            For more Information reach us @ <b>www.ksaca.in</b>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="receiptnote-buttons buttons">
+                            <button type="button" class="receiptnote-btn receiptnote-btn-submit btn btn-primary"
+                                id="saveReceiptBtn">
+                                Save Receipt
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     <div class="invoiceM-toolbar">
         <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right;margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#GenrateVoice" data-bs-toggle="modal" data-bs-target="#GenrateVoice"onclick="localStorage.setItem('activeMenu','invoicemanagement')">
             Generate Invoice For Pending Work
+        </button>
+        <button type="button" id="generateReceiptBtn"  style="float:right; margin-left:5px;"class="Minvoice-btn Minvoice-btn-primary">
+            Generate Receipt Note
         </button>
         <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="credit">
             Credit Note
@@ -227,6 +486,7 @@
         <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="debit">
             Debit Note
         </button>
+        
         </div>
             <div class="Minvoice-filter-row">
       <div class="Minvoice-filter-group">
@@ -334,6 +594,11 @@
 
  </div>
 <script>
+function reloadPageAfterClose() {
+    setTimeout(function () {
+        location.reload();
+    }, 300); // wait for modal to close smoothly
+}
     localStorage.setItem('activeMenu', 'invoicemanagement');
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -1014,5 +1279,202 @@ function formatDisplayDate(dateString) {
     return `${day}-${month}-${year}`;
 
 }
+
+$(document).ready(function () {
+
+    // Open Modal
+    $('#generateReceiptBtn').click(function () {
+
+        $('#receiptGenerateModal').modal('show');
+
+    });
+
+    // Client Search
+    $('#receiptClientSearch').on('keyup', function () {
+
+        let value = $(this).val().toLowerCase();
+
+        $('.receipt-client-row').filter(function () {
+
+            $(this).toggle(
+                $(this).text().toLowerCase().indexOf(value) > -1
+            );
+
+        });
+
+    });
+
+    // Company Search
+    $('#receiptCompanySearch').on('keyup', function () {
+
+        let value = $(this).val().toLowerCase();
+
+        $('.receipt-company-row').filter(function () {
+
+            $(this).toggle(
+                $(this).text().toLowerCase().indexOf(value) > -1
+            );
+
+        });
+
+    });
+
+    // Proceed
+    $('#receiptProceedBtn').click(function () {
+
+        let clientId =
+            $('input[name="receipt_client_choice"]:checked').val();
+
+        let companyId =
+            $('input[name="receipt_company_choice"]:checked').val();
+
+        if (!clientId) {
+
+            alert('Please select client');
+            return;
+
+        }
+
+        if (!companyId) {
+
+            alert('Please select company');
+            return;
+
+        }
+
+    // Store IDs in hidden fields
+    $('#receipt_client_id').val(clientId);
+    $('#receipt_company_id').val(companyId);
+
+    console.log("Client ID:", clientId);
+    console.log("Company ID:", companyId);
+
+        $('#receiptGenerateModal').modal('hide');
+
+        // Open Receipt Note Modal
+        $('#addreciptnote').modal('show');
+
+        // Optional AJAX call
+        loadReceiptDetails(clientId, companyId);
+
+    });
+
+});
+
+function loadReceiptDetails(clientId, companyId)
+{
+    console.log("Loading receipt details for Client ID:", clientId, "Company ID:", companyId);
+    $.ajax({
+
+        url: "<?= site_url('invoice-mangement/getReceiptDetails') ?>",
+
+        type: "POST",
+
+        data: {
+            client_id: clientId,
+            company_id: companyId
+        },
+
+        dataType: "json",
+
+        success: function(res){
+
+            $('#companyName').text(res.company.name);
+            $('#companyType').text(res.company.type_of_company);
+            $('#companyAddress').html(res.company.registered_office);
+            $('#companyPhone').text(res.company.telephone);
+            $('#companyEmail').text(res.company.email);
+
+            $('#clientName').text(res.client.legal_name);
+            $('#clientAddress').html(res.client.registered_office);
+            $('#clientPan').text(res.client.pan);
+
+        }
+
+    });
+}
+
+$(document).on('change', '#modeOfPayment', function () {
+
+    let paymentMode = $(this).val();
+
+    // Show / Hide Blocks
+    if (paymentMode === 'TDS') {
+
+        $('#paymentTextBlock').hide();
+        $('#tdsOnlyBlock').show();
+
+    } else {
+
+        $('#paymentTextBlock').show();
+        $('#tdsOnlyBlock').hide();
+
+    }
+
+    // Generate Receipt Number
+    $.ajax({
+        url: "<?= site_url('invoice-mangement/getReceiptNumber') ?>",
+        type: "POST",
+        data: {
+            mode_of_payment: paymentMode
+        },
+        dataType: "json",
+        success: function (res) {
+
+            $('#receiptNo').val(res.receipt_no);
+
+        },
+        error: function () {
+
+            alert('Unable to generate receipt number.');
+
+        }
+    });
+
+});
+
+document.getElementById("saveReceiptBtn").addEventListener("click", async function () {
+
+    const form = document.getElementById("receiptForm");
+    const formData = new FormData(form);
+
+    // Force values into FormData
+    formData.set('client_id', $('#receipt_client_id').val());
+    formData.set('company_id', $('#receipt_company_id').val());
+
+    // Handle TDS Amount
+    if ($('#modeOfPayment').val() === 'TDS') {
+
+        formData.set('bill_amount', 0);
+        formData.set('tds_amount', $('#tdsAmountOnly').val());
+
+    } else {
+
+        formData.set('bill_amount', $('#billAmount').val());
+        formData.set('tds_amount', $('#tdsAmount').val());
+
+    }
+
+    // Debug
+    for (let pair of formData.entries()) {
+        console.log(pair[0] + " => " + pair[1]);
+    }
+
+    const response = await fetch(
+        "<?= site_url('invoice-mangement/saveReceipt') ?>",
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+        alert("Receipt Saved Successfully");
+        location.reload();
+    }
+
+});
 
 </script>
