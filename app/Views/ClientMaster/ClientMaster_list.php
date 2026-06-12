@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <table>
+            <table id="clientTable">
                 <thead>
                     <tr>
                         <th style="width:24px;"><input type="checkbox" /></th>
@@ -748,4 +748,36 @@ function deleteRecord(id) {
             .catch(err => console.error(err));
     }
 }
+// ===== SHOW ONLY 10 ROWS INITIALLY =====
+const rows = document.querySelectorAll("#clientTable tbody tr");
+
+rows.forEach((row, index) => {
+    row.style.display = index < 10 ? "" : "none";
+});
+
+// ===== SEARCH =====
+document.querySelector(".search-input").addEventListener("input", function () {
+
+    const term = this.value.toLowerCase();
+    const rows = document.querySelectorAll("#clientTable tbody tr");
+
+    if (term === "") {
+
+        rows.forEach((row, index) => {
+            row.style.display = index < 10 ? "" : "none";
+        });
+
+    } else {
+
+        rows.forEach((row) => {
+
+            const rowText = row.textContent.toLowerCase();
+
+            row.style.display = rowText.includes(term) ? "" : "none";
+
+        });
+
+    }
+
+});
 </script>
