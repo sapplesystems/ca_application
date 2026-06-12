@@ -393,27 +393,26 @@
 
     // Call whenever a new row is added
     function addExpenseRow() {
-        const tbody = document.getElementById('expenseBody');
-        const hiddenRow = document.getElementById('hiddenRow');
+    const tbody = document.getElementById('expenseBody');
+    const hiddenRow = document.getElementById('hiddenRow');
 
-        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
+    const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
 
-        // Clone hidden row
-        const newRow = hiddenRow.cloneNode(true);
-        newRow.style.display = '';
-        newRow.id = '';
-        newRow.cells[0].textContent = existingRows + 1; // simple counting
+    // Clone hidden row
+    const newRow = hiddenRow.cloneNode(true);
+    newRow.style.display = '';
+    newRow.id = '';
+    newRow.cells[0].textContent = existingRows + 1;
 
-        // Insert before totals row
-        const totalsRow = document.getElementById('totalsRow');
-        tbody.insertBefore(newRow, totalsRow);
+    // Insert before hidden template row
+    tbody.insertBefore(newRow, hiddenRow);
 
-        // Attach input listener to the new input
-        attachInputListeners();
+    // Attach input listener to the new input
+    attachInputListeners();
 
-        // Recalculate totals
-        calculateTotals();
-    }
+    // Recalculate totals
+    calculateTotals();
+}
 
     // Initial setup
     attachInputListeners();
@@ -489,25 +488,6 @@
     }
 
 
-    function addExpenseRow() {
-        const tbody = document.getElementById('expenseBody');
-        const hiddenRow = document.getElementById('hiddenRow');
-
-        // Count existing visible expense rows
-        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
-
-        // Clone the hidden row
-        const newRow = hiddenRow.cloneNode(true);
-        newRow.style.display = ''; // make it visible
-        newRow.id = ''; // remove id to avoid duplicates
-
-        // Set the first cell to dynamic Roman numeral
-        newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
-
-        // Append before totals row
-        const totalsRow = document.getElementById('totalsRow');
-        tbody.insertBefore(newRow, totalsRow);
-    }
     document.addEventListener('click', function (e) {
     if (!e.target.classList.contains('delete-row')) return;
 
