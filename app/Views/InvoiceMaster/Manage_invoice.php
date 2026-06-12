@@ -604,7 +604,7 @@
 
                                 <!-- Export Excel -->
                                 <a href="#" class="Minvoice-icon-btn export open-receipt" data-toggle="modal"
-                                    data-target="#ReciptNote" data-id="<?= $row['id'] ?>">
+                                    data-target="#ReciptNote" data-id="<?= $row['id'] ?>"title="Recipt Note">
                                     📥
                                 </a>
                                 <!-- ✅ NEW Download Button -->
@@ -616,7 +616,7 @@
                                 </a>
                                 <!-- Print & Preview -->
                                 <button type="button" class="Minvoice-print-btn" onclick="printInvoice(<?= $row['id'] ?>)"
-                                    style="padding:2px;border-radius: 10px;border: 2px solid #f1c40f;">
+                                    style="padding:2px;border-radius: 10px;border: 2px solid #f1c40f;"title="Print & Preview">
                                     Print &amp; Preview
                                 </button>
 
