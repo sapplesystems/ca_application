@@ -204,6 +204,36 @@
                             <span id="expenseTotalDisplay">0</span>
                         </td>
                     </tr>
+                    <input type="hidden" id="taxType" name="tax_type" value="<?= esc($tax) ?>">
+                    <?php if ($tax === 'cgst_sgst'): ?>
+                        <!-- CGST Row -->
+                        <tr id="cgstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">CGST @ 9%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="cgstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+
+                        <!-- SGST Row -->
+                        <tr id="sgstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">SGST @ 9%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="sgstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php if ($tax === 'igst'): ?>
+                        <tr id="igstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">IGST @ 18%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="igstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
 
                     <tr>
                         <td style="padding:8px; border:1px solid #ccc;"></td>
@@ -357,30 +387,45 @@
         return convert(num).trim();
     }
 
-    function calculateTotals() {
-        let expenseTotal = 0;
+function calculateTotals() {
+    let expenseTotal = 0;
 
-        document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
-            .forEach(input => {
-                expenseTotal += parseFloat(input.value) || 0;
-            });
+    document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
+        .forEach(input => {
+            expenseTotal += parseFloat(input.value) || 0;
+        });
 
-        const advance = parseFloat(document.getElementById('advance').value) || 0;
-        const netAmount = expenseTotal - advance;
+    const advance = parseFloat(document.getElementById('advance').value) || 0;
 
-        /* ===== DISPLAY ===== */
-        document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalDisplay').innerText = expenseTotal.toFixed(2);
-        document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
+    /* ===== GST CALCULATION ===== */
+    let cgst = expenseTotal * 9 / 100;
+    let sgst = expenseTotal * 9 / 100;
+    let igst = expenseTotal * 18 / 100;
 
-        /* ===== BACKEND (HIDDEN INPUTS) ===== */
-        document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalInput').value = expenseTotal.toFixed(2);
-        document.getElementById('netAmountInput').value = netAmount.toFixed(2);
+    // Decide GST type
+    let taxTotal = (document.getElementById('igstAmount')) ? igst : (cgst + sgst);
 
-        document.getElementById('amountInWords').innerText =
-            numberToWords(Math.round(netAmount));
-    }
+    let grandTotalWithTax = expenseTotal + taxTotal;
+
+    /* ===== FIXED NET AMOUNT ===== */
+    let netAmount = grandTotalWithTax - advance;
+
+    /* ===== DISPLAY ===== */
+    document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
+    document.getElementById('grandTotalDisplay').innerText = grandTotalWithTax.toFixed(2);
+    document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
+
+    /* ===== BACKEND (HIDDEN INPUTS) ===== */
+    document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
+    document.getElementById('grandTotalInput').value = grandTotalWithTax.toFixed(2);
+    document.getElementById('netAmountInput').value = netAmount.toFixed(2);
+
+    document.getElementById('amountInWords').innerText =
+        numberToWords(Math.round(netAmount));
+
+    /* ===== UPDATE GST FIELDS ===== */
+    calculateGST(expenseTotal);
+}
 
 
     // Add input event listener for dynamic rows
@@ -487,6 +532,28 @@
         return result;
     }
 
+    function calculateGST() {
+
+    let amount = parseFloat(
+        document.getElementById('expenseTotalDisplay').innerText || 0
+    );
+
+    // CGST + SGST
+    let cgst = amount * 9 / 100;
+    let sgst = amount * 9 / 100;
+
+    // IGST
+    let igst = amount * 18 / 100;
+
+    // Fill values if fields exist
+    let cgstEl = document.getElementById('cgstAmount');
+    let sgstEl = document.getElementById('sgstAmount');
+    let igstEl = document.getElementById('igstAmount');
+
+    if (cgstEl) cgstEl.value = cgst.toFixed(2);
+    if (sgstEl) sgstEl.value = sgst.toFixed(2);
+    if (igstEl) igstEl.value = igst.toFixed(2);
+}
 
     document.addEventListener('click', function (e) {
     if (!e.target.classList.contains('delete-row')) return;
@@ -552,4 +619,5 @@ function removeRow(row, tbody) {
 
     calculateTotals();
 }
+
     </script>

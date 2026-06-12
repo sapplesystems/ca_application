@@ -205,6 +205,12 @@
                                 </div>
                                 <?php endforeach; ?>
                             </div>
+                            <div class="Gvoice-section-title">Tax
+                <div class="Gvoice-box">
+                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                <label><input type="radio" name="tax" value="igst"> IGST</label>
+                </div>
+                </div>
                              <div class="Gvoice-actions">
                     <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
                     <button class="Gvoice-btn Gvoice-btn-danger" type="button" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>

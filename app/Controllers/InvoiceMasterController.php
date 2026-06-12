@@ -617,6 +617,7 @@ public function storeDebitNote()
     $companyId = $this->request->getPost('company_debit');
     $clientId  = $this->request->getPost('client_id');
     $noteType  = $this->request->getPost('note_type');
+    $tax=$this->request->getPost('tax');
 
     $clientModel = new ClientModel();
     $client = $clientModel->find($clientId);
@@ -640,7 +641,8 @@ public function storeDebitNote()
             . view('InvoiceMaster/DebitNote', [
                 'company' => $company,
                 'client'  => $client,
-                'debitNo' => $debitNo
+                'debitNo' => $debitNo,
+                'tax'=>$tax
             ])
             . view('common/footer');
 
@@ -652,7 +654,8 @@ public function storeDebitNote()
             . view('InvoiceMaster/CreditNote', [
                 'company'  => $company,
                 'client'   => $client,
-                'creditNo' => $creditNo
+                'creditNo' => $creditNo,
+                'tax'=>$tax
             ])
             . view('common/footer');
     }
@@ -678,6 +681,7 @@ public function storeDebitNote()
         'date'                      => $this->request->getPost('debit_date'),
         'created_by'                => $this->request->getPost('created_by'),
         'note_type'                 => $this->request->getPost('note_type'),
+        'tax'                       => $this->request->getPost('tax_type'),
     ];
 
     // Insert debit note

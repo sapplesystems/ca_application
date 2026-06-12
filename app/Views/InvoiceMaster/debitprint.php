@@ -300,6 +300,49 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
             </td>
             <td><?php echo $debitNote['total_recoverable_expenses']; ?></td>
         </tr>
+        
+                        <?php if ($debitNote['tax'] === 'cgst_sgst'): ?>
+
+                <tr >
+                    <td colspan="2" class="right"><strong>CGST @ 9%</strong></td>
+                    <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class="right"><strong>SGST @ 9%</strong></td>
+                    <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
+                </tr>
+
+            <?php elseif ($debitNote['tax'] === 'igst'): ?>
+
+                <tr>
+                    <td colspan="2" class="right"><strong>IGST @ 18%</strong></td>
+                    <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.18, 2); ?></strong></td>
+                </tr>
+
+            <?php endif; ?>
+            <?php
+               $amount = $debitNote['total_recoverable_expenses'];
+
+                if ($debitNote['tax'] === 'cgst_sgst') {
+
+                    $cgst = $amount * 9 / 100;
+                    $sgst = $amount * 9 / 100;
+
+                    $taxAmount = $cgst + $sgst;
+
+                } else {
+
+                    $taxAmount = $amount * 18 / 100;
+                }
+
+                $grandTotal = $amount + $taxAmount;
+            ?>
+            <tr class="debitnotepdf-summary">
+                <td></td>
+                <td class="debitnotepdf-text-left">Taxable Amount</td>
+                <td><?php echo $grandTotal  ?></td>
+           </tr>
         <tr class="debitnotepdf-summary">
             <td>B</td>
             <td class="debitnotepdf-text-left">(-) Advances Received</td>
@@ -310,6 +353,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
             <td class="debitnotepdf-text-left">Net Amount(A+B)</td>
             <td><?php echo $debitNote['total_amount']; ?></td>
         </tr>
+
     </table>
 
 
