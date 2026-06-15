@@ -736,8 +736,7 @@ foreach ($receipt as $rec) {
             <!-- Running Amount -->
             <td><strong><?= number_format($runningBalance, 2) ?></strong></td>
 
-            <!-- Action -->
-            <td></td>
+            
 
         </tr>
 
@@ -797,8 +796,7 @@ foreach ($receipt as $rec) {
                 <td class ="company-running-amount">
                     <strong><?= number_format($runningBalance, 2) ?></strong>
                 </td>
-            <!-- Action -->
-            <td></td>
+            
 
         </tr>
 
@@ -943,48 +941,49 @@ foreach ($receipt as $rec) {
         .print-hide {
             display: none !important;
         }
-            .print-widthinvoiceno
-                {
-                    width: 16% !important;
-                }
-            .print-widthinvoicedate
-                {
-                     width: 10% !important;
-                }
+            .print-widthinvoiceno {
+    width: 12% !important;
+}
 
-            .print-widthinvoicework
-               {
-                  width:18% !important;
-               }
-             .print-widthinvoiceamount
-              {
-                width: 10% !important;
-              }
-         .print-widtreciptdate
-            {
-             width: 10% !important;
-            }
-        .print-widtreciptno
-            {
-             width: 16% !important;
-            }
-        .print-widtreciptamount
-             { 
-                width: 10% !important;
-            }
-                .print-widtreceivedamount
-                 {
-                    width: 10% !important;
-                 }
-                    .print-widtdebitcfreditnote
-                     {
-                        width: 10% !important;
-                     }
-        .print-widtrunningamount
-                 
-        {
-              width: 10% !important;
-        }
+.print-widthinvoicedate {
+    width: 10% !important;
+}
+
+.print-widthinvoicework {
+    width: 16% !important;
+}
+
+.print-widthinvoiceamount {
+    width: 8% !important;
+}
+
+.print-widtreciptdate {
+    width: 10% !important;
+}
+
+.print-widtreciptno {
+    width: 12% !important;
+}
+
+.print-widtreciptamount {
+    width: 8% !important;
+}
+
+.print-widtreceivedamount {
+    width: 8% !important;
+}
+
+.print-widtdebitcfreditnote {
+    width: 8% !important;
+}
+
+.print-widtrunningamount {
+    width: 8% !important;
+}
+    .print-widthinvoicedate,
+.print-widtreciptdate {
+    white-space: nowrap !important;
+}
        
             
         .no-print {
@@ -1004,7 +1003,8 @@ foreach ($receipt as $rec) {
 
         th, td { 
             border: 1px solid #000;  
-            padding: 6px; 
+            padding: 5px !important; 
+            padding-top: 2px !important; 
         }
     }
 </style>
