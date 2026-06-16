@@ -394,7 +394,11 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 </div>
 </div>
 <script>
-window.onload = function() {
+window.onload = function () {
     window.print();
+};
+
+window.onafterprint = function () {
+    window.location.href = "<?= base_url('invoice-mangement'); ?>";
 };
 </script>

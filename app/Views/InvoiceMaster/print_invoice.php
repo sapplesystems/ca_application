@@ -593,9 +593,9 @@
         window.print();
     }
 
-    function cancelPrint() {
-        window.close();
-    }
+   function cancelPrint() {
+    window.location.href = '<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>';
+}
 
     // window.onafterprint = function () {
 
