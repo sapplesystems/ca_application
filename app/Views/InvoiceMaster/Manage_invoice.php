@@ -736,7 +736,7 @@ foreach ($receipt as $rec) {
             <!-- Running Amount -->
             <td><strong><?= number_format($runningBalance, 2) ?></strong></td>
 
-            
+            <td class="print-hide"></td>
 
         </tr>
 
@@ -796,6 +796,7 @@ foreach ($receipt as $rec) {
                 <td class ="company-running-amount">
                     <strong><?= number_format($runningBalance, 2) ?></strong>
                 </td>
+                <td class="print-hide"></td>
             
 
         </tr>
