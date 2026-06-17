@@ -206,11 +206,11 @@
                                 <?php endforeach; ?>
                             </div>
                             <div class="Gvoice-section-title">Tax
-                <div class="Gvoice-box">
-                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
-                <label><input type="radio" name="tax" value="igst"> IGST</label>
-                </div>
-                </div>
+                                <div class="Gvoice-box">
+                                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                                <label><input type="radio" name="tax" value="igst"> IGST</label>
+                                </div>
+                            </div>
                              <div class="Gvoice-actions">
                     <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
                     <button class="Gvoice-btn Gvoice-btn-danger" type="button" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
@@ -419,6 +419,7 @@
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
                                         <option value="TDS">TDS</option>
+                                        <option value="Online">Inline Transactions</option>
                                     </select>
                                 </td>
                             </tr>
@@ -457,7 +458,12 @@
                             TDS Amount:
                             <input type="text" name="tds_amount_only" id="tdsAmountOnly" class="receiptnote-inline-input" />
                         </div>
-                        
+                        <div id="onlineOnlyBlock" style="display:none;">
+                            Bank Name :
+                            <input type="text" name="bank_name" id="bankName" class="receiptnote-inline-input" />
+                            Received Amount :
+                            <input type="text" name="bill_amount_Online" id="transactionId" class="receiptnote-inline-input" />
+                        </div>
 
                         <!-- Footer -->
                         <div class="receiptnote-footer footer">
@@ -1403,17 +1409,27 @@ function loadReceiptDetails(clientId, companyId)
 $(document).on('change', '#modeOfPayment', function () {
 
     let paymentMode = $(this).val();
+    let companyId = $('#receipt_company_id').val();
 
     // Show / Hide Blocks
     if (paymentMode === 'TDS') {
 
         $('#paymentTextBlock').hide();
         $('#tdsOnlyBlock').show();
+        $('#onlineOnlyBlock').hide();
 
-    } else {
+    } 
+    else if(paymentMode === 'Online')
+    {
+        $('#onlineOnlyBlock').show();
+        $('#paymentTextBlock').hide();
+        $('#tdsOnlyBlock').hide();
+    }
+    else {
 
         $('#paymentTextBlock').show();
         $('#tdsOnlyBlock').hide();
+        $('#onlineOnlyBlock').hide();
 
     }
 
@@ -1422,11 +1438,11 @@ $(document).on('change', '#modeOfPayment', function () {
         url: "<?= site_url('invoice-mangement/getReceiptNumber') ?>",
         type: "POST",
         data: {
-            mode_of_payment: paymentMode
+            mode_of_payment: paymentMode,
+            company_id: companyId
         },
         dataType: "json",
         success: function (res) {
-
             $('#receiptNo').val(res.receipt_no);
 
         },
@@ -1454,7 +1470,15 @@ document.getElementById("saveReceiptBtn").addEventListener("click", async functi
         formData.set('bill_amount', 0);
         formData.set('tds_amount', $('#tdsAmountOnly').val());
 
-    } else {
+    } 
+    else if ($('#modeOfPayment').val() === 'Online') {
+
+        formData.set('bill_amount', $('#transactionId').val());
+        formData.set('tds_amount', 0);
+        formData.set('bank_name', $('#bankName').val());
+
+    }
+    else {
 
         formData.set('bill_amount', $('#billAmount').val());
         formData.set('tds_amount', $('#tdsAmount').val());

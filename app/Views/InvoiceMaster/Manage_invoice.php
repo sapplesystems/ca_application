@@ -313,10 +313,11 @@
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
                                         <option value="TDS">TDS</option>
-                                        <option value="Online">Online</option>
+                                        <option value="Online">Inline Transactions</option>
                                     </select>
                                 </td>
                             </tr>
+                            <input type="hidden" name="mode_of_payment" id="modeOfPaymentHidden">
                         </table>
 
                         <!-- Cheque Fields -->
@@ -537,7 +538,7 @@
                     <td></td>
                     <td></td>
                    
-                    <td>
+                    <td class="centertext">
                         <div class="input-group input-group-sm" style="width:130px;">
 
                             <input type="number"
@@ -609,7 +610,7 @@ $invoice = (float) ($row['total_invoice_amount'] ?? 0);
                                 <?= esc($row['service_names']) ?>
                             </td>
                             <!-- <td class="print-hide"><?= esc($row['company_name']) ?></td> -->
-                            <td class="invoice-amount righttext">
+                            <td class="invoice-amount centertext">
                                 <?= number_format($row['total_invoice_amount'], 2) ?>
                             </td>
                             <td>
@@ -967,6 +968,9 @@ foreach ($receipt as $rec) {
     {
     text-align:center !important;
                 }
+    .invoice-amount{
+    text-align:center !important;
+                }
 
 .print-widthinvoicedate {
     width: 10% !important;
@@ -1224,6 +1228,7 @@ function togglePaymentUI() {
      isEditMode = true;
      document.getElementById("receiptNo").readOnly = true;
      document.getElementById("modeOfPayment").disabled = true;
+
     const btn = e.target;
 
     // Basic fields
@@ -1233,7 +1238,10 @@ function togglePaymentUI() {
 
     // Payment mode
     const modeOfPayment = document.getElementById("modeOfPayment");
+
     modeOfPayment.value = btn.dataset.mode_of_payment || "";
+
+    document.getElementById("modeOfPaymentHidden").value = modeOfPayment.value;
 
     togglePaymentUI();
 
@@ -2086,12 +2094,12 @@ document.getElementById('modeOfPayment')
 // Generate on page load (Cash selected by default)
 window.onload = generateReceiptNo;
 
-function calculateTDS() {
-     document.getElementById('tdsAmount').value = '';
-}
+// function calculateTDS() {
+//      document.getElementById('tdsAmount').value = '';
+// }
 
-document.getElementById('billAmount')
-    .addEventListener('input', calculateTDS);
+// document.getElementById('billAmount')
+//     .addEventListener('input', calculateTDS);
 
     $(document).on('click', '.open-receipt', function () {
     var invoiceId = $(this).data('id');

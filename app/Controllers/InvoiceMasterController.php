@@ -895,6 +895,18 @@ public function getInvoiceDetails($invoice_id)
 }
 public function updateReceipt()
 {
+//  print_r($this->request->getPost()); exit;
+ $tdsAmount = $this->request->getPost('tds_amount');
+
+if (empty($tdsAmount)) {
+    $tdsAmount = $this->request->getPost('tds_amountOnly');
+}
+$billAmount = $this->request->getPost('bill_amount');
+
+if(empty($billAmount)) {
+    $billAmount = $this->request->getPost('bill_amount_Online');
+}
+    
     $receiptModel = new ReciptDetailsModel();
 
     $receipt_id = $this->request->getPost('receipt_id');
@@ -910,8 +922,9 @@ public function updateReceipt()
         'cheque_date'      => $this->request->getPost('cheque_date'),
         'cheque_number'    => $this->request->getPost('cheque_number'),
         'drawen_bank'      => $this->request->getPost('drawen_bank'),
-        'bill_amount'      => $this->request->getPost('bill_amount'),
-        'tds_amount'       => $this->request->getPost('tds_amount'),
+        'bill_amount'      => $billAmount,
+        'tds_amount'       => $tdsAmount,
+        'bank_name'        => $this->request->getPost('bank_name'),
     ];
 
     $receiptModel->update($receipt_id, $data);
