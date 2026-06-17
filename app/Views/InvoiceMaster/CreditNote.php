@@ -29,16 +29,11 @@
         </table>
 
         <hr>
-        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-            Credit Note
+       <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
+            CREDIT NOTE
         </div>
 
         <table width="100%" border="0" cellpadding="6">
-            <tr>
-                <td width="60%">
-                    <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-                </td>
-            </tr>
 
             <tr>
                 <td>
@@ -374,12 +369,28 @@
     const advance = parseFloat(document.getElementById('advance').value) || 0;
 
     /* ===== GST CALCULATION ===== */
-    let cgst = expenseTotal * 9 / 100;
-    let sgst = expenseTotal * 9 / 100;
-    let igst = expenseTotal * 18 / 100;
+   const igstField = document.getElementById('igstAmount');
+    const cgstField = document.getElementById('cgstAmount');
+    const sgstField = document.getElementById('sgstAmount');
 
-    // Decide GST type
-    let taxTotal = (document.getElementById('igstAmount')) ? igst : (cgst + sgst);
+    let taxTotal = 0;
+
+    if (igstField && igstField.offsetParent !== null) {
+
+        // IGST selected
+        taxTotal = expenseTotal * 18 / 100;
+
+    } else if (
+        cgstField &&
+        sgstField &&
+        cgstField.offsetParent !== null &&
+        sgstField.offsetParent !== null
+    ) {
+
+        // CGST + SGST selected
+        taxTotal = (expenseTotal * 9 / 100) + (expenseTotal * 9 / 100);
+
+    }
 
     let grandTotalWithTax = expenseTotal + taxTotal;
 

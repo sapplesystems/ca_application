@@ -244,9 +244,12 @@
                                     <option value="Public Limited">Public Limited</option>
                                     <option value="LLP">LLP</option>
                                     <option value="Partnership">Partnership</option>
+                                    <option value="Trust-&-Society">Trust & Society</option>
+                                    <option value="OPC">OPC</option>
+                                    <option value="Individual">Individual</option>
                                 </select>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <label>Company Sub-Category</label>
                                 <select name="company_sub_category" class="select">
                                     <option value="">Select sub-category</option>
@@ -254,7 +257,7 @@
                                     <option value="Medium">Medium</option>
                                     <option value="Large">Large</option>
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- Address -->
                             <div class="form-row-full">

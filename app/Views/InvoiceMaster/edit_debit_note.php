@@ -59,8 +59,8 @@ function toRoman($number)
         </table>
 
         <hr>
-        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-            <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
+        <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
+            <?= ($debitNote['note_type'] === 'debit') ? 'DEBIT NOTE' : 'CREDIT NOTE'; ?>
         </div>
 
         <table width="100%" border="0" cellpadding="6">

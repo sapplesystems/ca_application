@@ -44,6 +44,12 @@
                                 <?php endif; ?>
 
                             </div>
+                            <div class="Gvoice-section-title">Tax
+                                <div class="Gvoice-box">
+                                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                                <label><input type="radio" name="tax" value="igst"> IGST</label>
+                                </div>
+                            </div>
 
                             <div class="buttons">
                                 <button class="btn btn-proceed" type="submit">Proceed</button>
