@@ -25,9 +25,7 @@
         text-align: right;
         /* SAC, GST, Actions */
     }
-    .dt-paging {
-    display: none !important;
-}
+  
 </style>
 
 <main class="content-wrap">
@@ -349,184 +347,216 @@ function openServicePopup(id) {
 
 
 
-$(document).ready(function() {
+const rowsPerPage = 10;
+let currentPage = 1;
 
-    if ($('#searchmasterwork').length) {
+function sortTable() {
+    const tbody = document.querySelector("#searchmasterwork tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
 
-      window.table = new DataTable('#searchmasterwork', {
+    rows.sort((a, b) => {
+        const textA = a.cells[1].textContent.trim().toLowerCase();
+        const textB = b.cells[1].textContent.trim().toLowerCase();
+        return textA.localeCompare(textB);
+    });
 
-    paging: true,
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
 
-    pageLength: 10,
+function getRows() {
 
-    searching: true,
+    return Array.from(
+        document.querySelectorAll("#searchmasterwork tbody tr")
+    ).filter(row => {
 
-    info: false,
+        const searchOk =
+            row.dataset.searchMatch !== "false";
 
-    ordering: false,
+        const statusOk =
+            row.dataset.statusMatch !== "false";
 
-    dom: 't',
+        return searchOk && statusOk;
+    });
+}
 
-    columnDefs: [
+function showPage(page) {
 
-                {
-                    targets: 0,
-                    orderable: false
-                },
+    const allRows = document.querySelectorAll("#searchmasterwork tbody tr");
 
-                {
-                    targets: -1,
-                    orderable: false
-                },
+    allRows.forEach(row => {
+        row.style.display = "none";
+    });
 
-                {
-                    targets: 4,
+    const rows = getRows();
 
-                    render: function(data, type) {
+    rows.forEach((row, index) => {
 
-                        if (type === 'filter') {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
 
-                            let div = document.createElement("div");
-                            div.innerHTML = data;
+        if (index >= start && index < end) {
+            row.style.display = "";
+        }
 
-                            let text = div.querySelector('.status-text')?.innerText || '';
+    });
 
-                            return text.trim();
+    updatePagination();
+}
 
-                        }
+function updatePagination() {
 
-                        return data;
+    const rows = getRows();
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-                    }
+    const pagination = document.querySelector(".pagination");
 
-                }
+    pagination.innerHTML = `
+        <div class="page-btn" id="prevBtn">&laquo;</div>
+        <div class="page-btn active">${currentPage}</div>
+        <div class="page-btn" id="nextBtn">&raquo;</div>
+    `;
 
-            ]
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    };
 
-        });
+    document.getElementById("nextBtn").onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    };
+}
 
+// Search
+// Status Filter
+document.querySelector(".status-filter")
+.addEventListener("change", function () {
 
-        $('.search-input').on('keyup', function() {
+    const selected = this.value;
 
-            table.search(this.value).draw();
+    document.querySelectorAll("#searchmasterwork tbody tr")
+    .forEach(row => {
 
-        });
+        const status =
+            row.querySelector(".status-text")
+            ?.textContent.trim();
 
+        row.dataset.statusMatch =
+            (selected === "Status: All" || selected === status)
+            ? "true"
+            : "false";
 
+    });
+    currentPage = 1;
+    showPage(currentPage);
 
-        $('.status-filter').on('change', function() {
+});
+document.querySelector(".search-input")
+.addEventListener("input", function () {
 
-            let value = $(this).val();
+    const term = this.value.toLowerCase();
 
-            if (value === "Active" || value === "Inactive") {
+    document.querySelectorAll("#searchmasterwork tbody tr")
+    .forEach(row => {
 
-                table.column(4)
-                    .search('^' + value + '$', true, false)
-                    .draw();
+        const text = row.textContent.toLowerCase();
 
-            }
-            else {
+        row.dataset.searchMatch =
+            (term === "" || text.includes(term))
+            ? "true"
+            : "false";
+    });
 
-                table.column(4).search('').draw();
+    currentPage = 1;
+    showPage(currentPage);
+});
 
-            }
+document.querySelectorAll("#searchmasterwork tbody tr")
+.forEach(row => {
 
-        });
+    row.dataset.searchMatch = "true";
+    row.dataset.statusMatch = "true";
 
+});
 
-        // ===== STATUS TOGGLE =====
+showPage(1);
+// ===== STATUS TOGGLE =====
 
-        document.querySelectorAll('.toggle').forEach(toggle => {
+document.querySelectorAll('.toggle').forEach(toggle => {
 
-            toggle.addEventListener('click', function() {
+    toggle.addEventListener('click', function() {
 
-                this.classList.toggle('inactive');
+        this.classList.toggle('inactive');
 
-                const status = this.classList.contains('inactive') ? 0 : 1;
-                const id = this.dataset.id;
+        const status = this.classList.contains('inactive') ? 0 : 1;
+        const id = this.dataset.id;
 
-                let statusText = this.parentElement.querySelector('.status-text');
+        let statusText = this.parentElement.querySelector('.status-text');
 
-                statusText.innerText = status ? 'Active' : 'Inactive';
+        statusText.innerText = status ? 'Active' : 'Inactive';
 
+        fetch("<?= base_url('/work_master/update-status') ?>", {
 
-                table.draw(false);
+            method: "POST",
 
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            },
 
-                fetch("<?= base_url('/work_master/update-status') ?>", {
+            body: JSON.stringify({
+                id: id,
+                status: status
+            })
 
-                    method: "POST",
+        })
 
-                    headers: {
+        .then(res => res.json())
 
-                        "Content-Type": "application/json",
+        .then(data => {
 
-                        "X-Requested-With": "XMLHttpRequest"
+            document.getElementById('successPopup')?.remove();
+            document.getElementById('errorPopup')?.remove();
 
-                    },
+            const popup = document.createElement('div');
 
-                    body: JSON.stringify({
+            popup.id = data.status ? 'successPopup' : 'errorPopup';
 
-                        id: id,
-                        status: status
+            popup.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${data.status ? '#79e47cff' : '#f44336'};
+                color: #000;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                z-index: 9999;
+                font-weight: 500;
+                min-width: 260px;
+            `;
 
-                    })
+            popup.innerHTML = `
+                <span onclick="this.parentElement.remove()"
+                style="position:absolute;top:6px;right:10px;cursor:pointer;font-size:18px;font-weight:bold;">
+                &times;</span>
+                ${data.message}
+            `;
 
-                })
+            document.body.appendChild(popup);
 
-                .then(res => res.json())
+            setTimeout(() => popup.remove(), 10000);
 
-                .then(data => {
+        })
 
-                    document.getElementById('successPopup')?.remove();
-                    document.getElementById('errorPopup')?.remove();
+        .catch(err => console.error(err));
 
-                    const popup = document.createElement('div');
-
-                    popup.id = data.status ? 'successPopup' : 'errorPopup';
-
-                    popup.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background-color: ${data.status ? '#79e47cff' : '#f44336'};
-                        color: #000;
-                        padding: 15px 20px;
-                        border-radius: 8px;
-                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-                        z-index: 9999;
-                        font-weight: 500;
-                        min-width: 260px;
-                    `;
-
-                    popup.innerHTML = `
-                        <span
-                            onclick="this.parentElement.remove()"
-                            style="
-                                position:absolute;
-                                top:6px;
-                                right:10px;
-                                cursor:pointer;
-                                font-size:18px;
-                                font-weight:bold;
-                            "
-                        >&times;</span>
-                        ${data.message}
-                    `;
-
-                    document.body.appendChild(popup);
-
-                    setTimeout(() => popup.remove(), 10000);
-
-                })
-
-                .catch(err => console.error(err));
-
-            });
-
-        });
-
-    }
+    });
 
 });
 
