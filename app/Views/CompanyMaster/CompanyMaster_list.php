@@ -1083,38 +1083,108 @@ if (phoneInput.length) {
         .catch(error => console.error("Error:", error));
     }
 }
-// ===== SHOW ONLY 10 ROWS INITIALLY =====
-const companyRows = document.querySelectorAll("#example tbody tr");
+const rowsPerPage = 10;
+let currentPage = 1;
 
-companyRows.forEach((row, index) => {
-    row.style.display = index < 10 ? "" : "none";
-});
+// Sort by Company Name column (3rd column)
+function sortTable() {
 
-// ===== SEARCH =====
+    const tbody = document.querySelector("#example tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    rows.sort((a, b) => {
+
+        const textA = a.cells[2].textContent.trim().toLowerCase();
+        const textB = b.cells[2].textContent.trim().toLowerCase();
+
+        return textA.localeCompare(textB);
+
+    });
+
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function getRows() {
+    return Array.from(document.querySelectorAll("#example tbody tr"))
+        .filter(row => row.dataset.match !== "false");
+}
+
+function showPage(page) {
+
+    const rows = getRows();
+
+    rows.forEach((row, index) => {
+
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        row.style.display =
+            (index >= start && index < end) ? "" : "none";
+
+    });
+
+    updatePagination();
+}
+
+function updatePagination() {
+
+    const rows = getRows();
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    const pagination = document.querySelector(".pagination");
+
+    pagination.innerHTML = `
+        <div class="page-btn" id="prevBtn">&laquo;</div>
+        <div class="page-btn active">${currentPage}</div>
+        <div class="page-btn" id="nextBtn">&raquo;</div>
+    `;
+
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    };
+}
+
+// Search
 document.querySelector(".search-input").addEventListener("input", function () {
 
     const term = this.value.toLowerCase();
-    const rows = document.querySelectorAll("#example tbody tr");
 
-    if (term === "") {
+    document.querySelectorAll("#example tbody tr").forEach(row => {
 
-        rows.forEach((row, index) => {
-            row.style.display = index < 10 ? "" : "none";
-        });
+        const text = row.textContent.toLowerCase();
 
-    } else {
+        if (term === "" || text.includes(term)) {
+            row.dataset.match = "true";
+        } else {
+            row.dataset.match = "false";
+            row.style.display = "none";
+        }
+    });
 
-        rows.forEach((row) => {
-
-            const rowText = row.textContent.toLowerCase();
-
-            row.style.display = rowText.includes(term) ? "" : "none";
-
-        });
-
-    }
+    currentPage = 1;
+    showPage(currentPage);
 
 });
+
+// Init
+sortTable();
+
+document.querySelectorAll("#example tbody tr").forEach(row => {
+    row.dataset.match = "true";
+});
+
+showPage(1);
   
         </script>
     </body>

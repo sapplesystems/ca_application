@@ -942,7 +942,7 @@ foreach ($receipt as $rec) {
             display: none !important;
         }
             .print-widthinvoiceno {
-    width: 12% !important;
+    width: 13% !important;
 }
 
 .print-widthinvoicedate {
@@ -950,7 +950,7 @@ foreach ($receipt as $rec) {
 }
 
 .print-widthinvoicework {
-    width: 16% !important;
+    width: 17% !important;
 }
 
 .print-widthinvoiceamount {
