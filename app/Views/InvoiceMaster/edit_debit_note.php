@@ -64,11 +64,6 @@ function toRoman($number)
         </div>
 
         <table width="100%" border="0" cellpadding="6">
-            <tr>
-                <td width="60%">
-                    <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-                </td>
-            </tr>
 
             <tr>
                 <td>
@@ -120,7 +115,7 @@ function toRoman($number)
                 <thead>
                     <tr style="background:#0b5c7d; color:#fff;">
                         <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
-                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Details Of Expenses</th>
+                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Particulars</th>
                         <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
                     </tr>
                 </thead>
@@ -130,7 +125,7 @@ function toRoman($number)
                     <!-- Add Expense Button Row -->
                     <tr>
                         <td></td>
-                        <td>Add : Expenses Recoverable</td>
+                        <td>Expenses Recoverable</td>
                         <td>
                             <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
                                 ➕ Add Expense
