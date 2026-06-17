@@ -315,6 +315,24 @@
                                     <label class="cmg-label">Credit Format </label>
                                     <input type="text" class="cmg-input" name="credit_format" placeholder="e.g. ORG/BRANCH/FY/SEQ"  value="<?= $creditNo ?>">
                                 </div>
+                                 <div class="cmg-field">
+                                    <label class="cmg-label">Cash Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="cash_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ"  value="<?= $cashReceiptNo ?>">
+                                </div>
+
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Cheque Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="cheque_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $chequeReceiptNo ?>">
+                                </div>
+                                 <div class="cmg-field">
+                                    <label class="cmg-label">TDS Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="tds_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $tdsReceiptNo ?>">
+                                </div>
+
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Online Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="online_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $onlineReceiptNo ?>">
+                                </div>
 
                                 <!-- PAN / GSTIN / IEC -->
                                 <div class="cmg-field">

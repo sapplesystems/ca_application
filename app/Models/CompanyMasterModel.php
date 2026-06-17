@@ -43,7 +43,11 @@ class CompanyMasterModel extends Model
         'gst_state',
         'branch_address',
         'debit_format',
-        'credit_format'
+        'credit_format',
+        'cash_receipt_format',
+        'cheque_receipt_format',
+        'tds_receipt_format',
+        'online_receipt_format',
     ];
 
     protected bool $allowEmptyInserts = false;

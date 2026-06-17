@@ -52,6 +52,7 @@ class InvoiceMasterController extends BaseController
         ->select('*')
         ->where('status', 1)
         ->findAll();
+        // print_r($companies);exit;
         $workModel = new WorkMasterModel();
         $works = $workModel->select('id, service_name ,sac_code,frequency,status')->where('status', 1)->findAll();
         $invoiceModel = new InvoiceMasterModel();
@@ -816,6 +817,16 @@ public function debitNotePDF($id)
 public function saveReceipt()
 {
 //  print_r($this->request->getPost()); exit;
+ $tdsAmount = $this->request->getPost('tds_amount');
+
+if (empty($tdsAmount)) {
+    $tdsAmount = $this->request->getPost('tds_amountOnly');
+}
+$billAmount = $this->request->getPost('bill_amount');
+
+if(empty($billAmount)) {
+    $billAmount = $this->request->getPost('bill_amount_Online');
+}
 $data = [
         'recipt_no'       => $this->request->getPost('recipt_no'),
         'date'            => $this->request->getPost('date'),
@@ -823,10 +834,11 @@ $data = [
         'cheque_date'     => $this->request->getPost('cheque_date'),
         'cheque_number'   => $this->request->getPost('cheque_number'),
         'drawen_bank'     => $this->request->getPost('drawen_bank'),
-        'bill_amount'     => $this->request->getPost('bill_amount'),
-        'tds_amount'      => $this->request->getPost('tds_amount'),
+        'bill_amount'     => $billAmount,
+        'tds_amount'      => $tdsAmount,
         'invoice_id'      => $this->request->getPost('invoice_id'),
         'client_id'       => $this->request->getPost('client_id'),
+        'bank_name'        => $this->request->getPost('bank_name'),
     ];
 
     $receiptModel = new ReciptDetailsModel();

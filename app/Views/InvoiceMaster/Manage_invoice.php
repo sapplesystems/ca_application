@@ -300,9 +300,11 @@
                                 <td class="receiptnote-label">Mode Of Payment :</td>
                                 <td colspan="3">
                                     <select name="mode_of_payment" id="modeOfPayment" class="receiptnote-select">
+                                        <option value="">Select Mode</option>
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
                                         <option value="TDS">TDS</option>
+                                        <option value="Online">Online</option>
                                     </select>
                                 </td>
                             </tr>
@@ -339,7 +341,13 @@
                         </div>
                         <div id="tdsOnlyBlock" style="display:none;">
                             TDS Amount:
-                            <input type="text" name="tds_amount" id="tdsAmountOnly" class="receiptnote-inline-input" />
+                            <input type="text" name="tds_amountOnly" id="tdsAmountOnly" class="receiptnote-inline-input" />
+                        </div>
+                        <div id="onlineOnlyBlock" style="display:none;">
+                            Bank Name :
+                            <input type="text" name="bank_name" id="bankName" class="receiptnote-inline-input" />
+                            Received Amount :
+                            <input type="text" name="bill_amount_Online" id="transactionId" class="receiptnote-inline-input" />
                         </div>
                         
 
@@ -889,6 +897,7 @@ foreach ($receipt as $rec) {
 </div>
 
 <script>
+ let isEditMode = false;
     localStorage.setItem('activeMenu', 'partyledger');
     function deleteInvoice(id) {
         if (!confirm('Are you sure you want to delete this invoice?')) return;
@@ -1052,6 +1061,14 @@ foreach ($receipt as $rec) {
                 $('#companyPhone').text(res.company.telephone);
                 $('#companyEmail').text(res.company.email);
 
+                 // Store receipt formats globally
+                window.receiptFormats = {
+                    Cash: res.company.cash_receipt_format,
+                    Cheque: res.company.cheque_receipt_format,
+                    TDS: res.company.tds_receipt_format,
+                    Online: res.company.online_receipt_format
+                };
+
                 // Client
                 $('#clientName').text(res.client.legal_name);
                 $('#clientAddress').html(res.client.registered_office);
@@ -1088,6 +1105,7 @@ foreach ($receipt as $rec) {
     });
 
 
+
    document.getElementById("saveReceiptBtn").addEventListener("click", async function () {
 
     const receiptId = document.getElementById("receipt_id").value;
@@ -1101,6 +1119,10 @@ foreach ($receipt as $rec) {
     // =========================
     if (mode === 'TDS') {
         formData.set('bill_amount', 0);
+    }
+    if (mode === 'Online') {
+        formData.set('bank_name', document.getElementById('bankName').value);
+        formData.set('bill_amount', document.getElementById('transactionId').value);
     }
 
     try {
@@ -1146,52 +1168,120 @@ foreach ($receipt as $rec) {
 
     // Edit button click
     document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("edit-btn")) {
 
-        const btn = e.target;
+    if (!e.target.classList.contains("edit-btn")) return;
 
-        document.getElementById("receipt_id").value = btn.dataset.id;
-        document.getElementById("receiptNo").value = btn.dataset.recipt_no;
-        document.getElementById("receiptDate").value = btn.dataset.date;
+     isEditMode = true;
+    const btn = e.target;
 
-        document.getElementById("billAmount").value = btn.dataset.bill_amount;
-        document.getElementById("tdsAmountOnly").value = btn.dataset.tds_amount;
+    // Basic fields
+    document.getElementById("receipt_id").value = btn.dataset.id || "";
+    document.getElementById("receiptNo").value = btn.dataset.recipt_no || "";
+    document.getElementById("receiptDate").value = btn.dataset.date || "";
 
-        const modeOfPayment = document.getElementById("modeOfPayment");
-        modeOfPayment.value = btn.dataset.mode_of_payment;
+    // Payment mode
+    const modeOfPayment = document.getElementById("modeOfPayment");
+    modeOfPayment.value = btn.dataset.mode_of_payment || "";
 
-        // 👇 IMPORTANT: trigger UI update
-        modeOfPayment.dispatchEvent(new Event("change"));
+    // Amount fields
+    document.getElementById("billAmount").value =
+        btn.dataset.bill_amount || "";
 
-        const chequeFields = document.getElementById("chequeFields");
+    document.getElementById("tdsAmount").value =
+        btn.dataset.tds_amount || "";
 
-        if (btn.dataset.mode_of_payment === "Cheque") {
-            chequeFields.style.display = "block";
-            chequeFields.querySelector("input[name='cheque_date']").value = btn.dataset.cheque_date;
-            chequeFields.querySelector("input[name='cheque_number']").value = btn.dataset.cheque_number;
-            chequeFields.querySelector("input[name='drawen_bank']").value = btn.dataset.drawen_bank;
-        } else {
-            chequeFields.style.display = "none";
-        }
+    document.getElementById("tdsAmountOnly").value =
+        btn.dataset.tds_amount || "";
 
-        // load invoice/company data
-        fetch(`getInvoiceDetails/${btn.dataset.invoiceId}`)
-             .then(res => res.json())
-                .then(data => {
-                    document.getElementById("companyName").textContent = data.company_name;
-                    document.getElementById("companyType").textContent = data.company_type;
-                    document.getElementById("companyAddress").textContent = data.company_address;
-                    document.getElementById("companyPhone").textContent = data.company_phone;
-                    document.getElementById("companyEmail").textContent = data.company_email;
-                    document.getElementById("clientName").textContent = data.client_name;
-                    document.getElementById("clientAddress").textContent = data.client_address;
-                    document.getElementById("clientPan").textContent = data.client_pan;
+    // Online fields
+    const bankName = document.getElementById("bankName");
+    const transactionId = document.getElementById("transactionId");
 
-
-                })                .catch(err => console.error("Error fetching company data:", err));
-
-        new bootstrap.Modal(document.getElementById('addreciptnote')).show();
+    if (bankName) {
+        bankName.value = btn.dataset.bank_name || "";
     }
+
+    if (transactionId) {
+        transactionId.value =
+            btn.dataset.bill_amount_online ||
+            btn.dataset.bill_amount ||
+            "";
+    }
+
+    // Cheque fields
+    const chequeFields = document.getElementById("chequeFields");
+
+    if (btn.dataset.mode_of_payment === "Cheque") {
+
+        chequeFields.style.display = "block";
+
+        const chequeDate =
+            chequeFields.querySelector("input[name='cheque_date']");
+
+        const chequeNumber =
+            chequeFields.querySelector("input[name='cheque_number']");
+
+        const drawenBank =
+            chequeFields.querySelector("input[name='drawen_bank']");
+
+        if (chequeDate)
+            chequeDate.value = btn.dataset.cheque_date || "";
+
+        if (chequeNumber)
+            chequeNumber.value = btn.dataset.cheque_number || "";
+
+        if (drawenBank)
+            drawenBank.value = btn.dataset.drawen_bank || "";
+
+    } else {
+
+        chequeFields.style.display = "none";
+
+    }
+
+    // Update payment UI
+    if (typeof togglePaymentUI === "function") {
+        togglePaymentUI();
+    }
+
+    // Load invoice/company details
+    fetch(`getInvoiceDetails/${btn.dataset.invoiceId}`)
+        .then(res => res.json())
+        .then(data => {
+
+            document.getElementById("companyName").textContent =
+                data.company_name || "";
+
+            document.getElementById("companyType").textContent =
+                data.company_type || "";
+
+            document.getElementById("companyAddress").textContent =
+                data.company_address || "";
+
+            document.getElementById("companyPhone").textContent =
+                data.company_phone || "";
+
+            document.getElementById("companyEmail").textContent =
+                data.company_email || "";
+
+            document.getElementById("clientName").textContent =
+                data.client_name || "";
+
+            document.getElementById("clientAddress").textContent =
+                data.client_address || "";
+
+            document.getElementById("clientPan").textContent =
+                data.client_pan || "";
+
+        })
+        .catch(err =>
+            console.error("Error fetching company data:", err)
+        );
+
+    // Show modal
+    new bootstrap.Modal(
+        document.getElementById("addreciptnote")
+    ).show();
 });
     // Delete button click
     document.addEventListener("click", function(e) {
@@ -1921,20 +2011,19 @@ function getFinancialYear() {
 }
 
 function generateReceiptNo() {
-    const mode = document.getElementById('modeOfPayment').value;
-    const receiptNo = document.getElementById('receiptNo');
 
-    let prefix = 'CH'; // Default Cash
+    const mode = $('#modeOfPayment').val();
 
-    if (mode === 'Cheque') {
-        prefix = 'CHQ';
-    } else if (mode === 'TDS') {
-        prefix = 'TDS';
+    if (!mode) {
+        $('#receiptNo').val('');
+        return;
     }
+
+    let format = window.receiptFormats?.[mode] || '';
 
     const serial = String(nextReceiptId).padStart(2, '0');
 
-    receiptNo.value = `${prefix}/${getFinancialYear()}/${serial}`;
+    $('#receiptNo').val(format + '/' + serial);
 }
 
 document.getElementById('modeOfPayment')
@@ -2020,42 +2109,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function togglePaymentUI() {
 
-        const mode = modeOfPayment.value;
+    const mode = modeOfPayment.value;
 
-        if (mode === 'TDS') {
+    // Hide all blocks first
+    if (paymentTextBlock) paymentTextBlock.style.display = 'none';
+    if (tdsOnlyBlock) tdsOnlyBlock.style.display = 'none';
+    if (onlineOnlyBlock) onlineOnlyBlock.style.display = 'none';
 
-            // Hide full receipt text
-            if (paymentTextBlock) paymentTextBlock.style.display = 'none';
+    if (mode === 'TDS') {
 
-            // Show TDS only block
-            if (tdsOnlyBlock) tdsOnlyBlock.style.display = 'block';
+        // Show TDS block only
+        if (tdsOnlyBlock) tdsOnlyBlock.style.display = 'block';
 
-            // Force bill amount to zero + lock it
-            if (billAmount) {
-                billAmount.value = 0;
-                billAmount.readOnly = true;
-            }
+        // Force bill amount to zero + lock it
+        if (billAmount) {
+            billAmount.value = 0;
+            billAmount.readOnly = true;
+        }
 
-        } else {
+    } 
+    else if (mode === 'Online') {
 
-            // Show full receipt text
-            if (paymentTextBlock) paymentTextBlock.style.display = 'block';
+        // Show Online block only
+        if (onlineOnlyBlock) onlineOnlyBlock.style.display = 'block';
 
-            // Hide TDS only block
-            if (tdsOnlyBlock) tdsOnlyBlock.style.display = 'none';
+        if (billAmount) {
+            billAmount.readOnly = false;
+        }
 
-            // Enable bill amount input
-            if (billAmount) {
-                billAmount.readOnly = false;
-            }
+    } 
+    else {
+
+        // Cash / Cheque / Default
+        if (paymentTextBlock) paymentTextBlock.style.display = 'block';
+
+        if (billAmount) {
+            billAmount.readOnly = false;
         }
     }
+}
 
-    // run on change
-    modeOfPayment.addEventListener('change', togglePaymentUI);
+// run on change
+modeOfPayment.addEventListener('change', togglePaymentUI);
 
-    // run on page load (important fix)
-    togglePaymentUI();
+// run on page load
+togglePaymentUI();
 
 });
         
