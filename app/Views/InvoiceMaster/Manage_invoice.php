@@ -516,7 +516,7 @@
                 <tr>
                     <th style="width: 10%" class="print-widthinvoiceno centertext">Invoice No</th>
                     <th style="width: 7%" class="print-widthinvoicedate centertext">Invoice Date</th>
-                    <th style="width: 12%" class="print-widtinvoicework centertext">Works</th>
+                    <th style="width: 12%" class="print-widthinvoicework centertext">Works</th>
                     <!-- <th style="width: 12%" class="print-hide">Company</th> -->
                     <th style="width: 9%" class="print-widthinvoiceamount centertext">Total Invoice Amount</th>
                     <th style="width: 7%" class="print-widtreciptdate centertext">Receipt Date</th>
@@ -962,41 +962,57 @@ foreach ($receipt as $rec) {
             .print-widthinvoiceno {
     width: 13% !important;
 }
+    .print-widthinvoiceno
+    {
+    text-align:center !important;
+                }
 
 .print-widthinvoicedate {
     width: 10% !important;
+    text-align:center !important;
 }
 
 .print-widthinvoicework {
     width: 17% !important;
+    text-align:center !important;
 }
 
 .print-widthinvoiceamount {
     width: 8% !important;
+    text-align:center !important;
 }
 
+.righttext{
+ text-align:right !important;
+                }
 .print-widtreciptdate {
     width: 10% !important;
+    text-align:center !important;
 }
 
 .print-widtreciptno {
     width: 12% !important;
+    text-align:center !important;
 }
 
 .print-widtreciptamount {
     width: 8% !important;
+    text-align:center !important;
 }
 
 .print-widtreceivedamount {
     width: 8% !important;
+    text-align:center !important;
 }
 
 .print-widtdebitcfreditnote {
     width: 8% !important;
+    text-align:center !important;
 }
 
 .print-widtrunningamount {
     width: 8% !important;
+    text-align:center !important;
 }
     .print-widthinvoicedate,
 .print-widtreciptdate {
