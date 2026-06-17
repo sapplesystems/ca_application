@@ -2,6 +2,14 @@
     .print-only {
         display: none !important;
     }
+    .centertext
+    {
+        text-align:center !important;
+    }
+    .righttext
+    {
+        text-align:right !important;
+    }
 
     @font-face {
         font-family: 'Cambria';
@@ -506,18 +514,18 @@
 
             <thead>
                 <tr>
-                    <th style="width: 10%" class="print-widthinvoiceno">Invoice No</th>
-                    <th style="width: 7%" class="print-widthinvoicedate">Invoice Date</th>
-                    <th style="width: 12%" class="print-widtinvoicework">Works</th>
+                    <th style="width: 10%" class="print-widthinvoiceno centertext">Invoice No</th>
+                    <th style="width: 7%" class="print-widthinvoicedate centertext">Invoice Date</th>
+                    <th style="width: 12%" class="print-widtinvoicework centertext">Works</th>
                     <!-- <th style="width: 12%" class="print-hide">Company</th> -->
-                    <th style="width: 9%" class="print-widthinvoiceamount">Total Invoice Amount</th>
-                    <th style="width: 7%" class="print-widtreciptdate">Receipt Date</th>
-                    <th style="width: 8%" class="print-widtreciptno">Receipt No</th>
-                    <th style="width: 8%" class="print-widtreciptamount">TDS Amount</th>
-                    <th style="width: 8%" class="print-widtreceivedamount">Received Amount</th>
-                    <th style="width: 8%" class="print-widtdebitcfreditnote">Debit/Credit Note</th>
-                    <th style="width: 8%" class="print-widtrunningamount">Running Amount</th>
-                    <th style="width: 17%" class="no-print">Action</th>
+                    <th style="width: 9%" class="print-widthinvoiceamount centertext">Total Invoice Amount</th>
+                    <th style="width: 7%" class="print-widtreciptdate centertext">Receipt Date</th>
+                    <th style="width: 8%" class="print-widtreciptno centertext">Receipt No</th>
+                    <th style="width: 8%" class="print-widtreciptamount centertext">TDS Amount</th>
+                    <th style="width: 8%" class="print-widtreceivedamount centertext">Received Amount</th>
+                    <th style="width: 8%" class="print-widtdebitcfreditnote centertext">Debit/Credit Note</th>
+                    <th style="width: 8%" class="print-widtrunningamount centertext">Running Amount</th>
+                    <th style="width: 17%" class="no-print centertext">Action</th>
 
                 </tr>
             </thead>
@@ -600,7 +608,7 @@ $invoice = (float) ($row['total_invoice_amount'] ?? 0);
                                 <?= esc($row['service_names']) ?>
                             </td>
                             <!-- <td class="print-hide"><?= esc($row['company_name']) ?></td> -->
-                            <td class="invoice-amount">
+                            <td class="invoice-amount righttext">
                                 <?= number_format($row['total_invoice_amount'], 2) ?>
                             </td>
                             <td>
@@ -634,7 +642,7 @@ $invoice = (float) ($row['total_invoice_amount'] ?? 0);
                                     : '-';
                                 ?>
                             </td>
-                            <td><?php
+                            <td class="righttext"><?php
 foreach ($receipt as $rec) {
     if ($rec['invoice_id'] == $row['id']) {
 
@@ -646,7 +654,7 @@ foreach ($receipt as $rec) {
     }
 }
 ?></td>
-                            <td><?php
+                            <td class="righttext"><?php
 foreach ($receipt as $rec) {
     if ($rec['invoice_id'] == $row['id']) {
 
@@ -659,7 +667,7 @@ foreach ($receipt as $rec) {
 }
 ?></td>
                                 <td></td>
-                            <td class="running-amount"><strong><?= number_format($runningBalance, 2) ?></strong></td>
+                            <td class="running-amount righttext"><strong><?= number_format($runningBalance, 2) ?></strong></td>
                             
                             <td class="no-print">
                                 <!-- Edit -->
@@ -737,12 +745,12 @@ foreach ($receipt as $rec) {
     : '-' ?></td>
 
             <!-- Debit/Credit Amount -->
-            <td>
+            <td class="righttext">
             
             </td>
 
             <!-- Running Amount -->
-            <td><strong><?= number_format($runningBalance, 2) ?></strong></td>
+            <td class="righttext"><strong><?= number_format($runningBalance, 2) ?></strong></td>
 
             <td class="print-hide"></td>
 
@@ -788,20 +796,20 @@ foreach ($receipt as $rec) {
             </td>
 
             <!-- TDS -->
-            <td>-</td>
+            <td class="righttext">-</td>
 
             <!-- Received -->
-            <td>-</td>
+            <td class="righttext">-</td>
 
             <!-- Debit/Credit Amount -->
-           <td class="debit-credit-amount">
+           <td class="debit-credit-amount righttext">
     <?= ((float)($d['total_amount'] ?? 0) > 0)
         ? number_format($d['total_amount'], 2)
         : '-' ?>
 </td>
 
             <!-- Running Amount -->
-                <td class ="company-running-amount">
+                <td class ="company-running-amount righttext">
                     <strong><?= number_format($runningBalance, 2) ?></strong>
                 </td>
                 <td class="print-hide"></td>
