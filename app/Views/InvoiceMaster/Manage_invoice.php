@@ -207,7 +207,8 @@
                                                 data-drawen_bank="<?= esc($rec['drawen_bank']) ?>"
                                                 data-bill_amount="<?= esc($rec['bill_amount']) ?>"
                                                 data-tds_amount="<?= esc($rec['tds_amount']) ?>"
-                                                data-invoice-id="<?= esc($rec['invoice_id']) ?>">
+                                                data-invoice-id="<?= esc($rec['invoice_id']) ?>"
+                                                data-bank_name="<?= esc($rec['bank_name']) ?>">
                                             </i>
                                             <i class="fa-solid fa-trash delete-btn" title="Delete" data-id="<?= $rec['id'] ?>">
                                         </td>
@@ -1188,7 +1189,32 @@ foreach ($receipt as $rec) {
         alert("Something went wrong");
     }
 });
+function togglePaymentUI() {
 
+    const mode = document.getElementById("modeOfPayment").value;
+
+    const paymentTextBlock = document.getElementById("paymentTextBlock");
+    const tdsOnlyBlock = document.getElementById("tdsOnlyBlock");
+    const onlineOnlyBlock = document.getElementById("onlineOnlyBlock");
+
+    // Hide all first
+    paymentTextBlock.style.display = "none";
+    tdsOnlyBlock.style.display = "none";
+    onlineOnlyBlock.style.display = "none";
+
+    if (mode === "TDS") {
+
+        tdsOnlyBlock.style.display = "block";
+
+    } else if (mode === "Online") {
+
+        onlineOnlyBlock.style.display = "block";
+
+    } else {
+
+        paymentTextBlock.style.display = "block";
+    }
+}
 
     // Edit button click
     document.addEventListener("click", function (e) {
@@ -1196,6 +1222,8 @@ foreach ($receipt as $rec) {
     if (!e.target.classList.contains("edit-btn")) return;
 
      isEditMode = true;
+     document.getElementById("receiptNo").readOnly = true;
+     document.getElementById("modeOfPayment").disabled = true;
     const btn = e.target;
 
     // Basic fields
@@ -1206,6 +1234,8 @@ foreach ($receipt as $rec) {
     // Payment mode
     const modeOfPayment = document.getElementById("modeOfPayment");
     modeOfPayment.value = btn.dataset.mode_of_payment || "";
+
+    togglePaymentUI();
 
     // Amount fields
     document.getElementById("billAmount").value =
@@ -2107,7 +2137,8 @@ $(document).on('click', '.open-receipt', function () {
                     data-drawen_bank="${rec.drawen_bank ?? ''}"
                     data-bill_amount="${rec.bill_amount}"
                     data-tds_amount="${rec.tds_amount}"
-                    data-invoice-id="${rec.invoice_id}">
+                    data-invoice-id="${rec.invoice_id}"
+                    data-bank_name="${rec.bank_name ?? ''}"
                 </i>
 
                 <i class="fa-solid fa-trash delete-btn"
