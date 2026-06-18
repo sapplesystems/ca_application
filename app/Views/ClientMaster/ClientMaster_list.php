@@ -810,11 +810,45 @@ function updatePagination() {
 
     const pagination = document.querySelector(".pagination");
 
-    pagination.innerHTML = `
-        <div class="page-btn" id="prevBtn">&laquo;</div>
-        <div class="page-btn active">${currentPage}</div>
-        <div class="page-btn" id="nextBtn">&raquo;</div>
-    `;
+    let html = `<div class="page-btn" id="prevBtn">&laquo;</div>`;
+
+    if (totalPages <= 2) {
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += `
+                <div class="page-btn ${i === currentPage ? 'active' : ''}"
+                     data-page="${i}">
+                    ${i}
+                </div>
+            `;
+        }
+
+    } else {
+
+        html += `
+            <div class="page-btn active" data-page="${currentPage}">
+                ${currentPage}
+            </div>
+        `;
+
+        if (currentPage < totalPages) {
+            html += `
+                <div class="page-btn" data-page="${totalPages}">
+                    ${totalPages}
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="page-btn" data-page="${totalPages - 1}">
+                    ${totalPages - 1}
+                </div>
+            `;
+        }
+    }
+
+    html += `<div class="page-btn" id="nextBtn">&raquo;</div>`;
+
+    pagination.innerHTML = html;
 
     document.getElementById("prevBtn").onclick = () => {
         if (currentPage > 1) {
@@ -829,6 +863,13 @@ function updatePagination() {
             showPage(currentPage);
         }
     };
+
+    document.querySelectorAll("[data-page]").forEach(btn => {
+        btn.onclick = () => {
+            currentPage = parseInt(btn.dataset.page);
+            showPage(currentPage);
+        };
+    });
 }
 
 // Search
