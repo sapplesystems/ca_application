@@ -419,7 +419,7 @@
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
                                         <option value="TDS">TDS</option>
-                                        <option value="Online">Inline Transactions</option>
+                                        <option value="Online">Online Transactions</option>
                                     </select>
                                 </td>
                             </tr>
