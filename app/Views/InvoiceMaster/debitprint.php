@@ -217,6 +217,9 @@
 .right{
     text-align:right;
 }
+.center{
+    text-align:center;
+}
 </style>
 <div class="debitnotepdf-invoice">
 
@@ -227,10 +230,10 @@
                             <?php echo $company['type_of_company']; ?>
                         </span><br>
         
-            Address : <?php echo $company['registered_office']; ?><br />
-            Ph. No. : <?php echo $company['telephone']; ?><br />
-            E-mail : <?php echo $company['email']; ?><br />
-            GSTIN: <?php echo $company['gstin']; ?><br />
+           <b> Address :</b><?= nl2br(esc($company['registered_office'])); ?><br /> 
+           <b> Ph. No. : </b><?php echo $company['telephone']; ?><br />
+           <b> E-mail : </b><?php echo $company['email']; ?><br />
+            <b>GSTIN:</b> <?php echo $company['gstin']; ?><br />
         </div>
         <div class="debitnotepdf-logo">
            <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
@@ -251,7 +254,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
     <div class="debitnotepdf-left">
         <b>Issued To,</b><br />
         <b>Name :</b> <?php echo $client['legal_name']; ?> <br />
-        <b>Address :</b> <?php echo $client['registered_office']; ?> <br />
+        <b>Address :</b> <?php echo htmlspecialchars($client['registered_office']); ?> <br />
         <b>Email :</b> <?php echo $client['email']; ?> <br />
         <b>GSTIN :</b> <?php echo $client['gstin']; ?> <br />
     </div>
@@ -277,7 +280,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
         <?php if (!empty($expenses)) : ?>
         <?php foreach ($expenses as $index => $exp) : ?>
         <tr>
-            <td><?= $index + 1 ?></td>
+            <td class="center"><?= $index + 1 ?></td>
             <td class="debitnotepdf-text-left">
                 <?= esc($exp['expense_description']) ?>
             </td>
@@ -293,7 +296,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
         <?php endif; ?>
 
         <tr class="debitnotepdf-summary">
-            <td class="right">A</td>
+            <td class="center">A</td>
             <td class="right">
                 Total Recoverable Expenses
             </td>
@@ -346,12 +349,12 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
                 <td class="right"><strong><?php echo $grandTotal  ?></strong></td>
            </tr>
         <tr class="debitnotepdf-summary">
-            <td class="right">B</td>
+            <td class="center">B</td>
             <td class="right">(-) Advances Received</td>
             <td class="right"><?php echo $debitNote['advance_amount']; ?></td>
         </tr>
         <tr class="debitnotepdf-summary">
-            <td class="right">C</td>
+            <td class="center">C</td>
             <td class="right">Net Amount(A+B)</td>
             <td class="right"><?php echo $debitNote['total_amount']; ?></td>
         </tr>
@@ -398,7 +401,7 @@ window.onload = function () {
     window.print();
 };
 
-window.onafterprint = function () {
-    window.location.href = "<?= base_url('invoice-mangement'); ?>";
-};
+// window.onafterprint = function () {
+//     window.location.href = "<?= base_url('invoice-mangement'); ?>";
+// };
 </script>

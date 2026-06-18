@@ -268,70 +268,133 @@ function toRoman($number)
 
     <script>
     document.getElementById('debitForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const form = this;
+    const form = this;
 
-        fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
+    // Get note type from PHP
+    const noteType = '<?= strtolower($debitNote['note_type']) ?>'; // debit | credit
+    const noteLabel = noteType === 'credit' ? 'Credit' : 'Debit';
 
-                if (data.status === 'success') {
+    const printUrl = noteType === 'credit'
+        ? '<?= site_url("DebitNote/") ?>'
+        : '<?= site_url("DebitNote/") ?>';
 
-                    Swal.fire({
-                        title: data.mode === 'update' ?
-                            'Debit Updated!' : 'Debit Saved!',
-                        text: 'Debit Note processed successfully.',
-                        icon: 'success',
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Print Invoice',
-                        denyButtonText: 'Download PDF',
-                        cancelButtonText: 'Close'
-                    }).then(result => {
+    const pdfUrl = noteType === 'credit'
+        ? '<?= site_url("DebitNotePDF/") ?>'
+        : '<?= site_url("DebitNotePDF/") ?>';
 
-                        if (result.isConfirmed) {
-                            window.open(
-                                '<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                                '_blank'
-                            );
-                        } else if (result.isDenied) {
-                            window.open(
-                                '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
-                                '_blank'
-                            );
-                        } else if (result.isDismissed) {
-                            Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes',
-                                cancelButtonText: 'No'
-                            }).then(res => {
-                                if (res.isConfirmed) {
-                                    window.location.href =
-                                        '<?= site_url("InvoiceManagment") ?>';
-                                }
-                            });
-                        }
-                    });
+    fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
 
-                } else {
-                    Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error!', 'Network or server error', 'error');
-            });
+            if (data.status === 'success') {
 
-    });
+                Swal.fire({
+                    title: data.mode === 'update'
+                        ? `${noteLabel} Updated!`
+                        : `${noteLabel} Saved!`,
+                    text: `${noteLabel} Note processed successfully.`,
+                    icon: 'success',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: `Print ${noteLabel}`,
+                    denyButtonText: 'Download PDF',
+                    cancelButtonText: 'Close'
+                }).then((result) => {
+
+                    // PRINT
+                    if (result.isConfirmed) {
+
+                        let iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = printUrl + data.invoice_id;
+
+                        document.body.appendChild(iframe);
+
+                        iframe.onload = function() {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+
+                            // Optional: show popup again after print
+                            iframe.contentWindow.onafterprint = function() {
+
+                                Swal.fire({
+                                    title: data.mode === 'update'
+                                        ? `${noteLabel} Updated!`
+                                        : `${noteLabel} Saved!`,
+                                    text: `${noteLabel} Note processed successfully.`,
+                                    icon: 'success',
+                                    showDenyButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: `Print ${noteLabel}`,
+                                    denyButtonText: 'Download PDF',
+                                    cancelButtonText: 'Close'
+                                });
+                            };
+                        };
+
+                    }
+
+                    // PDF DOWNLOAD
+                    else if (result.isDenied) {
+
+                        window.location.href =
+                            pdfUrl + data.invoice_id;
+
+                    }
+
+                    // CLOSE BUTTON
+                    else if (result.isDismissed) {
+
+                        Swal.fire({
+                            title: 'Redirect?',
+                            text: 'Go back to invoice list?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No'
+                        }).then((res) => {
+
+                            if (res.isConfirmed) {
+                                window.location.href =
+                                    '<?= site_url("InvoiceManagment") ?>';
+                            }
+
+                        });
+
+                    }
+
+                });
+
+            } else {
+
+                Swal.fire(
+                    'Error!',
+                    data.message || 'Something went wrong.',
+                    'error'
+                );
+
+            }
+
+        })
+        .catch(() => {
+
+            Swal.fire(
+                'Error!',
+                'Network or server error',
+                'error'
+            );
+
+        });
+
+});
 
     function numberToWords(num) {
         if (num === 0) return 'ZERO';

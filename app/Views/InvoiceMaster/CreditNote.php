@@ -259,6 +259,39 @@
     document.getElementById('debitForm').addEventListener('submit', function(e) {
         e.preventDefault(); // prevent normal form submit
 
+        const descriptions = document.querySelectorAll('input[name="expense_description[]"]');
+        const amounts = document.querySelectorAll('input[name="expense_amount[]"]');
+
+        let hasExpense = false;
+
+        for (let i = 0; i < descriptions.length; i++) {
+
+            // hidden row ignore
+            if (descriptions[i].closest('tr').style.display === 'none') {
+                continue;
+            }
+
+            if (
+                descriptions[i].value.trim() !== '' &&
+                amounts[i].value.trim() !== '' &&
+                parseFloat(amounts[i].value) > 0
+            ) {
+                hasExpense = true;
+                break;
+            }
+        }
+
+        if (!hasExpense) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please add at least one expense with amount.'
+            });
+
+            return;
+        }
+
+
         const form = this;
 
         // Submit form via AJAX
@@ -280,10 +313,29 @@
                         cancelButtonText: 'Close'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Print invoice
-                            window.open('<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDenied) {
+
+                        let iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = '<?= site_url("DebitNote/") ?>' + data.invoice_id;
+
+                        document.body.appendChild(iframe);
+
+                        iframe.onload = function () {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+
+                            Swal.fire({
+                                    title: 'Credit Saved!',
+                                    text: 'Your Credit has been saved successfully.',
+                                    icon: 'success',
+                                    showDenyButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Print Credit',
+                                    denyButtonText: 'Download PDF',
+                                    cancelButtonText: 'Close'
+                                        });
+                        };
+                    } else if (result.isDenied) {
                             // Download PDF
                             window.open('<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
                                 '_blank');
