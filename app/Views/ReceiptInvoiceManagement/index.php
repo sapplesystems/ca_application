@@ -82,6 +82,13 @@
     cursor: pointer;
     width:200px;
 }
+#submitrecipt {
+    z-index: 1062 !important;
+}
+
+#submitrecipt + .modal-backdrop {
+    z-index: 1061 !important;
+}
 
 </style>
 <div class="invoiceM-containerr">
@@ -337,6 +344,33 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="submitrecipt" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="options-container">
+                    <div class="options-header">Options</div>
+
+                    <label class="pdf-label">Receipt PDF</label>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <button class="btn btn-success flex-fill" id="printReceiptBtn">Print Receipt</button>
+                        <button class="btn btn-success flex-fill" id="downloadPdfBtn">Receipt PDF Download</button>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-primary">Save changes</button>
+             </div> -->
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="addreciptnote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -350,6 +384,7 @@
                 <div class="modal-body">
                    <input type="hidden" name="client_id" id="receipt_client_id">
                    <input type="hidden" name="company_id" id="receipt_company_id">
+                   <input type="hidden" name="receipt_id" id="receipt_id">
                     <div class="receiptnote-container ReciptNoteData">
 
                         <!-- Header -->
@@ -1457,54 +1492,109 @@ $(document).on('change', '#modeOfPayment', function () {
 
 document.getElementById("saveReceiptBtn").addEventListener("click", async function () {
 
-    const form = document.getElementById("receiptForm");
-    const formData = new FormData(form);
+    try {
 
-    // Force values into FormData
-    formData.set('client_id', $('#receipt_client_id').val());
-    formData.set('company_id', $('#receipt_company_id').val());
+        const receiptId = document.getElementById("receipt_id").value;
+        const form = document.getElementById("receiptForm");
+        const formData = new FormData(form);
 
-    // Handle TDS Amount
-    if ($('#modeOfPayment').val() === 'TDS') {
+        const mode = $('#modeOfPayment').val();
 
-        formData.set('bill_amount', 0);
-        formData.set('tds_amount', $('#tdsAmountOnly').val());
+        // Force values into FormData
+        formData.set('client_id', $('#receipt_client_id').val());
+        formData.set('company_id', $('#receipt_company_id').val());
+        formData.set('mode_of_payment', mode);
 
-    } 
-    else if ($('#modeOfPayment').val() === 'Online') {
+        // Payment Mode Logic
+        if (mode === 'TDS') {
 
-        formData.set('bill_amount', $('#transactionId').val());
-        formData.set('tds_amount', 0);
-        formData.set('bank_name', $('#bankName').val());
+            formData.set('bill_amount', 0);
+            formData.set('tds_amount', $('#tdsAmountOnly').val());
+            formData.set('bank_name', '');
 
-    }
-    else {
+        } else if (mode === 'Online') {
 
-        formData.set('bill_amount', $('#billAmount').val());
-        formData.set('tds_amount', $('#tdsAmount').val());
+            formData.set('bill_amount', $('#billAmount').val());
+            formData.set('tds_amount', 0);
+            formData.set('bank_name', $('#bankName').val());
+            formData.set('transaction_id', $('#transactionId').val());
 
-    }
+        } else {
 
-    // Debug
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + " => " + pair[1]);
-    }
+            formData.set('bill_amount', $('#billAmount').val());
+            formData.set('tds_amount', $('#tdsAmount').val() || 0);
 
-    const response = await fetch(
-        "<?= site_url('invoice-mangement/saveReceipt') ?>",
-        {
-            method: "POST",
-            body: formData
         }
-    );
 
-    const data = await response.json();
+        // Debug
+        console.log('----- Form Data -----');
+        for (let pair of formData.entries()) {
+            console.log(pair[0], '=>', pair[1]);
+        }
 
-    if (data.success) {
-        alert("Receipt Saved Successfully");
-        location.reload();
+        const response = await fetch(
+            "<?= site_url('invoice-mangement/saveReceipt') ?>",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(data.message || "Failed to save receipt");
+            return;
+        }
+
+        const newId = data.receipt_id || receiptId;
+
+        $('#receipt_id').val(newId);
+
+        alert(receiptId ? "Receipt Updated Successfully" : "Receipt Saved Successfully");
+
+        $('#submitrecipt')
+            .data('receipt-id', newId)
+            .attr('data-receipt-id', newId)
+            .modal('show');
+
+    } catch (error) {
+
+        console.error('Receipt Save Error:', error);
+        alert('Something went wrong while saving receipt.');
+
     }
 
 });
+document.getElementById("printReceiptBtn").addEventListener("click", function() {
+
+    const receiptId = $('#submitrecipt').data('receipt-id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `invoice-mangement/printReceipt/${receiptId}`;
+});
+
+
+document.getElementById("downloadPdfBtn").addEventListener("click", function() {
+
+    const receiptId = $('#submitrecipt').data('receipt-id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `invoice-mangement/receiptPdf/${receiptId}`;
+});
+
+    $(document).on('click', '.close', function() {
+        $('#addreciptnote').modal('hide');
+        $('#submitrecipt').modal('hide');
+        location.reload();
+    });
 
 </script>

@@ -807,9 +807,16 @@ public function debitNotePDF($id)
     // Render PDF
     $dompdf->render();
 
+    $filename = str_replace(
+    '/',
+    '-',
+    $debitNote['debit_no'] ?? $debitNote['credit_no']
+);
+  
+
     // Output PDF (force download)
     $dompdf->stream(
-        'Debit_Note_' . $debitNote['debit_no'] . '.pdf',
+        $filename  . '.pdf',
         ['Attachment' => true]
     );
 }
@@ -918,7 +925,7 @@ if(empty($billAmount)) {
     $data = [
         'recipt_no'        => $this->request->getPost('recipt_no'),
         'date'             => $this->request->getPost('date'),
-        'mode_of_payment'  => $this->request->getPost('mode_of_payment'),
+        'mode_of_payment'  => $this->request->getPost('mode_of_payment_edit'),
         'cheque_date'      => $this->request->getPost('cheque_date'),
         'cheque_number'    => $this->request->getPost('cheque_number'),
         'drawen_bank'      => $this->request->getPost('drawen_bank'),

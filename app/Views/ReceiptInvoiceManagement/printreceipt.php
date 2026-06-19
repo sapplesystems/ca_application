@@ -61,14 +61,13 @@
             margin-top: 10px;
             font-size: 12px;
         }
-
          .print-actions {
         display: flex;
         justify-content: center;
         gap: 15px;
         margin: 25px 0;
     }
-     
+
           @media print {
         .print-actions {
             display: none !important;
@@ -138,8 +137,8 @@
                 after deduction of TDS Rs.
                 <b><?= number_format($receipt['tds_amount'], 2) ?></b>
                 /- for professional Services Rendered / Advance Against invoice
-                Raised vide Bill No <b><?= esc($invoice['invoice_no']) ?></b>
-                dated <b><?= date('d/m/Y', strtotime($invoice['invoice_date'])) ?></b>
+                Raised vide Bill No <b><?= esc($company['name']) ?></b>
+                dated <b><?= date('d/m/Y', strtotime($receipt['date'])) ?></b>
             </td>
         </tr>
     </table>
@@ -169,6 +168,7 @@
     }
 
    function cancelPrint() {
-    window.location.href = '<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>';
+    window.location.href = '<?= base_url('invoice-mangement'); ?>';
 }
 </script>
+

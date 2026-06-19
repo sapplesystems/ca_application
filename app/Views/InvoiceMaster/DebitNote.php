@@ -77,27 +77,21 @@
         </div>
 
         <table width="100%" border="0" cellpadding="6">
-
-            <tr>
-                <td align="right">
-                    <strong>Date :</strong><br>
-                    <input type="date" name="debit_date" value="<?= date('Y-m-d'); ?>" style="padding:6px; border:1px solid #bbb;" required>
-                </td>
-                
-            </tr>
-        </table>
-        <table width="100%" border="0" cellpadding="6">
             <tr>
                 <td width="60%">
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
-                <td width="40%" align="right">
+                <td width="20%" align="right">
                     <strong> Debit Note No. :</strong><br>
                     <input type="text"
                         name="debit_no"
                         value="<?= esc($debitNo); ?>"
                         style="width:180px; padding:4px;"
                         required>
+                </td>
+                <td  width="20%"align="right">
+                    <strong>Date :</strong><br>
+                    <input type="date" name="debit_date" value="<?= date('Y-m-d'); ?>" style="padding:6px; border:1px solid #bbb;" required>
                 </td>
             </tr>
 

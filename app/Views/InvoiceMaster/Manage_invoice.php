@@ -317,7 +317,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <input type="hidden" name="mode_of_payment" id="modeOfPaymentHidden">
+                            <input type="hidden" name="mode_of_payment_edit" id="modeOfPaymentHidden">
                         </table>
 
                         <!-- Cheque Fields -->
@@ -1450,7 +1450,7 @@ function togglePaymentUI() {
             return;
         }
 
-        window.open(`printReceipt/${receiptId}`);
+         window.location.href = `printReceipt/${receiptId}`;
     });
     document.getElementById("downloadPdfBtn").addEventListener("click", function() {
 

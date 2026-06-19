@@ -8,6 +8,9 @@ use App\Models\ClientModel;
 use App\Models\WorkMasterModel;
 use App\Models\CompanyMasterModel;
 use App\Models\InvoiceMasterModel;
+use App\Models\ReciptDetailsModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 class ReceiptInvoiceMangementController extends BaseController
@@ -228,5 +231,67 @@ public function saveReceipt()
         'success'    => true,
         'receipt_id' => $receiptId
     ]);
+}
+
+public function printReceipt($receipt_id)
+{
+    // print_r($receipt_id);exit;
+    $receiptModel = new ReciptDetailsModel();
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    $receipt = $receiptModel->find($receipt_id);
+    $company = $companyModel->find($receipt['company_id']);
+    $client  = $clientModel->find($receipt['client_id']);
+
+    return view('ReceiptInvoiceManagement/printreceipt', [
+        'receipt' => $receipt,
+        'company' => $company,
+        'client'  => $client
+    ]);
+}
+
+public function receiptPdf($receipt_id)
+{
+    //  print_r($receipt_id);exit;
+    $receiptModel = new ReciptDetailsModel();
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    // Fetch data
+    $receipt = $receiptModel->find($receipt_id);
+    if (!$receipt) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Receipt not found');
+    }
+    $company = $companyModel->find($receipt['company_id']);
+    $client  = $clientModel->find($receipt['client_id']);
+
+    // Load HTML view
+    $html = view('ReceiptInvoiceManagement/printreceipt', [
+        'receipt' => $receipt,
+        'company' => $company,
+        'client'  => $client
+    ]);
+
+    // Dompdf options
+    $options = new Options();
+    $options->set('defaultFont', 'DejaVu Sans');
+    $options->set('isRemoteEnabled', true);
+
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Download PDF
+    return $this->response
+        ->setHeader('Content-Type', 'application/pdf')
+        ->setHeader(
+            'Content-Disposition',
+            'attachment; filename="Receipt_' . $receipt['recipt_no'] . '.pdf"'
+        )
+        ->setBody($dompdf->output());
 }
 }

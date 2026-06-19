@@ -274,14 +274,14 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
     <table class="debitnotepdf-table">
         <tr>
             <th>SL No.</th>
-            <th>Details Of Expenses</th>
+            <th>Perticulars</th>
             <th>Amount (Rs)</th>
         </tr>
         <?php if (!empty($expenses)) : ?>
         <?php foreach ($expenses as $index => $exp) : ?>
         <tr>
             <td class="center"><?= $index + 1 ?></td>
-            <td class="debitnotepdf-text-left">
+            <td class="center">
                 <?= esc($exp['expense_description']) ?>
             </td>
             <td class="right">
@@ -297,7 +297,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
         <tr class="debitnotepdf-summary">
             <td class="center">A</td>
-            <td class="right">
+            <td class="center">
                 Total Recoverable Expenses
             </td>
             <td class="right"><?php echo $debitNote['total_recoverable_expenses']; ?></td>
@@ -307,13 +307,13 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
                 <tr >
                     <td></td>
-                    <td  class="right"><strong>CGST @ 9%</strong></td>
+                    <td  class="center"><strong>CGST @ 9%</strong></td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
                 </tr>
 
                 <tr>
                     <td></td>
-                    <td  class="right"><strong>SGST @ 9%</strong></td>
+                    <td  class="center"><strong>SGST @ 9%</strong></td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
                 </tr>
 
@@ -321,7 +321,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
                 <tr>
                     <td></td>
-                    <td class="right"><strong>IGST @ 18%</strong></td>
+                    <td class="center"><strong>IGST @ 18%</strong></td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.18, 2); ?></strong></td>
                 </tr>
 
@@ -336,26 +336,28 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
                     $taxAmount = $cgst + $sgst;
 
-                } else {
+                } else if ($debitNote['tax'] === 'igst')  {
 
                     $taxAmount = $amount * 18 / 100;
                 }
-
+                else{
+                    $taxAmount =0;
+                }
                 $grandTotal = $amount + $taxAmount;
             ?>
             <tr class="debitnotepdf-summary">
                 <td></td>
-                <td class="right"><strong>Total Amount</strong></td>
+                <td class="center"><strong>Total Amount</strong></td>
                 <td class="right"><strong><?php echo $grandTotal  ?></strong></td>
            </tr>
         <tr class="debitnotepdf-summary">
             <td class="center">B</td>
-            <td class="right">(-) Advances Received</td>
+            <td class="center">(-) Advances Received</td>
             <td class="right"><?php echo $debitNote['advance_amount']; ?></td>
         </tr>
         <tr class="debitnotepdf-summary">
             <td class="center">C</td>
-            <td class="right">Net Amount(A+B)</td>
+            <td class="center">Net Amount(A+B)</td>
             <td class="right"><?php echo $debitNote['total_amount']; ?></td>
         </tr>
 
