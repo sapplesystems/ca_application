@@ -1,6 +1,6 @@
 <div class="invoiceM-containerr">
     <div class="invoiceM-toolbar">
-        <div class="invoiceM-toolbar-title">List Of Generated Debit Note for <?php echo  $client['legal_name']?></div>
+        <div class="invoiceM-toolbar-title">List Of Generated Debit/Credit Note for <?php echo  $client['legal_name']?></div>
 
     </div>
 
@@ -50,7 +50,11 @@
                             <button type="button" class="delete-btn" title="Delete" data-id="<?= $debit['id'] ?>">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
-                        </td>
+                            <button type="button" class="printBtn btn btn-primary"
+        data-id="<?= $debit['id'] ?>">
+    Print
+</button>                   
+                          </td>
                         <?php endforeach; ?>
                     </tr>
 
@@ -67,5 +71,17 @@ document.addEventListener('click', function(e) {
             window.location.href = "<?= base_url('debits/delete/') ?>" + id;
         }
     }
+});
+document.querySelectorAll('.printBtn').forEach(function(button) {
+
+    button.addEventListener('click', function() {
+
+        let debitId = this.dataset.id;
+
+        window.location.href =
+            "<?= base_url('DebitNote/') ?>" + debitId;
+
+    });
+
 });
 </script>

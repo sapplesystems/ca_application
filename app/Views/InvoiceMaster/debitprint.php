@@ -145,7 +145,7 @@
 
 .debitnotepdf-sign{
     position: absolute;
-    bottom: 20px;
+    bottom: 50px;
     right: 10px;
     font-size: 16px;
     margin: 0;
@@ -156,8 +156,47 @@
 .right{
     text-align:right;
 }
-@media print {
+ .cancel-btn {
+        background: linear-gradient(135deg, #999, #777);
+        color: #fff;
+         margin-top: 10px;
+    }
 
+    .cancel-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+    .action-btn {
+        padding: 12px 28px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        letter-spacing: 0.5px;
+         margin-top: 30px;
+    }
+     .print-btn {
+        background: linear-gradient(135deg, #1f5d6b, #2f7f91);
+        color: #fff;
+    }
+
+    .print-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+@media print {
+    
+
+.cancel-btn {
+            display: none !important;
+        }
+        .print-btn
+        {
+            display: none !important;
+        }
     body {
         margin: 0;
         padding: 0;
@@ -166,7 +205,7 @@
     .debitnotepdf-invoice {
         width: 100% !important;
         max-width: 100% !important;
-        margin: 0 !important;
+        margin-right: 0 !important;
         padding: 10px !important;
         border: 1px solid #D3D3D3;
         box-sizing: border-box;
@@ -221,6 +260,7 @@
     text-align:center;
 }
 </style>
+
 <div class="debitnotepdf-invoice">
 
     <div class="debitnotepdf-header ">
@@ -398,12 +438,26 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
 </div>
 </div>
+  <center> 
+    <button class="action-btn print-btn" onclick="printInvoicePage()">
+        Print 
+    </button>
+     <button class="action-btn cancel-btn" onclick="cancelPrint()">
+        ✖ Cancel
+    </button></center> 
 <script>
 window.onload = function () {
     window.print();
 };
+ let isPrinting = false;
 
-// window.onafterprint = function () {
-//     window.location.href = "<?= base_url('invoice-mangement'); ?>";
-// };
+    function printInvoicePage() {
+        isPrinting = true;
+        window.print();
+    }
+
+function cancelPrint() {
+    window.location.href = "<?= base_url('DebitNoteList/' . $client['id']); ?>";
+}
+
 </script>
