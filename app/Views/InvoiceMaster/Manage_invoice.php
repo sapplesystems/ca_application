@@ -613,22 +613,22 @@ $invoice = (float) ($row['total_invoice_amount'] ?? 0);
                             <td class="invoice-amount centertext">
                                 <?= number_format($row['total_invoice_amount'], 2) ?>
                             </td>
-                            <td>
-                                <?php
-                                $receiptNos = [];
+                                                            <td class="centertext">
+                                    <?php
+                                    $receiptNos = [];
 
-                                foreach ($receipt as $rec) {
-                                    if ($rec['invoice_id'] == $row['id']) {
-                                        $receiptNos[] = $rec['date'];
+                                    foreach ($receipt as $rec) {
+                                        if ($rec['invoice_id'] == $row['id']) {
+                                            $receiptNos[] = date('d-m-Y', strtotime($rec['date']));
+                                        }
                                     }
-                                }
 
-                                echo !empty($receiptNos)
-                                    ? implode('<br>', $receiptNos)
-                                    : '-';
-                                ?>
-                            </td>
-                            <td>
+                                    echo !empty($receiptNos)
+                                        ? implode('<br>', $receiptNos)
+                                        : '-';
+                                    ?>
+                                </td>
+                            <td class="centertext">
                                 
                                 <?php
                                 $receiptNos = [];
@@ -644,7 +644,7 @@ $invoice = (float) ($row['total_invoice_amount'] ?? 0);
                                     : '-';
                                 ?>
                             </td>
-                            <td class="righttext"><?php
+                            <td class="centertext"><?php
 foreach ($receipt as $rec) {
     if ($rec['invoice_id'] == $row['id']) {
 
@@ -656,7 +656,7 @@ foreach ($receipt as $rec) {
     }
 }
 ?></td>
-                            <td class="righttext"><?php
+                            <td class="centertext"><?php
 foreach ($receipt as $rec) {
     if ($rec['invoice_id'] == $row['id']) {
 
@@ -668,7 +668,7 @@ foreach ($receipt as $rec) {
     }
 }
 ?></td>
-                                <td></td>
+                                <td class="centertext"></td>
                             <td class="running-amount righttext"><strong><?= number_format($runningBalance, 2) ?></strong></td>
                             
                             <td class="no-print">
@@ -727,27 +727,27 @@ foreach ($receipt as $rec) {
             <td>-</td>
 
             <!-- Receipt Date -->
-            <td>
+            <td class="centertext">
                 <?= date('d-m-Y', strtotime($company['date'])) ?>
             </td>
 
             <!-- Receipt No -->
-            <td>
+            <td class="centertext">
                 <?= esc($company['recipt_no'] ?? '-') ?>
             </td>
 
             <!-- TDS -->
-            <td><?= ((float)($company['tds_amount'] ?? 0) > 0)
+            <td class="centertext"><?= ((float)($company['tds_amount'] ?? 0) > 0)
     ? number_format($company['tds_amount'], 2)
     : '-' ?></td>
 
             <!-- Received -->
-            <td><?= ((float)($company['bill_amount'] ?? 0) > 0)
+            <td class="centertext"><?= ((float)($company['bill_amount'] ?? 0) > 0)
     ? number_format($company['bill_amount'], 2)
     : '-' ?></td>
 
             <!-- Debit/Credit Amount -->
-            <td class="righttext">
+            <td class="centertext">
             
             </td>
 
@@ -782,12 +782,12 @@ foreach ($receipt as $rec) {
             <td>-</td>
 
             <!-- Receipt Date -->
-            <td>
+            <td class="centertext">
                 <?= date('d-m-Y', strtotime($d['date'])) ?>
             </td>
 
             <!-- Receipt No -->
-            <td>
+            <td class="centertext">
                 <?php if ($d['note_type'] === 'debit'): ?>
         <?= esc($d['debit_no'] ?? '-') ?>
     <?php elseif ($d['note_type'] === 'credit'): ?>
@@ -798,13 +798,13 @@ foreach ($receipt as $rec) {
             </td>
 
             <!-- TDS -->
-            <td class="righttext">-</td>
+            <td class="centertext">-</td>
 
             <!-- Received -->
-            <td class="righttext">-</td>
+            <td class="centertext">-</td>
 
             <!-- Debit/Credit Amount -->
-           <td class="debit-credit-amount righttext">
+           <td class="debit-credit-amount centertext">
     <?= ((float)($d['total_amount'] ?? 0) > 0)
         ? number_format($d['total_amount'], 2)
         : '-' ?>
@@ -964,6 +964,10 @@ foreach ($receipt as $rec) {
             .print-widthinvoiceno {
     width: 13% !important;
 }
+    .centertext
+    {
+    text-align:center !important;
+                }
     .print-widthinvoiceno
     {
     text-align:center !important;
