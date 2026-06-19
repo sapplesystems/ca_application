@@ -525,7 +525,7 @@
                     <th style="width: 8%" class="print-widtreciptno centertext">Receipt No</th>
                     <th style="width: 8%" class="print-widtreciptamount centertext">TDS Amount</th>
                     <th style="width: 8%" class="print-widtreceivedamount centertext">Received Amount</th>
-                    <th style="width: 8%" class="print-widtdebitcfreditnote centertext">Debit/Credit Note</th>
+                    <th style="width: 8%" class="print-widtdebitcfreditnote centertext">Debit/Credit Note Amount</th>
                     <th style="width: 8%" class="print-widtrunningamount centertext">Running Amount</th>
                     <th style="width: 17%" class="no-print centertext">Action</th>
 
@@ -964,6 +964,10 @@ foreach ($receipt as $rec) {
             .print-widthinvoiceno {
     width: 13% !important;
 }
+    .centertext
+    {
+    text-align:center !important;
+                }
     .print-widthinvoiceno
     {
     text-align:center !important;
