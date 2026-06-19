@@ -1,6 +1,8 @@
 <style>
     body{
     font-family: 'Cambria', serif!important;
+    margin: 0;
+    padding: 0;
 }
      @font-face {
     font-family: 'Cambria';
@@ -10,13 +12,15 @@
     font-weight: normal;
     font-style: normal;
 }
+
+/* ====== MAIN CONTAINER - YAHAN CHANGE KIYA HAI ====== */
 .debitnotepdf-invoice {
-    width: 100%;
+    width: 94% !important;
     max-width: 750px;
     box-sizing: border-box;
-    margin: 20px auto;
+    margin: 20px auto !important;
     border: 1px solid #D3D3D3;
-    padding: 10px;
+    padding: 20px 18px !important;  /* LEFT-RIGHT SAME PADDING */
     font-family: 'Cambria', serif !important;
     background: #fff;
 }
@@ -24,20 +28,23 @@
 .debitnotepdf-header {
     width: 100%;
     display: table;
+    table-layout: fixed;
 }
 
 .debitnotepdf-company-details {
     display: table-cell;
-    width: 75%;
+    width: 70%;
     vertical-align: top;
     font-size:14px;
+    padding-right: 10px;
 }
 
 .debitnotepdf-logo {
     display: table-cell;
-    width: 25%;
+    width: 30%;
     text-align: right;
     vertical-align: top;
+    padding-left: 10px;
 }
 
 .debitnotepdf-title-note {
@@ -56,8 +63,24 @@
 }
 
 .debitnotepdf-info-row {
-    display: flex;
-    justify-content: space-between;
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+.debitnotepdf-left {
+    display: table-cell;
+    width: 60%;
+    vertical-align: top;
+    padding-right: 10px;
+}
+
+.debitnotepdf-right {
+    display: table-cell;
+    width: 40%;
+    vertical-align: top;
+    text-align: left;
+    padding-left: 10px;
 }
 
 .debitnotepdf-note {
@@ -79,8 +102,7 @@
 
 .debitnotepdf-table th,
 .debitnotepdf-table td {
-    padding: 6px;
-    /* text-align: center; */
+    padding: 6px 8px;
 }
 
 .debitnotepdf-table th {
@@ -98,23 +120,10 @@
 .debitnotepdf-bank {
     font-size: 13px;
     margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.debitnotepdf-sign {
-    text-align: right;
-}
-
-.debitnotepdf-terms {
-    font-size: 12px;
-    margin-top: 15px;
-}
-.debitnotepdf-bank{
-    width: 100%;
-    border: 1px solid #BDBDBD;
     display: table;
     table-layout: fixed;
+    width: 100%;
+    border: 1px solid #BDBDBD;
     min-height: 170px;
 }
 
@@ -122,7 +131,7 @@
     width: 50%;
     display: table-cell;
     vertical-align: top;
-    padding: 10px;
+    padding: 12px 12px;
     border-right: 1px solid #BDBDBD;
     line-height: 24px;
 }
@@ -132,7 +141,7 @@
     display: table-cell;
     vertical-align: top;
     position: relative;
-    padding: 10px;
+    padding: 12px 12px;
     height: 170px;
 }
 
@@ -141,20 +150,24 @@
     font-size: 14px;
     vertical-align: top;
     font-weight:bold;
+    /* margin-top:-5px; */
 }
 
 .debitnotepdf-sign{
     position: absolute;
     bottom: 50px;
-    right: 10px;
-    font-size: 16px;
+    right: 12px;
+    font-size: 15px;
     margin: 0;
     padding: 0;
     font-weight: bold;
-    
 }
+
 .right{
     text-align:right;
+}
+.center{
+    text-align:center;
 }
  .cancel-btn {
         background: linear-gradient(135deg, #999, #777);
@@ -187,77 +200,120 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 14px rgba(0,0,0,0.2);
     }
-@media print {
-    
 
-.cancel-btn {
-            display: none !important;
-        }
-        .print-btn
-        {
-            display: none !important;
-        }
+@media print {
+    .cancel-btn {
+        display: none !important;
+    }
+    .print-btn {
+        display: none !important;
+    }
+    
     body {
-        margin: 0;
-        padding: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
     }
 
+    /* ====== PRINT MEIN BHI YAHI CHANGE ====== */
     .debitnotepdf-invoice {
         width: 100% !important;
         max-width: 100% !important;
-        margin-right: 0 !important;
-        padding: 10px !important;
-        border: 1px solid #D3D3D3;
-        box-sizing: border-box;
+        margin: 0 auto !important;
+        padding: 20px 18px !important;  /* LEFT-RIGHT EQUAL */
+        border: 1px solid #D3D3D3 !important;
+        box-sizing: border-box !important;
     }
 
-    img {
+    .debitnotepdf-header {
+        display: table !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    .debitnotepdf-company-details {
+        display: table-cell !important;
+        width: 70% !important;
+        vertical-align: top !important;
+        padding-right: 10px !important;
+    }
+
+    .debitnotepdf-logo {
+        display: table-cell !important;
+        width: 30% !important;
+        text-align: right !important;
+        vertical-align: top !important;
+        padding-left: 10px !important;
+    }
+
+    .debitnotepdf-logo img {
         max-width: 150px !important;
         height: auto !important;
     }
 
-    .debitnotepdf-header,
-    .debitnotepdf-info-row,
+    .debitnotepdf-info-row {
+        display: table !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    .debitnotepdf-left {
+        display: table-cell !important;
+        width: 60% !important;
+        vertical-align: top !important;
+        padding-right: 10px !important;
+    }
+
+    .debitnotepdf-right {
+        display: table-cell !important;
+        width: 40% !important;
+        vertical-align: top !important;
+        text-align: left !important;
+        padding-left: 10px !important;
+    }
+
     .debitnotepdf-bank {
-        display: table;
-        width: 100%;
+        display: table !important;
+        table-layout: fixed !important;
+        width: 100% !important;
+        border: 1px solid #BDBDBD !important;
+        min-height: 170px !important;
     }
 
-    .debitnotepdf-header > div,
-    .debitnotepdf-info-row > div,
-    .debitnotepdf-bank > div {
-        display: table-cell;
-        vertical-align: top;
+    .debitnotepdf-bank-left {
+        display: table-cell !important;
+        width: 50% !important;
+        vertical-align: top !important;
+        padding: 12px 12px !important;
+        border-right: 1px solid #BDBDBD !important;
     }
-}
-.debitnotepdf-company-name
-{
-    margin-top:-10px;
-}
-.debitnotepdf-info-row {
-    width: 100%;
-    display: table;
-    table-layout: fixed;
-}
 
-.debitnotepdf-left {
-    display: table-cell;
-    width: 70%;
-    vertical-align: top;
-}
+    .debitnotepdf-bank-right {
+        display: table-cell !important;
+        width: 50% !important;
+        vertical-align: top !important;
+        position: relative !important;
+        padding: 12px 12px !important;
+        height: 170px !important;
+    }
 
-.debitnotepdf-right {
-    display: table-cell;
-    width: 30%;
-    vertical-align: top;
-    text-align: left;
-    padding-left: 40px;
-}
-.right{
-    text-align:right;
-}
-.center{
-    text-align:center;
+    .debitnotepdf-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    .debitnotepdf-table th,
+    .debitnotepdf-table td {
+        padding: 6px 8px !important;
+    }
+
+    .debitnotepdf-sign {
+        right: 12px !important;
+    }
+
+    * {
+        box-sizing: border-box !important;
+    }
 }
 </style>
 
@@ -313,9 +369,9 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
 
     <table class="debitnotepdf-table">
         <tr>
-            <th>SL No.</th>
-            <th>Particulars</th>
-            <th>Amount (Rs)</th>
+            <th style="width:12%;">SL No.</th>
+            <th style="width:58%;">Particulars</th>
+            <th style="width:30%;">Amount (Rs)</th>
         </tr>
         <?php if (!empty($expenses)) : ?>
         <?php foreach ($expenses as $index => $exp) : ?>
@@ -340,7 +396,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
             <td class="center">
                 Total Recoverable Expenses
             </td>
-            <td class="right"><?php echo $debitNote['total_recoverable_expenses']; ?></td>
+            <td class="right"><?php echo number_format($debitNote['total_recoverable_expenses'], 2); ?></td>
         </tr>
         
                         <?php if ($debitNote['tax'] === 'cgst_sgst'): ?>
@@ -388,17 +444,17 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
             <tr class="debitnotepdf-summary">
                 <td></td>
                 <td class="center"><strong>Total Amount</strong></td>
-                <td class="right"><strong><?php echo $grandTotal  ?></strong></td>
+                <td class="right"><strong><?php echo number_format($grandTotal, 2); ?></strong></td>
            </tr>
         <tr class="debitnotepdf-summary">
             <td class="center">B</td>
             <td class="center">(-) Advances Received</td>
-            <td class="right"><?php echo $debitNote['advance_amount']; ?></td>
+            <td class="right"><?php echo number_format($debitNote['advance_amount'], 2); ?></td>
         </tr>
         <tr class="debitnotepdf-summary">
             <td class="center">C</td>
             <td class="center">Net Amount(A+B)</td>
-            <td class="right"><?php echo $debitNote['total_amount']; ?></td>
+            <td class="right"><?php echo number_format($debitNote['total_amount'], 2); ?></td>
         </tr>
 
     </table>
@@ -411,7 +467,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
   <div class="debitnotepdf-bank">
 
     <div class="debitnotepdf-bank-left">
-        <b>Banker's Details</b><br>
+        <b>Bank Details</b><br>
 
         <?= esc($company['name']); ?><br>
 
