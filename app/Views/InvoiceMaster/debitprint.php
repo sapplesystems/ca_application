@@ -314,7 +314,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
     <table class="debitnotepdf-table">
         <tr>
             <th>SL No.</th>
-            <th>Perticulars</th>
+            <th>Particulars</th>
             <th>Amount (Rs)</th>
         </tr>
         <?php if (!empty($expenses)) : ?>
@@ -446,9 +446,7 @@ style="width:180px; height:auto; display:block; margin-left:auto;">
         ✖ Cancel
     </button></center> 
 <script>
-window.onload = function () {
-    window.print();
-};
+
  let isPrinting = false;
 
     function printInvoicePage() {

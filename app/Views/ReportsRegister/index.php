@@ -424,52 +424,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
                tr.innerHTML = `
 
-                    <td style="padding:8px; border:1px solid #ccc;">
+                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
                         ${formatDate(row.invoice_date)}
                     </td>
 
-                    <td style="padding:8px; border:1px solid #ccc;">
+                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
                         ${row.invoice_no}
                     </td>
 
-                    <td style="padding:8px; border:1px solid #ccc;">
+                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
                         ${row.party_name || '-'}
                     </td>
 
-                    <td style="padding:8px; border:1px solid #ccc;">
+                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
                         ${row.party_gstin || '-'}
                     </td>
 
-                    <td style="padding:8px; border:1px solid #ccc;">
+                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
                         ${row.hsn_code || '-'}
                     </td>
 
-                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">
                         ${parseFloat(row.service_value || 0).toFixed(2)}
                     </td>
 
                     ${row.tax_apply_name === 'cgst_sgst'
-                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:center;">
                                 ${parseFloat(9/100*row.service_value || 0).toFixed(2)}
                            </td>`
-                        : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`
+                        : `<td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td>`
                     }
 
                     ${row.tax_apply_name === 'cgst_sgst'
-                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:center;">
                                 ${parseFloat(9/100*row.service_value || 0).toFixed(2)}
                            </td>`
-                        : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`
+                        : `<td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td>`
                     }
 
                     ${row.tax_apply_name === 'igst'
-                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                        ? `<td style="padding:8px; border:1px solid #ccc;text-align:center;">
                                 ${parseFloat(18/100*row.service_value || 0).toFixed(2)}
                            </td>`
-                        : `<td style="padding:8px; border:1px solid #ccc; text-align:right;">-</td>`
+                        : `<td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td>`
                     }
 
-                    <td style="padding:8px; border:1px solid #ccc; text-align:right;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">
                         ${parseFloat(row.grand_total || 0).toFixed(2)}
                     </td>
 
@@ -596,14 +596,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function exportToExcel(filename = 'report.xlsx'){
+    function exportToExcel(filename = 'SaleReport.xlsx'){
         const table = document.querySelector('#searchResultsSection table');
         if (!table) return;
         const wb = XLSX.utils.table_to_book(table, {sheet: 'Sheet1'});
         XLSX.writeFile(wb, filename);
     }
 
-    function exportToPDF(filename = 'report.pdf'){
+    function exportToPDF(filename = 'SaleReport.pdf'){
         const table = document.querySelector('#searchResultsSection table');
         if (!table) return;
         html2canvas(table, {scale:2}).then(canvas => {

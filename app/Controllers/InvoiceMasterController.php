@@ -58,7 +58,7 @@ class InvoiceMasterController extends BaseController
         $invoiceModel = new InvoiceMasterModel();
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
         $receiptModel=new ReciptDetailsModel();
-        $receipt=$receiptModel->select('*')->where('client_id', $id)->findAll();
+        $receipt=$receiptModel->select('*')->findAll();
         $companyReceipt = $receiptModel->select('*')->where('company_id IS NOT NULL')->findAll();   
         $debitModel=new DebitNotes();
         $debit=$debitModel->select('total_amount,debit_no,note_type,date,credit_no')->where('client_id', $id)->findAll();
