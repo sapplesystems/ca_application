@@ -1,3 +1,16 @@
+<style>
+    .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;      /* same width */
+    height: 40px;      /* same height */
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+    </style>
+
 <div class="invoiceM-containerr">
     <div class=" inv-header-main">
        <h1 class="inv-title-main">
@@ -210,11 +223,18 @@
 
             <div class="debitnotepdf-bank">
             <div>
-            <b>Banker's Details</b><br />
-            <?php echo $company['bank_name']; ?><br />
-            Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-            IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
-            </div>
+          <b>Bank Details</b><br />
+
+           <?= esc($company['name']); ?><br>
+
+        Bank Name : <?php echo $company['bank_name']; ?><br>
+
+        A/C.No. : <?php echo $company['bank_ac_no']; ?><br>
+
+        IFSC Code : <?php echo $company['bank_ifsc']; ?><br>
+
+        Branch : <?php echo $company['branch_address']; ?>
+        </div>
         </div>
 
             <div>
@@ -232,9 +252,9 @@
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Credit</button>
+                <button class="Gvoice-btn Gvoice-btn-success action-btn" id="saveInvoiceBtn">Save Credit</button>
                <a href="javascript:history.back()"
-                    class="Gvoice-btn Gvoice-btn-danger">
+                    class="Gvoice-btn Gvoice-btn-danger action-btn">
                         Cancel
                 </a>
             </div>
@@ -294,12 +314,12 @@
             .then(data => {
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: 'Credit Saved!',
-                        text: 'Your Credit has been saved successfully.',
+                        title: 'Credit Vote Saved!',
+                        text: 'Your Credit note has been saved successfully.',
                         icon: 'success',
                         showDenyButton: true,
                         showCancelButton: true,
-                        confirmButtonText: 'Print Credit',
+                        confirmButtonText: 'Print Credit Note',
                         denyButtonText: 'Download PDF',
                         cancelButtonText: 'Close'
                     }).then((result) => {
@@ -316,12 +336,12 @@
                             iframe.contentWindow.print();
 
                             Swal.fire({
-                                    title: 'Credit Saved!',
-                                    text: 'Your Credit has been saved successfully.',
+                                    title: 'Credit Note Saved!',
+                                    text: 'Your Credit note  has been saved successfully.',
                                     icon: 'success',
                                     showDenyButton: true,
                                     showCancelButton: true,
-                                    confirmButtonText: 'Print Credit',
+                                    confirmButtonText: 'Print Credit Note ',
                                     denyButtonText: 'Download PDF',
                                     cancelButtonText: 'Close'
                                         });
@@ -331,22 +351,8 @@
                             window.open('<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
                                 '_blank');
                         } else if (result.isDismissed) {
-                            // Check if user clicked cancel
-                            // Optional: redirect to invoice list
-                            Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Do you want to go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, Redirect',
-                                cancelButtonText: 'No'
-                            }).then((res) => {
-                                if (res.isConfirmed) {
                                     window.location.href =
                                         '<?= site_url("InvoiceManagment") ?>';
-                                }
-                                // else just close popup
-                            });
                         }
                     });
                 } else {

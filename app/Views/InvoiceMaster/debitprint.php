@@ -155,7 +155,7 @@
 
 .debitnotepdf-sign{
     position: absolute;
-    bottom: 50px;
+    bottom: 20px;
     right: 12px;
     font-size: 15px;
     margin: 0;
