@@ -662,12 +662,43 @@ public function storeDebitNote()
     }
 }
 
-   public function saveDebitNote()
+  public function saveDebitNote()
 {
-    // print_r($this->request->getPost()); exit;
-    // Load models
     $DebitModel   = new DebitNotes();
     $ExpenseModel = new ExpenseModel();
+
+    $debitNo  = $this->request->getPost('debit_no');
+    $creditNo = $this->request->getPost('credit_no');
+
+    // Check Duplicate Debit No
+    if (!empty($debitNo)) {
+
+        $exists = $DebitModel
+            ->where('debit_no', $debitNo)
+            ->first();
+
+        if ($exists) {
+            return $this->response->setJSON([
+                'status'  => 'duplicate',
+                'message' => 'Duplicate Debit Note Number is not valid.'
+            ]);
+        }
+    }
+
+    // Check Duplicate Credit No
+    if (!empty($creditNo)) {
+
+        $exists = $DebitModel
+            ->where('credit_no', $creditNo)
+            ->first();
+
+        if ($exists) {
+            return $this->response->setJSON([
+                'status'  => 'duplicate',
+                'message' => 'Duplicate Credit Note Number is not valid.'
+            ]);
+        }
+    }
 
     // Collect debit note data
     $data = [

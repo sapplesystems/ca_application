@@ -631,19 +631,61 @@ searchResultsBody.appendChild(totalRow);
         XLSX.writeFile(wb, filename);
     }
 
-    function exportToPDF(filename = 'SaleReport.pdf'){
-        const table = document.querySelector('#searchResultsSection table');
-        if (!table) return;
-        html2canvas(table, {scale:2}).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new window.jspdf.jsPDF('l','pt','a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(filename);
-        });
-    }
+   function exportToPDF(filename = 'SaleReport.pdf') {
+    const table = document.querySelector('#searchResultsSection table');
+
+    if (!table) return;
+
+    html2canvas(table, {
+        scale: 2,
+        useCORS: true
+    }).then(canvas => {
+
+        const imgData = canvas.toDataURL('image/png');
+
+        const pdf = new window.jspdf.jsPDF('l', 'pt', 'a4');
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(
+            imgData,
+            'PNG',
+            0,
+            position,
+            imgWidth,
+            imgHeight
+        );
+
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+
+            position = heightLeft - imgHeight;
+
+            pdf.addPage();
+
+            pdf.addImage(
+                imgData,
+                'PNG',
+                0,
+                position,
+                imgWidth,
+                imgHeight
+            );
+
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save(filename);
+    });
+}
 
     if (confirmExport) {
         confirmExport.addEventListener('click', function () {

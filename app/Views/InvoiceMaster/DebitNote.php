@@ -357,6 +357,16 @@
             })
             .then(response => response.json())
             .then(data => {
+                if (data.status === 'duplicate') {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Duplicate Entry',
+                        text: data.message
+                    });
+
+                    return;
+                }
                 if (data.status === 'success') {
                     Swal.fire({
                         title: 'Debit Note Saved!',
