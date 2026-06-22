@@ -234,15 +234,21 @@ function toRoman($number)
                 </tbody>
             </table>
 
-            <div class="debitnotepdf-bank">
-                <div>
-                    <b>Banker's Details</b><br />
-                    Bank name:
-                    <?php echo $company['bank_name']; ?><br />
-                    Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-                    IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
-                </div>
-            </div>
+              <div class="debitnotepdf-bank">
+            <div>
+          <b>Bank Details</b><br />
+
+           <?= esc($company['name']); ?><br>
+
+        Bank Name : <?php echo $company['bank_name']; ?><br>
+
+        A/C.No. : <?php echo $company['bank_ac_no']; ?><br>
+
+        IFSC Code : <?php echo $company['bank_ifsc']; ?><br>
+
+        Branch : <?php echo $company['branch_address']; ?>
+        </div>
+        </div>
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
