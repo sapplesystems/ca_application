@@ -27,6 +27,18 @@ function toRoman($number)
     return $result;
 }
 ?>
+<style>
+    .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;      /* same width */
+    height: 40px;      /* same height */
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+    </style>
 
 
 
@@ -252,9 +264,9 @@ function toRoman($number)
 
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success"
-                    id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit' : 'Save Credit'; ?></button>
-                <a href="javascript:history.back()" class="Gvoice-btn Gvoice-btn-danger">
+                <button class="Gvoice-btn Gvoice-btn-success action-btn"
+                    id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit Note' : 'Save Credit Note'; ?></button>
+                <a href="javascript:history.back()" class="Gvoice-btn Gvoice-btn-danger action-btn">
                     Cancel
                 </a>
             </div>

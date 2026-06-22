@@ -252,7 +252,7 @@
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success action-btn" id="saveInvoiceBtn">Save Credit</button>
+                <button class="Gvoice-btn Gvoice-btn-success action-btn" id="saveInvoiceBtn">Save Credit Note</button>
                <a href="javascript:history.back()"
                     class="Gvoice-btn Gvoice-btn-danger action-btn">
                         Cancel

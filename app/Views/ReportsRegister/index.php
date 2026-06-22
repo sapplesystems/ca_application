@@ -418,71 +418,99 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
 
-            results.forEach(row => {
+           let totalTaxable = 0;
+let totalCGST = 0;
+let totalSGST = 0;
+let totalIGST = 0;
+let totalGross = 0;
 
-                const tr = document.createElement('tr');
+results.forEach(row => {
 
-               tr.innerHTML = `
+    let serviceValue = parseFloat(row.service_value || 0);
+    let cgst = 0;
+    let sgst = 0;
+    let igst = 0;
 
-                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
-                        ${formatDate(row.invoice_date)}
-                    </td>
+    if (row.tax_apply_name === 'cgst_sgst') {
+        cgst = (serviceValue * 9) / 100;
+        sgst = (serviceValue * 9) / 100;
+    }
 
-                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
-                        ${row.invoice_no}
-                    </td>
+    if (row.tax_apply_name === 'igst') {
+        igst = (serviceValue * 18) / 100;
+    }
 
-                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
-                        ${row.party_name || '-'}
-                    </td>
+    totalTaxable += serviceValue;
+    totalCGST += cgst;
+    totalSGST += sgst;
+    totalIGST += igst;
+    totalGross += parseFloat(row.grand_total || 0);
 
-                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
-                        ${row.party_gstin || '-'}
-                    </td>
+    const tr = document.createElement('tr');
 
-                    <td style="padding:8px; border:1px solid #ccc;text-align:center;">
-                        ${row.hsn_code || '-'}
-                    </td>
+    tr.innerHTML = `
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${formatDate(row.invoice_date)}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${row.invoice_no}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${row.party_name || '-'}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${row.party_gstin || '-'}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${row.hsn_code || '-'}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${serviceValue.toFixed(2)}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${cgst ? cgst.toFixed(2) : '-'}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${sgst ? sgst.toFixed(2) : '-'}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${igst ? igst.toFixed(2) : '-'}
+        </td>
+        <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+            ${parseFloat(row.grand_total || 0).toFixed(2)}
+        </td>
+    `;
 
-                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">
-                        ${parseFloat(row.service_value || 0).toFixed(2)}
-                    </td>
+    searchResultsBody.appendChild(tr);
+});
 
-                    ${row.tax_apply_name === 'cgst_sgst'
-                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:center;">
-                                ${parseFloat(9/100*row.service_value || 0).toFixed(2)}
-                           </td>`
-                        : `<td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td>`
-                    }
+// Total Row
+const totalRow = document.createElement('tr');
+totalRow.style.fontWeight = 'bold';
+totalRow.style.backgroundColor = '#f2f2f2';
 
-                    ${row.tax_apply_name === 'cgst_sgst'
-                        ? `<td style="padding:8px; border:1px solid #ccc; text-align:center;">
-                                ${parseFloat(9/100*row.service_value || 0).toFixed(2)}
-                           </td>`
-                        : `<td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td>`
-                    }
+totalRow.innerHTML = `
+    <td colspan="5" style="padding:8px;border:1px solid #ccc;text-align:right;">
+        Total
+    </td>
+    <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+        ${totalTaxable.toFixed(2)}
+    </td>
+    <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+        ${totalCGST.toFixed(2)}
+    </td>
+    <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+        ${totalSGST.toFixed(2)}
+    </td>
+    <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+        ${totalIGST.toFixed(2)}
+    </td>
+    <td style="padding:8px;border:1px solid #ccc;text-align:center;">
+        ${totalGross.toFixed(2)}
+    </td>
+`;
 
-                    ${row.tax_apply_name === 'igst'
-                        ? `<td style="padding:8px; border:1px solid #ccc;text-align:center;">
-                                ${parseFloat(18/100*row.service_value || 0).toFixed(2)}
-                           </td>`
-                        : `<td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td>`
-                    }
-
-                    <td style="padding:8px; border:1px solid #ccc; text-align:center;">
-                        ${parseFloat(row.grand_total || 0).toFixed(2)}
-                    </td>
-
-                `;
-                // add searchable datasets for client-side filtering
-                tr.dataset.partyName = (row.party_name || '').toString().toLowerCase();
-                tr.dataset.invoiceNo = (row.invoice_no || '').toString().toLowerCase();
-                tr.dataset.gstin = (row.party_gstin || '').toString().toLowerCase();
-                tr.dataset.hsn = (row.hsn_code || '').toString().toLowerCase();
-
-                searchResultsBody.appendChild(tr);
-
-            });
+searchResultsBody.appendChild(totalRow);
 
             // bind client-side filter to result search input
             const resultSearch = document.getElementById('resultSearch');

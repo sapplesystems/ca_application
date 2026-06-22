@@ -36,7 +36,7 @@
                         </td>
                         <td><?= $debit['legal_name'] ?></td>
                         <td><?= $debit['company_name'] ?></td>
-                        <td><?= ucfirst(esc($debit['note_type'])) ?></td>
+                        <td><?= ucfirst(esc($debit['note_type'])) ?> Note</td>
                         <td> <?= esc($debit['date']) ?></td>
                         <td> <?= esc($debit['total_amount']) ?></td>
                         <td><?= esc($debit['advance_amount']) ?></td>
@@ -51,9 +51,9 @@
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                             <button type="button" class="printBtn btn btn-primary"
-        data-id="<?= $debit['id'] ?>">
-    Print
-</button>                   
+                                    data-id="<?= $debit['id'] ?>">
+                                Print
+                            </button>                   
                           </td>
                         <?php endforeach; ?>
                     </tr>
