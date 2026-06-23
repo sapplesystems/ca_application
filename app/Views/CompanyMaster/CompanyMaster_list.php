@@ -113,6 +113,7 @@
                                 <th>Registered Office</th>
                                 <th>Head Office</th>
                                 <th>Email</th>
+                                <th>Website</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -124,10 +125,11 @@
                                 <td><input type="checkbox" /></td>
                                 <td><?= esc($row['type_of_company']) ?></td>
                                 <td><?= esc($row['name']) ?></td>
-                                <td><?= esc($row['date_of_incorp']) ?></td>
+                                <td><?= !empty($row['date_of_incorp']) ? date('d-m-Y', strtotime($row['date_of_incorp'])) : '' ?></td>
                                 <td><?= esc($row['registered_office']) ?></td>
                                 <td><?= esc($row['head_office']) ?></td>
                                 <td><?= esc($row['email']) ?></td>
+                                <td><?= esc($row['website']) ?></td>
                                 <td>
 
                                     <div class="toggle <?= $row['status'] == 0 ? 'inactive' : '' ?>"

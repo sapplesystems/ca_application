@@ -57,17 +57,23 @@ class ClientMasterController extends BaseController
                 $html .= '</div></div>';
 
                 // Company Category / Subcategory
-                $html .= '<div><label>Company Category</label><select name="company_category" class="select">';
+               $html .= '<div><label>Company Category</label><select name="company_category" class="select">';
                 $html .= '<option value="">Select category</option>';
-                $html .= '<option value="Category1"' . ($client['company_category'] == 'Category1' ? ' selected' : '') . '>Category1</option>';
-                $html .= '<option value="Category2"' . ($client['company_category'] == 'Category2' ? ' selected' : '') . '>Category2</option>';
+                $html .= '<option value="Private Limited"' . ($client['company_category'] == 'Private Limited' ? ' selected' : '') . '>Private Limited</option>';
+                $html .= '<option value="Public Limited"' . ($client['company_category'] == 'Public Limited' ? ' selected' : '') . '>Public Limited</option>';
+                $html .= '<option value="LLP"' . ($client['company_category'] == 'LLP' ? ' selected' : '') . '>LLP</option>';
+                $html .= '<option value="Partnership"' . ($client['company_category'] == 'Partnership' ? ' selected' : '') . '>Partnership</option>';
+                $html .= '<option value="Trust-&-Society"' . ($client['company_category'] == 'Trust-&-Society' ? ' selected' : '') . '>Trust & Society</option>';
+                $html .= '<option value="OPC"' . ($client['company_category'] == 'OPC' ? ' selected' : '') . '>OPC</option>';
+                $html .= '<option value="Individual"' . ($client['company_category'] == 'Individual' ? ' selected' : '') . '>Individual</option>';
+                $html .= '<option value="Proprietorship"' . ($client['company_category'] == 'Proprietorship' ? ' selected' : '') . '>Proprietorship</option>';
                 $html .= '</select></div>';
 
-                $html .= '<div><label>Company Sub-Category</label><select name="company_sub_category" class="select">';
-                $html .= '<option value="">Select sub-category</option>';
-                $html .= '<option value="Sub1"' . ($client['company_sub_category'] == 'Sub1' ? ' selected' : '') . '>Sub1</option>';
-                $html .= '<option value="Sub2"' . ($client['company_sub_category'] == 'Sub2' ? ' selected' : '') . '>Sub2</option>';
-                $html .= '</select></div>';
+                // $html .= '<div><label>Company Sub-Category</label><select name="company_sub_category" class="select">';
+                // $html .= '<option value="">Select sub-category</option>';
+                // $html .= '<option value="Sub1"' . ($client['company_sub_category'] == 'Sub1' ? ' selected' : '') . '>Sub1</option>';
+                // $html .= '<option value="Sub2"' . ($client['company_sub_category'] == 'Sub2' ? ' selected' : '') . '>Sub2</option>';
+                // $html .= '</select></div>';
 
                 // Registered / Corporate Office
                 $html .= '<div class="form-row-full"><label>Registered Office</label>';
@@ -196,6 +202,7 @@ class ClientMasterController extends BaseController
             'payment_terms'            => $this->request->getPost('payment_terms'),
             'gst_state'               => $this->request->getPost('gst_state'),
             'email'                    => $this->request->getPost('email'),
+            'status'                   => 1,
         ];
 
         $result = $clientModel->insert($data);
