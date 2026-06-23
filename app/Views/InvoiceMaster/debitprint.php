@@ -20,7 +20,7 @@
     box-sizing: border-box;
     margin: 20px auto !important;
     border: 1px solid #D3D3D3;
-    padding: 20px 18px !important;  /* LEFT-RIGHT SAME PADDING */
+    padding: 5px 0px !important;  /* LEFT-RIGHT SAME PADDING */
     font-family: 'Cambria', serif !important;
     background: #fff;
 }
@@ -29,6 +29,7 @@
     width: 100%;
     display: table;
     table-layout: fixed;
+    padding: 5px 10px;
 }
 
 .debitnotepdf-company-details {
@@ -59,13 +60,14 @@
 
 .debitnotepdf-info {
     font-size: 13px;
-    line-height: 1.6;
+    /* line-height: 1.6; */
 }
 
 .debitnotepdf-info-row {
     width: 100%;
     display: table;
     table-layout: fixed;
+    padding: 5px 10px;
 }
 
 .debitnotepdf-left {
@@ -85,6 +87,7 @@
 
 .debitnotepdf-note {
     font-size: 13px;
+    padding: 0px 5px;
 }
 
 .debitnotepdf-table {
@@ -124,16 +127,15 @@
     table-layout: fixed;
     width: 100%;
     border: 1px solid #BDBDBD;
-    min-height: 170px;
+    /* min-height: 170px; */
 }
 
 .debitnotepdf-bank-left{
     width: 50%;
     display: table-cell;
     vertical-align: top;
-    padding: 12px 12px;
+    padding: 0px 5px;
     border-right: 1px solid #BDBDBD;
-    line-height: 24px;
 }
 
 .debitnotepdf-bank-right{
@@ -141,8 +143,8 @@
     display: table-cell;
     vertical-align: top;
     position: relative;
-    padding: 12px 12px;
-    height: 170px;
+
+    /* height: 170px; */
 }
 
 .debitnotepdf-company-name{
@@ -150,14 +152,15 @@
     font-size: 14px;
     vertical-align: top;
     font-weight:bold;
-    /* margin-top:-5px; */
+    padding:0px 10px;
+    
 }
 
 .debitnotepdf-sign{
     position: absolute;
-    bottom: 50px;
-    right: 12px;
-    font-size: 15px;
+    bottom: 5px;
+    right: 10px;
+    font-size: 13px;
     margin: 0;
     padding: 0;
     font-weight: bold;
@@ -220,7 +223,7 @@
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 auto !important;
-        padding: 20px 18px !important;  /* LEFT-RIGHT EQUAL */
+        padding: 5px 0px !important;  /* LEFT-RIGHT EQUAL */
         border: 1px solid #D3D3D3 !important;
         box-sizing: border-box !important;
     }
@@ -255,6 +258,7 @@
         display: table !important;
         width: 100% !important;
         table-layout: fixed !important;
+        padding: 5px 10px;
     }
 
     .debitnotepdf-left {
@@ -277,14 +281,14 @@
         table-layout: fixed !important;
         width: 100% !important;
         border: 1px solid #BDBDBD !important;
-        min-height: 170px !important;
+        /* min-height: 170px !important; */
     }
 
     .debitnotepdf-bank-left {
         display: table-cell !important;
         width: 50% !important;
         vertical-align: top !important;
-        padding: 12px 12px !important;
+        padding: 0px 5px !important;
         border-right: 1px solid #BDBDBD !important;
     }
 
@@ -294,7 +298,7 @@
         vertical-align: top !important;
         position: relative !important;
         padding: 12px 12px !important;
-        height: 170px !important;
+        /* height: 170px !important; */
     }
 
     .debitnotepdf-table {
@@ -306,9 +310,10 @@
     .debitnotepdf-table td {
         padding: 6px 8px !important;
     }
+   
 
     .debitnotepdf-sign {
-        right: 12px !important;
+        right: 10px !important;
     }
 
     * {
@@ -334,7 +339,7 @@
         <div class="debitnotepdf-logo">
            <img src="<?= base_url('public/uploads/company_logo/' . $company['logo']); ?>" 
 alt="Company Logo"
-style="width:180px; height:auto; display:block; margin-left:auto;">
+style="width:180px; height:auto; display:block;">
         </div>
     </div>
 
