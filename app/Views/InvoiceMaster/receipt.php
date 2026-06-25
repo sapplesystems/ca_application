@@ -266,7 +266,9 @@
             </tr>
             <tr>
                 <td><b>Mode Of Payment :</b></td>
-                <td colspan="3"><?= esc($receipt['mode_of_payment']) ?></td>
+                <td colspan="3"><?= $receipt['mode_of_payment'] === 'Online'
+                    ? 'Online Transfer'
+                    : esc($receipt['mode_of_payment']) ?></td>
             </tr>
               <?php
         $formatter = new NumberFormatter('en_IN', NumberFormatter::SPELLOUT);

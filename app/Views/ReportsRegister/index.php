@@ -695,7 +695,7 @@ searchResultsBody.appendChild(totalRow);
     ws['!cols'] = [
         { wch: 15 },
         { wch: 20 },
-        { wch: 30 },
+        { wch: 100 },
         { wch: 20 },
         { wch: 15 },
         { wch: 15 },
