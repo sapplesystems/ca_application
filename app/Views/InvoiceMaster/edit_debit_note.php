@@ -27,6 +27,18 @@ function toRoman($number)
     return $result;
 }
 ?>
+<style>
+    .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;      /* same width */
+    height: 40px;      /* same height */
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+    </style>
 
 
 
@@ -51,35 +63,13 @@ function toRoman($number)
                     Email: <?= esc($company['email'] ?? ''); ?><br>
                     GSTIN: <?= esc($company['gstin'] ?? ''); ?>
                 </td>
-
-                <td align="right">
-                    <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
-                </td>
             </tr>
         </table>
 
         <hr>
-        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-            <?= ($debitNote['note_type'] === 'debit') ? 'Debit Note' : 'Credit Note'; ?>
+        <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
+            <?= ($debitNote['note_type'] === 'debit') ? 'DEBIT NOTE' : 'CREDIT NOTE'; ?>
         </div>
-
-        <table width="100%" border="0" cellpadding="6">
-            <tr>
-                <td width="60%">
-                    <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <strong>Category Of Service :</strong> CONSULTANCY
-                </td>
-                <td align="right">
-                    <strong>Date :</strong><br>
-                    <?= esc($debitNote['date']) ?>
-                </td>
-            </tr>
-        </table>
         <table width="100%" border="0" cellpadding="6">
             <tr>
                 <td width="60%">
@@ -95,6 +85,10 @@ function toRoman($number)
                     <input type="text" name="credit_no" value="<?= esc($debitNote['credit_no']); ?>"
                         style="width:180px; padding:4px;" required>
                     <?php endif; ?>
+                </td>
+                 <td  width ="20%" align="right">
+                    <strong>Date :</strong><br>
+                    <input type="date" name="debit_date" value="<?= !empty($debitNote['date']) ? date('Y-m-d', strtotime($debitNote['date'])) : ''; ?>"style="padding:6px; border:1px solid #bbb;" required>
                 </td>
             </tr>
 
@@ -120,7 +114,7 @@ function toRoman($number)
                 <thead>
                     <tr style="background:#0b5c7d; color:#fff;">
                         <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
-                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Details Of Expenses</th>
+                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Particulars</th>
                         <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
                     </tr>
                 </thead>
@@ -130,7 +124,7 @@ function toRoman($number)
                     <!-- Add Expense Button Row -->
                     <tr>
                         <td></td>
-                        <td>Add : Expenses Recoverable</td>
+                        <td>Expenses Recoverable</td>
                         <td>
                             <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
                                 ➕ Add Expense
@@ -227,15 +221,21 @@ function toRoman($number)
                 </tbody>
             </table>
 
-            <div class="debitnotepdf-bank">
-                <div>
-                    <b>Banker's Details</b><br />
-                    Bank name:
-                    <?php echo $company['bank_name']; ?><br />
-                    Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-                    IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
-                </div>
-            </div>
+              <div class="debitnotepdf-bank">
+            <div>
+          <b>Bank Details</b><br />
+
+           <?= esc($company['name']); ?><br>
+
+        Bank Name : <?php echo $company['bank_name']; ?><br>
+
+        A/C.No. : <?php echo $company['bank_ac_no']; ?><br>
+
+        IFSC Code : <?php echo $company['bank_ifsc']; ?><br>
+
+        Branch : <?php echo $company['branch_address']; ?>
+        </div>
+        </div>
 
             <div>
                 <label name="term_condition"><strong>Terms & Conditions:</strong></label>
@@ -252,14 +252,14 @@ function toRoman($number)
 
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="debit_date" value="<?= esc(date('Y-m-d')) ?>">
+            <!-- <input type="hidden" name="debit_date" value="<?= esc(date('Y-m-d')) ?>"> -->
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success"
-                    id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit' : 'Save Credit'; ?></button>
-                <a href="javascript:history.back()" class="Gvoice-btn Gvoice-btn-danger">
+                <button class="Gvoice-btn Gvoice-btn-success action-btn"
+                    id="saveInvoiceBtn"><?= ($debitNote['note_type'] === 'debit') ? 'Save Debit Note' : 'Save Credit Note'; ?></button>
+                <a href="javascript:history.back()" class="Gvoice-btn Gvoice-btn-danger action-btn">
                     Cancel
                 </a>
             </div>
@@ -273,70 +273,112 @@ function toRoman($number)
 
     <script>
     document.getElementById('debitForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const form = this;
+    const form = this;
 
-        fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
+    // Get note type from PHP
+    const noteType = '<?= strtolower($debitNote['note_type']) ?>'; // debit | credit
+    const noteLabel = noteType === 'credit' ? 'Credit Note' : 'Debit Note';
 
-                if (data.status === 'success') {
+    const printUrl = noteType === 'credit'
+        ? '<?= site_url("DebitNote/") ?>'
+        : '<?= site_url("DebitNote/") ?>';
 
-                    Swal.fire({
-                        title: data.mode === 'update' ?
-                            'Debit Updated!' : 'Debit Saved!',
-                        text: 'Debit Note processed successfully.',
-                        icon: 'success',
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: 'Print Invoice',
-                        denyButtonText: 'Download PDF',
-                        cancelButtonText: 'Close'
-                    }).then(result => {
+    const pdfUrl = noteType === 'credit'
+        ? '<?= site_url("DebitNotePDF/") ?>'
+        : '<?= site_url("DebitNotePDF/") ?>';
 
-                        if (result.isConfirmed) {
-                            window.open(
-                                '<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                                '_blank'
-                            );
-                        } else if (result.isDenied) {
-                            window.open(
-                                '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
-                                '_blank'
-                            );
-                        } else if (result.isDismissed) {
-                            Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes',
-                                cancelButtonText: 'No'
-                            }).then(res => {
-                                if (res.isConfirmed) {
-                                    window.location.href =
-                                        '<?= site_url("InvoiceManagment") ?>';
-                                }
-                            });
-                        }
-                    });
+    fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
 
-                } else {
-                    Swal.fire('Error!', data.message || 'Something went wrong.', 'error');
-                }
-            })
-            .catch(() => {
-                Swal.fire('Error!', 'Network or server error', 'error');
-            });
+            if (data.status === 'success') {
 
-    });
+                Swal.fire({
+                    title: data.mode === 'update'
+                        ? `${noteLabel} Updated!`
+                        : `${noteLabel} Saved!`,
+                    text: `${noteLabel} Note processed successfully.`,
+                    icon: 'success',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: `Print ${noteLabel}`,
+                    denyButtonText: 'Download PDF',
+                    cancelButtonText: 'Close'
+                }).then((result) => {
+
+                    // PRINT
+                    if (result.isConfirmed) {
+
+                        let iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = printUrl + data.invoice_id;
+
+                        document.body.appendChild(iframe);
+
+                        iframe.onload = function() {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+
+                            // Optional: show popup again after print
+                            iframe.contentWindow.onafterprint = function() {
+
+                                Swal.fire({
+                                    title: data.mode === 'update'
+                                        ? `${noteLabel} Updated!`
+                                        : `${noteLabel} Saved!`,
+                                    text: `${noteLabel} Note processed successfully.`,
+                                    icon: 'success',
+                                    showDenyButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: `Print ${noteLabel}`,
+                                    denyButtonText: 'Download PDF',
+                                    cancelButtonText: 'Close'
+                                });
+                            };
+                        };
+
+                    }
+
+                    // PDF DOWNLOAD
+                    else if (result.isDenied) {
+
+                        window.location.href =
+                            pdfUrl + data.invoice_id;
+
+                    }
+
+                });
+
+            } else {
+
+                Swal.fire(
+                    'Error!',
+                    data.message || 'Something went wrong.',
+                    'error'
+                );
+
+            }
+
+        })
+        .catch(() => {
+
+            Swal.fire(
+                'Error!',
+                'Network or server error',
+                'error'
+            );
+
+        });
+
+});
 
     function numberToWords(num) {
         if (num === 0) return 'ZERO';

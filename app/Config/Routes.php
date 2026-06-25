@@ -47,6 +47,7 @@ $routes->get('invoice/edit/(:num)', 'InvoiceMasterController::edit/$1', ['filter
 $routes->post('updateInvoice/(:num)', 'InvoiceMasterController::updateInvoice/$1',  ['filter' => 'adminPermission']);
 $routes->delete('invoice/delete/(:num)', 'InvoiceMasterController::delete/$1', ['filter' => 'adminPermission']);
 $routes->get('invoice/receipt/(:num)', 'InvoiceMasterController::receipt/$1', ['filter' => 'adminPermission']);
+$routes->get('invoice/getReceiptByInvoice/(:num)','InvoiceMasterController::getReceiptByInvoice/$1', ['filter' => 'adminPermission']);
 $routes->post('debit-note/store','InvoiceMasterController::storeDebitNote', ['filter' => 'adminPermission']);
 $routes->post('/savedebit','InvoiceMasterController::saveDebitNote', ['filter' => 'adminPermission']);
 $routes->get('/DebitNote/(:num)', 'InvoiceMasterController::debitNote/$1', ['filter' => 'adminPermission']);
@@ -67,8 +68,14 @@ $routes->post('client/updateOpeningBalance', 'InvoiceMasterController::updateOpe
 
 //Receipt Invoice Mangement Routes
 $routes->get('/invoice-mangement', 'ReceiptInvoiceMangementController::index', ['as' => 'receipt.invoice.index', 'filter' => 'adminPermission']);
-$routes->post('invoice-mangement/preview', 'ReceiptInvoiceMangementController::preview');
-$routes->post('invoice-mangement/search', 'ReceiptInvoiceMangementController::search');
+$routes->post('invoice-mangement/preview', 'ReceiptInvoiceMangementController::preview', ['filter' => 'adminPermission']);
+$routes->post('invoice-mangement/search', 'ReceiptInvoiceMangementController::search', ['filter' => 'adminPermission']);
+$routes->post( 'invoice-mangement/getReceiptDetails','ReceiptInvoiceMangementController::getReceiptDetails', ['filter' => 'adminPermission']);
+$routes->post('invoice-mangement/getReceiptNumber','ReceiptInvoiceMangementController::getReceiptNumber', ['filter' => 'adminPermission']);
+$routes->post('invoice-mangement/saveReceipt', 'ReceiptInvoiceMangementController::saveReceipt', ['filter' => 'adminPermission']);
+$routes->get('invoice-mangement/printReceipt/(:num)','ReceiptInvoiceMangementController::printReceipt/$1', ['filter' => 'adminPermission']);
+$routes->get('invoice-mangement/receiptPdf/(:num)', 'ReceiptInvoiceMangementController::receiptPdf/$1', ['filter' => 'adminPermission']);
+
 
 // Reports & Registers Routes
 $routes->get('reports_registers', 'ReportsRegisterController::index', ['as' => 'report.register.index', 'filter' => 'adminPermission']);

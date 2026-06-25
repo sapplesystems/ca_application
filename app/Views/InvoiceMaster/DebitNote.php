@@ -1,4 +1,57 @@
-<div class="invoiceM-containerr">
+<style>
+    .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;      /* same width */
+    height: 40px;      /* same height */
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+@media print {
+
+    @page{
+        size:A4 portrait;
+        margin:10px;
+    }
+
+    body{
+        margin:0;
+        padding:0;
+    }
+
+    .invoiceM-containerr{
+        width:100% !important;
+        overflow:hidden !important;
+        box-sizing:border-box;
+    }
+
+    table{
+        width:100% !important;
+        border-collapse:collapse !important;
+        table-layout:fixed !important;
+    }
+
+    td, th{
+        word-break:break-word;
+        font-size:11px !important;
+    }
+
+    .invoice-table input{
+        width:100% !important;
+        box-sizing:border-box !important;
+    }
+
+    button,
+    .inv-back-btn-main,
+    .Gvoice-btn{
+        display:none !important;
+    }
+}
+
+</style><div class="invoiceM-containerr">
     <div class=" inv-header-main">
        <h1 class="inv-title-main">
     <span id="noteTitle">Debit Note</span>
@@ -22,15 +75,15 @@
                     GSTIN: <?= esc($company['gstin'] ?? ''); ?>
                 </td>
 
-                <td align="right">
+                <!-- <td align="right">
                     <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
-                </td>
+                </td> -->
             </tr>
         </table>
 
         <hr>
-        <div style="text-align:center; font-weight:bold; margin-bottom:10px;">
-            Debit Note
+        <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
+            DEBIT NOTE
         </div>
 
         <table width="100%" border="0" cellpadding="6">
@@ -38,30 +91,17 @@
                 <td width="60%">
                     <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
                 </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <strong>Category Of Service :</strong> CONSULTANCY
-                </td>
-                <td align="right">
-                    <strong>Date :</strong><br>
-                    <?= date('d-m-Y'); ?>
-                </td>
-            </tr>
-        </table>
-        <table width="100%" border="0" cellpadding="6">
-            <tr>
-                <td width="60%">
-                    <strong>PAN:</strong> <?= esc($company['pan'] ?? ''); ?>
-                </td>
-                <td width="40%" align="right">
+                <td width="20%" align="right">
                     <strong> Debit Note No. :</strong><br>
                     <input type="text"
                         name="debit_no"
                         value="<?= esc($debitNo); ?>"
                         style="width:180px; padding:4px;"
                         required>
+                </td>
+                <td  width="20%"align="right">
+                    <strong>Date :</strong><br>
+                    <input type="date" name="debit_date" value="<?= date('Y-m-d'); ?>" style="padding:6px; border:1px solid #bbb;" required>
                 </td>
             </tr>
 
@@ -71,13 +111,19 @@
             <table width="100%" border="0" cellpadding="6">
                 <tr>
                     <td>
-                        <strong>Bill To,</strong><br><br>
+                        <strong>Bill To,</strong><br>
 
                         <strong>Name :</strong>
                         <?= esc($client['legal_name']); ?><br>
 
                         <strong>Address :</strong>
                         <?= esc($client['registered_office']); ?>
+                        <br>
+                        <strong>Email :</strong>
+                        <?= esc($client['email']); ?>
+                        <br>
+                        <strong>GSTIN :</strong>
+                        <?= esc($client['gstin']); ?>
                     </td>
                 </tr>
             </table>
@@ -87,7 +133,7 @@
                 <thead>
                     <tr style="background:#0b5c7d; color:#fff;">
                         <th style="width:5%; padding:8px; border:1px solid #ccc;">SL No.</th>
-                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Details Of Expenses</th>
+                        <th style="width:70%; padding:8px; border:1px solid #ccc;">Particulars</th>
                         <th style="width:25%; padding:8px; border:1px solid #ccc;">Amount (Rs)</th>
                     </tr>
                 </thead>
@@ -97,7 +143,7 @@
                     <!-- Add Expense Button Row -->
                     <tr>
                         <td></td>
-                        <td>Add : Expenses Recoverable</td>
+                        <td>Expenses Recoverable</td>
                         <td>
                             <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
                                 ➕ Add Expense
@@ -135,7 +181,8 @@
                         <td><input type="text" class="expense" style="width:85%; text-align:right;"
                                 name="expense_amount[]">
                              <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
-
+                        </td>
+                    </tr>
                     <!-- Hidden Template Row -->
                     <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
                         <td style="text-align:center;"></td>
@@ -156,6 +203,36 @@
                             <span id="expenseTotalDisplay">0</span>
                         </td>
                     </tr>
+                    <input type="hidden" id="taxType" name="tax_type" value="<?= esc($tax) ?>">
+                    <?php if ($tax === 'cgst_sgst'): ?>
+                        <!-- CGST Row -->
+                        <tr id="cgstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">CGST @ 9%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="cgstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+
+                        <!-- SGST Row -->
+                        <tr id="sgstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">SGST @ 9%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="sgstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php if ($tax === 'igst'): ?>
+                        <tr id="igstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">IGST @ 18%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="igstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
 
                     <tr>
                         <td style="padding:8px; border:1px solid #ccc;"></td>
@@ -191,10 +268,17 @@
 
              <div class="debitnotepdf-bank">
         <div>
-          <b>Banker's Details</b><br />
-          <?php echo $company['bank_name']; ?><br />
-          Ac.No. : <?php echo $company['bank_ac_no']; ?><br />
-          IFSC Code : <?php echo $company['bank_ifsc']; ?><br />
+          <b>Bank Details</b><br />
+
+           <?= esc($company['name']); ?><br>
+
+        Bank Name : <?php echo $company['bank_name']; ?><br>
+
+        A/C.No. : <?php echo $company['bank_ac_no']; ?><br>
+
+        IFSC Code : <?php echo $company['bank_ifsc']; ?><br>
+
+        Branch : <?php echo $company['branch_address']; ?>
         </div>
         
       </div>
@@ -211,13 +295,12 @@
             <input type="hidden" name="net_amount" id="netAmountInput" value="0">
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="debit_date" value="<?= date('Y-m-d') ?>">
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
             <div style="margin-top:20px; text-align:center;">
-                <button class="Gvoice-btn Gvoice-btn-success" id="saveInvoiceBtn">Save Debit</button>
+                <button class="Gvoice-btn Gvoice-btn-success action-btn" id="saveInvoiceBtn">Save Debit Note</button>
                <a href="javascript:history.back()"
-                    class="Gvoice-btn Gvoice-btn-danger">
+                    class="Gvoice-btn Gvoice-btn-danger action-btn">
                         Cancel
                 </a>
             </div>
@@ -233,6 +316,38 @@
     document.getElementById('debitForm').addEventListener('submit', function(e) {
         e.preventDefault(); // prevent normal form submit
 
+        const descriptions = document.querySelectorAll('input[name="expense_description[]"]');
+        const amounts = document.querySelectorAll('input[name="expense_amount[]"]');
+
+        let hasExpense = false;
+
+        for (let i = 0; i < descriptions.length; i++) {
+
+            // hidden row ignore
+            if (descriptions[i].closest('tr').style.display === 'none') {
+                continue;
+            }
+
+            if (
+                descriptions[i].value.trim() !== '' &&
+                amounts[i].value.trim() !== '' &&
+                parseFloat(amounts[i].value) > 0
+            ) {
+                hasExpense = true;
+                break;
+            }
+        }
+
+        if (!hasExpense) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validation Error',
+                text: 'Please add at least one expense with amount.'
+            });
+
+            return;
+        }
+
         const form = this;
 
         // Submit form via AJAX
@@ -242,42 +357,57 @@
             })
             .then(response => response.json())
             .then(data => {
+                if (data.status === 'duplicate') {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Duplicate Entry',
+                        text: data.message
+                    });
+
+                    return;
+                }
                 if (data.status === 'success') {
                     Swal.fire({
-                        title: 'Debit Saved!',
-                        text: 'Your Debit has been saved successfully.',
+                        title: 'Debit Note Saved!',
+                        text: 'Your Debit note has been saved successfully.',
                         icon: 'success',
                         showDenyButton: true,
                         showCancelButton: true,
-                        confirmButtonText: 'Print Debit',
+                        confirmButtonText: 'Print Debit Note',
                         denyButtonText: 'Download PDF',
                         cancelButtonText: 'Close'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Print invoice
-                            window.open('<?= site_url("DebitNote/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDenied) {
-                            // Download PDF
-                            window.open('<?= site_url("DebitNotePDF/") ?>' + data.invoice_id,
-                                '_blank');
-                        } else if (result.isDismissed) {
-                            // Check if user clicked cancel
-                            // Optional: redirect to invoice list
+
+                        let iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = '<?= site_url("DebitNote/") ?>' + data.invoice_id;
+
+                        document.body.appendChild(iframe);
+
+                        iframe.onload = function () {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+
                             Swal.fire({
-                                title: 'Redirect?',
-                                text: 'Do you want to go back to invoice list?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, Redirect',
-                                cancelButtonText: 'No'
-                            }).then((res) => {
-                                if (res.isConfirmed) {
+                                    title: 'Debit Note Saved!',
+                                    text: 'Your Debit note has been saved successfully.',
+                                    icon: 'success',
+                                    showDenyButton: true,
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Print Debit Note',
+                                    denyButtonText: 'Download PDF',
+                                    cancelButtonText: 'Close'
+                                        });
+                        };
+                    }else if (result.isDenied) {
+                            // Download PDF
+                           window.location.href = '<?= site_url("DebitNotePDF/") ?>' + data.invoice_id;
+                        } else if (result.isDismissed) {
                                     window.location.href =
                                         '<?= site_url("InvoiceManagment") ?>';
-                                }
-                                // else just close popup
-                            });
+                              
                         }
                     });
                 } else {
@@ -310,30 +440,60 @@
         return convert(num).trim();
     }
 
-    function calculateTotals() {
-        let expenseTotal = 0;
+function calculateTotals() {
+    let expenseTotal = 0;
 
-        document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
-            .forEach(input => {
-                expenseTotal += parseFloat(input.value) || 0;
-            });
+    document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
+        .forEach(input => {
+            expenseTotal += parseFloat(input.value) || 0;
+        });
 
-        const advance = parseFloat(document.getElementById('advance').value) || 0;
-        const netAmount = expenseTotal - advance;
+    const advance = parseFloat(document.getElementById('advance').value) || 0;
 
-        /* ===== DISPLAY ===== */
-        document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalDisplay').innerText = expenseTotal.toFixed(2);
-        document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
+    const igstField = document.getElementById('igstAmount');
+    const cgstField = document.getElementById('cgstAmount');
+    const sgstField = document.getElementById('sgstAmount');
 
-        /* ===== BACKEND (HIDDEN INPUTS) ===== */
-        document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalInput').value = expenseTotal.toFixed(2);
-        document.getElementById('netAmountInput').value = netAmount.toFixed(2);
+    let taxTotal = 0;
 
-        document.getElementById('amountInWords').innerText =
-            numberToWords(Math.round(netAmount));
+    if (igstField && igstField.offsetParent !== null) {
+
+        // IGST selected
+        taxTotal = expenseTotal * 18 / 100;
+
+    } else if (
+        cgstField &&
+        sgstField &&
+        cgstField.offsetParent !== null &&
+        sgstField.offsetParent !== null
+    ) {
+
+        // CGST + SGST selected
+        taxTotal = (expenseTotal * 9 / 100) + (expenseTotal * 9 / 100);
+
     }
+
+    let grandTotalWithTax = expenseTotal + taxTotal;
+
+    /* ===== FIXED NET AMOUNT ===== */
+    let netAmount = grandTotalWithTax - advance;
+
+    /* ===== DISPLAY ===== */
+    document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
+    document.getElementById('grandTotalDisplay').innerText = grandTotalWithTax.toFixed(2);
+    document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
+
+    /* ===== BACKEND (HIDDEN INPUTS) ===== */
+    document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
+    document.getElementById('grandTotalInput').value = grandTotalWithTax.toFixed(2);
+    document.getElementById('netAmountInput').value = netAmount.toFixed(2);
+
+    document.getElementById('amountInWords').innerText =
+        numberToWords(Math.round(netAmount));
+
+    /* ===== UPDATE GST FIELDS ===== */
+    calculateGST(expenseTotal);
+}
 
 
     // Add input event listener for dynamic rows
@@ -346,27 +506,26 @@
 
     // Call whenever a new row is added
     function addExpenseRow() {
-        const tbody = document.getElementById('expenseBody');
-        const hiddenRow = document.getElementById('hiddenRow');
+    const tbody = document.getElementById('expenseBody');
+    const hiddenRow = document.getElementById('hiddenRow');
 
-        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
+    const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
 
-        // Clone hidden row
-        const newRow = hiddenRow.cloneNode(true);
-        newRow.style.display = '';
-        newRow.id = '';
-        newRow.cells[0].textContent = existingRows + 1; // simple counting
+    // Clone hidden row
+    const newRow = hiddenRow.cloneNode(true);
+    newRow.style.display = '';
+    newRow.id = '';
+    newRow.cells[0].textContent = existingRows + 1;
 
-        // Insert before totals row
-        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
-        tbody.insertBefore(newRow, totalsRow);
+    // Insert before hidden template row
+    tbody.insertBefore(newRow, hiddenRow);
 
-        // Attach input listener to the new input
-        attachInputListeners();
+    // Attach input listener to the new input
+    attachInputListeners();
 
-        // Recalculate totals
-        calculateTotals();
-    }
+    // Recalculate totals
+    calculateTotals();
+}
 
     // Initial setup
     attachInputListeners();
@@ -441,26 +600,29 @@
         return result;
     }
 
+    function calculateGST() {
 
-    function addExpenseRow() {
-        const tbody = document.getElementById('expenseBody');
-        const hiddenRow = document.getElementById('hiddenRow');
+    let amount = parseFloat(
+        document.getElementById('expenseTotalDisplay').innerText || 0
+    );
 
-        // Count existing visible expense rows
-        const existingRows = tbody.querySelectorAll('tr.expense-row:not([style*="display:none"])').length;
+    // CGST + SGST
+    let cgst = amount * 9 / 100;
+    let sgst = amount * 9 / 100;
 
-        // Clone the hidden row
-        const newRow = hiddenRow.cloneNode(true);
-        newRow.style.display = ''; // make it visible
-        newRow.id = ''; // remove id to avoid duplicates
+    // IGST
+    let igst = amount * 18 / 100;
 
-        // Set the first cell to dynamic Roman numeral
-        newRow.cells[0].textContent = toRoman(existingRows + 1); // starts from i, ii, iii, ...
+    // Fill values if fields exist
+    let cgstEl = document.getElementById('cgstAmount');
+    let sgstEl = document.getElementById('sgstAmount');
+    let igstEl = document.getElementById('igstAmount');
 
-        // Append before totals row
-        const totalsRow = tbody.querySelector('tr[style*="background:#0b5c7d"]');
-        tbody.insertBefore(newRow, totalsRow);
-    }
+    if (cgstEl) cgstEl.value = cgst.toFixed(2);
+    if (sgstEl) sgstEl.value = sgst.toFixed(2);
+    if (igstEl) igstEl.value = igst.toFixed(2);
+}
+
     document.addEventListener('click', function (e) {
     if (!e.target.classList.contains('delete-row')) return;
 
@@ -525,4 +687,5 @@ function removeRow(row, tbody) {
 
     calculateTotals();
 }
+
     </script>

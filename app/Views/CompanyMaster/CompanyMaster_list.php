@@ -113,6 +113,7 @@
                                 <th>Registered Office</th>
                                 <th>Head Office</th>
                                 <th>Email</th>
+                                <th>Website</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -124,10 +125,11 @@
                                 <td><input type="checkbox" /></td>
                                 <td><?= esc($row['type_of_company']) ?></td>
                                 <td><?= esc($row['name']) ?></td>
-                                <td><?= esc($row['date_of_incorp']) ?></td>
+                                <td><?= !empty($row['date_of_incorp']) ? date('d-m-Y', strtotime($row['date_of_incorp'])) : '' ?></td>
                                 <td><?= esc($row['registered_office']) ?></td>
                                 <td><?= esc($row['head_office']) ?></td>
                                 <td><?= esc($row['email']) ?></td>
+                                <td><?= esc($row['website']) ?></td>
                                 <td>
 
                                     <div class="toggle <?= $row['status'] == 0 ? 'inactive' : '' ?>"
@@ -304,6 +306,34 @@
                                     <p class="cmg-help-text">
                                         Define how invoice numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
                                     </p>
+                                </div>
+
+                                  <div class="cmg-field">
+                                    <label class="cmg-label">Debit Format</label>
+                                    <input type="text" class="cmg-input" name="debit_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $debitNo ?>">
+                                </div>
+
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Credit Format </label>
+                                    <input type="text" class="cmg-input" name="credit_format" placeholder="e.g. ORG/BRANCH/FY/SEQ"  value="<?= $creditNo ?>">
+                                </div>
+                                 <div class="cmg-field">
+                                    <label class="cmg-label">Cash Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="cash_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ"  value="<?= $cashReceiptNo ?>">
+                                </div>
+
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Cheque Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="cheque_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $chequeReceiptNo ?>">
+                                </div>
+                                 <div class="cmg-field">
+                                    <label class="cmg-label">TDS Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="tds_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $tdsReceiptNo ?>">
+                                </div>
+
+                                <div class="cmg-field">
+                                    <label class="cmg-label">Online Receipt Format</label>
+                                    <input type="text" class="cmg-input" name="online_receipt_format" placeholder="e.g. ORG/BRANCH/FY/SEQ" value="<?= $onlineReceiptNo ?>">
                                 </div>
 
                                 <!-- PAN / GSTIN / IEC -->
@@ -1073,6 +1103,151 @@ if (phoneInput.length) {
         .catch(error => console.error("Error:", error));
     }
 }
+const rowsPerPage = 10;
+let currentPage = 1;
+
+// Sort by Company Name column (3rd column)
+function sortTable() {
+
+    const tbody = document.querySelector("#example tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    rows.sort((a, b) => {
+
+        const textA = a.cells[2].textContent.trim().toLowerCase();
+        const textB = b.cells[2].textContent.trim().toLowerCase();
+
+        return textA.localeCompare(textB);
+
+    });
+
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function getRows() {
+    return Array.from(document.querySelectorAll("#example tbody tr"))
+        .filter(row => row.dataset.match !== "false");
+}
+
+function showPage(page) {
+
+    const rows = getRows();
+
+    rows.forEach((row, index) => {
+
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        row.style.display =
+            (index >= start && index < end) ? "" : "none";
+
+    });
+
+    updatePagination();
+}
+
+function updatePagination() {
+
+    const rows = getRows();
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    const pagination = document.querySelector(".pagination");
+
+    let html = `<div class="page-btn" id="prevBtn">&laquo;</div>`;
+
+   if (totalPages <= 2) {
+
+    for (let i = 1; i <= totalPages; i++) {
+        html += `
+            <div class="page-btn ${i === currentPage ? 'active' : ''}"
+                 data-page="${i}">
+                ${i}
+            </div>
+        `;
+    }
+
+} else {
+
+    html += `
+        <div class="page-btn active" data-page="${currentPage}">
+            ${currentPage}
+        </div>
+    `;
+
+    if (currentPage < totalPages) {
+        html += `
+            <div class="page-btn" data-page="${totalPages}">
+                ${totalPages}
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="page-btn" data-page="${totalPages - 1}">
+                ${totalPages - 1}
+            </div>
+        `;
+    }
+}
+
+    html += `<div class="page-btn" id="nextBtn">&raquo;</div>`;
+
+    pagination.innerHTML = html;
+
+    // Previous
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    };
+
+    // Next
+    document.getElementById("nextBtn").onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    };
+
+    // Page Click
+    document.querySelectorAll("[data-page]").forEach(btn => {
+        btn.onclick = () => {
+            currentPage = parseInt(btn.dataset.page);
+            showPage(currentPage);
+        };
+    });
+}
+// Search
+document.querySelector(".search-input").addEventListener("input", function () {
+
+    const term = this.value.toLowerCase();
+
+    document.querySelectorAll("#example tbody tr").forEach(row => {
+
+        const text = row.textContent.toLowerCase();
+
+        if (term === "" || text.includes(term)) {
+            row.dataset.match = "true";
+        } else {
+            row.dataset.match = "false";
+            row.style.display = "none";
+        }
+    });
+
+    currentPage = 1;
+    showPage(currentPage);
+
+});
+
+// Init
+sortTable();
+
+document.querySelectorAll("#example tbody tr").forEach(row => {
+    row.dataset.match = "true";
+});
+
+showPage(1);
   
         </script>
     </body>

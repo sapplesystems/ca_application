@@ -2,6 +2,14 @@
     .print-only {
         display: none !important;
     }
+    .centertext
+    {
+        text-align:center !important;
+    }
+    .righttext
+    {
+        text-align:right !important;
+    }
 
     @font-face {
         font-family: 'Cambria';
@@ -11,6 +19,7 @@
         font-style: normal;
         font-display: swap;
     }
+    
 </style><!-------------------------------- Modal for genrate invoice------------------------------------->
 <!-- Modal1 -->
 <div class="modal fade" id="GenrateVoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -175,7 +184,7 @@
                             </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody id="receiptTableBody">
                             <?php if (!empty($receipt)) : ?>
                                 <?php foreach ($receipt as $rec) : ?>
 
@@ -199,7 +208,8 @@
                                                 data-drawen_bank="<?= esc($rec['drawen_bank']) ?>"
                                                 data-bill_amount="<?= esc($rec['bill_amount']) ?>"
                                                 data-tds_amount="<?= esc($rec['tds_amount']) ?>"
-                                                data-invoice-id="<?= esc($rec['invoice_id']) ?>">
+                                                data-invoice-id="<?= esc($rec['invoice_id']) ?>"
+                                                data-bank_name="<?= esc($rec['bank_name']) ?>">
                                             </i>
                                             <i class="fa-solid fa-trash delete-btn" title="Delete" data-id="<?= $rec['id'] ?>">
                                         </td>
@@ -250,6 +260,7 @@
                                 E-Mail : <span id="companyEmail"></span><br />
                             </div>
                         </div>
+                        
 
                         <!-- Title -->
                         <div class="receiptnote-title title">Receipt Note</div>
@@ -272,7 +283,7 @@
 
                                 <td class="receiptnote-label">Date :</td>
                                 <td>
-                                    <input type="text" name="date" id="receiptDate" class="receiptnote-input" />
+                                    <input type="date" name="date" id="receiptDate" class="receiptnote-input" />
                                 </td>
                             </tr>
                         </table>
@@ -299,11 +310,15 @@
                                 <td class="receiptnote-label">Mode Of Payment :</td>
                                 <td colspan="3">
                                     <select name="mode_of_payment" id="modeOfPayment" class="receiptnote-select">
+                                        <option value="">Select Mode</option>
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
+                                        <option value="TDS">TDS</option>
+                                        <option value="Online">Online Transfer</option>
                                     </select>
                                 </td>
                             </tr>
+                            <input type="hidden" name="mode_of_payment_edit" id="modeOfPaymentHidden">
                         </table>
 
                         <!-- Cheque Fields -->
@@ -320,15 +335,32 @@
                         </div>
 
                         <!-- Amount Text -->
-                        <div class="receiptnote-text section highlight text">
-                            Received with thanks from M/s/Mr/Mrs/Ms <span id="clientName"></span> the sum of Rs.
+                        <div id="paymentTextBlock" class="receiptnote-text section highlight text">
+                            Received with thanks from M/s/Mr/Mrs/Ms 
+                            <span id="clientName"></span> 
+                            the sum of Rs.
+                            
                             <input type="text" name="bill_amount" id="billAmount" class="receiptnote-inline-input" />
+                            
                             /- Amount in Words <b>Zero Rupees</b> Against Cash after deduction of TDS Rs
+                            
                             <input type="text" name="tds_amount" id="tdsAmount" class="receiptnote-inline-input" />
+                            
                             /- Amount In Words <b>Zero Rupees</b> for professional Services Rendered /
                             Advance Against invoice Raised vide Bill No <span id="invoiceNo"></span> /
                             dated <span id="invoiceDate"></span>.
                         </div>
+                        <div id="tdsOnlyBlock" style="display:none;">
+                            TDS Amount:
+                            <input type="text" name="tds_amountOnly" id="tdsAmountOnly" class="receiptnote-inline-input" />
+                        </div>
+                        <div id="onlineOnlyBlock" style="display:none;">
+                            Bank Name :
+                            <input type="text" name="bank_name" id="bankName" class="receiptnote-inline-input" />
+                            Received Amount :
+                            <input type="text" name="bill_amount_Online" id="transactionId" class="receiptnote-inline-input" />
+                        </div>
+                        
 
                         <!-- Footer -->
                         <div class="receiptnote-footer footer">
@@ -411,7 +443,7 @@
             Print Ledger
         </button>
         <button type="button" class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
-            data-target="#GenrateVoice">
+            data-target="#GenrateVoice"onclick="localStorage.setItem('activeMenu','partyledger')">
             Generate Invoice For Pending Work
         </button>
         <a href="<?= base_url('InvoiceManagment'); ?>" class="Minvoice-btn Minvoice-btn-primary">
@@ -485,16 +517,18 @@
 
             <thead>
                 <tr>
-                    <th style="width: 10%" class="print-widthinvoiceno">Invoice No</th>
-                    <th style="width: 8%" class="print-widthinvoicedate">Invoice Date</th>
-                    <th style="width: 20%" class="print-widtinvoicework">Works</th>
-                    <th style="width: 12%" class="print-hide">Company</th>
-                    <th style="width: 2%" class="print-widthinvoiceamount">Total Invoice Amount</th>
-                    <th style="width: 7%" class="print-widtreciptdate">Receipt Date</th>
-                    <th style="width: 8%" class="print-widtreciptno">Receipt No</th>
-                    <th style="width: 8%" class="print-widtreciptamount">Receipt Amount</th>
-                    <th style="width: 8%" class="print-widtrunningamount">Running Amount</th>
-                    <th style="width: 17%" class="no-print">Action</th>
+                    <th style="width: 10%" class="print-widthinvoiceno centertext">Invoice No</th>
+                    <th style="width: 7%" class="print-widthinvoicedate centertext">Invoice Date</th>
+                    <th style="width: 12%" class="print-widthinvoicework centertext">Works</th>
+                    <!-- <th style="width: 12%" class="print-hide">Company</th> -->
+                    <th style="width: 9%" class="print-widthinvoiceamount centertext">Total Invoice Amount</th>
+                    <th style="width: 7%" class="print-widtreciptdate centertext">Receipt Date</th>
+                    <th style="width: 8%" class="print-widtreciptno centertext">Receipt No</th>
+                    <th style="width: 8%" class="print-widtreciptamount centertext">TDS Amount</th>
+                    <th style="width: 8%" class="print-widtreceivedamount centertext">Received Amount</th>
+                    <th style="width: 8%" class="print-widtdebitcfreditnote centertext">Debit/Credit Note Amount</th>
+                    <th style="width: 8%" class="print-widtrunningamount centertext">Running Amount</th>
+                    <th style="width: 17%" class="no-print centertext">Action</th>
 
                 </tr>
             </thead>
@@ -504,8 +538,8 @@
                     <td class="Minvoice-opening-label">Opening Balance</td>
                     <td></td>
                     <td></td>
-                    <td class="print-hide"></td>
-                    <td>
+                   
+                    <td class="centertext">
                         <div class="input-group input-group-sm" style="width:130px;">
 
                             <input type="number"
@@ -522,6 +556,8 @@
 
                         </div>
                     </td>
+                     <td class="print-hide"></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -531,7 +567,7 @@
 
                 <?php if (!empty($invoices)) : ?>
                     <?php
-                    $runningBalance = $client['opening_balance'] ?? 0;
+                    $runningBalance = (float) ($client['opening_balance'] ?? 0);
                     $isFirstRow = true;
                     ?>
 
@@ -540,15 +576,32 @@
 
                         <?php
 
-                        $invoice = $row['total_invoice_amount'] ?? 0;
-                        $tds     = $row['tds_amount'] ?? 0;
+$invoice = (float) ($row['total_invoice_amount'] ?? 0);
+                        // $tds     = $row['tds_amount'] ?? 0;
+                        $totalTds = 0.0;
 
-                        if ($isFirstRow) {
-                            $runningBalance += ($invoice - $tds);
+                        foreach ($receipt as $r) {
+                            if ($r['invoice_id'] == $row['id']) {
+                                $totalTds += (float) ($r['tds_amount'] ?? 0);
+                            }
+                        }
+
+                        
+                        $totalReceivedAmount = 0.0;
+                        foreach ($receipt as $r) {
+                            if ($r['invoice_id'] == $row['id']) {
+                                $totalReceivedAmount += (float) ($r['bill_amount'] ?? 0);
+                            }
+                        }
+
+                         if ($isFirstRow) {
+                            $runningBalance += ($invoice - ($totalTds+$totalReceivedAmount));
                             $isFirstRow = false; // next rows won't enter here
                         } else {
-                            $runningBalance += $invoice - $tds;
+                            $runningBalance += ($invoice - ($totalTds+$totalReceivedAmount));
+
                         }
+                      
                         ?>
                         <tr class="invoice-row" data-company-id="<?= $row['company_id'] ?>"
                             data-date="<?= $row['invoice_date'] ?>">
@@ -557,18 +610,68 @@
                             <td class="Minvoice-works-text">
                                 <?= esc($row['service_names']) ?>
                             </td>
-                            <td class="print-hide"><?= esc($row['company_name']) ?></td>
-                            <td class="invoice-amount">
+                            <!-- <td class="print-hide"><?= esc($row['company_name']) ?></td> -->
+                            <td class="invoice-amount centertext">
                                 <?= number_format($row['total_invoice_amount'], 2) ?>
                             </td>
-                            <td>
-                                <?= !empty($row['recipt_date'])
-                                    ? date('d-m-Y', strtotime($row['recipt_date']))
-                                    : '-' ?>
+                                                            <td class="centertext">
+                                    <?php
+                                    $receiptNos = [];
+
+                                    foreach ($receipt as $rec) {
+                                        if ($rec['invoice_id'] == $row['id']) {
+                                            $receiptNos[] = date('d-m-Y', strtotime($rec['date']));
+                                        }
+                                    }
+
+                                    echo !empty($receiptNos)
+                                        ? implode('<br>', $receiptNos)
+                                        : '-';
+                                    ?>
+                                </td>
+                            <td class="centertext">
+                                
+                                <?php
+                                $receiptNos = [];
+
+                                foreach ($receipt as $rec) {
+                                    if ($rec['invoice_id'] == $row['id']) {
+                                        $receiptNos[] = $rec['recipt_no'];
+                                    }
+                                }
+
+                                echo !empty($receiptNos)
+                                    ? implode('<br>', $receiptNos)
+                                    : '-';
+                                ?>
                             </td>
-                            <td><?= esc($row['recipt_no']) ?></td>
-                            <td class="receipt-amount"><?= !empty($row['tds_amount']) ? number_format($row['tds_amount'], 2) : '-' ?></td>
-                            <td class="running-amount"><strong><?= number_format($runningBalance, 2) ?></strong></td>
+                            <td class="centertext"><?php
+foreach ($receipt as $rec) {
+    if ($rec['invoice_id'] == $row['id']) {
+
+        $tds = (float) ($rec['tds_amount'] ?? 0);
+
+        echo '<div class="receipt-amount">' .
+            ($tds > 0 ? number_format($tds, 2) : '-') .
+            '</div>';
+    }
+}
+?></td>
+                            <td class="centertext"><?php
+foreach ($receipt as $rec) {
+    if ($rec['invoice_id'] == $row['id']) {
+
+        $amount = (float) ($rec['bill_amount'] ?? 0);
+
+        echo '<div class="received-amount">' .
+            ($amount > 0 ? number_format($amount, 2) : '-') .
+            '</div>';
+    }
+}
+?></td>
+                                <td class="centertext"></td>
+                            <td class="running-amount righttext"><strong><?= number_format($runningBalance, 2) ?></strong></td>
+                            
                             <td class="no-print">
                                 <!-- Edit -->
                                 <a href="<?= site_url('invoice/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit"
@@ -584,7 +687,7 @@
 
                                 <!-- Export Excel -->
                                 <a href="#" class="Minvoice-icon-btn export open-receipt" data-toggle="modal"
-                                    data-target="#ReciptNote" data-id="<?= $row['id'] ?>">
+                                    data-target="#ReciptNote" data-id="<?= $row['id'] ?>"title="Recipt Note">
                                     📥
                                 </a>
                                 <!-- ✅ NEW Download Button -->
@@ -596,138 +699,282 @@
                                 </a>
                                 <!-- Print & Preview -->
                                 <button type="button" class="Minvoice-print-btn" onclick="printInvoice(<?= $row['id'] ?>)"
-                                    style="padding:2px;border-radius: 10px;border: 2px solid #f1c40f;">
+                                    style="padding:2px;border-radius: 10px;border: 2px solid #f1c40f;"title="Print & Preview">
                                     Print &amp; Preview
                                 </button>
 
                             </td>
                             <!-- <td></td> -->
                         </tr>
+                        
                     <?php endforeach; ?>
+                
+    <?php foreach ($companyReceipt as $company): ?>
+  <?php
+        $tds      = (float)($company['tds_amount'] ?? 0);
+        $received = (float)($company['bill_amount'] ?? 0);
+
+        $receiptAmount = $tds + $received;
+
+        // Receipt reduces outstanding balance
+        $runningBalance -= $receiptAmount;
+    ?>
+                        
+        <tr>
+
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+
+            <!-- Receipt Date -->
+            <td class="centertext">
+                <?= date('d-m-Y', strtotime($company['date'])) ?>
+            </td>
+
+            <!-- Receipt No -->
+            <td class="centertext">
+                <?= esc($company['recipt_no'] ?? '-') ?>
+            </td>
+
+            <!-- TDS -->
+            <td class="centertext"><?= ((float)($company['tds_amount'] ?? 0) > 0)
+    ? number_format($company['tds_amount'], 2)
+    : '-' ?></td>
+
+            <!-- Received -->
+            <td class="centertext"><?= ((float)($company['bill_amount'] ?? 0) > 0)
+    ? number_format($company['bill_amount'], 2)
+    : '-' ?></td>
+
+            <!-- Debit/Credit Amount -->
+            <td class="centertext">
+            
+            </td>
+
+            <!-- Running Amount -->
+            <td class="righttext"><strong><?= number_format($runningBalance, 2) ?></strong></td>
+            
+            <td class="no-print">
+
+   <!-- Edit -->
+<a href="javascript:void(0)"
+    class="Minvoice-icon-btn edit company-edit-btn"
+    title="Edit Receipt"
+    data-id="<?= $company['id'] ?>"
+    data-recipt_no="<?= esc($company['recipt_no']) ?>"
+    data-date="<?= esc($company['date']) ?>"
+    data-mode_of_payment="<?= esc($company['mode_of_payment']) ?>"
+    data-cheque_date="<?= esc($company['cheque_date']) ?>"
+    data-cheque_number="<?= esc($company['cheque_number']) ?>"
+    data-drawen_bank="<?= esc($company['drawen_bank']) ?>"
+    data-bill_amount="<?= esc($company['bill_amount']) ?>"
+    data-tds_amount="<?= esc($company['tds_amount']) ?>"
+    data-bank_name="<?= esc($company['bank_name']) ?>"
+    data-company-name="<?= esc($company['name']) ?>"
+    data-company-address="<?= esc($company['company_address']) ?>"
+    data-company-phone="<?= esc($company['telephone']) ?>"
+    data-company-email="<?= esc($company['email']) ?>"
+    data-client-name="<?= esc($company['legal_name']) ?>"
+    data-client-address="<?= esc($company['client_address']) ?>"
+    data-client-pan="<?= esc($company['pan']) ?>">
+    ✏️
+</a>
+
+<!-- Delete -->
+<button type="button"
+    class="Minvoice-icon-btn delete delete-btn"
+    title="Delete Receipt"
+    data-id="<?= $company['id'] ?>"
+    style="border:none;">
+    🗑️
+</button>
+
+<button type="button"
+    class="Minvoice-icon-btn download downloadPdf"
+    data-id="<?= $company['id'] ?>"
+    title="Download Receipt"style="border:none;">
+    ⬇️
+</button>
+
+<button type="button"
+    class="Minvoice-print-btn printReceipt"
+    data-id="<?= $company['id'] ?>"
+    title="Print & Preview"
+    style="padding:2px;border-radius:10px;border:2px solid #f1c40f;">
+    Print &amp; Preview
+</button>
+   
+</td>
+
+        </tr>
+
+<?php endforeach; ?>
+
+    <?php foreach ($debit as $d): ?>
+
+        <?php
+    $amount = (float)$d['total_amount'];
+
+    if ($d['note_type'] === 'debit') {
+        $runningBalance += $amount;      // Debit Note increases balance
+    } elseif ($d['note_type'] === 'credit') {
+        $runningBalance -= $amount;      // Credit Note decreases balance
+    }
+?>
+                        
+        <tr class="debit-credit-row"
+    data-type="<?= $d['note_type'] ?>"
+    data-date="<?= $d['date'] ?>">
+
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+
+            <!-- Receipt Date -->
+            <td class="centertext">
+                <?= date('d-m-Y', strtotime($d['date'])) ?>
+            </td>
+
+            <!-- Receipt No -->
+            <td class="centertext">
+                <?php if ($d['note_type'] === 'debit'): ?>
+        <?= esc($d['debit_no'] ?? '-') ?>
+    <?php elseif ($d['note_type'] === 'credit'): ?>
+        <?= esc($d['credit_no'] ?? '-') ?>
+    <?php else: ?>
+        -
+    <?php endif; ?>
+            </td>
+
+            <!-- TDS -->
+            <td class="centertext">-</td>
+
+            <!-- Received -->
+            <td class="centertext">-</td>
+
+            <!-- Debit/Credit Amount -->
+           <td class="debit-credit-amount centertext">
+    <?= ((float)($d['total_amount'] ?? 0) > 0)
+        ? number_format($d['total_amount'], 2)
+        : '-' ?>
+</td>
+
+            <!-- Running Amount -->
+                <td class ="company-running-amount righttext">
+                    <strong><?= number_format($runningBalance, 2) ?></strong>
+                </td>
+                  <td class="no-print">
+                                <!-- Edit -->
+                                 <a href="<?= base_url('debits/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit" title="Edit">
+                                ✏️
+                            </a>
+
+                                <!-- Delete -->
+                                <button type="button" class="note-delete-btn" title="Delete" data-id="<?= $d['id'] ?>"style="border:none;">
+                                    🗑️
+                                </button>
+
+                                <!-- ✅ NEW Download Button -->
+                               <a href="<?= site_url('DebitNotePDF/') . $d['id'] ?>"
+                                    class="Minvoice-icon-btn download"
+                                    title="Download PDF">
+                                    ⬇️
+                                </a>
+                               <!-- Print -->
+                                <button type="button"
+                                    class="Minvoice-print-btn"
+                                    onclick="window.open('<?= site_url(($d['note_type'] == 'credit'
+                                        ? 'CreditNote/'
+                                        : 'DebitNote/') . $row['id']) ?>')"
+                                    style="padding:2px;border-radius:10px;border:2px solid #f1c40f;"
+                                    title="Print & Preview">
+                                    Print &amp; Preview
+                                </button>
+
+                            </td>
+            
+
+        </tr>
+
+<?php endforeach; ?>
+
+                    
                 <?php else : ?>
                     <tr>
                         <td colspan="9" class="Minvoice-text-center">No invoices found</td>
                     </tr>
                 <?php endif; ?>
                 <?php
-                $debitTotal = array_sum(
-                    array_column(
-                        array_filter($debit, function ($row) {
-                            return isset($row['note_type']) && $row['note_type'] !== 'credit';
-                        }),
-                        'total_amount'
-                    )
-                );
 
-                $creditTotal = array_sum(
-                    array_column(
-                        array_filter($debit, function ($row) {
-                            return isset($row['note_type']) && $row['note_type'] === 'credit';
-                        }),
-                        'total_amount'
-                    )
-                );
-                ?>
+                    $debitTotal = array_sum(array_map(function ($row) {
+
+                        return (isset($row['note_type']) && $row['note_type'] === 'debit')
+                            ? (float) str_replace(',', '', $row['total_amount'])
+                            : 0;
+
+                    }, $debit));
+
+
+                    $creditTotal = array_sum(array_map(function ($row) {
+
+                        return (isset($row['note_type']) && $row['note_type'] === 'credit')
+                            ? (float) str_replace(',', '', $row['total_amount'])
+                            : 0;
+
+                    }, $debit));
+
+                    ?>
                 <?php
                 $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
-                $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
+               $totalReceived = array_sum(array_map(function ($r) {
+                    return (float) str_replace(',', '', $r['bill_amount']);
+                }, $receipt));
 
-                $closingBalance = $totalInvoice - $totalReceipt;
-
+                $totalTds = array_sum(array_map(function ($r) {
+                    return (float) str_replace(',', '', $r['tds_amount']);
+                }, $receipt));
+                // print_r($totalTds);exit;
+                $totalNoteAmount = $debitTotal + $creditTotal;
+                $openingBalance = $client['opening_balance'] ?? 0;
+                // print_r($totalNoteAmount);exit;
+                $closingBalance = $totalInvoice - ($totalReceived + $totalTds+$creditTotal) + $debitTotal+ $openingBalance;
+                
                 ?>
 
                 <!-- Total row -->
                 <tr class="Minvoice-total-row">
                     <td></td>
                     <td></td>
-                    <td class="print-hide"></td>
+                    <!-- <td class="print-hide"></td> -->
                     <td>
                         <p style="font-size: 12px;font-weight:bold">Total Invoice Amount</p>
                     </td>
                     <td id="totalInvoiceAmount">
                         <?= number_format(
-                            ($client['opening_balance'] ?? 0) + array_sum(array_column($invoices, 'total_invoice_amount')),
+                            floatval($client['opening_balance'] ?? 0)
+                            + array_sum(array_map('floatval', array_column($invoices, 'total_invoice_amount'))),
                             2
                         ) ?>
                     </td>
                     <td></td>
-                    <td>Total Receipt Amount</td>
-                    <td id="totalReceiptAmount"><?= number_format($totalReceipt, 2) ?></td>
+                    <td></td>
+                    <td><?= number_format($totalTds, 2) ?></td>
+                    <td id="totalReceiptAmount"><?= number_format($totalReceived, 2) ?></td>
+                   
+                    <td><?php echo number_format($totalNoteAmount, 2); ?></td>
                     <td class="Minvoice-text-right print-hide">Closing Balance</td>
                     <td class="Minvoice-text-right print-hide" id="closingBalance"><?= number_format($closingBalance, 2) ?></td>
-                    <!-- <td ></td>
-                    <td  class="Minvoice-text-center">
-                        
-                    </td> -->
-                    <?php
-                    $debitTotal = array_sum(
-                        array_column(
-                            array_filter($debit, function ($row) {
-                                return isset($row['note_type']) && $row['note_type'] !== 'credit';
-                            }),
-                            'total_amount'
-                        )
-                    );
-
-                    $creditTotal = array_sum(
-                        array_column(
-                            array_filter($debit, function ($row) {
-                                return isset($row['note_type']) && $row['note_type'] === 'credit';
-                            }),
-                            'total_amount'
-                        )
-                    );
-                    ?>
                 </tr>
 
             </tbody>
 
         </table>
         <div class="Minvoice-text-right print-only" style="font-weight:bold; margin-top:10px;">
-            <h2> <strong>Closing Balance: <?= number_format($closingBalance, 2) ?></strong></h2>
+            <h2 id="closingBalance"> <strong>Closing Balance: <?= number_format($closingBalance , 2) ?></strong></h2>
         </div>
         <br><br>
-        <!-- <table>
-            <tr>
-                <th style="background: #005b8f;color:#fff;padding:15px">Total Invoice Amount (A)</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">Total Recipt Amount (B)</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">Total Debit Amount (C)</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">Total Credit Amount (D)</th>
-                <th style="background: #005b8f;color:#fff;padding:15px">Closing Balance (A+C)-(B+D)</th>
-            </tr>
-             <?php
-                $debitTotal = array_sum(
-                    array_column(
-                        array_filter($debit, function ($row) {
-                            return isset($row['note_type']) && $row['note_type'] !== 'credit';
-                        }),
-                        'total_amount'
-                    )
-                );
-
-                $creditTotal = array_sum(
-                    array_column(
-                        array_filter($debit, function ($row) {
-                            return isset($row['note_type']) && $row['note_type'] === 'credit';
-                        }),
-                        'total_amount'
-                    )
-                );
-
-                $totalInvoice = array_sum(array_column($invoices, 'total_invoice_amount'));
-                $totalReceipt = array_sum(array_column($receipt, 'tds_amount'));
-
-                $closingBalance = ($totalInvoice + $debitTotal) - ($totalReceipt + $creditTotal);
-                ?>
-            <tr>
-                <td class=" Minvoice-amount-bold"><?= number_format(array_sum(array_column($invoices, 'total_invoice_amount')), 2) ?></td>
-                <td class=" Minvoice-amount-bold"> <?= number_format(array_sum(array_column($receipt, 'tds_amount')), 2) ?></td>
-                <td class=" Minvoice-amount-bold"> <?= number_format($debitTotal, 2) ?></td>
-                <td class="Minvoice-amount-bold"><?= number_format($creditTotal, 2) ?></td>
-                <td class="Minvoice-amount-bold"><?= number_format($closingBalance, 2) ?></td>
-            </tr>
-
-        </table> -->
     </div>
 
     <!-- Pagination -->
@@ -738,7 +985,15 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+
+    const baseUrl = "<?= site_url() ?>";
+
+ let isEditMode = false;
+    localStorage.setItem('activeMenu', 'partyledger');
     function deleteInvoice(id) {
         if (!confirm('Are you sure you want to delete this invoice?')) return;
 
@@ -764,14 +1019,21 @@
 }
 
     function printLedger() {
-        const printContents = document.getElementById('ledger-print-area').innerHTML;
-        const originalContents = document.body.innerHTML;
+       const printContents = document.getElementById('ledger-print-area').innerHTML;
 
-        document.body.innerHTML = `
+
+    const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
         <html>
         <head>
-            <title>Invoice Ledger</title>
+            <title>${clientName}Ledger</title>
+             <!-- Bootstrap -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+            <!-- Your CSS -->
+            <link rel="stylesheet" href="assets/css/style.css">
            <style>
+          
     body { font-family: Cambria, sans-serif; }
 
     table { width: 100%; border-collapse: collapse; }
@@ -783,48 +1045,118 @@
   
 
     @media print {
-     
+    
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 
+    /* Outer border */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #000 !important;
+    }
+
+    /* All row and column lines */
+    tbody td,
+    tbody th,
+    thead th {
+        border: 1px solid #fff !important;
+    }
+
+    /* Header */
+    thead th {
+        background: #005b8f !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Optional alternate row color */
+    tbody tr:nth-child(even) {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    tbody tr:nth-child(odd) {
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
         .print-only {
             display: block !important;
         }
         .print-hide {
             display: none !important;
         }
-            .print-widthinvoiceno
-                {
-                    width: 16% !important;
+            .print-widthinvoiceno {
+    width: 13% !important;
+}
+    .centertext
+    {
+    text-align:center !important;
                 }
-            .print-widthinvoicedate
-                {
-                     width: 10% !important;
+    .print-widthinvoiceno
+    {
+    text-align:center !important;
+                }
+    .invoice-amount{
+    text-align:center !important;
                 }
 
-            .print-widthinvoicework
-               {
-                  width:18% !important;
-               }
-             .print-widthinvoiceamount
-              {
-                width: 10% !important;
-              }
-         .print-widtreciptdate
-            {
-             width: 10% !important;
-            }
-        .print-widtreciptno
-            {
-             width: 16% !important;
-            }
-        .print-widtreciptamount
-             { 
-                width: 10% !important;
-            }
-        .print-widtrunningamount
-                 
-        {
-              width: 10% !important;
-        }
+.print-widthinvoicedate {
+    width: 10% !important;
+    text-align:center !important;
+}
+
+.print-widthinvoicework {
+    width: 17% !important;
+    text-align:center !important;
+}
+
+.print-widthinvoiceamount {
+    width: 8% !important;
+    text-align:center !important;
+}
+
+.righttext{
+ text-align:right !important;
+                }
+.print-widtreciptdate {
+    width: 10% !important;
+    text-align:center !important;
+}
+
+.print-widtreciptno {
+    width: 12% !important;
+    text-align:center !important;
+}
+
+.print-widtreciptamount {
+    width: 8% !important;
+    text-align:center !important;
+}
+
+.print-widtreceivedamount {
+    width: 8% !important;
+    text-align:center !important;
+}
+
+.print-widtdebitcfreditnote {
+    width: 8% !important;
+    text-align:center !important;
+}
+
+.print-widtrunningamount {
+    width: 8% !important;
+    text-align:center !important;
+}
+    .print-widthinvoicedate,
+.print-widtreciptdate {
+    white-space: nowrap !important;
+}
        
             
         .no-print {
@@ -844,7 +1176,8 @@
 
         th, td { 
             border: 1px solid #000;  
-            padding: 6px; 
+            padding: 5px !important; 
+            padding-top: 2px !important; 
         }
     }
 </style>
@@ -853,11 +1186,15 @@
             ${printContents}
         </body>
         </html>
-    `;
+     `);
 
-        window.print();
-        document.body.innerHTML = originalContents;
-        location.reload();
+        printWindow.document.close();
+
+    printWindow.onload = function() {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    };
     }
 
     $(document).on('click', '.open-receipt', function() {
@@ -874,37 +1211,51 @@
     });
 
 
-    function loadReceiptData(invoiceId) {
-        $.ajax({
-            url: "<?= site_url('invoice/receipt') ?>" + "/" + invoiceId,
-            type: "GET",
-            data: {
-                invoice_id: invoiceId
-            },
-            dataType: "json",
-            success: function(res) {
+   function loadReceiptData(invoiceId) {
+    $.ajax({
+        url: "<?= site_url('invoice/receipt') ?>/" + invoiceId,
+        type: "GET",
+        data: {
+            invoice_id: invoiceId
+        },
+        dataType: "json",
+        success: function(res) {
 
-                // Company
-                $('#companyName').text(res.company.name);
-                $('#companyType').text(res.company.type_of_company);
-                $('#companyAddress').html(res.company.registered_office);
-                $('#companyPhone').text(res.company.telephone);
-                $('#companyEmail').text(res.company.email);
+            // Company
+            $('#companyName').text(res.company.name);
+            $('#companyType').text(res.company.type_of_company);
+            $('#companyAddress').html(res.company.registered_office);
+            $('#companyPhone').text(res.company.telephone);
+            $('#companyEmail').text(res.company.email);
 
-                // Client
-                $('#clientName').text(res.client.legal_name);
-                $('#clientAddress').html(res.client.registered_office);
-                $('#clientPan').text(res.client.pan);
+            // Receipt Formats
+            window.receiptFormats = {
+                Cash: res.company.cash_receipt_format,
+                Cheque: res.company.cheque_receipt_format,
+                TDS: res.company.tds_receipt_format,
+                Online: res.company.online_receipt_format
+            };
 
-                // Invoice
-                $('#receiptNo').val(res.invoice.invoice_no);
-                $('#receiptDate').val(res.invoice.invoice_date);
-                $('#billAmount').val(res.invoice.total_invoice_amount);
-                $('#current_invoice_id').val(res.invoice.id);
+            // Receipt Counters (from controller)
+            window.receiptCounters = res.receiptCounters || {
+                Cash: 1,
+                Cheque: 1,
+                TDS: 1,
+                Online: 1
+            };
 
-            }
-        });
-    }
+            // Client
+            $('#clientName').text(res.client.legal_name);
+            $('#clientAddress').html(res.client.registered_office);
+            $('#clientPan').text(res.client.pan);
+
+            // Invoice
+            $('#receiptDate').val(res.invoice.invoice_date);
+            $('#billAmount').val(res.invoice.total_invoice_amount);
+            $('#current_invoice_id').val(res.invoice.id);
+        }
+    });
+}
     $(document).on('click', '.close', function() {
         $('#addreciptnote').modal('hide');
         $('#submitrecipt').modal('hide');
@@ -927,110 +1278,217 @@
     });
 
 
-    document.getElementById("saveReceiptBtn").addEventListener("click", function() {
 
-        const receiptId = document.getElementById("receipt_id").value;
-        const form = document.getElementById("receiptForm");
-        const formData = new FormData(form);
+   document.getElementById("saveReceiptBtn").addEventListener("click", async function () {
 
-        // EDIT MODE → UPDATE
-        if (receiptId) {
-            fetch("updateReceipt", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Receipt updated successfully");
-                        $('#submitrecipt').data('receipt-id', receiptId);
-                        $('#submitrecipt').modal('show');
+    const receiptId = document.getElementById("receipt_id").value;
+    const form = document.getElementById("receiptForm");
+    const formData = new FormData(form);
 
-                    } else {
-                        alert("Update failed");
-                    }
-                });
+    const mode = document.getElementById('modeOfPayment').value;
 
+    // =========================
+    // FIX: FORCE TDS LOGIC
+    // =========================
+    if (mode === 'TDS') {
+        formData.set('bill_amount', 0);
+    }
+    if (mode === 'Online') {
+        formData.set('bank_name', document.getElementById('bankName').value);
+        formData.set('bill_amount', document.getElementById('transactionId').value);
+    }
+
+    try {
+
+        let url = receiptId ? "updateReceipt" : "saveReceipt";
+
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(receiptId ? "Update failed" : "Save failed");
+            return;
         }
-        // ADD MODE → INSERT
-        else {
-            fetch("saveReceipt", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
 
-                    if (!data.success) {
-                        alert("Save failed");
-                        return;
-                    }
+        // =========================
+        // SUCCESS HANDLING
+        // =========================
+        const newId = data.receipt_id || receiptId;
 
-                    // ✅ GET ID FROM SERVER
-                    const receipt_id = data.receipt_id;
-                    alert("Receipt added successfully");
-
-                    // ✅ STORE IT
-                    $('#receipt_id').val(receipt_id);
-
-                    $('#submitrecipt') // make sure this is your modal ID
-                        .data('receipt-id', receipt_id)
-                        .attr('data-receipt-id', receipt_id)
-                        .modal('show');
-                });
+        if (!receiptId) {
+            document.getElementById("receipt_id").value = newId;
+            alert("Receipt added successfully");
+        } else {
+            alert("Receipt updated successfully");
         }
-    });
 
+        // store id for modal
+        $('#submitrecipt')
+            .data('receipt-id', newId)
+            .attr('data-receipt-id', newId)
+            .modal('show');
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong");
+    }
+});
+function togglePaymentUI() {
+
+    const mode = document.getElementById("modeOfPayment").value;
+
+    const paymentTextBlock = document.getElementById("paymentTextBlock");
+    const tdsOnlyBlock = document.getElementById("tdsOnlyBlock");
+    const onlineOnlyBlock = document.getElementById("onlineOnlyBlock");
+
+    // Hide all first
+    paymentTextBlock.style.display = "none";
+    tdsOnlyBlock.style.display = "none";
+    onlineOnlyBlock.style.display = "none";
+
+    if (mode === "TDS") {
+
+        tdsOnlyBlock.style.display = "block";
+
+    } else if (mode === "Online") {
+
+        onlineOnlyBlock.style.display = "block";
+
+    } else {
+
+        paymentTextBlock.style.display = "block";
+    }
+}
 
     // Edit button click
-    document.addEventListener("click", function(e) {
-        if (e.target.classList.contains("edit-btn")) {
-            const btn = e.target;
+    document.addEventListener("click", function (e) {
 
-            const invoiceId = btn.dataset.invoiceId;
+    if (!e.target.classList.contains("edit-btn")) return;
 
-            // Fill basic receipt fields
-            document.getElementById("receipt_id").value = btn.dataset.id;
-            document.getElementById("receiptNo").value = btn.dataset.recipt_no;
-            document.getElementById("receiptDate").value = btn.dataset.date;
-            document.getElementById("billAmount").value = btn.dataset.bill_amount;
-            document.getElementById("tdsAmount").value = btn.dataset.tds_amount;
-            document.getElementById("modeOfPayment").value = btn.dataset.mode_of_payment;
+     isEditMode = true;
+     document.getElementById("receiptNo").readOnly = true;
+     document.getElementById("modeOfPayment").disabled = true;
 
-            // Show/hide cheque fields
-            const chequeFields = document.getElementById("chequeFields");
-            if (btn.dataset.mode_of_payment === "Cheque") {
-                chequeFields.style.display = "block";
-                chequeFields.querySelector("input[name='cheque_date']").value = btn.dataset.cheque_date;
-                chequeFields.querySelector("input[name='cheque_number']").value = btn.dataset.cheque_number;
-                chequeFields.querySelector("input[name='drawen_bank']").value = btn.dataset.drawen_bank;
-            } else {
-                chequeFields.style.display = "none";
-            }
+    const btn = e.target;
 
-            // Fetch company details from backend using invoice_id
-            fetch(`getInvoiceDetails/${invoiceId}`)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById("companyName").textContent = data.company_name;
-                    document.getElementById("companyType").textContent = data.company_type;
-                    document.getElementById("companyAddress").textContent = data.company_address;
-                    document.getElementById("companyPhone").textContent = data.company_phone;
-                    document.getElementById("companyEmail").textContent = data.company_email;
-                    document.getElementById("clientName").textContent = data.client_name;
-                    document.getElementById("clientAddress").textContent = data.client_address;
-                    document.getElementById("clientPan").textContent = data.client_pan;
+    // Basic fields
+    document.getElementById("receipt_id").value = btn.dataset.id || "";
+    document.getElementById("receiptNo").value = btn.dataset.recipt_no || "";
+    document.getElementById("receiptDate").value = btn.dataset.date || "";
 
+    // Payment mode
+    const modeOfPayment = document.getElementById("modeOfPayment");
 
-                })
-                .catch(err => console.error("Error fetching company data:", err));
+    modeOfPayment.value = btn.dataset.mode_of_payment || "";
 
-            // Open modal
-            const modal = new bootstrap.Modal(document.getElementById('addreciptnote'));
-            modal.show();
-        }
-    });
+    document.getElementById("modeOfPaymentHidden").value = modeOfPayment.value;
 
+    togglePaymentUI();
+
+    // Amount fields
+    document.getElementById("billAmount").value =
+        btn.dataset.bill_amount || "";
+
+    document.getElementById("tdsAmount").value =
+        btn.dataset.tds_amount || "";
+
+    document.getElementById("tdsAmountOnly").value =
+        btn.dataset.tds_amount || "";
+
+    // Online fields
+    const bankName = document.getElementById("bankName");
+    const transactionId = document.getElementById("transactionId");
+
+    if (bankName) {
+        bankName.value = btn.dataset.bank_name || "";
+    }
+
+    if (transactionId) {
+        transactionId.value =
+            btn.dataset.bill_amount_online ||
+            btn.dataset.bill_amount ||
+            "";
+    }
+
+    // Cheque fields
+    const chequeFields = document.getElementById("chequeFields");
+
+    if (btn.dataset.mode_of_payment === "Cheque") {
+
+        chequeFields.style.display = "block";
+
+        const chequeDate =
+            chequeFields.querySelector("input[name='cheque_date']");
+
+        const chequeNumber =
+            chequeFields.querySelector("input[name='cheque_number']");
+
+        const drawenBank =
+            chequeFields.querySelector("input[name='drawen_bank']");
+
+        if (chequeDate)
+            chequeDate.value = btn.dataset.cheque_date || "";
+
+        if (chequeNumber)
+            chequeNumber.value = btn.dataset.cheque_number || "";
+
+        if (drawenBank)
+            drawenBank.value = btn.dataset.drawen_bank || "";
+
+    } else {
+
+        chequeFields.style.display = "none";
+
+    }
+
+    // Update payment UI
+    if (typeof togglePaymentUI === "function") {
+        togglePaymentUI();
+    }
+
+    // Load invoice/company details
+    fetch(`getInvoiceDetails/${btn.dataset.invoiceId}`)
+        .then(res => res.json())
+        .then(data => {
+
+            document.getElementById("companyName").textContent =
+                data.company_name || "";
+
+            document.getElementById("companyType").textContent =
+                data.company_type || "";
+
+            document.getElementById("companyAddress").textContent =
+                data.company_address || "";
+
+            document.getElementById("companyPhone").textContent =
+                data.company_phone || "";
+
+            document.getElementById("companyEmail").textContent =
+                data.company_email || "";
+
+            document.getElementById("clientName").textContent =
+                data.client_name || "";
+
+            document.getElementById("clientAddress").textContent =
+                data.client_address || "";
+
+            document.getElementById("clientPan").textContent =
+                data.client_pan || "";
+
+        })
+        .catch(err =>
+            console.error("Error fetching company data:", err)
+        );
+
+    // Show modal
+    new bootstrap.Modal(
+        document.getElementById("addreciptnote")
+    ).show();
+});
     // Delete button click
     document.addEventListener("click", function(e) {
         if (e.target.classList.contains("delete-btn")) {
@@ -1056,6 +1514,7 @@
             }
         }
     });
+
 
     document.getElementById("previewReceiptBtn").addEventListener("click", function() {
 
@@ -1098,7 +1557,7 @@
 
         <div class="receipt-row light">
             <div class="label">Mode Of Payment :</div>
-            <div class="value">${mode}</div>
+            <div class="value">${mode === 'Online' ? 'Online Transfer' : mode}</div>
         </div>
 
         <div class="receipt-row">
@@ -1136,7 +1595,7 @@
             return;
         }
 
-        window.open(`printReceipt/${receiptId}`);
+         window.location.href = `printReceipt/${receiptId}`;
     });
     document.getElementById("downloadPdfBtn").addEventListener("click", function() {
 
@@ -1149,6 +1608,30 @@
 
         window.open(`receiptPdf/${receiptId}`, '_blank');
     });
+
+    $(document).on('click', '.printReceipt', function () {
+
+     const receiptId = $(this).data('id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `${baseUrl}/invoice-mangement/printReceipt/${receiptId}`;
+});
+
+$(document).on('click', '.downloadPdf', function () {
+
+    const receiptId = $(this).data('id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `${baseUrl}/invoice-mangement/receiptPdf/${receiptId}`;
+});
     document.addEventListener('DOMContentLoaded', function() {
 
         const form = document.querySelector('#GenrateVoice form');
@@ -1202,6 +1685,7 @@
             });
         });
     });
+    
     document.querySelector('.Minvoice-btn-search').addEventListener('click', function() {
 
         document.getElementById('printLedgerBtn').style.display = 'inline-block';
@@ -1323,9 +1807,10 @@
                     row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
                 ) || 0;
 
-                const receipt = parseFloat(
-                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
-                ) || 0;
+                  let receipt = 0;
+        row.querySelectorAll('.receipt-amount').forEach(el => {
+            receipt += parseFloat(el.innerText.replace(/,/g, '')) || 0;
+        });
 
                 totalInvoice += invoice;
                 totalReceipt += receipt;
@@ -1334,7 +1819,7 @@
         });
 
         const openingBalance = parseFloat(
-            document.getElementById('openingBalance').dataset.opening
+            document.getElementById('openingBalanceInput').dataset.opening
         ) || 0;
 
         const closingBalance = openingBalance + totalInvoice - totalReceipt;
@@ -1342,36 +1827,39 @@
         document.getElementById('totalInvoiceAmount').innerText =
             (openingBalance + totalInvoice).toFixed(2);
 
-        document.getElementById('totalReceiptAmount').innerText =
-            totalReceipt.toFixed(2);
+        // document.getElementById('totalReceiptAmount').innerText =
+        //     totalReceipt.toFixed(2);
 
         document.getElementById('closingBalance').innerText =
             closingBalance.toFixed(2);
 
         let runningBalance = parseFloat(
-            document.getElementById('openingBalance').dataset.opening
+            document.getElementById('openingBalanceInput').dataset.opening
         ) || 0;
 
-        document.querySelectorAll('.invoice-row').forEach(row => {
+       document.querySelectorAll('.invoice-row').forEach(row => {
 
-            if (row.style.display !== 'none') {
+    if (row.style.display !== 'none') {
 
-                const invoice = parseFloat(
-                    row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        const invoice = parseFloat(
+            row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
+        ) || 0;
 
-                const receipt = parseFloat(
-                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
-                ) || 0;
-
-                runningBalance += invoice - receipt;
-
-                row.querySelector('.running-amount strong').innerText =
-                    runningBalance.toFixed(2);
-
-            }
-
+        let totalDeduction = 0;
+        row.querySelectorAll('.receipt-amount').forEach(el => {
+            totalDeduction += parseFloat(el.innerText.replace(/,/g, '')) || 0;
         });
+
+        row.querySelectorAll('.received-amount').forEach(el => {
+            totalDeduction += parseFloat(el.innerText.replace(/,/g, '')) || 0;
+        });
+
+        runningBalance += invoice - totalDeduction;
+
+        row.querySelector('.running-amount strong').innerText =
+            runningBalance.toFixed(2);
+    }
+});
 
     });
 
@@ -1449,53 +1937,100 @@ const formattedTo = formatDate(lastDate);
     // ===============================
     // 🔁 MAIN RECALCULATION FUNCTION
     // ===============================
-    function recalculateLedger() {
+function recalculateLedger() {
 
-        const rows = document.querySelectorAll('.invoice-row');
+    const rows = document.querySelectorAll('.invoice-row, .debit-credit-row');
 
-        let openingBalance = parseFloat(
-            document.getElementById('openingBalanceInput').value
-        ) || 0;
+    let openingBalance = parseFloat(
+        document.getElementById('openingBalanceInput').value
+    ) || 0;
 
-        let totalInvoice = 0;
-        let totalReceipt = 0;
-        let runningBalance = openingBalance;
+    let runningBalance = openingBalance;
 
-        rows.forEach(row => {
+    let totalInvoice = 0;
+    let totalDeduction = 0;
 
-            // Only calculate visible rows (important for filters)
-            if (row.style.display !== 'none') {
+    rows.forEach(row => {
 
-                const invoice = parseFloat(
-                    row.querySelector('.invoice-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        if (row.style.display === 'none') return;
 
-                const receipt = parseFloat(
-                    row.querySelector('.receipt-amount').innerText.replace(/,/g, '')
-                ) || 0;
+        // =========================
+        // INVOICE ROW
+        // =========================
+        if (row.classList.contains('invoice-row')) {
 
-                totalInvoice += invoice;
-                totalReceipt += receipt;
+            const invoice = parseFloat(
+                row.querySelector('.invoice-amount')?.innerText.replace(/,/g, '')
+            ) || 0;
 
-                runningBalance += invoice - receipt;
+            let rowDeduction = 0;
 
-                row.querySelector('.running-amount strong').innerText =
-                    runningBalance.toFixed(2);
+            // TDS
+            row.querySelectorAll('.receipt-amount').forEach(el => {
+                rowDeduction += parseFloat(el.innerText.replace(/,/g, '')) || 0;
+            });
+
+            // RECEIVED
+            row.querySelectorAll('.received-amount').forEach(el => {
+                rowDeduction += parseFloat(el.innerText.replace(/,/g, '')) || 0;
+            });
+
+            totalInvoice += invoice;
+            totalDeduction += rowDeduction;
+
+            runningBalance += (invoice - rowDeduction);
+
+            const balanceCell = row.querySelector('.running-amount strong');
+            if (balanceCell) {
+                balanceCell.innerText = runningBalance.toFixed(2);
             }
-        });
+        }
 
-        // ===============================
-        // UPDATE TOTALS
-        // ===============================
-        document.getElementById('totalInvoiceAmount').innerText =
-            (openingBalance + totalInvoice).toFixed(2);
+        // =========================
+        // DEBIT / CREDIT ROW
+        // =========================
+        else if (row.classList.contains('debit-credit-row')) {
 
-        document.getElementById('totalReceiptAmount').innerText =
-            totalReceipt.toFixed(2);
+            const amount = parseFloat(
+                row.querySelector('.debit-credit-amount')?.innerText.replace(/,/g, '')
+            ) || 0;
 
-        document.getElementById('closingBalance').innerText =
-            (openingBalance + totalInvoice - totalReceipt).toFixed(2);
-    }
+            const type = row.dataset.type;
+
+            // IMPORTANT FIX: no totalDeduction misuse here
+            if (type === 'debit') {
+                runningBalance += amount;
+            }
+
+            if (type === 'credit') {
+                runningBalance -= amount;
+            }
+
+            const balanceCell = row.querySelector('.running-amount strong');
+            if (balanceCell) {
+                balanceCell.innerText = runningBalance.toFixed(2);
+            }
+        }
+    });
+
+    // =========================
+    // TOTALS UPDATE
+    // =========================
+    document.getElementById('totalInvoiceAmount').innerText =
+        (openingBalance + totalInvoice).toFixed(2);
+
+        const cells = document.querySelectorAll('.company-running-amount');
+
+    const closingBalance = cells.length
+        ? parseFloat(
+            cells[cells.length - 1].innerText.replace(/,/g, '')
+        ) || 0
+        : 0;
+
+    document.getElementById('closingBalance').innerText =
+        closingBalance.toFixed(2);
+
+}
 
     // ===============================
     // 🔄 AUTO UPDATE WHEN INPUT CHANGES
@@ -1689,5 +2224,261 @@ if (!fromInput && !toInput && visibleDates.length > 0) {
                 });
         });
         
+        const nextReceiptId = <?= $nextReceiptId ?>;
+
+function getFinancialYear() {
+    const today = new Date();
+    let startYear, endYear;
+
+    if (today.getMonth() >= 3) { // April onwards
+        startYear = today.getFullYear() % 100;
+        endYear = (today.getFullYear() + 1) % 100;
+    } else {
+        startYear = (today.getFullYear() - 1) % 100;
+        endYear = today.getFullYear() % 100;
+    }
+
+    return `${startYear}${endYear}`;
+}
+
+function generateReceiptNo() {
+
+    const mode = $('#modeOfPayment').val();
+
+    if (!mode) {
+        $('#receiptNo').val('');
+        return;
+    }
+
+    const format = window.receiptFormats[mode] || '';
+    const counter = window.receiptCounters[mode] || 1;
+
+    $('#receiptNo').val(
+        format + '/' + String(counter).padStart(2, '0')
+    );
+}
+document.getElementById('modeOfPayment')
+    .addEventListener('change', generateReceiptNo);
+
+// Generate on page load (Cash selected by default)
+window.onload = generateReceiptNo;
+
+// function calculateTDS() {
+//      document.getElementById('tdsAmount').value = '';
+// }
+
+// document.getElementById('billAmount')
+//     .addEventListener('input', calculateTDS);
+
+    $(document).on('click', '.open-receipt', function () {
+    var invoiceId = $(this).data('id');
+
+    $('#current_invoice_id').val(invoiceId);
+
+});
+
+$(document).on('click', '.open-receipt', function () {
+
+    let invoiceId = $(this).data('id');
+
+    $.ajax({
+        url: "<?= site_url('invoice/getReceiptByInvoice') ?>/" + invoiceId,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+
+            let html = '';
+
+            $.each(data, function(index, rec) {
+                html += `
+                    <tr>
+                        <td>${rec.id}</td>
+                        <td>${rec.recipt_no}</td>
+                        <td>${rec.date}</td>
+                        <td>${rec.mode_of_payment}</td>
+                        <td>${rec.cheque_date ?? ''}</td>
+                        <td>${rec.cheque_number ?? ''}</td>
+                        <td>${rec.drawen_bank ?? ''}</td>
+                        <td>${rec.bill_amount}</td>
+                        <td>${rec.tds_amount}</td>
+                         <td class="action">
+
+                <i class="fa-solid fa-pen-to-square edit-btn"
+                    title="Edit"
+                    data-id="${rec.id}"
+                    data-recipt_no="${rec.recipt_no}"
+                    data-date="${rec.date}"
+                    data-mode_of_payment="${rec.mode_of_payment}"
+                    data-cheque_date="${rec.cheque_date ?? ''}"
+                    data-cheque_number="${rec.cheque_number ?? ''}"
+                    data-drawen_bank="${rec.drawen_bank ?? ''}"
+                    data-bill_amount="${rec.bill_amount}"
+                    data-tds_amount="${rec.tds_amount}"
+                    data-invoice-id="${rec.invoice_id}"
+                    data-bank_name="${rec.bank_name ?? ''}"
+                </i>
+
+                <i class="fa-solid fa-trash delete-btn"
+                    title="Delete"
+                    data-id="${rec.id}">
+                </i>
+
+            </td>
+                    </tr>`;
+            });
+
+            $('#receiptTableBody').html(html);
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const modeOfPayment = document.getElementById('modeOfPayment');
+    const paymentTextBlock = document.getElementById('paymentTextBlock');
+    const tdsOnlyBlock = document.getElementById('tdsOnlyBlock');
+    const billAmount = document.getElementById('billAmount');
+
+    function togglePaymentUI() {
+
+    const mode = modeOfPayment.value;
+
+    // Hide all blocks first
+    if (paymentTextBlock) paymentTextBlock.style.display = 'none';
+    if (tdsOnlyBlock) tdsOnlyBlock.style.display = 'none';
+    if (onlineOnlyBlock) onlineOnlyBlock.style.display = 'none';
+
+    if (mode === 'TDS') {
+
+        // Show TDS block only
+        if (tdsOnlyBlock) tdsOnlyBlock.style.display = 'block';
+
+        // Force bill amount to zero + lock it
+        if (billAmount) {
+            billAmount.value = 0;
+            billAmount.readOnly = true;
+        }
+
+    } 
+    else if (mode === 'Online') {
+
+        // Show Online block only
+        if (onlineOnlyBlock) onlineOnlyBlock.style.display = 'block';
+
+        if (billAmount) {
+            billAmount.readOnly = false;
+        }
+
+    } 
+    else {
+
+        // Cash / Cheque / Default
+        if (paymentTextBlock) paymentTextBlock.style.display = 'block';
+
+        if (billAmount) {
+            billAmount.readOnly = false;
+        }
+    }
+}
+
+// run on change
+modeOfPayment.addEventListener('change', togglePaymentUI);
+
+// run on page load
+togglePaymentUI();
+
+});
+// Company Receipt Edit
+document.addEventListener("click", function (e) {
+
+    if (!e.target.classList.contains("company-edit-btn")) return;
+     isEditMode = true;
+     document.getElementById("receiptNo").readOnly = true;
+     document.getElementById("modeOfPayment").disabled = true;
+
+    const btn = e.target;
+
+    // Receipt Details
+    $("#receipt_id").val(btn.dataset.id || "");
+    $("#receiptNo").val(btn.dataset.receipt_no || btn.dataset.recipt_no || "");
+    $("#receiptDate").val(btn.dataset.date || "");
+    
+
+    // Company Details
+    $("#companyName").text(btn.dataset.companyName || "");
+    $("#companyAddress").text(btn.dataset.companyAddress || "");
+    $("#companyPhone").text(btn.dataset.companyPhone || "");
+    $("#companyEmail").text(btn.dataset.companyEmail || "");
+
+    // Client Details
+    $("#clientName").text(btn.dataset.clientName || "");
+    $("#clientAddress").text(btn.dataset.clientAddress || "");
+    $("#clientPan").text(btn.dataset.clientPan || "");
+
+    // Payment Mode
+    $("#modeOfPayment").val(btn.dataset.mode_of_payment || "");
+    $("#modeOfPaymentHidden").val(btn.dataset.mode_of_payment || "");
+
+    // Amounts
+    $("#billAmount").val(btn.dataset.bill_amount || "");
+    $("#tdsAmount").val(btn.dataset.tds_amount || "");
+    $("#tdsAmountOnly").val(btn.dataset.tds_amount || "");
+
+    // Online Payment
+    $("#bankName").val(btn.dataset.bank_name || "");
+    $("#transactionId").val(btn.dataset.bill_amount || "");
+
+    // Cheque Details
+    $("input[name='cheque_date']").val(btn.dataset.cheque_date || "");
+    $("input[name='cheque_number']").val(btn.dataset.cheque_number || "");
+    $("input[name='drawen_bank']").val(btn.dataset.drawen_bank || "");
+
+    // Cheque fields
+    const chequeFields = document.getElementById("chequeFields");
+
+    if (btn.dataset.mode_of_payment === "Cheque") {
+
+        chequeFields.style.display = "block";
+
+        const chequeDate =
+            chequeFields.querySelector("input[name='cheque_date']");
+
+        const chequeNumber =
+            chequeFields.querySelector("input[name='cheque_number']");
+
+        const drawenBank =
+            chequeFields.querySelector("input[name='drawen_bank']");
+
+        if (chequeDate)
+            chequeDate.value = btn.dataset.cheque_date || "";
+
+        if (chequeNumber)
+            chequeNumber.value = btn.dataset.cheque_number || "";
+
+        if (drawenBank)
+            drawenBank.value = btn.dataset.drawen_bank || "";
+
+    } else {
+
+        chequeFields.style.display = "none";
+
+    }
+    // Show proper section (Cash / Cheque / TDS / Online)
+    if (typeof togglePaymentUI === "function") {
+        togglePaymentUI();
+    }
+
+    $("#addreciptnote").modal("show");
+});
+
+//delete note
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.note-delete-btn')) {
+        const id = e.target.closest('.note-delete-btn').dataset.id;
+        if (confirm('Are you sure you want to delete this record?')) {
+            window.location.href = "<?= base_url('debits/delete/') ?>" + id;
+        }
+    }
+});
         
 </script>

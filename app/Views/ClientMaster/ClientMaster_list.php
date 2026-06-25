@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <table>
+            <table id="clientTable">
                 <thead>
                     <tr>
                         <th style="width:24px;"><input type="checkbox" /></th>
@@ -103,8 +103,10 @@
                         <th>Registration no</th>
                         <th>Registered Office</th>
                         <th>Website</th>
+                        <th>Email</th>
+                        <th>GSTIN</th>
                         <th>Company Category</th>
-                        <th>Company Sub‑Category</th>
+                        
                         <th>Corporate Office</th>
                         <th>Status</th>
                         <th style="text-align:right;">Actions</th>
@@ -120,8 +122,10 @@
                         <td><?= esc($client['registration_no']) ?></td>
                         <td><?= esc($client['registered_office']) ?></td>
                         <td><?= esc($client['website']) ?></td>
+                        <td><?= esc($client['email']) ?></td>
+                        <td><?= esc($client['gstin']) ?></td>
                         <td><span class="pill"><?= esc($client['company_category']) ?></span></td>
-                        <td><?= esc($client['company_sub_category']) ?></td>
+                        
                         <td><?= esc($client['corporate_office']) ?></td>
                         <td>
 
@@ -244,9 +248,13 @@
                                     <option value="Public Limited">Public Limited</option>
                                     <option value="LLP">LLP</option>
                                     <option value="Partnership">Partnership</option>
+                                    <option value="Trust-&-Society">Trust & Society</option>
+                                    <option value="OPC">OPC</option>
+                                    <option value="Individual">Individual</option>
+                                    <option value="Proprietorship">Proprietorship</option>
                                 </select>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <label>Company Sub-Category</label>
                                 <select name="company_sub_category" class="select">
                                     <option value="">Select sub-category</option>
@@ -254,7 +262,7 @@
                                     <option value="Medium">Medium</option>
                                     <option value="Large">Large</option>
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- Address -->
                             <div class="form-row-full">
@@ -748,4 +756,154 @@ function deleteRecord(id) {
             .catch(err => console.error(err));
     }
 }
+// ===== SHOW ONLY 10 ROWS INITIALLY =====
+const rows = document.querySelectorAll("#clientTable tbody tr");
+
+rows.forEach((row, index) => {
+    row.style.display = index < 10 ? "" : "none";
+});
+
+// ===== SEARCH =====
+const rowsPerPage = 10;
+let currentPage = 1;
+
+// Sort by Client Name column
+function sortTable() {
+
+    const tbody = document.querySelector("#clientTable tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    rows.sort((a, b) => {
+
+        const textA = a.cells[1].textContent.trim().toLowerCase();
+        const textB = b.cells[1].textContent.trim().toLowerCase();
+
+        return textA.localeCompare(textB);
+
+    });
+
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function getRows() {
+    return Array.from(document.querySelectorAll("#clientTable tbody tr"))
+        .filter(row => row.dataset.match !== "false");
+}
+
+function showPage(page) {
+
+    const rows = getRows();
+
+    rows.forEach((row, index) => {
+
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        row.style.display =
+            (index >= start && index < end) ? "" : "none";
+
+    });
+
+    updatePagination();
+}
+
+function updatePagination() {
+
+    const rows = getRows();
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    const pagination = document.querySelector(".pagination");
+
+    let html = `<div class="page-btn" id="prevBtn">&laquo;</div>`;
+
+    if (totalPages <= 2) {
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += `
+                <div class="page-btn ${i === currentPage ? 'active' : ''}"
+                     data-page="${i}">
+                    ${i}
+                </div>
+            `;
+        }
+
+    } else {
+
+        html += `
+            <div class="page-btn active" data-page="${currentPage}">
+                ${currentPage}
+            </div>
+        `;
+
+        if (currentPage < totalPages) {
+            html += `
+                <div class="page-btn" data-page="${totalPages}">
+                    ${totalPages}
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="page-btn" data-page="${totalPages - 1}">
+                    ${totalPages - 1}
+                </div>
+            `;
+        }
+    }
+
+    html += `<div class="page-btn" id="nextBtn">&raquo;</div>`;
+
+    pagination.innerHTML = html;
+
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    };
+
+    document.querySelectorAll("[data-page]").forEach(btn => {
+        btn.onclick = () => {
+            currentPage = parseInt(btn.dataset.page);
+            showPage(currentPage);
+        };
+    });
+}
+
+// Search
+document.querySelector(".search-input").addEventListener("input", function () {
+
+    const term = this.value.toLowerCase();
+
+    document.querySelectorAll("#clientTable tbody tr").forEach(row => {
+
+        const text = row.textContent.toLowerCase();
+
+        if (term === "" || text.includes(term)) {
+            row.dataset.match = "true";
+        } else {
+            row.dataset.match = "false";
+            row.style.display = "none";
+        }
+    });
+
+    currentPage = 1;
+    showPage(currentPage);
+});
+
+// Initial Load
+sortTable();
+
+document.querySelectorAll("#clientTable tbody tr").forEach(row => {
+    row.dataset.match = "true";
+});
+
+showPage(1);
 </script>

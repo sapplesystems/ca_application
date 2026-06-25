@@ -55,6 +55,15 @@
     outline: none;
 }
 
+.search-input{
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    outline: none;
+}
+
 .dropdown-item{
     padding: 10px;
     cursor: pointer;
@@ -73,6 +82,13 @@
     cursor: pointer;
     width:200px;
 }
+#submitrecipt {
+    z-index: 1062 !important;
+}
+
+#submitrecipt + .modal-backdrop {
+    z-index: 1061 !important;
+}
 
 </style>
 <div class="invoiceM-containerr">
@@ -82,7 +98,7 @@
         <div class="modal-content">
             <div class="modal-header">
 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"  onclick="reloadPageAfterClose()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -92,7 +108,7 @@
 
                 <div class="Gvoice-section-title">Choose Client</div>
                 <div class="Gvoice-box">
-                    <input type="text" id="" placeholder="Search work..." class="Gvoice-search-input">
+                    <input type="text" id="clientSearch" class="search-input" placeholder="Search client...">
                 <?php foreach ($clients as $client): ?>
                     <div class="Gvoice-option-row">
                         <input type="radio" name="client_id"
@@ -106,7 +122,7 @@
 
                 <div class="Gvoice-section-title">Choose Work</div>
                 <div class="Gvoice-box">
-                    <input type="text" id="" placeholder="Search work..." class="Gvoice-search-input">
+                    <input type="text" id="workSearch" class="search-input" placeholder="Search work...">
                 <?php foreach ($works as $work): ?>
                     <div class="Gvoice-option-row">
                         <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>">
@@ -117,7 +133,7 @@
 
                 <div class="Gvoice-section-title">Choose Company</div>
                 <div class="Gvoice-box">
-                      <input type="text" id="" placeholder="Search work..." class="Gvoice-search-input">
+                    <input type="text" id="modalCompanySearch" class="search-input" placeholder="Search company...">
                 <?php foreach ($companies as $company): ?>
                     <div class="Gvoice-option-row">
                         <input type="radio" name="company_id"
@@ -153,11 +169,372 @@
         </div>
     </div>
 </div>
+
+<!-- Debit/Credit Note Modal -->
+<div class="modal fade" id="noteGenerateModal" tabindex="-1" aria-labelledby="noteGenerateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noteGenerateModalLabel">Generate Note</h5>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" onclick="reloadPageAfterClose()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="noteGenerateForm" method="post" action="<?= base_url('debit-note/store') ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" name="note_type" id="note_type_hidden" value="">
+                <input type="hidden" name="client_id" id="note_client_id" value="">
+                <input type="hidden" name="company_debit" id="note_company_id" value="">
+                <div class="modal-body">
+                    <div class="debitP">
+                        <div class="content">
+                            <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                <label><strong>Select Client</strong></label>
+                                <input type="text" id="noteClientSearch" class="search-input" placeholder="Search client...">
+                                <?php foreach ($clients as $client): ?>
+                                <div class="Gvoice-option-row note-client-row">
+                                    <label>
+                                        <input type="radio" name="note_client_choice" value="<?= $client['id']; ?>">
+                                        <?= esc($client['legal_name']); ?>
+                                    </label>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                <label><strong>Choose Company</strong></label>
+                                <input type="text" id="noteCompanySearch" class="search-input" placeholder="Search company...">
+                                <?php foreach ($companies as $company): ?>
+                                <div class="Gvoice-option-row note-company-row">
+                                    <label>
+                                        <input type="radio" name="note_company_choice" value="<?= esc($company['id']) ?>">
+                                        <?= esc($company['name']) ?> [<?= esc($company['type_of_company']) ?>]
+                                    </label>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="Gvoice-section-title">Tax
+                                <div class="Gvoice-box">
+                                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                                <label><input type="radio" name="tax" value="igst"> IGST</label>
+                                </div>
+                            </div>
+                             <div class="Gvoice-actions">
+                    <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
+                    <button class="Gvoice-btn Gvoice-btn-danger" type="button" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
+                </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="receiptGenerateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Receipt Note</h5>
+
+                 <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"  onclick="reloadPageAfterClose()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="receiptGenerateForm">
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="client_id" id="receipt_client_id">
+                    <input type="hidden" name="company_id" id="receipt_company_id">
+
+                    <!-- Client -->
+
+                    <div class="form-group mb-3">
+
+                        <label><strong>Select Client</strong></label>
+
+                        <input type="text"
+                               id="receiptClientSearch"
+                               class="form-control"
+                               placeholder="Search client...">
+
+                        <div style="max-height:200px;overflow-y:auto;">
+
+                            <?php foreach ($clients as $client): ?>
+
+                            <div class="receipt-client-row mt-2">
+
+                                <label>
+
+                                    <input type="radio"
+                                           name="receipt_client_choice"
+                                           value="<?= $client['id']; ?>">
+
+                                    <?= esc($client['legal_name']); ?>
+
+                                </label>
+
+                            </div>
+
+                            <?php endforeach; ?>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Company -->
+
+                    <div class="form-group mb-3">
+
+                        <label><strong>Select Company</strong></label>
+
+                        <input type="text"
+                               id="receiptCompanySearch"
+                               class="form-control"
+                               placeholder="Search company...">
+
+                        <div style="max-height:200px;overflow-y:auto;">
+
+                            <?php foreach ($companies as $company): ?>
+
+                            <div class="receipt-company-row mt-2">
+
+                                <label>
+
+                                    <input type="radio"
+                                           name="receipt_company_choice"
+                                           value="<?= $company['id']; ?>">
+
+                                    <?= esc($company['name']); ?>
+                                    [<?= esc($company['type_of_company']); ?>]
+
+                                </label>
+
+                            </div>
+
+                            <?php endforeach; ?>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            id="receiptProceedBtn"
+                            class="btn btn-success">
+                        Proceed
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            data-dismiss="modal" data-bs-dismiss="modal" onclick="reloadPageAfterClose()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="submitrecipt" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="options-container">
+                    <div class="options-header">Options</div>
+
+                    <label class="pdf-label">Receipt PDF</label>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <button class="btn btn-success flex-fill" id="printReceiptBtn">Print Receipt</button>
+                        <button class="btn btn-success flex-fill" id="downloadPdfBtn">Receipt PDF Download</button>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer">
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-primary">Save changes</button>
+             </div> -->
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addreciptnote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                 <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" onclick="reloadPageAfterClose()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="receiptForm">
+                <div class="modal-body">
+                   <input type="hidden" name="client_id" id="receipt_client_id">
+                   <input type="hidden" name="company_id" id="receipt_company_id">
+                   <input type="hidden" name="receipt_id" id="receipt_id">
+                    <div class="receiptnote-container ReciptNoteData">
+
+                        <!-- Header -->
+                        <div class="receiptnote-header top">
+                            <div class="receiptnote-company-name company">
+                                <h2 id="companyName"></h2>
+                                <span id="companyType"></span>
+                            </div>
+
+                            <div class="receiptnote-address contact">
+                                Address : <span id="companyAddress"></span><br />
+                                Ph. No. : <span id="companyPhone"></span><br />
+                                E-Mail : <span id="companyEmail"></span><br />
+                            </div>
+                        </div>
+                        
+
+                        <!-- Title -->
+                        <div class="receiptnote-title title">Receipt Note</div>
+
+                        <!-- Receipt Info -->
+                        <table class="receiptnote-table section">
+                            <tr>
+                                <td class="receiptnote-label">PAN :</td>
+                                <td id="clientPan"></td>
+
+                                <td class="receiptnote-label">Receipt Note No. :</td>
+                                <td>
+                                    <input type="text" name="recipt_no" id="receiptNo" class="receiptnote-input" />
+                                </td>
+                            </tr>
+
+                            <tr class="receiptnote-light highlight">
+                                <td></td>
+                                <td></td>
+
+                                <td class="receiptnote-label">Date :</td>
+                                <td>
+                                    <input type="date" name="date" id="receiptDate" class="receiptnote-input" value="<?= date('Y-m-d') ?>"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Issued To -->
+                        <table class="receiptnote-table section">
+                            <tr class="receiptnote-light highlight">
+                                <td colspan="4"><strong>Issued To,</strong></td>
+                            </tr>
+
+                            <tr>
+                                <td class="receiptnote-label">Name :</td>
+                                <td colspan="3" id="clientName"></td>
+                            </tr>
+
+                            <tr class="receiptnote-light highlight">
+                                <td class="receiptnote-label">Address :</td>
+                                <td colspan="3">
+                                    <span id="clientAddress"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="receiptnote-label">Mode Of Payment :</td>
+                                <td colspan="3">
+                                    <select name="mode_of_payment" id="modeOfPayment" class="receiptnote-select">
+                                        <option value="">Select Mode Of Payment</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="TDS">TDS</option>
+                                        <option value="Online">Online Transfer</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Cheque Fields -->
+                        <div id="chequeFields" style="display:none;" class="section">
+                            <label>Cheque Date</label>
+                            <input type="date" name="cheque_date" class="receiptnote-input">
+
+                            <label>Cheque Number</label>
+                            <input type="text" name="cheque_number" class="receiptnote-input"
+                                placeholder="Cheque Number">
+
+                            <label>Drawn Bank</label>
+                            <input type="text" name="drawen_bank" class="receiptnote-input" placeholder="Drawn Bank">
+                        </div>
+
+                        <!-- Amount Text -->
+                        <div id="paymentTextBlock" class="receiptnote-text section highlight text">
+                            Received with thanks from M/s/Mr/Mrs/Ms 
+                            <span id="clientName"></span> 
+                            the sum of Rs.
+                            
+                            <input type="text" name="bill_amount" id="billAmount" class="receiptnote-inline-input" />
+                            
+                            /- Amount in Words <b>Zero Rupees</b> Against Cash after deduction of TDS Rs
+                            
+                            <input type="text" name="tds_amount" id="tdsAmount" class="receiptnote-inline-input" />
+                            
+                            /- Amount In Words <b>Zero Rupees</b> for professional Services Rendered /
+                            Advance Against invoice Raised vide Bill No <span id="invoiceNo"></span> /
+                            dated <span id="invoiceDate"></span>.
+                        </div>
+                        <div id="tdsOnlyBlock" style="display:none;">
+                            TDS Amount:
+                            <input type="text" name="tds_amount_only" id="tdsAmountOnly" class="receiptnote-inline-input" />
+                        </div>
+                        <div id="onlineOnlyBlock" style="display:none;">
+                            Bank Name :
+                            <input type="text" name="bank_name" id="bankName" class="receiptnote-inline-input" />
+                            Received Amount :
+                            <input type="text" name="bill_amount_Online" id="transactionId" class="receiptnote-inline-input" />
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="receiptnote-footer footer">
+                            For more Information reach us @ <b>www.ksaca.in</b>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="receiptnote-buttons buttons">
+                            <button type="button" class="receiptnote-btn receiptnote-btn-submit btn btn-primary"
+                                id="saveReceiptBtn">
+                                Save Receipt
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     <div class="invoiceM-toolbar">
-        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right"class=" Minvoice-btn Minvoice-btn-primary" data-toggle="modal"
-            data-target="#GenrateVoice">
+        <div class="invoiceM-toolbar-title">Invoice Management <button type="button" style="float:right;margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#GenrateVoice" data-bs-toggle="modal" data-bs-target="#GenrateVoice"onclick="localStorage.setItem('activeMenu','invoicemanagement')">
             Generate Invoice For Pending Work
- </button></div>
+        </button>
+        <button type="button" id="generateReceiptBtn"  style="float:right; margin-left:5px;"class="Minvoice-btn Minvoice-btn-primary">
+            Generate Receipt Note
+        </button>
+        <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="credit">
+            Credit Note
+        </button>
+        <button type="button" style="float:right; margin-left:5px;" class="Minvoice-btn Minvoice-btn-primary" data-toggle="modal" data-target="#noteGenerateModal" data-bs-toggle="modal" data-bs-target="#noteGenerateModal" data-note-type="debit">
+            Debit Note
+        </button>
+        
+        </div>
             <div class="Minvoice-filter-row">
       <div class="Minvoice-filter-group">
 
@@ -232,20 +609,27 @@
     </div>
 
     <div id="searchResultsSection" style="margin-top: 24px; display: none;">
+        <!-- Result-level search (client-side) -->
+        <div style="margin-bottom:12px;">
+            <div class="input-group">
+                <input type="text" id="resultSearch" class="form-control" placeholder="Search results by Party Name, Invoice No., GSTIN, HSN..." />
+            </div>
+        </div>
+
         <table style="width:100%; border-collapse: collapse;">
             <thead>
                 <tr style="background:#0b5c7d; color:#fff;">
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">Date</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">Invoice No.</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">Party Name</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:left;">GSTIN</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">HSN Code</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">Taxable Amount</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">CGST@9%</th>  
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">SGST@9%</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">IGST@18%</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">Gross Total</th>
-                    <th style="padding:8px; border:1px solid #ccc; text-align:right;">Action</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Date</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Invoice No.</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Party Name</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">GSTIN</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center; width:8%;">HSN Code</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Taxable Amount</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">CGST@9%</th>  
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">SGST@9%</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">IGST@18%</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Gross Total</th>
+                    <th style="padding:8px; border:1px solid #ccc; text-align:center;">Action</th>
                 </tr>
             </thead>
             <tbody id="searchResultsBody"></tbody>
@@ -256,8 +640,24 @@
 
 
  </div>
- <script>
+<script>
+    $('#modeOfPayment').on('change', function () {
 
+    let mode = $(this).val();
+
+    // Hide all optional sections first
+    $('#chequeFields').hide();
+
+    if (mode === 'Cheque') {
+        $('#chequeFields').show();
+    }
+});
+function reloadPageAfterClose() {
+    setTimeout(function () {
+        location.reload();
+    }, 300); // wait for modal to close smoothly
+}
+    localStorage.setItem('activeMenu', 'invoicemanagement');
 document.addEventListener('DOMContentLoaded', function () {
 
     // ================================
@@ -332,7 +732,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    const noteTypeButtons = document.querySelectorAll('[data-note-type]');
+    const noteTypeHidden = document.getElementById('note_type_hidden');
+    const noteClientHidden = document.getElementById('note_client_id');
+    const noteCompanyHidden = document.getElementById('note_company_id');
+    const noteClientSearch = document.getElementById('noteClientSearch');
+    const noteCompanySearch = document.getElementById('noteCompanySearch');
+    const noteClientRows = document.querySelectorAll('.note-client-row');
+    const noteCompanyRows = document.querySelectorAll('.note-company-row');
 
+    noteTypeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const noteType = this.dataset.noteType || '';
+            noteTypeHidden.value = noteType;
+            noteClientHidden.value = '';
+            noteCompanyHidden.value = '';
+            document.getElementById('noteGenerateModalLabel').innerText =
+                noteType === 'credit' ? 'Generate Credit Note' : 'Generate Debit Note';
+            document.querySelectorAll('input[name="note_client_choice"]').forEach(input => input.checked = false);
+            document.querySelectorAll('input[name="note_company_choice"]').forEach(input => input.checked = false);
+        });
+    });
+
+    document.querySelectorAll('input[name="note_client_choice"]').forEach(input => {
+        input.addEventListener('change', function() {
+            noteClientHidden.value = this.value;
+        });
+    });
+
+    document.querySelectorAll('input[name="note_company_choice"]').forEach(input => {
+        input.addEventListener('change', function() {
+            noteCompanyHidden.value = this.value;
+        });
+    });
+
+    document.getElementById('noteGenerateForm').addEventListener('submit', function(e) {
+        if (!noteTypeHidden.value || !noteClientHidden.value || !noteCompanyHidden.value) {
+            e.preventDefault();
+            alert('Select note type, client and company before proceeding.');
+        }
+    });
+
+    noteClientSearch.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        noteClientRows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? 'flex' : 'none';
+        });
+    });
+
+    noteCompanySearch.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        noteCompanyRows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? 'flex' : 'none';
+        });
+    });
 
 
     // ================================
@@ -351,6 +804,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdownItems =
         document.querySelectorAll('.dropdown-item');
 
+    const clientSearch =
+        document.getElementById('clientSearch');
+
+    const workSearch =
+        document.getElementById('workSearch');
+
+    const modalCompanySearch =
+        document.getElementById('modalCompanySearch');
+
+    const clientRows =
+        document.querySelectorAll('input[type="radio"][name="client_id"]');
+
+    const workRows =
+        document.querySelectorAll('input[type="checkbox"][name="work_ids[]"]');
+
+    const modalCompanyRows =
+        document.querySelectorAll('.Gvoice-box input[type="radio"][name="company_id"]');
 
 
     // Open dropdown
@@ -396,6 +866,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    clientSearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        clientRows.forEach(input => {
+            const row = input.closest('.Gvoice-option-row');
+            if (!row) return;
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? 'flex'
+                : 'none';
+        });
+    });
+
+    workSearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        workRows.forEach(input => {
+            const row = input.closest('.Gvoice-option-row');
+            if (!row) return;
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? 'flex'
+                : 'none';
+        });
+    });
+
+    modalCompanySearch.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        modalCompanyRows.forEach(input => {
+            const row = input.closest('.Gvoice-option-row');
+            if (!row) return;
+            row.style.display = row.innerText.toLowerCase().includes(value)
+                ? 'flex'
+                : 'none';
+        });
+    });
 
 
     // Select company
@@ -519,7 +1021,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(results => {
 
             searchResultsSection.style.display = 'block';
-
             document.getElementById('invoice-footer')
                 .style.display = 'block';
 
@@ -606,8 +1107,10 @@ document.addEventListener('DOMContentLoaded', function () {
                            ✏️ Edit
                         </a>
 
-                        <a href="<?= site_url('invoice/print/') ?>${row.id}"
-                           style="margin-right:4px; text-decoration:none; color:#0b5c7d;">
+                        <a href="javascript:void(0)"
+                           class="preview-link"
+                           data-preview-url="<?= site_url('invoice/print/') ?>${row.id}"
+                           style="margin-right:4px; text-decoration:none; color:#0b5c7d; cursor:pointer;">
                            👁️ Preview
                         </a>
 
@@ -620,16 +1123,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 `;
 
+                // add searchable datasets for client-side filtering
+                tr.dataset.partyName = (row.party_name || '').toString().toLowerCase();
+                tr.dataset.invoiceNo = (row.invoice_no || '').toString().toLowerCase();
+                tr.dataset.gstin = (row.party_gstin || '').toString().toLowerCase();
+                tr.dataset.hsn = (row.hsn_code || '').toString().toLowerCase();
+
                 searchResultsBody.appendChild(tr);
 
             });
+
+            // bind client-side filter to result search input
+            const resultSearch = document.getElementById('resultSearch');
+            if (resultSearch) {
+                resultSearch.addEventListener('input', function () {
+                    const term = this.value.trim().toLowerCase();
+                    const rows = searchResultsBody.querySelectorAll('tr');
+                    let visible = 0;
+
+                    rows.forEach(r => {
+                        if (!term) {
+                            r.style.display = '';
+                            visible++;
+                            return;
+                        }
+
+                        const match = (r.dataset.partyName || '').includes(term)
+                            || (r.dataset.invoiceNo || '').includes(term)
+                            || (r.dataset.gstin || '').includes(term)
+                            || (r.dataset.hsn || '').includes(term);
+
+                        if (match) {
+                            r.style.display = '';
+                            visible++;
+                        } else {
+                            r.style.display = 'none';
+                        }
+
+                    });
+
+                    if (visible === 0) {
+                        noSearchResults.style.display = 'block';
+                        noSearchResults.innerText = 'No matching records found.';
+                    } else {
+                        noSearchResults.style.display = 'none';
+                    }
+
+                });
+
+                // wire the button to trigger same filtering
+                const resultBtn = document.getElementById('resultSearchBtn');
+                if (resultBtn) {
+                    resultBtn.addEventListener('click', function () {
+                        resultSearch.dispatchEvent(new Event('input'));
+                    });
+                }
+            }
 
         })
 
         .catch(() => {
 
             searchResultsSection.style.display = 'block';
-
             noSearchResults.textContent =
                 'Unable to load search results. Please try again.';
 
@@ -673,6 +1228,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    // Preview link handler - use window.open so it can be closed
+    document.body.addEventListener('click', function (e) {
+        const previewLink = e.target.closest('.preview-link');
+        if (!previewLink) return;
+        e.preventDefault();
+        const url = previewLink.dataset.previewUrl;
+        if (url) {
+            window.open(url, 'InvoicePreview');
+        }
+    });
+
+    // Import/export removed for ReceiptInvoiceManagement
+
 });
 
 
@@ -691,7 +1259,7 @@ function showSearchPopup(message) {
 
         existing.remove();
 
-    }
+    }[]
 
     const popup =
         document.createElement('div');
@@ -769,5 +1337,275 @@ function formatDisplayDate(dateString) {
     return `${day}-${month}-${year}`;
 
 }
+
+$(document).ready(function () {
+
+    // Open Modal
+    $('#generateReceiptBtn').click(function () {
+
+        $('#receiptGenerateModal').modal('show');
+
+    });
+
+    // Client Search
+    $('#receiptClientSearch').on('keyup', function () {
+
+        let value = $(this).val().toLowerCase();
+
+        $('.receipt-client-row').filter(function () {
+
+            $(this).toggle(
+                $(this).text().toLowerCase().indexOf(value) > -1
+            );
+
+        });
+
+    });
+
+    // Company Search
+    $('#receiptCompanySearch').on('keyup', function () {
+
+        let value = $(this).val().toLowerCase();
+
+        $('.receipt-company-row').filter(function () {
+
+            $(this).toggle(
+                $(this).text().toLowerCase().indexOf(value) > -1
+            );
+
+        });
+
+    });
+
+    // Proceed
+    $('#receiptProceedBtn').click(function () {
+
+        let clientId =
+            $('input[name="receipt_client_choice"]:checked').val();
+
+        let companyId =
+            $('input[name="receipt_company_choice"]:checked').val();
+
+        if (!clientId) {
+
+            alert('Please select client');
+            return;
+
+        }
+
+        if (!companyId) {
+
+            alert('Please select company');
+            return;
+
+        }
+
+    // Store IDs in hidden fields
+    $('#receipt_client_id').val(clientId);
+    $('#receipt_company_id').val(companyId);
+
+    console.log("Client ID:", clientId);
+    console.log("Company ID:", companyId);
+
+        $('#receiptGenerateModal').modal('hide');
+
+        // Open Receipt Note Modal
+        $('#addreciptnote').modal('show');
+
+        // Optional AJAX call
+        loadReceiptDetails(clientId, companyId);
+
+    });
+
+});
+
+function loadReceiptDetails(clientId, companyId)
+{
+    console.log("Loading receipt details for Client ID:", clientId, "Company ID:", companyId);
+    $.ajax({
+
+        url: "<?= site_url('invoice-mangement/getReceiptDetails') ?>",
+
+        type: "POST",
+
+        data: {
+            client_id: clientId,
+            company_id: companyId
+        },
+
+        dataType: "json",
+
+        success: function(res){
+
+            $('#companyName').text(res.company.name);
+            $('#companyType').text(res.company.type_of_company);
+            $('#companyAddress').html(res.company.registered_office);
+            $('#companyPhone').text(res.company.telephone);
+            $('#companyEmail').text(res.company.email);
+
+            $('#clientName').text(res.client.legal_name);
+            $('#clientAddress').html(res.client.registered_office);
+            $('#clientPan').text(res.client.pan);
+
+        }
+
+    });
+}
+
+$(document).on('change', '#modeOfPayment', function () {
+
+    let paymentMode = $(this).val();
+    let companyId = $('#receipt_company_id').val();
+
+    // Show / Hide Blocks
+    if (paymentMode === 'TDS') {
+
+        $('#paymentTextBlock').hide();
+        $('#tdsOnlyBlock').show();
+        $('#onlineOnlyBlock').hide();
+
+    } 
+    else if(paymentMode === 'Online')
+    {
+        $('#onlineOnlyBlock').show();
+        $('#paymentTextBlock').hide();
+        $('#tdsOnlyBlock').hide();
+    }
+    else {
+
+        $('#paymentTextBlock').show();
+        $('#tdsOnlyBlock').hide();
+        $('#onlineOnlyBlock').hide();
+
+    }
+
+    // Generate Receipt Number
+    $.ajax({
+        url: "<?= site_url('invoice-mangement/getReceiptNumber') ?>",
+        type: "POST",
+        data: {
+            mode_of_payment: paymentMode,
+            company_id: companyId
+        },
+        dataType: "json",
+        success: function (res) {
+            $('#receiptNo').val(res.receipt_no);
+
+        },
+        error: function () {
+
+            alert('Unable to generate receipt number.');
+
+        }
+    });
+
+});
+
+document.getElementById("saveReceiptBtn").addEventListener("click", async function () {
+
+    try {
+
+        const receiptId = document.getElementById("receipt_id").value;
+        const form = document.getElementById("receiptForm");
+        const formData = new FormData(form);
+
+        const mode = $('#modeOfPayment').val();
+
+        // Force values into FormData
+        formData.set('client_id', $('#receipt_client_id').val());
+        formData.set('company_id', $('#receipt_company_id').val());
+        formData.set('mode_of_payment', mode);
+
+        // Payment Mode Logic
+        if (mode === 'TDS') {
+
+            formData.set('bill_amount', 0);
+            formData.set('tds_amount', $('#tdsAmountOnly').val());
+            formData.set('bank_name', '');
+
+        } else if (mode === 'Online') {
+
+            formData.set('bill_amount', $('#billAmount').val());
+            formData.set('tds_amount', 0);
+            formData.set('bank_name', $('#bankName').val());
+            formData.set('transaction_id', $('#transactionId').val());
+
+        } else {
+
+            formData.set('bill_amount', $('#billAmount').val());
+            formData.set('tds_amount', $('#tdsAmount').val() || 0);
+
+        }
+
+        // Debug
+        console.log('----- Form Data -----');
+        for (let pair of formData.entries()) {
+            console.log(pair[0], '=>', pair[1]);
+        }
+
+        const response = await fetch(
+            "<?= site_url('invoice-mangement/saveReceipt') ?>",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+            alert(data.message || "Failed to save receipt");
+            return;
+        }
+
+        const newId = data.receipt_id || receiptId;
+
+        $('#receipt_id').val(newId);
+
+        alert(receiptId ? "Receipt Updated Successfully" : "Receipt Saved Successfully");
+
+        $('#submitrecipt')
+            .data('receipt-id', newId)
+            .attr('data-receipt-id', newId)
+            .modal('show');
+
+    } catch (error) {
+
+        console.error('Receipt Save Error:', error);
+        alert('Something went wrong while saving receipt.');
+
+    }
+
+});
+document.getElementById("printReceiptBtn").addEventListener("click", function() {
+
+    const receiptId = $('#submitrecipt').data('receipt-id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `invoice-mangement/printReceipt/${receiptId}`;
+});
+
+
+document.getElementById("downloadPdfBtn").addEventListener("click", function() {
+
+    const receiptId = $('#submitrecipt').data('receipt-id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `invoice-mangement/receiptPdf/${receiptId}`;
+});
+
+    $(document).on('click', '.close', function() {
+        $('#addreciptnote').modal('hide');
+        $('#submitrecipt').modal('hide');
+        location.reload();
+    });
 
 </script>

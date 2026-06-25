@@ -4,6 +4,21 @@
     <title>Receipt Note</title>
 
     <style>
+        table,
+table td,
+table th,
+table span,
+table b,
+table strong {
+    font-family: 'Cambria', 'Times New Roman', serif !important;
+    font-size: 13px !important;
+    font-weight: normal;
+}
+
+table b,
+table strong {
+    font-weight: bold;
+}
         body {
             font-family: Arial, sans-serif;
             font-size: 13px;
@@ -38,10 +53,13 @@
             border: 1px solid #000;
         }
 
-        td {
-            padding: 6px;
-            vertical-align: top;
-        }
+    td {
+    padding: 6px;
+    vertical-align: top;
+    font-size: 13px;
+    font-weight: normal;
+    font-family: 'Cambria', 'Times New Roman', serif;
+}
 
         .footer {
             text-align: center;
@@ -81,6 +99,19 @@
         /* ===== PRINT STYLES - BLANK PAGE FIXED ===== */
         @media print {
             /* Remove all extra margins and padding */
+            td {
+    padding: 3px 5px !important;
+    font-size: 10px !important;
+    font-weight: normal !important;
+    font-family: 'Cambria', 'Times New Roman', serif !important;
+}
+            body,
+.receipt-container,
+table,
+td,
+th {
+    font-family: 'Cambria', 'Times New Roman', serif !important;
+}
             html, body {
                 margin: 0 !important;
                 padding: 0 !important;
@@ -208,11 +239,14 @@
             font-display: swap;
         }
     </style>
+    
 </head>
 
 <body>
     <div class="receipt-container">
-        <!-- HEADER -->
+
+    <!-- HEADER -->
+     <!-- HEADER -->
         <div style="text-align:center; margin-bottom:15px; line-height:1.3;">
             <div style="font-size:28px; font-weight:bold; text-transform:uppercase; font-family:'Times New Roman', serif;">
                 <?= esc($company['name']) ?>
@@ -240,71 +274,81 @@
 
         <div class="title">Receipt Note</div>
 
-        <!-- INFO TABLE -->
-        <table>
-            <tr>
-                <td style="width:10%;"><b>PAN :</b></td>
-                <td style="width:35%;"><?= esc($client['pan'] ?? '') ?></td>
-                <td style="width:20%;"><b>Receipt Note No. :</b></td>
-                <td style="width:35%;"><?= esc($receipt['recipt_no']) ?></td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-                <td><b>Date :</b></td>
-                <td><?= date('d/m/Y', strtotime($receipt['date'])) ?></td>
-            </tr>
-            <tr>
-                <td colspan="4"><b>Issued To,</b></td>
-            </tr>
-            <tr>
-                <td><b>Name :</b></td>
-                <td colspan="3"><?= esc($client['legal_name']) ?></td>
-            </tr>
-            <tr>
-                <td><b>Address :</b></td>
-                <td colspan="3"><?= esc($client['registered_office']) ?></td>
-            </tr>
-            <tr>
-                <td><b>Mode Of Payment :</b></td>
-                <td colspan="3"><?= esc($receipt['mode_of_payment']) ?></td>
-            </tr>
-              <?php
+    <!-- INFO TABLE -->
+    <table>
+        <tr>
+            <td><b>PAN :</b></td>
+            <td><?= esc($client['pan'] ?? '') ?></td>
+            <td><b>Receipt Note No. :</b></td>
+            <td><?= esc($receipt['recipt_no']) ?></td>
+        </tr>
+
+        <tr>
+            <td colspan="2"></td>
+            <td><b>Date :</b></td>
+            <td><?= date('d/m/Y', strtotime($receipt['date'])) ?></td>
+        </tr>
+
+        <tr>
+            <td colspan="4"><b>Issued To,</b></td>
+        </tr>
+
+        <tr>
+            <td><b>Name :</b></td>
+            <td colspan="3"><?= esc($client['legal_name']) ?></td>
+        </tr>
+
+        <tr>
+            <td><b>Address :</b></td>
+            <td colspan="3"><?= esc($client['registered_office']) ?></td>
+        </tr>
+
+        <tr>
+            <td><b>Mode Of Payment :</b></td>
+           <td colspan="3">
+                <?= $receipt['mode_of_payment'] === 'Online'
+                    ? 'Online Transfer'
+                    : esc($receipt['mode_of_payment']) ?>
+            </td>
+        </tr>
+         <?php
         $formatter = new NumberFormatter('en_IN', NumberFormatter::SPELLOUT);
 
         $amountInWords = ucwords(
             $formatter->format((int)$receipt['bill_amount'])
         );
         ?>
-            <tr>
-                <td colspan="4" style="font-size:11px; line-height:1.6;">
-                    Received with thanks from M/s/Mr/Mrs/Ms
-                    <b><?= esc($client['legal_name']) ?></b>,
-                    the sum of Rs. <b><?= number_format($receipt['bill_amount'], 2) ?></b>
-                    /- Amount in Words <b><?= esc($amountInWords) ?> Only</b>
-                    after deduction of TDS Rs.
-                    <b><?= number_format($receipt['tds_amount'], 2) ?></b>
-                    /- for professional Services Rendered / Advance Against invoice
-                    Raised vide Bill No <b><?= esc($invoice['invoice_no']) ?></b>
-                    dated <b><?= date('d/m/Y', strtotime($invoice['invoice_date'])) ?></b>
-                </td>
-            </tr>
-        </table>
+        <tr>
+           <td colspan="4">
+                Received with thanks from M/s/Mr/Mrs/Ms
+                <b><?= esc($client['legal_name']) ?></b>,
+                the sum of Rs. <b><?= number_format($receipt['bill_amount'], 2) ?></b>
+                /- Amount in Words <b><?= esc($amountInWords) ?> Only</b>
+                after deduction of TDS Rs.
+                <b><?= number_format($receipt['tds_amount'], 2) ?></b>
+                /- through <b><?= esc($receipt['bank_name']) ?></b>
+                for Professional Services Rendered / Advance Against Invoice
+                 Raised vide Bill No <b><?= esc($company['name']) ?></b>
+                dated <b><?= date('d/m/Y', strtotime($receipt['date'])) ?></b>
+            </td>
+        </tr>
+    </table>
 
-        <div class="footer">
-            For more Information reach us @ <b>www.ksaca.in</b>
-        </div>
-
-        <div class="print-actions">
-            <button class="action-btn print-btn" onclick="printInvoicePage()">
-                🖨 Print Invoice
-            </button>
-            <button class="action-btn cancel-btn" onclick="cancelPrint()">
-                ✖ Cancel
-            </button>
-        </div>
+    <div class="footer">
+        For more Information reach us @ <b>www.ksaca.in</b>
     </div>
 
-    <script>
+     <div class="print-actions">
+    <button class="action-btn print-btn" onclick="printInvoicePage()">
+        🖨 Print Invoice
+    </button>
+
+    <button class="action-btn cancel-btn" onclick="cancelPrint()">
+        ✖ Cancel
+    </button>
+</div>
+</div>
+<script>
         // Auto print on load
         window.onload = function() {
             window.print();
@@ -315,8 +359,12 @@
         }
 
         function cancelPrint() {
-            window.location.href = '<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>';
+            window.location.href = '<?= base_url('invoice-mangement'); ?>';
         }
     </script>
+
 </body>
 </html>
+ 
+
+

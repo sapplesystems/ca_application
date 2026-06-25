@@ -134,6 +134,63 @@ class CompanyMasterController extends BaseController
                         Define how invoice numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
                     </p>
                 </div>';
+                $html .= '<div class="cmg-field">
+                    <label class="cmg-label">Debit Note Format</label>
+                    <input type="text" class="cmg-input" name="debit_format"
+                        value="' . esc($company['debit_format']) . '"
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                    <p class="cmg-help-text">
+                        Define how debit note numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
+                    </p>
+                </div>';
+
+                $html .='<div class="cmg-field">
+                    <label class="cmg-label">Credit Note Format</label>
+                    <input type="text" class="cmg-input" name="credit_format"
+                        value="' . esc($company['credit_format']) . '"
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                    <p class="cmg-help-text">
+                        Define how credit note numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
+                    </p>
+                </div>';
+                $html .= '<div class="cmg-field">
+                    <label class="cmg-label">Cash Receipt Format</label>
+                    <input type="text" class="cmg-input" name="cash_receipt_format"
+                        value="' . esc($company['cash_receipt_format']) . '"
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                    <p class="cmg-help-text">
+                        Define how cash receipt numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
+                    </p>
+                </div>';
+                $html .= '<div class="cmg-field">
+                    <label class="cmg-label">Cheque Receipt Format</label>
+                    <input type="text" class="cmg-input" name="cheque_receipt_format"
+                        value="' . esc($company['cheque_receipt_format']) . '"
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                    <p class="cmg-help-text">
+                        Define how cheque receipt numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
+                    </p>    
+                </div>';
+                $html .= '<div class="cmg-field">
+                    <label class="cmg-label">TDS Receipt Format</label>
+                    <input type="text" class="cmg-input" name="tds_receipt_format"
+                        value="' . esc($company['tds_receipt_format']) . '"
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                    <p class="cmg-help-text">
+                        Define how TDS receipt numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
+                    </p>
+                </div>';
+
+                $html .= '<div class="cmg-field">
+                    <label class="cmg-label">Online Receipt Format</label>
+                    <input type="text" class="cmg-input" name="online_receipt_format"
+                        value="' . esc($company['online_receipt_format']) . '"
+                        placeholder="e.g. ORG/BRANCH/FY/SEQ">
+                    <p class="cmg-help-text">
+                        Define how online receipt numbers will be generated (e.g. ORG/BRANCH/FY/SEQ).
+                    </p>
+                </div>';
+
                 $html .= '<div class="cmg-field cmg-field--full">
                     <label class="cmg-label">Sister Concerns</label>
                     <textarea class="cmg-textarea" name="sister_concerns" 
@@ -141,7 +198,6 @@ class CompanyMasterController extends BaseController
                         . esc($company['sister_concerns']) .
                     '</textarea>
                 </div>';
-              
 
                 /* ================= GST ================= */
                 $html .= '<div class="cmg-field">
@@ -365,10 +421,22 @@ $html .= '</div></div></div>';
                         ->findAll();  
         $invoiceModel = new InvoiceMasterModel();
         $invoiceNo = $invoiceModel->generateInvoiceNo('KSA','HO');
+        $debitNo = $invoiceModel->generateDebitNo('DN');
+        $creditNo = $invoiceModel->generateDebitNo('CN');
+        $cashReceiptNo = $invoiceModel->generateDebitNo('CH');
+        $chequeReceiptNo = $invoiceModel->generateDebitNo('CHQ');
+        $tdsReceiptNo = $invoiceModel->generateDebitNo('TDS');
+        $onlineReceiptNo = $invoiceModel->generateDebitNo('TRF');
 
     $data = [
         'companies' => $companies,
-        'invoiceNo' => $invoiceNo
+        'invoiceNo' => $invoiceNo,
+        'debitNo' => $debitNo,
+        'creditNo' => $creditNo,
+        'cashReceiptNo' => $cashReceiptNo,
+        'chequeReceiptNo' => $chequeReceiptNo,
+        'tdsReceiptNo' => $tdsReceiptNo,
+        'onlineReceiptNo' => $onlineReceiptNo,
     ];
    
         echo view('common/header');
@@ -379,7 +447,7 @@ $html .= '</div></div></div>';
     }
     public function store()
     {
-         // print_r($this->request->getPost());exit;
+        //  print_r($this->request->getPost());exit;
         $request = $this->request;
         // print_r( $request->getFile('logo'));exit;
         $branches = $request->getPost('branches'); 
@@ -410,8 +478,14 @@ $html .= '</div></div></div>';
             'gst_state'      =>$request->getPost('gst_state'),
             'branch_address' => $request->getPost('branch_address'),
             'status'        => 1, // Active by default
+            'debit_format' => $request->getPost('debit_format'),
+            'credit_format' => $request->getPost('credit_format'),
+            'cash_receipt_format' => $request->getPost('cash_receipt_format'),
+            'cheque_receipt_format' => $request->getPost('cheque_receipt_format'),
+            'tds_receipt_format' => $request->getPost('tds_receipt_format'),
+            'online_receipt_format' => $request->getPost('online_receipt_format'),
         ];
-
+// print_r($data);exit;
         // 3️⃣ Logo upload (optional)
         $logoFile = $request->getFile('logo');
         if ($logoFile && $logoFile->isValid() && ! $logoFile->hasMoved()) {
@@ -494,6 +568,12 @@ $html .= '</div></div></div>';
         'bank_ifsc'      =>$request->getPost('bank_ifsc'),
         'gst_state'      =>$request->getPost('gst_state'),
         'branch_address' => $request->getPost('branch_address'),
+        'debit_format'   => $request->getPost('debit_format'),
+        'credit_format'  => $request->getPost('credit_format'),
+        'cash_receipt_format' => $request->getPost('cash_receipt_format'),
+        'cheque_receipt_format' => $request->getPost('cheque_receipt_format'),
+        'tds_receipt_format' => $request->getPost('tds_receipt_format'),
+        'online_receipt_format' => $request->getPost('online_receipt_format'),
     ];
 
     $logoFile = $request->getFile('logo');

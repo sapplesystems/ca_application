@@ -44,6 +44,12 @@
                                 <?php endif; ?>
 
                             </div>
+                            <div class="Gvoice-section-title">Tax
+                                <div class="Gvoice-box">
+                                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                                <label><input type="radio" name="tax" value="igst"> IGST</label>
+                                </div>
+                            </div>
 
                             <div class="buttons">
                                 <button class="btn btn-proceed" type="submit">Proceed</button>
@@ -118,26 +124,56 @@
     </div>
 </div>
 <script>
+    const allRows = document.querySelectorAll(".invoiceM-table tbody tr");
+
+// Initial load par sirf 10 rows dikhao
+allRows.forEach((row, index) => {
+    if (index >= 10) {
+        row.style.display = "none";
+    }
+});
 document
     .querySelector(".invoiceM-search-input")
     .addEventListener("input", function(e) {
+
         const term = e.target.value.toLowerCase();
         const rows = document.querySelectorAll(".invoiceM-table tbody tr");
-        rows.forEach((row) => {
-            const name = row
-                .querySelector(".invoiceM-client-name")
-                .textContent.toLowerCase();
-            row.style.display = name.includes(term) ? "" : "none";
-        });
-    });
 
+        if (term === "") {
+
+            rows.forEach((row, index) => {
+                row.style.display = index < 10 ? "" : "none";
+            });
+
+        } else {
+
+            rows.forEach((row) => {
+
+                const name = row
+                    .querySelector(".invoiceM-client-name")
+                    .textContent.toLowerCase();
+
+                row.style.display = name.includes(term) ? "" : "none";
+
+            });
+
+        }
+
+    });
 document
     .querySelector(".invoiceM-btn-reset")
     .addEventListener("click", function() {
+
         document.querySelector(".invoiceM-search-input").value = "";
+
         document
             .querySelectorAll(".invoiceM-table tbody tr")
-            .forEach((row) => (row.style.display = ""));
+            .forEach((row, index) => {
+
+                row.style.display = index < 10 ? "" : "none";
+
+            });
+
     });
 
 document.querySelectorAll(".invoiceM-action-btn").forEach((btn) => {

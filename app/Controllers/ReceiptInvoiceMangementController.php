@@ -8,6 +8,9 @@ use App\Models\ClientModel;
 use App\Models\WorkMasterModel;
 use App\Models\CompanyMasterModel;
 use App\Models\InvoiceMasterModel;
+use App\Models\ReciptDetailsModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 class ReceiptInvoiceMangementController extends BaseController
@@ -18,11 +21,16 @@ class ReceiptInvoiceMangementController extends BaseController
         $workModel     = new WorkMasterModel();
         $companyModel  = new CompanyMasterModel();
 
+        // $data = [
+        //     'clients'   => $clientModel->findAll(),
+        //     'works'     => $workModel->findAll(),
+        //     'companies' => $companyModel->findAll(),
+        // ];
         $data = [
-            'clients'   => $clientModel->findAll(),
-            'works'     => $workModel->findAll(),
-            'companies' => $companyModel->findAll(),
-        ];
+    'clients'   => $clientModel->orderBy('legal_name', 'ASC')->findAll(),
+    'works'     => $workModel->findAll(),
+    'companies' => $companyModel->orderBy('name', 'ASC')->findAll(),
+];
 
         return view('common/header')
             . view('ReceiptInvoiceManagement/index', $data)
@@ -114,6 +122,176 @@ class ReceiptInvoiceMangementController extends BaseController
 
         $results = $query->findAll();
 
+       
         return $this->response->setJSON($results);
     }
+
+   public function getReceiptDetails()
+{
+    $clientId  = $this->request->getPost('client_id');
+    $companyId = $this->request->getPost('company_id');
+
+    $clientModel = new \App\Models\ClientModel();
+    $companyModel = new \App\Models\CompanyMasterModel();
+
+    $client = $clientModel->find($clientId);
+    $company = $companyModel->find($companyId);
+
+    return $this->response->setJSON([
+        'status'  => true,
+        'client'  => $client,
+        'company' => $company
+    ]);
+}
+
+public function getReceiptNumber()
+{
+    $companyId = $this->request->getPost('company_id');
+    $mode      = $this->request->getPost('mode_of_payment');
+
+    $companyModel = new \App\Models\CompanyMasterModel();
+    $company = $companyModel->find($companyId);
+
+    if (!$company) {
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Company not found'
+        ]);
+    }
+
+    switch ($mode) {
+
+        case 'Cash':
+            $format = $company['cash_receipt_format'];
+            break;
+
+        case 'Cheque':
+            $format = $company['cheque_receipt_format'];
+            break;
+
+        case 'TDS':
+            $format = $company['tds_receipt_format'];
+            break;
+
+        case 'Online':
+            $format = $company['online_receipt_format'];
+            break;
+
+        default:
+            $format = $company['cash_receipt_format'];
+    }
+
+    $receiptModel = new \App\Models\ReciptDetailsModel();
+
+    // Count only receipts of selected mode
+    $nextSerial = $receiptModel
+                    ->where('mode_of_payment', $mode)
+                    ->countAllResults() + 1;
+
+    $receiptNo = $format . '/' . str_pad($nextSerial, 2, '0', STR_PAD_LEFT);
+
+    return $this->response->setJSON([
+        'receipt_no' => $receiptNo
+    ]);
+}
+
+public function saveReceipt()
+{
+    // print_r($this->request->getPost());exit;
+    $data = [
+
+        'company_id'      => $this->request->getPost('company_id'),
+        'client_id'       => $this->request->getPost('client_id'),
+        'recipt_no'       => $this->request->getPost('recipt_no'),
+        'date'            => $this->request->getPost('date'),
+        'mode_of_payment' => $this->request->getPost('mode_of_payment'),
+        'cheque_date'     => $this->request->getPost('cheque_date'),    
+        'cheque_number'   => $this->request->getPost('cheque_number'),
+        'drawen_bank'     => $this->request->getPost('drawen_bank'),
+        'bank_name'       =>$this->request->getPost('bank_name'),
+
+    ];
+    if($this->request->getPost('mode_of_payment') === 'Online'){
+        $data['bill_amount']=$this->request->getPost('bill_amount_Online');
+        }
+        else{
+            $data['bill_amount']=$this->request->getPost('bill_amount');
+        }
+    if($this->request->getPost('mode_of_payment') === 'TDS') {
+        $data['tds_amount'] = $this->request->getPost('tds_amount_only');
+    } else {
+        $data['tds_amount'] = $this->request->getPost('tds_amount');
+    }
+
+    $receiptModel = new \App\Models\ReciptDetailsModel();
+    $receiptId = $receiptModel->insert($data);
+
+    return $this->response->setJSON([
+        'success'    => true,
+        'receipt_id' => $receiptId
+    ]);
+}
+
+public function printReceipt($receipt_id)
+{
+    // print_r($receipt_id);exit;
+    $receiptModel = new ReciptDetailsModel();
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    $receipt = $receiptModel->find($receipt_id);
+    $company = $companyModel->find($receipt['company_id']);
+    $client  = $clientModel->find($receipt['client_id']);
+
+    return view('ReceiptInvoiceManagement/printreceipt', [
+        'receipt' => $receipt,
+        'company' => $company,
+        'client'  => $client
+    ]);
+}
+
+public function receiptPdf($receipt_id)
+{
+    //  print_r($receipt_id);exit;
+    $receiptModel = new ReciptDetailsModel();
+    $invoiceModel = new InvoiceMasterModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+
+    // Fetch data
+    $receipt = $receiptModel->find($receipt_id);
+    if (!$receipt) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException('Receipt not found');
+    }
+    $company = $companyModel->find($receipt['company_id']);
+    $client  = $clientModel->find($receipt['client_id']);
+
+    // Load HTML view
+    $html = view('ReceiptInvoiceManagement/printreceipt', [
+        'receipt' => $receipt,
+        'company' => $company,
+        'client'  => $client
+    ]);
+
+    // Dompdf options
+    $options = new Options();
+    $options->set('defaultFont', 'DejaVu Sans');
+    $options->set('isRemoteEnabled', true);
+
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    $receiptNo = str_replace('/', '-', $receipt['recipt_no']);
+    // Download PDF
+    return $this->response
+        ->setHeader('Content-Type', 'application/pdf')
+        ->setHeader(
+            'Content-Disposition',
+            'attachment; filename="Receipt-' . $receiptNo . '.pdf"'
+        )
+        ->setBody($dompdf->output());
+}
 }

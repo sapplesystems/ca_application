@@ -127,24 +127,174 @@
     </nav>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentPath = window.location.pathname;
-
         document.querySelectorAll('.menu-bar .menu-link').forEach(function(link) {
-            const linkPath = new URL(link.href).pathname;
 
-            if (currentPath === linkPath ||
-                currentPath.includes(linkPath) ||
-                (currentPath.includes('/roles') && linkPath.includes('/roles')) ||
-                (currentPath.includes('permissions') && linkPath.includes('permissions'))) {
+    link.addEventListener('click', function() {
 
-                document.querySelectorAll('.menu-bar .menu-item.active').forEach(el => el.classList
-                    .remove('active'));
-                link.querySelector('.menu-item').classList.add('active');
-            }
-        });
+        const href = link.href.toLowerCase();
+
+        if (href.includes('invoicemanagment')) {
+            localStorage.setItem('activeMenu', 'partyledger');
+        }
+
+        if (href.includes('invoice-mangement')) {
+            localStorage.setItem('activeMenu', 'invoicemanagement');
+        }
+
     });
-    </script>
+
+});
+        
+        document.addEventListener('DOMContentLoaded', function () {
+
+    const currentPath = window.location.pathname.toLowerCase();
+
+    const modules = {
+        home: [
+            '/home'
+        ],
+
+        workmaster: [
+            '/work_master'
+        ],
+
+        companymaster: [
+            '/company_master'
+        ],
+
+        clientmaster: [
+            '/client_master'
+        ],
+
+        partyledger: [
+            '/invoicemanagment',
+            '/manageinvoice',
+            '/invoice/view',
+            '/ledger',
+            '/debitnotelist',
+        ],
+
+        invoicemanagement: [
+            '/invoice-mangement',
+            '/generate-invoice',
+            '/credit-note',
+            '/debit-note',
+            '/invoice/edit',
+            '/preview'
+        ],
+
+        reports: [
+            '/reports_registers'
+        ],
+
+        pdfoutputs: [
+            '/pdf_outputs'
+        ],
+
+        users: [
+            '/usermanagment'
+        ],
+
+        roles: [
+            '/roles'
+        ]
+    };
+
+    let activeModule = null;
+
+    Object.keys(modules).forEach(function(module){
+
+        if (
+            modules[module].some(url =>
+                currentPath.includes(url)
+            )
+        ) {
+            activeModule = module;
+        }
+
+    });
+
+    document.querySelectorAll('.menu-link').forEach(function(link){
+
+        const href = link.href.toLowerCase();
+        const item = link.querySelector('.menu-item');
+
+        item.classList.remove('active');
+
+        if (
+            activeModule === 'home' &&
+            href.includes('/home')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'workmaster' &&
+            href.includes('/work_master')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'companymaster' &&
+            href.includes('/company_master')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'clientmaster' &&
+            href.includes('/client_master')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'partyledger' &&
+            href.includes('/invoicemanagment')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'invoicemanagement' &&
+            href.includes('/invoice-mangement')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'reports' &&
+            href.includes('/reports_registers')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'pdfoutputs' &&
+            href.includes('/pdf_outputs')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'users' &&
+            href.includes('/usermanagment')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'roles' &&
+            href.includes('/roles')
+        ) {
+            item.classList.add('active');
+        }
+
+    });
+
+});
+</script>
 </body>
 
 </html>

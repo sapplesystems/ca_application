@@ -374,7 +374,7 @@
                     <strong style="font-size:13px">Bill To:</strong><br>
                     <strong><?= esc($client['legal_name']); ?></strong><br>
                     <?= esc($client['registered_office']); ?><br>
-                    <strong>Email-Id:</strong> <?= esc($client['billing_emails']); ?><br>
+                    <strong>Email-Id:</strong> <?= esc($client['email']); ?><br>
                     GST No:<?= esc($client['gstin']); ?>
                 </td>
 
@@ -593,19 +593,29 @@
         window.print();
     }
 
-    function cancelPrint() {
-        window.location.href =
-            "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
+  function cancelPrint() {
+
+    const previousUrl = document.referrer.toLowerCase();
+
+    if (previousUrl.includes('invoice-mangement')) {
+
+        window.location.href = '<?= base_url('invoice-mangement'); ?>';
+
+    } else {
+
+        window.location.href = '<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>';
+
     }
+}
 
-    window.onafterprint = function () {
+    // window.onafterprint = function () {
 
-        // Redirect only if actual print button was clicked
-        if (isPrinting) {
-            window.location.href =
-                "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
-        }
-    };
+       
+    //     if (isPrinting) {
+    //         window.location.href =
+    //             "<?= base_url('ManageInvoice/' . $invoice['client_id']); ?>";
+    //     }
+    // };
 </script>
 
 </body>

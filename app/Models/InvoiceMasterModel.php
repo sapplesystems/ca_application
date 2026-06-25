@@ -106,6 +106,28 @@ public function getInvoiceWithCompany($clientId)
 
         // $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-        return "{$org}/{$branch}/{$fy}/";
+        return "{$org}/{$branch}/{$fy}";
     }
+         public function generateDebitNo($org)
+    {
+        // Financial Year (India style)
+        $year = date('Y');
+        $month = date('m');
+
+        if ($month >= 4) {
+            $fy = substr($year, 2) . substr($year + 1, 2);
+        } else {
+            $fy = substr($year - 1, 2) . substr($year, 2);
+        }
+
+        // Get last sequence
+        // $lastInvoice = $this->select('id')
+        //     ->orderBy('id', 'DESC')
+        //     ->first();
+
+        // $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
+
+        return "{$org}/{$fy}";
+    }
+
 }

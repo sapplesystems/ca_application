@@ -25,6 +25,7 @@
         text-align: right;
         /* SAC, GST, Actions */
     }
+  
 </style>
 
 <main class="content-wrap">
@@ -207,38 +208,6 @@
                             </div>
                         </div>
 
-                        <!-- Row 4 -->
-                        <!-- <div class="msl-form-row">
-                            <div class="msl-form-group">
-                                <label for="gstYesNo">GST?</label>
-                                <select id="gstYesNo" name="gst">
-                                    <option value="">Select</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
-                            </div> -->
-
-                        <!-- <div class="msl-form-group">
-                                <label for="frequency">Frequency</label>
-                                <select id="frequency" name="frequency">
-                                    <option value="">Select frequency</option>
-                                    <option value="Monthly">Monthly</option>
-                                    <option value="Quarterly">Quarterly</option>
-                                    <option value="Annually">Annually</option>
-                                </select>
-                            </div> -->
-                        <!-- </div> -->
-
-                        <!-- Row 5 -->
-                        <!-- <div class="msl-form-row">
-                            <div class="msl-form-group">
-                                <label for="status">Status</label>
-                                <select id="status" name="status">
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
-                            </div>
-                        </div> -->
 
                         <!-- Buttons -->
                         <div class="msl-form-actions">
@@ -378,182 +347,266 @@ function openServicePopup(id) {
 
 
 
-$(document).ready(function() {
+const rowsPerPage = 10;
+let currentPage = 1;
 
-    if ($('#searchmasterwork').length) {
+function sortTable() {
+    const tbody = document.querySelector("#searchmasterwork tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
 
-        window.table = new DataTable('#searchmasterwork', {
+    rows.sort((a, b) => {
+        const textA = a.cells[1].textContent.trim().toLowerCase();
+        const textB = b.cells[1].textContent.trim().toLowerCase();
+        return textA.localeCompare(textB);
+    });
 
-            paging: false,
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
+}
 
-            searching: true,
+function getRows() {
 
-            info: false,
+    return Array.from(
+        document.querySelectorAll("#searchmasterwork tbody tr")
+    ).filter(row => {
 
-            ordering: false,
+        const searchOk =
+            row.dataset.searchMatch !== "false";
 
-            dom: 't',
+        const statusOk =
+            row.dataset.statusMatch !== "false";
 
-            columnDefs: [
+        return searchOk && statusOk;
+    });
+}
 
-                {
-                    targets: 0,
-                    orderable: false
-                },
+function showPage(page) {
 
-                {
-                    targets: -1,
-                    orderable: false
-                },
+    const allRows = document.querySelectorAll("#searchmasterwork tbody tr");
 
-                {
-                    targets: 4,
+    allRows.forEach(row => {
+        row.style.display = "none";
+    });
 
-                    render: function(data, type) {
+    const rows = getRows();
 
-                        if (type === 'filter') {
+    rows.forEach((row, index) => {
 
-                            let div = document.createElement("div");
-                            div.innerHTML = data;
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
 
-                            let text = div.querySelector('.status-text')?.innerText || '';
+        if (index >= start && index < end) {
+            row.style.display = "";
+        }
 
-                            return text.trim();
+    });
 
-                        }
+    updatePagination();
+}
 
-                        return data;
+function updatePagination() {
 
-                    }
+    const rows = getRows();
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-                }
+    const pagination = document.querySelector(".pagination");
 
-            ]
+    let html = `<div class="page-btn" id="prevBtn">&laquo;</div>`;
 
-        });
+    if (totalPages <= 2) {
 
+        for (let i = 1; i <= totalPages; i++) {
 
-        $('.search-input').on('keyup', function() {
+            html += `
+                <div class="page-btn ${i === currentPage ? 'active' : ''}"
+                     data-page="${i}">
+                    ${i}
+                </div>
+            `;
+        }
 
-            table.search(this.value).draw();
+    } else {
 
-        });
+        html += `
+            <div class="page-btn active" data-page="${currentPage}">
+                ${currentPage}
+            </div>
+        `;
 
+        if (currentPage < totalPages) {
 
+            html += `
+                <div class="page-btn" data-page="${totalPages}">
+                    ${totalPages}
+                </div>
+            `;
 
-        $('.status-filter').on('change', function() {
+        } else {
 
-            let value = $(this).val();
-
-            if (value === "Active" || value === "Inactive") {
-
-                table.column(4)
-                    .search('^' + value + '$', true, false)
-                    .draw();
-
-            }
-            else {
-
-                table.column(4).search('').draw();
-
-            }
-
-        });
-
-
-        // ===== STATUS TOGGLE =====
-
-        document.querySelectorAll('.toggle').forEach(toggle => {
-
-            toggle.addEventListener('click', function() {
-
-                this.classList.toggle('inactive');
-
-                const status = this.classList.contains('inactive') ? 0 : 1;
-                const id = this.dataset.id;
-
-                let statusText = this.parentElement.querySelector('.status-text');
-
-                statusText.innerText = status ? 'Active' : 'Inactive';
-
-
-                table.draw(false);
-
-
-                fetch("<?= base_url('/work_master/update-status') ?>", {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type": "application/json",
-
-                        "X-Requested-With": "XMLHttpRequest"
-
-                    },
-
-                    body: JSON.stringify({
-
-                        id: id,
-                        status: status
-
-                    })
-
-                })
-
-                .then(res => res.json())
-
-                .then(data => {
-
-                    document.getElementById('successPopup')?.remove();
-                    document.getElementById('errorPopup')?.remove();
-
-                    const popup = document.createElement('div');
-
-                    popup.id = data.status ? 'successPopup' : 'errorPopup';
-
-                    popup.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background-color: ${data.status ? '#79e47cff' : '#f44336'};
-                        color: #000;
-                        padding: 15px 20px;
-                        border-radius: 8px;
-                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-                        z-index: 9999;
-                        font-weight: 500;
-                        min-width: 260px;
-                    `;
-
-                    popup.innerHTML = `
-                        <span
-                            onclick="this.parentElement.remove()"
-                            style="
-                                position:absolute;
-                                top:6px;
-                                right:10px;
-                                cursor:pointer;
-                                font-size:18px;
-                                font-weight:bold;
-                            "
-                        >&times;</span>
-                        ${data.message}
-                    `;
-
-                    document.body.appendChild(popup);
-
-                    setTimeout(() => popup.remove(), 10000);
-
-                })
-
-                .catch(err => console.error(err));
-
-            });
-
-        });
-
+            html += `
+                <div class="page-btn" data-page="${totalPages - 1}">
+                    ${totalPages - 1}
+                </div>
+            `;
+        }
     }
+
+    html += `<div class="page-btn" id="nextBtn">&raquo;</div>`;
+
+    pagination.innerHTML = html;
+
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    };
+
+    document.querySelectorAll("[data-page]").forEach(btn => {
+
+        btn.onclick = () => {
+
+            currentPage = parseInt(btn.dataset.page);
+
+            showPage(currentPage);
+
+        };
+
+    });
+}
+
+// Search
+// Status Filter
+document.querySelector(".status-filter")
+.addEventListener("change", function () {
+
+    const selected = this.value;
+
+    document.querySelectorAll("#searchmasterwork tbody tr")
+    .forEach(row => {
+
+        const status =
+            row.querySelector(".status-text")
+            ?.textContent.trim();
+
+        row.dataset.statusMatch =
+            (selected === "Status: All" || selected === status)
+            ? "true"
+            : "false";
+
+    });
+    currentPage = 1;
+    showPage(currentPage);
+
+});
+document.querySelector(".search-input")
+.addEventListener("input", function () {
+
+    const term = this.value.toLowerCase();
+
+    document.querySelectorAll("#searchmasterwork tbody tr")
+    .forEach(row => {
+
+        const text = row.textContent.toLowerCase();
+
+        row.dataset.searchMatch =
+            (term === "" || text.includes(term))
+            ? "true"
+            : "false";
+    });
+
+    currentPage = 1;
+    showPage(currentPage);
+});
+
+document.querySelectorAll("#searchmasterwork tbody tr")
+.forEach(row => {
+
+    row.dataset.searchMatch = "true";
+    row.dataset.statusMatch = "true";
+
+});
+
+showPage(1);
+// ===== STATUS TOGGLE =====
+
+document.querySelectorAll('.toggle').forEach(toggle => {
+
+    toggle.addEventListener('click', function() {
+
+        this.classList.toggle('inactive');
+
+        const status = this.classList.contains('inactive') ? 0 : 1;
+        const id = this.dataset.id;
+
+        let statusText = this.parentElement.querySelector('.status-text');
+
+        statusText.innerText = status ? 'Active' : 'Inactive';
+
+        fetch("<?= base_url('/work_master/update-status') ?>", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+
+            body: JSON.stringify({
+                id: id,
+                status: status
+            })
+
+        })
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            document.getElementById('successPopup')?.remove();
+            document.getElementById('errorPopup')?.remove();
+
+            const popup = document.createElement('div');
+
+            popup.id = data.status ? 'successPopup' : 'errorPopup';
+
+            popup.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${data.status ? '#79e47cff' : '#f44336'};
+                color: #000;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                z-index: 9999;
+                font-weight: 500;
+                min-width: 260px;
+            `;
+
+            popup.innerHTML = `
+                <span onclick="this.parentElement.remove()"
+                style="position:absolute;top:6px;right:10px;cursor:pointer;font-size:18px;font-weight:bold;">
+                &times;</span>
+                ${data.message}
+            `;
+
+            document.body.appendChild(popup);
+
+            setTimeout(() => popup.remove(), 10000);
+
+        })
+
+        .catch(err => console.error(err));
+
+    });
 
 });
 
