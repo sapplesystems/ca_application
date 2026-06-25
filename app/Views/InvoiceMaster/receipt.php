@@ -266,7 +266,9 @@
             </tr>
             <tr>
                 <td><b>Mode Of Payment :</b></td>
-                <td colspan="3"><?= esc($receipt['mode_of_payment']) ?></td>
+                <td colspan="3"><?= $receipt['mode_of_payment'] === 'Online'
+                    ? 'Online Transfer'
+                    : esc($receipt['mode_of_payment']) ?></td>
             </tr>
             <tr>
                 <td colspan="4" style="font-size:11px; line-height:1.6;">

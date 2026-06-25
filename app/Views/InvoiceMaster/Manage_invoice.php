@@ -1019,6 +1019,10 @@ foreach ($receipt as $rec) {
 }
 
     function printLedger() {
+
+     const clientName =
+        "<?= preg_replace('/[^A-Za-z0-9]/', '_', $clients[0]['legal_name']) ?>";
+
        const printContents = document.getElementById('ledger-print-area').innerHTML;
 
 
@@ -1188,12 +1192,18 @@ foreach ($receipt as $rec) {
         </html>
      `);
 
-        printWindow.document.close();
+       printWindow.document.close();
 
-    printWindow.onload = function() {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
+    printWindow.onload = function () {
+
+        // Set title of print window
+        printWindow.document.title = clientName + '_Ledger';
+
+        setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }, 300);
     };
     }
 
