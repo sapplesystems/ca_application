@@ -203,6 +203,11 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 14px rgba(0,0,0,0.2);
     }
+    .terms{
+    font-size: 13px;
+    padding: 8px 5px;
+    border: 1px solid #BDBDBD;
+    }
 
 @media print {
     .cancel-btn {
@@ -367,7 +372,7 @@ style="width:180px; height:auto; display:block;">
         <b>Invoice No.:</b> <?= esc($debitNote['credit_no']); ?><br />
         <?php endif; ?>
 
-        <b>Date:</b> <?php echo $debitNote['date']; ?>
+        <b>Date:</b><?php echo date('d-m-Y', strtotime($debitNote['date'])); ?>
     </div>
 
 </div>
@@ -496,12 +501,20 @@ style="width:180px; height:auto; display:block;">
         </div>
 
     </div>
+   
 
 </div>
+
+<?php if (!empty(trim($debitNote['terms_and_conditions'] ?? ''))): ?>
+    <div class="terms">
+        <b>Terms & Conditions:</b><br>
+        <?= nl2br(esc($debitNote['terms_and_conditions'])); ?>
+    </div>
+<?php endif; ?>
 </div>
   <center> 
     <button class="action-btn print-btn" onclick="printInvoicePage()">
-        Print 
+       <?= ($debitNote['note_type'] === 'debit') ? 'Print Debit Note' : 'Print Credit Note'; ?> 
     </button>
      <button class="action-btn cancel-btn" onclick="cancelPrint()">
         ✖ Cancel

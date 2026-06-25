@@ -150,7 +150,6 @@ public function getReceiptNumber()
     $mode      = $this->request->getPost('mode_of_payment');
 
     $companyModel = new \App\Models\CompanyMasterModel();
-
     $company = $companyModel->find($companyId);
 
     if (!$company) {
@@ -184,18 +183,12 @@ public function getReceiptNumber()
 
     $receiptModel = new \App\Models\ReciptDetailsModel();
 
-    $lastReceipt = $receiptModel
-    ->orderBy('id', 'DESC')
-    ->first();
+    // Count only receipts of selected mode
+    $nextSerial = $receiptModel
+                    ->where('mode_of_payment', $mode)
+                    ->countAllResults() + 1;
 
-$nextSerial = 1;
-
-if ($lastReceipt) {
-    $nextSerial = $lastReceipt['id'] + 1;
-}
-
-
-    $receiptNo = $format . '/' . $nextSerial;
+    $receiptNo = $format . '/' . str_pad($nextSerial, 2, '0', STR_PAD_LEFT);
 
     return $this->response->setJSON([
         'receipt_no' => $receiptNo
@@ -215,9 +208,15 @@ public function saveReceipt()
         'cheque_date'     => $this->request->getPost('cheque_date'),    
         'cheque_number'   => $this->request->getPost('cheque_number'),
         'drawen_bank'     => $this->request->getPost('drawen_bank'),
-        'bill_amount'     => $this->request->getPost('bill_amount'),
+        'bank_name'       =>$this->request->getPost('bank_name'),
 
     ];
+    if($this->request->getPost('mode_of_payment') === 'Online'){
+        $data['bill_amount']=$this->request->getPost('bill_amount_Online');
+        }
+        else{
+            $data['bill_amount']=$this->request->getPost('bill_amount');
+        }
     if($this->request->getPost('mode_of_payment') === 'TDS') {
         $data['tds_amount'] = $this->request->getPost('tds_amount_only');
     } else {
@@ -285,12 +284,13 @@ public function receiptPdf($receipt_id)
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
+    $receiptNo = str_replace('/', '-', $receipt['recipt_no']);
     // Download PDF
     return $this->response
         ->setHeader('Content-Type', 'application/pdf')
         ->setHeader(
             'Content-Disposition',
-            'attachment; filename="Receipt_' . $receipt['recipt_no'] . '.pdf"'
+            'attachment; filename="Receipt-' . $receiptNo . '.pdf"'
         )
         ->setBody($dompdf->output());
 }

@@ -76,7 +76,7 @@
     </style>
 </head>
 
-<body onload="window.print()">
+<body>
 
     <!-- HEADER -->
     <div class="header">
@@ -125,19 +125,30 @@
 
         <tr>
             <td><b>Mode Of Payment :</b></td>
-            <td colspan="3"><?= esc($receipt['mode_of_payment']) ?></td>
+           <td colspan="3">
+                <?= $receipt['mode_of_payment'] === 'Online'
+                    ? 'Online Transfer'
+                    : esc($receipt['mode_of_payment']) ?>
+            </td>
         </tr>
+         <?php
+        $formatter = new NumberFormatter('en_IN', NumberFormatter::SPELLOUT);
 
+        $amountInWords = ucwords(
+            $formatter->format((int)$receipt['bill_amount'])
+        );
+        ?>
         <tr>
-            <td colspan="4">
+           <td colspan="4">
                 Received with thanks from M/s/Mr/Mrs/Ms
                 <b><?= esc($client['legal_name']) ?></b>,
                 the sum of Rs. <b><?= number_format($receipt['bill_amount'], 2) ?></b>
-                /- Amount in Words <b>Zero Rupees</b>
+                /- Amount in Words <b><?= esc($amountInWords) ?> Only</b>
                 after deduction of TDS Rs.
                 <b><?= number_format($receipt['tds_amount'], 2) ?></b>
-                /- for professional Services Rendered / Advance Against invoice
-                Raised vide Bill No <b><?= esc($company['name']) ?></b>
+                /- through <b><?= esc($receipt['bank_name']) ?></b>
+                for Professional Services Rendered / Advance Against Invoice
+                 Raised vide Bill No <b><?= esc($company['name']) ?></b>
                 dated <b><?= date('d/m/Y', strtotime($receipt['date'])) ?></b>
             </td>
         </tr>

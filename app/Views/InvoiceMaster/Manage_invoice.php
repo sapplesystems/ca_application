@@ -19,6 +19,7 @@
         font-style: normal;
         font-display: swap;
     }
+    
 </style><!-------------------------------- Modal for genrate invoice------------------------------------->
 <!-- Modal1 -->
 <div class="modal fade" id="GenrateVoice" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -313,7 +314,7 @@
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
                                         <option value="TDS">TDS</option>
-                                        <option value="Online">Online Transactions</option>
+                                        <option value="Online">Online Transfer</option>
                                     </select>
                                 </td>
                             </tr>
@@ -753,8 +754,58 @@ foreach ($receipt as $rec) {
 
             <!-- Running Amount -->
             <td class="righttext"><strong><?= number_format($runningBalance, 2) ?></strong></td>
+            
+            <td class="no-print">
 
-            <td class="print-hide"></td>
+   <!-- Edit -->
+<a href="javascript:void(0)"
+    class="Minvoice-icon-btn edit company-edit-btn"
+    title="Edit Receipt"
+    data-id="<?= $company['id'] ?>"
+    data-recipt_no="<?= esc($company['recipt_no']) ?>"
+    data-date="<?= esc($company['date']) ?>"
+    data-mode_of_payment="<?= esc($company['mode_of_payment']) ?>"
+    data-cheque_date="<?= esc($company['cheque_date']) ?>"
+    data-cheque_number="<?= esc($company['cheque_number']) ?>"
+    data-drawen_bank="<?= esc($company['drawen_bank']) ?>"
+    data-bill_amount="<?= esc($company['bill_amount']) ?>"
+    data-tds_amount="<?= esc($company['tds_amount']) ?>"
+    data-bank_name="<?= esc($company['bank_name']) ?>"
+    data-company-name="<?= esc($company['name']) ?>"
+    data-company-address="<?= esc($company['company_address']) ?>"
+    data-company-phone="<?= esc($company['telephone']) ?>"
+    data-company-email="<?= esc($company['email']) ?>"
+    data-client-name="<?= esc($company['legal_name']) ?>"
+    data-client-address="<?= esc($company['client_address']) ?>"
+    data-client-pan="<?= esc($company['pan']) ?>">
+    ✏️
+</a>
+
+<!-- Delete -->
+<button type="button"
+    class="Minvoice-icon-btn delete delete-btn"
+    title="Delete Receipt"
+    data-id="<?= $company['id'] ?>"
+    style="border:none;">
+    🗑️
+</button>
+
+<button type="button"
+    class="Minvoice-icon-btn download downloadPdf"
+    data-id="<?= $company['id'] ?>"
+    title="Download Receipt"style="border:none;">
+    ⬇️
+</button>
+
+<button type="button"
+    class="Minvoice-print-btn printReceipt"
+    data-id="<?= $company['id'] ?>"
+    title="Print & Preview"
+    style="padding:2px;border-radius:10px;border:2px solid #f1c40f;">
+    Print &amp; Preview
+</button>
+   
+</td>
 
         </tr>
 
@@ -814,7 +865,35 @@ foreach ($receipt as $rec) {
                 <td class ="company-running-amount righttext">
                     <strong><?= number_format($runningBalance, 2) ?></strong>
                 </td>
-                <td class="print-hide"></td>
+                  <td class="no-print">
+                                <!-- Edit -->
+                                 <a href="<?= base_url('debits/edit/' . $row['id']) ?>" class="Minvoice-icon-btn edit" title="Edit">
+                                ✏️
+                            </a>
+
+                                <!-- Delete -->
+                                <button type="button" class="note-delete-btn" title="Delete" data-id="<?= $d['id'] ?>"style="border:none;">
+                                    🗑️
+                                </button>
+
+                                <!-- ✅ NEW Download Button -->
+                               <a href="<?= site_url('DebitNotePDF/') . $d['id'] ?>"
+                                    class="Minvoice-icon-btn download"
+                                    title="Download PDF">
+                                    ⬇️
+                                </a>
+                               <!-- Print -->
+                                <button type="button"
+                                    class="Minvoice-print-btn"
+                                    onclick="window.open('<?= site_url(($d['note_type'] == 'credit'
+                                        ? 'CreditNote/'
+                                        : 'DebitNote/') . $row['id']) ?>')"
+                                    style="padding:2px;border-radius:10px;border:2px solid #f1c40f;"
+                                    title="Print & Preview">
+                                    Print &amp; Preview
+                                </button>
+
+                            </td>
             
 
         </tr>
@@ -906,7 +985,13 @@ foreach ($receipt as $rec) {
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+
+    const baseUrl = "<?= site_url() ?>";
+
  let isEditMode = false;
     localStorage.setItem('activeMenu', 'partyledger');
     function deleteInvoice(id) {
@@ -934,14 +1019,21 @@ foreach ($receipt as $rec) {
 }
 
     function printLedger() {
-        const printContents = document.getElementById('ledger-print-area').innerHTML;
-        const originalContents = document.body.innerHTML;
+       const printContents = document.getElementById('ledger-print-area').innerHTML;
 
-        document.body.innerHTML = `
+
+    const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
         <html>
         <head>
-            <title>Invoice Ledger</title>
+            <title>${clientName}Ledger</title>
+             <!-- Bootstrap -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+            <!-- Your CSS -->
+            <link rel="stylesheet" href="assets/css/style.css">
            <style>
+          
     body { font-family: Cambria, sans-serif; }
 
     table { width: 100%; border-collapse: collapse; }
@@ -953,8 +1045,46 @@ foreach ($receipt as $rec) {
   
 
     @media print {
-     
+    
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 
+    /* Outer border */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #000 !important;
+    }
+
+    /* All row and column lines */
+    tbody td,
+    tbody th,
+    thead th {
+        border: 1px solid #fff !important;
+    }
+
+    /* Header */
+    thead th {
+        background: #005b8f !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Optional alternate row color */
+    tbody tr:nth-child(even) {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    tbody tr:nth-child(odd) {
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
         .print-only {
             display: block !important;
         }
@@ -1056,11 +1186,15 @@ foreach ($receipt as $rec) {
             ${printContents}
         </body>
         </html>
-    `;
+     `);
 
-        window.print();
-        document.body.innerHTML = originalContents;
-        location.reload();
+        printWindow.document.close();
+
+    printWindow.onload = function() {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    };
     }
 
     $(document).on('click', '.open-receipt', function() {
@@ -1077,45 +1211,51 @@ foreach ($receipt as $rec) {
     });
 
 
-    function loadReceiptData(invoiceId) {
-        $.ajax({
-            url: "<?= site_url('invoice/receipt') ?>" + "/" + invoiceId,
-            type: "GET",
-            data: {
-                invoice_id: invoiceId
-            },
-            dataType: "json",
-            success: function(res) {
+   function loadReceiptData(invoiceId) {
+    $.ajax({
+        url: "<?= site_url('invoice/receipt') ?>/" + invoiceId,
+        type: "GET",
+        data: {
+            invoice_id: invoiceId
+        },
+        dataType: "json",
+        success: function(res) {
 
-                // Company
-                $('#companyName').text(res.company.name);
-                $('#companyType').text(res.company.type_of_company);
-                $('#companyAddress').html(res.company.registered_office);
-                $('#companyPhone').text(res.company.telephone);
-                $('#companyEmail').text(res.company.email);
+            // Company
+            $('#companyName').text(res.company.name);
+            $('#companyType').text(res.company.type_of_company);
+            $('#companyAddress').html(res.company.registered_office);
+            $('#companyPhone').text(res.company.telephone);
+            $('#companyEmail').text(res.company.email);
 
-                 // Store receipt formats globally
-                window.receiptFormats = {
-                    Cash: res.company.cash_receipt_format,
-                    Cheque: res.company.cheque_receipt_format,
-                    TDS: res.company.tds_receipt_format,
-                    Online: res.company.online_receipt_format
-                };
+            // Receipt Formats
+            window.receiptFormats = {
+                Cash: res.company.cash_receipt_format,
+                Cheque: res.company.cheque_receipt_format,
+                TDS: res.company.tds_receipt_format,
+                Online: res.company.online_receipt_format
+            };
 
-                // Client
-                $('#clientName').text(res.client.legal_name);
-                $('#clientAddress').html(res.client.registered_office);
-                $('#clientPan').text(res.client.pan);
+            // Receipt Counters (from controller)
+            window.receiptCounters = res.receiptCounters || {
+                Cash: 1,
+                Cheque: 1,
+                TDS: 1,
+                Online: 1
+            };
 
-                // Invoice
-                // $('#receiptNo').val(res.invoice.invoice_no);
-                $('#receiptDate').val(res.invoice.invoice_date);
-                $('#billAmount').val(res.invoice.total_invoice_amount);
-                $('#current_invoice_id').val(res.invoice.id);
+            // Client
+            $('#clientName').text(res.client.legal_name);
+            $('#clientAddress').html(res.client.registered_office);
+            $('#clientPan').text(res.client.pan);
 
-            }
-        });
-    }
+            // Invoice
+            $('#receiptDate').val(res.invoice.invoice_date);
+            $('#billAmount').val(res.invoice.total_invoice_amount);
+            $('#current_invoice_id').val(res.invoice.id);
+        }
+    });
+}
     $(document).on('click', '.close', function() {
         $('#addreciptnote').modal('hide');
         $('#submitrecipt').modal('hide');
@@ -1375,6 +1515,7 @@ function togglePaymentUI() {
         }
     });
 
+
     document.getElementById("previewReceiptBtn").addEventListener("click", function() {
 
         const receiptNo = document.getElementById("receiptNo").value;
@@ -1416,7 +1557,7 @@ function togglePaymentUI() {
 
         <div class="receipt-row light">
             <div class="label">Mode Of Payment :</div>
-            <div class="value">${mode}</div>
+            <div class="value">${mode === 'Online' ? 'Online Transfer' : mode}</div>
         </div>
 
         <div class="receipt-row">
@@ -1467,6 +1608,30 @@ function togglePaymentUI() {
 
         window.open(`receiptPdf/${receiptId}`, '_blank');
     });
+
+    $(document).on('click', '.printReceipt', function () {
+
+     const receiptId = $(this).data('id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `${baseUrl}/invoice-mangement/printReceipt/${receiptId}`;
+});
+
+$(document).on('click', '.downloadPdf', function () {
+
+    const receiptId = $(this).data('id');
+
+    if (!receiptId) {
+        alert("Receipt ID not found");
+        return;
+    }
+
+    window.location.href = `${baseUrl}/invoice-mangement/receiptPdf/${receiptId}`;
+});
     document.addEventListener('DOMContentLoaded', function() {
 
         const form = document.querySelector('#GenrateVoice form');
@@ -2085,13 +2250,13 @@ function generateReceiptNo() {
         return;
     }
 
-    let format = window.receiptFormats?.[mode] || '';
+    const format = window.receiptFormats[mode] || '';
+    const counter = window.receiptCounters[mode] || 1;
 
-    const serial = String(nextReceiptId).padStart(2, '0');
-
-    $('#receiptNo').val(format + '/' + serial);
+    $('#receiptNo').val(
+        format + '/' + String(counter).padStart(2, '0')
+    );
 }
-
 document.getElementById('modeOfPayment')
     .addEventListener('change', generateReceiptNo);
 
@@ -2222,6 +2387,98 @@ modeOfPayment.addEventListener('change', togglePaymentUI);
 // run on page load
 togglePaymentUI();
 
+});
+// Company Receipt Edit
+document.addEventListener("click", function (e) {
+
+    if (!e.target.classList.contains("company-edit-btn")) return;
+     isEditMode = true;
+     document.getElementById("receiptNo").readOnly = true;
+     document.getElementById("modeOfPayment").disabled = true;
+
+    const btn = e.target;
+
+    // Receipt Details
+    $("#receipt_id").val(btn.dataset.id || "");
+    $("#receiptNo").val(btn.dataset.receipt_no || btn.dataset.recipt_no || "");
+    $("#receiptDate").val(btn.dataset.date || "");
+    
+
+    // Company Details
+    $("#companyName").text(btn.dataset.companyName || "");
+    $("#companyAddress").text(btn.dataset.companyAddress || "");
+    $("#companyPhone").text(btn.dataset.companyPhone || "");
+    $("#companyEmail").text(btn.dataset.companyEmail || "");
+
+    // Client Details
+    $("#clientName").text(btn.dataset.clientName || "");
+    $("#clientAddress").text(btn.dataset.clientAddress || "");
+    $("#clientPan").text(btn.dataset.clientPan || "");
+
+    // Payment Mode
+    $("#modeOfPayment").val(btn.dataset.mode_of_payment || "");
+    $("#modeOfPaymentHidden").val(btn.dataset.mode_of_payment || "");
+
+    // Amounts
+    $("#billAmount").val(btn.dataset.bill_amount || "");
+    $("#tdsAmount").val(btn.dataset.tds_amount || "");
+    $("#tdsAmountOnly").val(btn.dataset.tds_amount || "");
+
+    // Online Payment
+    $("#bankName").val(btn.dataset.bank_name || "");
+    $("#transactionId").val(btn.dataset.bill_amount || "");
+
+    // Cheque Details
+    $("input[name='cheque_date']").val(btn.dataset.cheque_date || "");
+    $("input[name='cheque_number']").val(btn.dataset.cheque_number || "");
+    $("input[name='drawen_bank']").val(btn.dataset.drawen_bank || "");
+
+    // Cheque fields
+    const chequeFields = document.getElementById("chequeFields");
+
+    if (btn.dataset.mode_of_payment === "Cheque") {
+
+        chequeFields.style.display = "block";
+
+        const chequeDate =
+            chequeFields.querySelector("input[name='cheque_date']");
+
+        const chequeNumber =
+            chequeFields.querySelector("input[name='cheque_number']");
+
+        const drawenBank =
+            chequeFields.querySelector("input[name='drawen_bank']");
+
+        if (chequeDate)
+            chequeDate.value = btn.dataset.cheque_date || "";
+
+        if (chequeNumber)
+            chequeNumber.value = btn.dataset.cheque_number || "";
+
+        if (drawenBank)
+            drawenBank.value = btn.dataset.drawen_bank || "";
+
+    } else {
+
+        chequeFields.style.display = "none";
+
+    }
+    // Show proper section (Cash / Cheque / TDS / Online)
+    if (typeof togglePaymentUI === "function") {
+        togglePaymentUI();
+    }
+
+    $("#addreciptnote").modal("show");
+});
+
+//delete note
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.note-delete-btn')) {
+        const id = e.target.closest('.note-delete-btn').dataset.id;
+        if (confirm('Are you sure you want to delete this record?')) {
+            window.location.href = "<?= base_url('debits/delete/') ?>" + id;
+        }
+    }
 });
         
 </script>

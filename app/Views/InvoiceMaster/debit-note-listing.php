@@ -37,7 +37,7 @@
                         <td><?= $debit['legal_name'] ?></td>
                         <td><?= $debit['company_name'] ?></td>
                         <td><?= ucfirst(esc($debit['note_type'])) ?> Note</td>
-                        <td> <?= esc($debit['date']) ?></td>
+                        <td><?= !empty($debit['date']) ? date('d-m-Y', strtotime($debit['date'])) : '' ?></td>
                         <td> <?= esc($debit['total_amount']) ?></td>
                         <td><?= esc($debit['advance_amount']) ?></td>
                         <td class="action">

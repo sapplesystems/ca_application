@@ -63,10 +63,6 @@ function toRoman($number)
                     Email: <?= esc($company['email'] ?? ''); ?><br>
                     GSTIN: <?= esc($company['gstin'] ?? ''); ?>
                 </td>
-
-                <td align="right">
-                    <strong>Date:</strong> <?= esc($company['date_of_incorp']); ?>
-                </td>
             </tr>
         </table>
 
@@ -74,19 +70,6 @@ function toRoman($number)
         <div style="text-align:center; font-weight:bold;background-color: #0b5c7d;padding: 10px;color: #fff; margin-bottom:10px;">
             <?= ($debitNote['note_type'] === 'debit') ? 'DEBIT NOTE' : 'CREDIT NOTE'; ?>
         </div>
-
-        <table width="100%" border="0" cellpadding="6">
-
-            <tr>
-                <td>
-                    <strong>Category Of Service :</strong> CONSULTANCY
-                </td>
-                <td align="right">
-                    <strong>Date :</strong><br>
-                    <?= esc($debitNote['date']) ?>
-                </td>
-            </tr>
-        </table>
         <table width="100%" border="0" cellpadding="6">
             <tr>
                 <td width="60%">
@@ -102,6 +85,10 @@ function toRoman($number)
                     <input type="text" name="credit_no" value="<?= esc($debitNote['credit_no']); ?>"
                         style="width:180px; padding:4px;" required>
                     <?php endif; ?>
+                </td>
+                 <td  width ="20%" align="right">
+                    <strong>Date :</strong><br>
+                    <input type="date" name="debit_date" value="<?= !empty($debitNote['date']) ? date('Y-m-d', strtotime($debitNote['date'])) : ''; ?>"style="padding:6px; border:1px solid #bbb;" required>
                 </td>
             </tr>
 
@@ -265,7 +252,7 @@ function toRoman($number)
 
             <input type="hidden" name="client_id" value="<?= esc($client['id']) ?>">
             <input type="hidden" name="company_id" value="<?= esc($company['id']) ?>">
-            <input type="hidden" name="debit_date" value="<?= esc(date('Y-m-d')) ?>">
+            <!-- <input type="hidden" name="debit_date" value="<?= esc(date('Y-m-d')) ?>"> -->
             <input type="hidden" name="created_by" value="<?= esc($client['id']) ?>">
 
 
@@ -292,7 +279,7 @@ function toRoman($number)
 
     // Get note type from PHP
     const noteType = '<?= strtolower($debitNote['note_type']) ?>'; // debit | credit
-    const noteLabel = noteType === 'credit' ? 'Credit' : 'Debit';
+    const noteLabel = noteType === 'credit' ? 'Credit Note' : 'Debit Note';
 
     const printUrl = noteType === 'credit'
         ? '<?= site_url("DebitNote/") ?>'
@@ -365,27 +352,6 @@ function toRoman($number)
 
                         window.location.href =
                             pdfUrl + data.invoice_id;
-
-                    }
-
-                    // CLOSE BUTTON
-                    else if (result.isDismissed) {
-
-                        Swal.fire({
-                            title: 'Redirect?',
-                            text: 'Go back to invoice list?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No'
-                        }).then((res) => {
-
-                            if (res.isConfirmed) {
-                                window.location.href =
-                                    '<?= site_url("InvoiceManagment") ?>';
-                            }
-
-                        });
 
                     }
 

@@ -241,6 +241,7 @@
 
 
 
+
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <!-- Fallback for SheetJS if jsDelivr is blocked -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -624,31 +625,188 @@ searchResultsBody.appendChild(totalRow);
         });
     }
 
-    function exportToExcel(filename = 'SaleReport.xlsx'){
-        const table = document.querySelector('#searchResultsSection table');
-        if (!table) return;
-        const wb = XLSX.utils.table_to_book(table, {sheet: 'Sheet1'});
-        XLSX.writeFile(wb, filename);
-    }
+  function exportToExcel() {
 
-   function exportToPDF(filename = 'SaleReport.pdf') {
     const table = document.querySelector('#searchResultsSection table');
-
     if (!table) return;
 
-    html2canvas(table, {
+    const fromDate = document.getElementById('Minvoice-fromDate').value;
+    const toDate   = document.getElementById('Minvoice-toDate').value;
+
+    let filename = 'Sale-Report';
+
+    if (fromDate && toDate) {
+        const from = fromDate.split('-').reverse().join('-');
+        const to   = toDate.split('-').reverse().join('-');
+        filename = `Sale-Report_${from}_to_${to}`;
+    }
+
+    // Dynamic Company Details
+    const companyName = document
+        .getElementById('company-name')
+        .innerText
+        .trim();
+
+    const companyAddress = document
+        .getElementById('company-address')
+        .innerText
+        .trim();
+
+    const companyContact = document
+        .getElementById('company-contact')
+        .innerText
+        .trim();
+
+    // Header Data
+    const wsData = [
+        [companyName],
+        [companyAddress],
+        [companyContact],
+        [],
+        ['Sales Register'],
+        [`Period: ${formatDisplayDate(fromDate)} to ${formatDisplayDate(toDate)}`],
+        []
+    ];
+
+    // Get Table Data
+    const tableSheet = XLSX.utils.table_to_sheet(table);
+
+    const tableData = XLSX.utils.sheet_to_json(
+        tableSheet,
+        { header: 1 }
+    );
+
+    // Add Table Data Below Header
+    wsData.push(...tableData);
+
+    // Create Worksheet
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Merge Header Rows
+    ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } }, // Company Name
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } }, // Address
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 9 } }, // Contact
+        { s: { r: 4, c: 0 }, e: { r: 4, c: 9 } }, // Sales Register
+        { s: { r: 5, c: 0 }, e: { r: 5, c: 9 } }  // Period
+    ];
+
+    // Optional Column Widths
+    ws['!cols'] = [
+        { wch: 15 },
+        { wch: 20 },
+        { wch: 30 },
+        { wch: 20 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 20 }
+    ];
+
+    // Create Workbook
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        'Sales Register'
+    );
+
+    XLSX.writeFile(wb, `${filename}.xlsx`);
+}
+
+  function exportToPDF() {
+
+    const table = document.querySelector('#searchResultsSection table');
+    if (!table) return;
+
+    const fromDate = document.getElementById('Minvoice-fromDate').value;
+    const toDate   = document.getElementById('Minvoice-toDate').value;
+
+    let filename = 'Sale-Report';
+
+    if (fromDate && toDate) {
+        const from = fromDate.split('-').reverse().join('-');
+        const to   = toDate.split('-').reverse().join('-');
+
+        filename = `Sale-Report_${from}_to_${to}`;
+    }
+
+    filename += '.pdf';
+
+    // Dynamic Company Details
+    const companyName = document
+        .getElementById('company-name')
+        .innerText
+        .trim();
+
+    const companyAddress = document
+        .getElementById('company-address')
+        .innerText
+        .trim();
+
+    const companyContact = document
+        .getElementById('company-contact')
+        .innerText
+        .trim();
+
+    // Create temporary container
+    const pdfContainer = document.createElement('div');
+
+    pdfContainer.style.padding = '20px';
+    pdfContainer.style.backgroundColor = '#fff';
+
+    pdfContainer.innerHTML = `
+        <div style="text-align:center;margin-bottom:20px;">
+            <h2 style="margin:0;">${companyName}</h2>
+
+            <div style="margin-top:5px;">
+                ${companyAddress}
+            </div>
+
+            <div style="margin-top:5px;">
+                ${companyContact}
+            </div>
+
+            <h3 style="margin-top:15px;">
+                Sales Register
+            </h3>
+
+            <div>
+                Period :
+                ${formatDisplayDate(fromDate)}
+                to
+                ${formatDisplayDate(toDate)}
+            </div>
+        </div>
+    `;
+
+    // Clone table and append
+    pdfContainer.appendChild(table.cloneNode(true));
+
+    // Hide from screen
+    pdfContainer.style.position = 'absolute';
+    pdfContainer.style.left = '-9999px';
+
+    document.body.appendChild(pdfContainer);
+
+    html2canvas(pdfContainer, {
         scale: 2,
         useCORS: true
     }).then(canvas => {
+
+        document.body.removeChild(pdfContainer);
 
         const imgData = canvas.toDataURL('image/png');
 
         const pdf = new window.jspdf.jsPDF('l', 'pt', 'a4');
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageWidth  = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
 
-        const imgWidth = pageWidth;
+        const imgWidth  = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         let heightLeft = imgHeight;

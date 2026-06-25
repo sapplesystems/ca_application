@@ -145,80 +145,155 @@
 
 });
         
-            document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
 
-                const currentPath = window.location.pathname.toLowerCase();
-                const activeMenu = localStorage.getItem('activeMenu');
-                    const previousUrl = document.referrer.toLowerCase();
+    const currentPath = window.location.pathname.toLowerCase();
 
-                document.querySelectorAll('.menu-bar .menu-link').forEach(function (link) {
+    const modules = {
+        home: [
+            '/home'
+        ],
 
-                    const linkPath = new URL(link.href).pathname.toLowerCase();
-                    const menuItem = link.querySelector('.menu-item');
+        workmaster: [
+            '/work_master'
+        ],
 
-                    // remove old active
-                    menuItem.classList.remove('active');
+        companymaster: [
+            '/company_master'
+        ],
 
-                    // HOME
-                    if (
-                        currentPath === '/home' &&
-                        linkPath.includes('/home')
-                    ) {
-                        menuItem.classList.add('active');
-                    }
+        clientmaster: [
+            '/client_master'
+        ],
 
-        // PARTY LEDGER MODULE
-else if (
-    (
-        currentPath.includes('/invoicemanagment') ||
-        currentPath.includes('/manageinvoice') ||
+        partyledger: [
+            '/invoicemanagment',
+            '/manageinvoice',
+            '/invoice/view',
+            '/ledger',
+            '/debitnotelist',
+        ],
 
-        (
-            currentPath.includes('/invoice/edit') &&
-            localStorage.getItem('activeMenu') === 'partyledger'
-        ) ||
+        invoicemanagement: [
+            '/invoice-mangement',
+            '/generate-invoice',
+            '/credit-note',
+            '/debit-note',
+            '/invoice/edit',
+            '/preview'
+        ],
 
-        (
-            currentPath.includes('/preview') &&
-            localStorage.getItem('activeMenu') === 'partyledger'
-        )
-    ) &&
-    linkPath.includes('/invoicemanagment')
-) {
-    menuItem.classList.add('active');
-}
+        reports: [
+            '/reports_registers'
+        ],
 
-// INVOICE MANAGEMENT MODULE
-else if (
-    (
-        currentPath.includes('/invoice-mangement') ||
-        currentPath.includes('/debit-note') ||
-        currentPath.includes('/credit-note') ||
-        currentPath.includes('/generate-invoice') ||
+        pdfoutputs: [
+            '/pdf_outputs'
+        ],
 
-        (
-            currentPath.includes('/invoice/edit') &&
-            localStorage.getItem('activeMenu') === 'invoicemanagement'
-        ) ||
+        users: [
+            '/usermanagment'
+        ],
 
-        (
-            currentPath.includes('/preview') &&
-            localStorage.getItem('activeMenu') === 'invoicemanagement'
-        )
-    ) &&
-    linkPath.includes('/invoice-mangement')
-) {
-    menuItem.classList.add('active');
-}
+        roles: [
+            '/roles'
+        ]
+    };
 
-                // DEFAULT
-                else if (currentPath === linkPath) {
-                    menuItem.classList.add('active');
-                }
+    let activeModule = null;
 
-            });
+    Object.keys(modules).forEach(function(module){
 
-        });
+        if (
+            modules[module].some(url =>
+                currentPath.includes(url)
+            )
+        ) {
+            activeModule = module;
+        }
+
+    });
+
+    document.querySelectorAll('.menu-link').forEach(function(link){
+
+        const href = link.href.toLowerCase();
+        const item = link.querySelector('.menu-item');
+
+        item.classList.remove('active');
+
+        if (
+            activeModule === 'home' &&
+            href.includes('/home')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'workmaster' &&
+            href.includes('/work_master')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'companymaster' &&
+            href.includes('/company_master')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'clientmaster' &&
+            href.includes('/client_master')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'partyledger' &&
+            href.includes('/invoicemanagment')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'invoicemanagement' &&
+            href.includes('/invoice-mangement')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'reports' &&
+            href.includes('/reports_registers')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'pdfoutputs' &&
+            href.includes('/pdf_outputs')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'users' &&
+            href.includes('/usermanagment')
+        ) {
+            item.classList.add('active');
+        }
+
+        if (
+            activeModule === 'roles' &&
+            href.includes('/roles')
+        ) {
+            item.classList.add('active');
+        }
+
+    });
+
+});
 </script>
 </body>
 

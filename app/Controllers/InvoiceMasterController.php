@@ -59,9 +59,25 @@ class InvoiceMasterController extends BaseController
         $invoice=  $invoiceModel->getInvoiceWithCompany($id);
         $receiptModel=new ReciptDetailsModel();
         $receipt=$receiptModel->select('*')->findAll();
-        $companyReceipt = $receiptModel->select('*')->where('company_id IS NOT NULL')->findAll();   
-        $debitModel=new DebitNotes();
-        $debit=$debitModel->select('total_amount,debit_no,note_type,date,credit_no')->where('client_id', $id)->findAll();
+$companyReceipt = $receiptModel
+    ->select('
+        recipt_details.*,
+        company_master.name,
+        company_master.email,
+        company_master.telephone,
+        company_master.registered_office as company_address,
+
+        client_master.legal_name,
+        client_master.pan,
+        client_master.registered_office as client_address
+    ')
+    ->join('company_master', 'company_master.id = recipt_details.company_id', 'left')
+    ->join('client_master', 'client_master.id = recipt_details.client_id', 'left')
+    ->where('recipt_details.company_id IS NOT NULL')
+    ->where('recipt_details.client_id IS NOT NULL')
+    ->findAll();     
+       $debitModel=new DebitNotes();
+        $debit=$debitModel->select('total_amount,debit_no,note_type,date,credit_no,id')->where('client_id', $id)->findAll();
 
         $lastReceipt = $receiptModel
                         ->select('id')
@@ -171,12 +187,14 @@ class InvoiceMasterController extends BaseController
     $invoiceModel = new InvoiceMasterModel();
 
     $lastInvoice = $invoiceModel
-                    ->orderBy('id', 'DESC')
-                    ->first();
+                        ->orderBy('id', 'DESC')
+                        ->first();
 
     $nextId = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-    $invoiceNo = $company['invoice_format'] . $nextId;
+        // Convert 1 => 01, 2 => 02, 10 => 10
+    $invoiceNo = $company['invoice_format'] . str_pad($nextId, 2, '0', STR_PAD_LEFT);
+
 
     return view('common/header')
         . view('InvoiceMaster/invoice_preview', [
@@ -470,6 +488,8 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
     // UPDATE INVOICE MASTER
     // ======================
     $invoiceModel->update($id, [
+        'invoice_no'          =>$this->request->getPost('invoice_no'),
+        'invoice_date'        =>$this->request->getPost('invoice_date'),
         'service_value'        => $this->request->getPost('service_value'),
         'expense_total'        => $this->request->getPost('expense_total'),
         'grand_total'          => $this->request->getPost('grand_total'),
@@ -604,10 +624,18 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
     $company = $companyModel->find($invoice['company_id']);
     $client  = $clientModel->find($invoice['client_id']);
 
+  $receiptModel = new ReciptDetailsModel();
+    $receiptCounters = [
+        'Cash'   => $receiptModel->where('mode_of_payment', 'Cash')->countAllResults() + 1,
+        'Cheque' => $receiptModel->where('mode_of_payment', 'Cheque')->countAllResults() + 1,
+        'TDS'    => $receiptModel->where('mode_of_payment', 'TDS')->countAllResults() + 1,
+        'Online' => $receiptModel->where('mode_of_payment', 'Online')->countAllResults() + 1,
+    ];
     return $this->response->setJSON([
         'invoice' => $invoice,
         'company' => $company,
-        'client'  => $client
+        'client'  => $client,
+        'receiptCounters' => $receiptCounters
     ]);
 }
 
@@ -626,40 +654,50 @@ public function storeDebitNote()
     $companyModel = new CompanyMasterModel();
     $company = $companyModel->find($companyId);
 
-    $DebitModel = new DebitNotes();
+   $DebitModel = new DebitNotes();
 
-    $lastRecord = $DebitModel
+if ($noteType === 'debit') {
+
+    $lastDebit = $DebitModel
+        ->where('note_type', 'debit')
         ->orderBy('id', 'DESC')
         ->first();
 
-    $nextId = $lastRecord ? ($lastRecord['id'] + 1) : 1;
+    $nextDebitId = $lastDebit ? ($lastDebit['id'] + 1) : 1;
 
-    if ($noteType === 'debit') {
+    $debitNo = $company['debit_format'] .
+               str_pad($nextDebitId, 2, '0', STR_PAD_LEFT);
 
-        $debitNo = $company['debit_format'] . $nextId;
+    return view('common/header')
+        . view('InvoiceMaster/DebitNote', [
+            'company' => $company,
+            'client'  => $client,
+            'debitNo' => $debitNo,
+            'tax'     => $tax
+        ])
+        . view('common/footer');
 
-        return view('common/header')
-            . view('InvoiceMaster/DebitNote', [
-                'company' => $company,
-                'client'  => $client,
-                'debitNo' => $debitNo,
-                'tax'=>$tax
-            ])
-            . view('common/footer');
+} else {
 
-    } else {
+    $lastCredit = $DebitModel
+        ->where('note_type', 'credit')
+        ->orderBy('id', 'DESC')
+        ->first();
 
-        $creditNo = $company['credit_format'] . $nextId;
+    $nextCreditId = $lastCredit ? ($lastCredit['id'] + 1) : 1;
 
-        return view('common/header')
-            . view('InvoiceMaster/CreditNote', [
-                'company'  => $company,
-                'client'   => $client,
-                'creditNo' => $creditNo,
-                'tax'=>$tax
-            ])
-            . view('common/footer');
-    }
+    $creditNo = $company['credit_format'] .
+                str_pad($nextCreditId, 2, '0', STR_PAD_LEFT);
+
+    return view('common/header')
+        . view('InvoiceMaster/CreditNote', [
+            'company'  => $company,
+            'client'   => $client,
+            'creditNo' => $creditNo,
+            'tax'      => $tax
+        ])
+        . view('common/footer');
+}
 }
 
   public function saveDebitNote()
@@ -838,13 +876,12 @@ public function debitNotePDF($id)
     // Render PDF
     $dompdf->render();
 
-    $filename = str_replace(
-    '/',
-    '-',
-    $debitNote['debit_no'] ?? $debitNote['credit_no']
-);
-  
+  $documentNo = !empty($debitNote['debit_no'])
+    ? $debitNote['debit_no']
+    : $debitNote['credit_no'];
 
+$filename = str_replace('/', '-', $documentNo);
+  
     // Output PDF (force download)
     $dompdf->stream(
         $filename  . '.pdf',
@@ -1043,12 +1080,13 @@ public function receiptPdf($receipt_id)
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
+    $receiptNo = str_replace('/', '-', $receipt['recipt_no']);
     // Download PDF
     return $this->response
         ->setHeader('Content-Type', 'application/pdf')
         ->setHeader(
             'Content-Disposition',
-            'attachment; filename="Receipt_' . $receipt['recipt_no'] . '.pdf"'
+            'attachment; filename="Receipt-' .  $receiptNo . '.pdf"'
         )
         ->setBody($dompdf->output());
 }
@@ -1131,6 +1169,8 @@ public function debitEdit($id)
     // Collect debit note data (same as save)
     $data = [
         'debit_no'                  => $this->request->getPost('debit_no'),
+        'credit_no'                 => $this->request->getPost('credit_no'),
+        'date'                =>$this->request->getPost('debit_date'),
         'total_recoverable_expenses'=> $this->request->getPost('expense_total'),
         'advance_amount'            => $this->request->getPost('advance_received'),
         'total_amount'              => $this->request->getPost('net_amount'),

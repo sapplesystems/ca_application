@@ -454,7 +454,7 @@
                                         <option value="Cash">Cash</option>
                                         <option value="Cheque">Cheque</option>
                                         <option value="TDS">TDS</option>
-                                        <option value="Online">Online Transactions</option>
+                                        <option value="Online">Online Transfer</option>
                                     </select>
                                 </td>
                             </tr>
@@ -641,6 +641,17 @@
 
  </div>
 <script>
+    $('#modeOfPayment').on('change', function () {
+
+    let mode = $(this).val();
+
+    // Hide all optional sections first
+    $('#chequeFields').hide();
+
+    if (mode === 'Cheque') {
+        $('#chequeFields').show();
+    }
+});
 function reloadPageAfterClose() {
     setTimeout(function () {
         location.reload();
