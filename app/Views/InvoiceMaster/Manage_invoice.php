@@ -934,13 +934,14 @@ foreach ($receipt as $rec) {
 }
 
     function printLedger() {
+        const fileName = "<?= esc($clients[0]['legal_name']) ?> Ledger";
         const printContents = document.getElementById('ledger-print-area').innerHTML;
         const originalContents = document.body.innerHTML;
 
         document.body.innerHTML = `
         <html>
         <head>
-            <title>Invoice Ledger</title>
+           <title>${fileName}</title>
            <style>
     body { font-family: Cambria, sans-serif; }
 
