@@ -106,7 +106,7 @@ public function getInvoiceWithCompany($clientId)
 
         // $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-        return "{$org}/{$branch}/{$fy}/";
+        return "{$org}/{$branch}/{$fy}";
     }
          public function generateDebitNo($org)
     {
@@ -127,7 +127,7 @@ public function getInvoiceWithCompany($clientId)
 
         // $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-        return "{$org}/{$fy}/";
+        return "{$org}/{$fy}";
     }
 
 }

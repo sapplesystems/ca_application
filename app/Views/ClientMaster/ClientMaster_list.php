@@ -103,8 +103,10 @@
                         <th>Registration no</th>
                         <th>Registered Office</th>
                         <th>Website</th>
+                        <th>Email</th>
+                        <th>GSTIN</th>
                         <th>Company Category</th>
-                        <th>Company Sub‑Category</th>
+                        
                         <th>Corporate Office</th>
                         <th>Status</th>
                         <th style="text-align:right;">Actions</th>
@@ -120,8 +122,10 @@
                         <td><?= esc($client['registration_no']) ?></td>
                         <td><?= esc($client['registered_office']) ?></td>
                         <td><?= esc($client['website']) ?></td>
+                        <td><?= esc($client['email']) ?></td>
+                        <td><?= esc($client['gstin']) ?></td>
                         <td><span class="pill"><?= esc($client['company_category']) ?></span></td>
-                        <td><?= esc($client['company_sub_category']) ?></td>
+                        
                         <td><?= esc($client['corporate_office']) ?></td>
                         <td>
 
@@ -247,6 +251,7 @@
                                     <option value="Trust-&-Society">Trust & Society</option>
                                     <option value="OPC">OPC</option>
                                     <option value="Individual">Individual</option>
+                                    <option value="Proprietorship">Proprietorship</option>
                                 </select>
                             </div>
                             <!-- <div>
