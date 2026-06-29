@@ -11,6 +11,31 @@
         text-align:right !important;
     }
 
+    .service-desc {
+    font-size: 12px;      /* Smaller text */
+    color: #666;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* Show only 1 line */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.service-desc.expanded {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+
+.toggle-desc {
+    font-size: 11px;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.toggle-desc:hover {
+    text-decoration: underline;
+}
+
     @font-face {
         font-family: 'Cambria';
         src: url('../public/fonts/Cambria.woff2') format('woff2'),
@@ -19,6 +44,7 @@
         font-style: normal;
         font-display: swap;
     }
+    
     
 </style><!-------------------------------- Modal for genrate invoice------------------------------------->
 <!-- Modal1 -->
@@ -180,16 +206,19 @@
                                 <th>Drawer Bank</th>
                                 <th>Bill Amount</th>
                                 <th>Tds Amount</th>
+                                <th>Bank Name</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
 
                         <tbody id="receiptTableBody">
+                           
+                         <?php $i = 1; ?>
                             <?php if (!empty($receipt)) : ?>
                                 <?php foreach ($receipt as $rec) : ?>
-
+                                     <?php if (!empty($rec['company_id'])) continue; ?>
                                     <tr>
-                                        <td><?= esc($rec['id']) ?></td>
+                                        <td><?= $i++ ?></td>
                                         <td><?= esc($rec['recipt_no']) ?></td>
                                         <td><?= esc($rec['date']) ?></td>
                                         <td><?= esc($rec['mode_of_payment']) ?></td>
@@ -198,6 +227,7 @@
                                         <td><?= esc($rec['drawen_bank']) ?></td>
                                         <td class="amount"><?= esc($rec['bill_amount']) ?></td>
                                         <td class="amount"><?= esc($rec['tds_amount']) ?></td>
+                                        <td><?= esc($rec['bank_name']) ?></td>
                                         <td class="action">
                                             <i class="fa-solid fa-pen-to-square edit-btn" title="Edit"
                                                 data-id="<?= $rec['id'] ?>" data-recipt_no="<?= esc($rec['recipt_no']) ?>"
@@ -573,7 +603,6 @@
 
 
                     <?php foreach ($invoices as $row) : ?>
-
                         <?php
 
 $invoice = (float) ($row['total_invoice_amount'] ?? 0);
@@ -608,7 +637,14 @@ $invoice = (float) ($row['total_invoice_amount'] ?? 0);
                             <td><?= esc($row['invoice_no']) ?></td>
                             <td><?= date('d-m-Y', strtotime($row['invoice_date'])) ?></td>
                             <td class="Minvoice-works-text">
-                                <?= esc($row['service_names']) ?>
+                                <?= esc($row['service_names']) ?><br>
+                                <div class="service-desc print-hide ">
+                                    <?= esc($row['service_descriptions']) ?>
+                                </div>
+
+                                <?php if (strlen($row['service_descriptions']) > 30): ?>
+                                    <a href="javascript:void(0);" class="toggle-desc print-hide ">More</a>
+                                <?php endif; ?>
                             </td>
                             <!-- <td class="print-hide"><?= esc($row['company_name']) ?></td> -->
                             <td class="invoice-amount centertext">
@@ -2302,15 +2338,21 @@ $(document).on('click', '.open-receipt', function () {
             $.each(data, function(index, rec) {
                 html += `
                     <tr>
-                        <td>${rec.id}</td>
+                        <td>${index + 1}</td>
                         <td>${rec.recipt_no}</td>
                         <td>${rec.date}</td>
-                        <td>${rec.mode_of_payment}</td>
-                        <td>${rec.cheque_date ?? ''}</td>
+                        <td>${rec.mode_of_payment === 'Online' ? 'Online Transfer' : (rec.mode_of_payment ?? '')}</td>
+                        <td>${
+                            rec.cheque_date &&
+                            !rec.cheque_date.startsWith('0000-00-00')
+                                ? rec.cheque_date
+                                : ''
+                        }</td>
                         <td>${rec.cheque_number ?? ''}</td>
                         <td>${rec.drawen_bank ?? ''}</td>
                         <td>${rec.bill_amount}</td>
                         <td>${rec.tds_amount}</td>
+                        <td>${rec.bank_name}</td>
                          <td class="action">
 
                 <i class="fa-solid fa-pen-to-square edit-btn"
@@ -2489,6 +2531,23 @@ document.addEventListener('click', function(e) {
             window.location.href = "<?= base_url('debits/delete/') ?>" + id;
         }
     }
+});
+
+document.addEventListener('click', function (e) {
+
+    if (e.target.classList.contains('toggle-desc')) {
+
+        const desc = e.target.previousElementSibling;
+
+        if (desc.classList.contains('expanded')) {
+            desc.classList.remove('expanded');
+            e.target.textContent = 'More';
+        } else {
+            desc.classList.add('expanded');
+            e.target.textContent = 'Less';
+        }
+    }
+
 });
         
 </script>

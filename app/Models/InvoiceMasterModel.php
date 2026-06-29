@@ -74,7 +74,8 @@ public function getInvoiceWithCompany($clientId)
             MAX(recipt_details.date) AS recipt_date,
             MAX(recipt_details.recipt_no) AS recipt_no,
             SUM(recipt_details.tds_amount) AS tds_amount,
-            GROUP_CONCAT(DISTINCT invoice_works.service_name SEPARATOR ",\n ") AS service_names
+            GROUP_CONCAT(DISTINCT invoice_works.service_name SEPARATOR ",\n ") AS service_names,
+            GROUP_CONCAT(DISTINCT invoice_works.service_description SEPARATOR ",\n ") AS service_descriptions
         ')
         ->join('company_master', 'company_master.id = invoices.company_id', 'left')
         ->join('recipt_details', 'recipt_details.invoice_id = invoices.id', 'left')
@@ -106,7 +107,7 @@ public function getInvoiceWithCompany($clientId)
 
         // $seq = $lastInvoice ? $lastInvoice['id'] + 1 : 1;
 
-        return "{$org}/{$branch}/{$fy}";
+        return "{$org}/{$branch}/{$fy}/";
     }
          public function generateDebitNo($org)
     {

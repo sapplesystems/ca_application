@@ -607,42 +607,90 @@ function romanNumeral($num)
             ========================== */
             form.addEventListener('submit', function(e) {
 
-                e.preventDefault();
-                calculateTotals();
+    e.preventDefault();
+    calculateTotals();
 
-                fetch(form.action, {
-                        method: 'POST',
-                        body: new FormData(form)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
+    fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(res => res.json())
+        .then(data => {
 
-                        if (data.status !== 'success') {
-                            Swal.fire('Error', 'Failed to update invoice', 'error');
-                            return;
-                        }
+            if (data.status !== 'success') {
+                Swal.fire('Error', 'Failed to update invoice', 'error');
+                return;
+            }
 
-                        Swal.fire({
-                            title: 'Invoice Updated!',
-                            icon: 'success',
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: 'Print Invoice',
-                            denyButtonText: 'Download PDF'
-                        }).then(result => {
+            function showInvoicePopup() {
 
-                            if (result.isConfirmed) {
-                                // window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
-                                window.location.href = `<?= site_url('invoice/print') ?>/${data.invoice_id}`;
-                            }
-                            if (result.isDenied) {
-                                // window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id, '_blank');
-                                window.location.href = `<?= site_url('invoice/pdf') ?>/${data.invoice_id}`;
-                            }
-                        });
-                    })
-                    .catch(() => Swal.fire('Error', 'Server error', 'error'));
-            });
+                Swal.fire({
+                    title: 'Invoice Updated!',
+                    text: 'Your invoice has been updated successfully.',
+                    icon: 'success',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Print Invoice',
+                    denyButtonText: 'Download PDF',
+                    cancelButtonText: 'Close'
+                }).then((result) => {
+
+                    // Print Invoice
+                    if (result.isConfirmed) {
+
+                        let iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = '<?= site_url("invoice/print/") ?>' + data.invoice_id;
+
+                        document.body.appendChild(iframe);
+
+                        iframe.onload = function() {
+
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+
+                            iframe.contentWindow.onafterprint = function() {
+
+                                document.body.removeChild(iframe);
+
+                                // Show popup again
+                                showInvoicePopup();
+                            };
+                        };
+
+                    }
+
+                    // Download PDF
+                    else if (result.isDenied) {
+
+                        window.open(
+                            '<?= site_url("invoice/pdf/") ?>' + data.invoice_id,
+                            '_blank'
+                        );
+
+                        // Show popup again
+                        showInvoicePopup();
+                    }
+
+                    // Close
+                    else if (result.dismiss === Swal.DismissReason.cancel) {
+
+                        window.location.href =
+                            '<?= site_url("ManageInvoice/" . $invoice["client_id"]) ?>';
+
+                    }
+
+                });
+            }
+
+            showInvoicePopup();
+
+        })
+        .catch(() => {
+            Swal.fire('Error', 'Server error', 'error');
+        });
+
+});
 
             /* ==========================
                INIT
