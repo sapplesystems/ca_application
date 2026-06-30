@@ -109,10 +109,10 @@
                                 <th><input type="checkbox" /></th>
                                 <th>Type of Company</th>
                                 <th>Name</th>
-                                <th>Date of Incorp.</th>
+                                <th>Date of Incorporation</th>
                                 <th>Registered Office</th>
                                 <th>PAN </th>
-                                <th>GSIN</th>
+                                <th>GSTIN</th>
                                 <th>Email</th>
                                 <th>Website</th>
                                 <th>Status</th>

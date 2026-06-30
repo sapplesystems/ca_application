@@ -100,7 +100,7 @@
                         <th style="width:24px;"><input type="checkbox" /></th>
                         <th>Company Category</th>
                         <th>Name</th>
-                        <th>Date of Incorp</th>
+                        <th>Date of Incorporation</th>
                          <th>Registered Office</th>
                         <th>PAN</th>
                         <th>GSTIN</th>
