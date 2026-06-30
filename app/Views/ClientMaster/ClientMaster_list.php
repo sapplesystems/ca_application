@@ -98,16 +98,14 @@
                 <thead>
                     <tr>
                         <th style="width:24px;"><input type="checkbox" /></th>
-                        <th>Name</th>
-                        <th>Trade Name</th>
-                        <th>Registration no</th>
-                        <th>Registered Office</th>
-                        <th>Website</th>
-                        <th>Email</th>
-                        <th>GSTIN</th>
                         <th>Company Category</th>
-                        
-                        <th>Corporate Office</th>
+                        <th>Name</th>
+                        <th>Date of Incorp</th>
+                         <th>Registered Office</th>
+                        <th>PAN</th>
+                        <th>GSTIN</th>
+                       <th>Email</th>
+                        <th>CIN</th>
                         <th>Status</th>
                         <th style="text-align:right;">Actions</th>
                     </tr>
@@ -117,16 +115,15 @@
                     <?php foreach($clients as $client): ?>
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td><?= esc($client['legal_name']) ?></td>
-                        <td><?= esc($client['trade_name']) ?></td>
-                        <td><?= esc($client['registration_no']) ?></td>
-                        <td><?= esc($client['registered_office']) ?></td>
-                        <td><?= esc($client['website']) ?></td>
-                        <td><?= esc($client['email']) ?></td>
-                        <td><?= esc($client['gstin']) ?></td>
                         <td><span class="pill"><?= esc($client['company_category']) ?></span></td>
+                        <td><?= esc($client['legal_name']) ?></td>
+                        <td><?= esc($client['date_of_incorporation']) ?></td>
+                         <td><?= esc($client['registered_office']) ?></td>
+                        <td><?= esc($client['pan']) ?></td>
+                        <td><?= esc($client['gstin']) ?></td>
+                        <td><?= esc($client['email']) ?></td>
+                        <td><?= esc($client['cin_no']) ?></td>
                         
-                        <td><?= esc($client['corporate_office']) ?></td>
                         <td>
 
                             <div class="toggle <?= $client['status'] == 0 ? 'inactive' : '' ?>"
