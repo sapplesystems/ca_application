@@ -117,7 +117,7 @@
                         <td><input type="checkbox" /></td>
                         <td><span class="pill"><?= esc($client['company_category']) ?></span></td>
                         <td><?= esc($client['legal_name']) ?></td>
-                        <td><?= esc($client['date_of_incorporation']) ?></td>
+                        <td><?= date('d-m-Y', strtotime($client['date_of_incorporation'])) ?></td>
                          <td><?= esc($client['registered_office']) ?></td>
                         <td><?= esc($client['pan']) ?></td>
                         <td><?= esc($client['gstin']) ?></td>
