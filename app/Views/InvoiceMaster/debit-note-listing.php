@@ -43,19 +43,29 @@
                         <td> <?= esc($debit['total_amount']) ?></td>
                         <td><?= esc($debit['advance_amount']) ?></td>
                         <td class="action">
-                            <!-- Edit -->
-                            <a href="<?= base_url('debits/edit/' . $debit['id']) ?>" class="edit-btn" title="Edit">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                            
+                                                        <!-- Edit -->
+                                <a href="<?= base_url('debits/edit/' . $debit['id']) ?>"
+                                class="btn btn-sm btn-warning"
+                                title="Edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
 
-                            <!-- Delete -->
-                            <button type="button" class="delete-btn" title="Delete" data-id="<?= $debit['id'] ?>">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                            <button type="button" class="printBtn btn btn-primary"
-                                    data-id="<?= $debit['id'] ?>">
-                                Print
-                            </button>                   
+                                <!-- Delete -->
+                                <button type="button"
+                                        class="btn btn-sm btn-danger delete-btn"
+                                        title="Delete"
+                                        data-id="<?= $debit['id'] ?>">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                                <!-- Print -->
+                                <button type="button"
+                                        class="btn btn-sm btn-primary printBtn"
+                                        title="Print"
+                                        data-id="<?= $debit['id'] ?>">
+                                    <i class="fa-solid fa-print"></i>
+                                </button>                
                           </td>
                         <?php endforeach; ?>
                     </tr>

@@ -1055,193 +1055,273 @@ foreach ($receipt as $rec) {
 }
 
     function printLedger() {
-
-     const clientName =
-        "<?= preg_replace('/[^A-Za-z0-9]/', '_', $clients[0]['legal_name']) ?>";
-
-       const printContents = document.getElementById('ledger-print-area').innerHTML;
-
-
+    const clientName = "<?= preg_replace('/[^A-Za-z0-9]/', '_', $clients[0]['legal_name']) ?>";
+    const printContents = document.getElementById('ledger-print-area').innerHTML;
+    
     const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
+    printWindow.document.write(`
         <html>
         <head>
-            <title>${clientName}Ledger</title>
-             <!-- Bootstrap -->
+            <title>${clientName} Ledger</title>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-            <!-- Your CSS -->
             <link rel="stylesheet" href="assets/css/style.css">
-           <style>
-          
-    body { font-family: Cambria, sans-serif; }
-
-    table { width: 100%; border-collapse: collapse; }
-
-    th, td { border: 1px solid #000; padding: 6px; }
-
-    .Minvoice-text-right { text-align: right; }
-
-  
-
-    @media print {
-    
-      body {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    /* Outer border */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        border: 2px solid #000 !important;
-    }
-
-    /* All row and column lines */
-    tbody td,
-    tbody th,
-    thead th {
-        border: 1px solid #fff !important;
-    }
-
-    /* Header */
-    thead th {
-        background: #005b8f !important;
-        color: #fff !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    /* Optional alternate row color */
-    tbody tr:nth-child(even) {
-        background: #f5f5f5 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    tbody tr:nth-child(odd) {
-        background: #ffffff !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-        .print-only {
-            display: block !important;
-        }
-        .print-hide {
-            display: none !important;
-        }
-            .print-widthinvoiceno {
-    width: 13% !important;
-}
-    .centertext
-    {
-    text-align:center !important;
+            <style>
+                /* Base styles */
+                body { 
+                    font-family: Cambria, sans-serif; 
+                    margin: 0; 
+                    padding: 10px; 
                 }
-    .print-widthinvoiceno
-    {
-    text-align:center !important;
+                
+                table { 
+                    width: 100%; 
+                    border-collapse: collapse;
+                    table-layout: fixed;
+                    font-size: 11px;
                 }
-    .invoice-amount{
-    text-align:center !important;
+                
+                th, td { 
+                    border: 1px solid #000; 
+                    padding: 5px 4px !important;
+                    word-wrap: break-word;
+                }
+                
+                /* Column width classes */
+                .print-widthinvoiceno { 
+                    width: 9% !important; 
+                    text-align: center !important; 
+                }
+                
+                .print-widthinvoicedate { 
+                    width: 8% !important; 
+                    text-align: center !important; 
+                }
+                
+                .print-widthinvoicework { 
+                    width: 16% !important; 
+                    text-align: left !important; 
+                }
+                
+                .print-widthinvoiceamount { 
+                    width: 8% !important; 
+                    text-align: right !important; 
+                }
+                
+                .print-widtreciptdate { 
+                    width: 8% !important; 
+                    text-align: center !important; 
+                }
+                
+                .print-widtreciptno { 
+                    width: 9% !important; 
+                    text-align: center !important; 
+                }
+                
+                .print-widtreciptamount { 
+                    width: 8% !important; 
+                    text-align: right !important; 
+                }
+                
+                .print-widtreceivedamount { 
+                    width: 8% !important; 
+                    text-align: right !important; 
+                }
+                
+                .print-widtdebitcfreditnote { 
+                    width: 8% !important; 
+                    text-align: center !important; 
+                }
+                
+                .print-widtrunningamount { 
+                    width: 11% !important; 
+                    text-align: right !important;
+                    padding-right: 8px !important;
+                }
+                
+                .righttext { 
+                    text-align: right !important; 
+                }
+                
+                .centertext { 
+                    text-align: center !important; 
+                }
+                
+                .Minvoice-text-right { 
+                    text-align: right; 
+                }
+                
+                .print-only { 
+                    display: block !important; 
+                }
+                
+                .print-hide { 
+                    display: none !important; 
+                }
+                
+                .no-print { 
+                    display: none !important; 
                 }
 
-.print-widthinvoicedate {
-    width: 10% !important;
-    text-align:center !important;
-}
-
-.print-widthinvoicework {
-    width: 17% !important;
-    text-align:center !important;
-}
-
-.print-widthinvoiceamount {
-    width: 8% !important;
-    text-align:center !important;
-}
-
-.righttext{
- text-align:right !important;
+                /* Print styles - Portrait mode */
+                @media print {
+                    body {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        margin: 8mm 5mm !important;
+                        padding: 0 !important;
+                    }
+                    
+                    @page {
+                        size: A4 portrait !important;
+                        margin: 8mm 5mm !important;
+                    }
+                    
+                    /* Outer border */
+                    table {
+                        width: 100% !important;
+                        border-collapse: collapse !important;
+                        border: 2px solid #000 !important;
+                        table-layout: fixed !important;
+                        font-size: 10px !important;
+                    }
+                    
+                    /* All row and column lines */
+                    tbody td,
+                    tbody th,
+                    thead th {
+                        border: 1px solid #fff !important;
+                    }
+                    
+                    /* Header */
+                    thead th {
+                        background: #005b8f !important;
+                        color: #fff !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        font-size: 10px !important;
+                        padding: 4px 3px !important;
+                    }
+                    
+                    /* Optional alternate row color */
+                    tbody tr:nth-child(even) {
+                        background: #f5f5f5 !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    
+                    tbody tr:nth-child(odd) {
+                        background: #ffffff !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    
+                    /* Ensure container doesn't clip content */
+                    #ledger-print-area {
+                        overflow: visible !important;
+                        width: 100% !important;
+                    }
+                    
+                    .table-responsive {
+                        overflow: visible !important;
+                    }
+                    
+                    /* Keep column widths in print */
+                    .print-widthinvoiceno { 
+                        width: 9% !important; 
+                        text-align: center !important; 
+                    }
+                    
+                    .print-widthinvoicedate { 
+                        width: 8% !important; 
+                        text-align: center !important; 
+                    }
+                    
+                    .print-widthinvoicework { 
+                        width: 16% !important; 
+                        text-align: left !important; 
+                    }
+                    
+                    .print-widthinvoiceamount { 
+                        width: 8% !important; 
+                        text-align: right !important; 
+                    }
+                    
+                    .print-widtreciptdate { 
+                        width: 8% !important; 
+                        text-align: center !important; 
+                    }
+                    
+                    .print-widtreciptno { 
+                        width: 9% !important; 
+                        text-align: center !important; 
+                    }
+                    
+                    .print-widtreciptamount { 
+                        width: 8% !important; 
+                        text-align: right !important; 
+                    }
+                    
+                    .print-widtreceivedamount { 
+                        width: 8% !important; 
+                        text-align: right !important; 
+                    }
+                    
+                    .print-widtdebitcfreditnote { 
+                        width: 8% !important; 
+                        text-align: center !important; 
+                    }
+                    
+                    .print-widtrunningamount { 
+                        width: 11% !important; 
+                        text-align: right !important;
+                        padding-right: 8px !important;
+                    }
+                    
+                    /* Keep padding reasonable */
+                    th, td {
+                        padding: 4px 3px !important;
+                        font-size: 9.5px !important;
+                    }
+                    
+                    /* Keep date columns from wrapping */
+                    .print-widthinvoicedate,
+                    .print-widtreciptdate {
+                        white-space: nowrap !important;
+                    }
+                    
+                    .print-only {
+                        display: block !important;
+                    }
+                    
+                    .print-hide {
+                        display: none !important;
+                    }
+                    
+                    .no-print {
+                        display: none !important;
+                    }
                 }
-.print-widtreciptdate {
-    width: 10% !important;
-    text-align:center !important;
-}
-
-.print-widtreciptno {
-    width: 12% !important;
-    text-align:center !important;
-}
-
-.print-widtreciptamount {
-    width: 8% !important;
-    text-align:center !important;
-}
-
-.print-widtreceivedamount {
-    width: 8% !important;
-    text-align:center !important;
-}
-
-.print-widtdebitcfreditnote {
-    width: 8% !important;
-    text-align:center !important;
-}
-
-.print-widtrunningamount {
-    width: 8% !important;
-    text-align:center !important;
-}
-    .print-widthinvoicedate,
-.print-widtreciptdate {
-    white-space: nowrap !important;
-}
-       
-            
-        .no-print {
-            display: none !important;
-        }
-
-        body { 
-            margin: 0;
-            padding: 0;
-        }
-
-        table { 
-            width: 100% !important; 
-            border-collapse: collapse; 
-            border: 2px solid #000;
-        }
-
-        th, td { 
-            border: 1px solid #000;  
-            padding: 5px !important; 
-            padding-top: 2px !important; 
-        }
-    }
-</style>
+            </style>
         </head>
         <body>
             ${printContents}
         </body>
         </html>
-     `);
+    `);
 
-       printWindow.document.close();
+    printWindow.document.close();
 
-    printWindow.onload = function () {
-
+    printWindow.onload = function() {
         // Set title of print window
         printWindow.document.title = clientName + '_Ledger';
-
-        setTimeout(() => {
+        
+        setTimeout(function() {
             printWindow.focus();
             printWindow.print();
             printWindow.close();
-        }, 300);
+        }, 500);
     };
-    }
+}
 
     $(document).on('click', '.open-receipt', function() {
         let invoiceId = $(this).data('id');
