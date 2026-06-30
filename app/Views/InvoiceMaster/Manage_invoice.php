@@ -1074,14 +1074,32 @@ foreach ($receipt as $rec) {
             <link rel="stylesheet" href="assets/css/style.css">
            <style>
           
-    body { font-family: Cambria, sans-serif; }
+          @page {
+            size: A4 portrait;
+            margin: 10mm;
+            }
 
-    table { width: 100%; border-collapse: collapse; }
+            html,
+            body {
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0;
+                padding: 0;
+                font-family: Cambria, sans-serif;
+            }
+            body { font-family: Cambria, sans-serif; }
 
-    th, td { border: 1px solid #000; padding: 6px; }
+            table { width: 100%; border-collapse: collapse; }
 
-    .Minvoice-text-right { text-align: right; }
+            th, td { border: 1px solid #000; padding: 6px; }
 
+            .Minvoice-text-right { text-align: right; }
+
+            th,td {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: normal;
+            }
   
 
     @media print {
