@@ -1,7 +1,7 @@
 <div class="invoiceM-containerr">
     <div class="invoiceM-toolbar">
         <div class="invoiceM-toolbar-title">List Of Generated Debit/Credit Note for <?php echo  $client['legal_name']?>
-        <a href="<?= base_url('InvoiceManagment'); ?>" class="Minvoice-btn Minvoice-btn-primary" style="float:right;">
+        <a href="<?= base_url('InvoiceManagment'); ?>" class="btn" style="float:right;">
             Back To Client Grid
         </a></div>
     </div>
