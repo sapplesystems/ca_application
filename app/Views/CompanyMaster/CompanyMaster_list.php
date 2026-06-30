@@ -111,7 +111,8 @@
                                 <th>Name</th>
                                 <th>Date of Incorp.</th>
                                 <th>Registered Office</th>
-                                <th>Head Office</th>
+                                <th>PAN </th>
+                                <th>GSIN</th>
                                 <th>Email</th>
                                 <th>Website</th>
                                 <th>Status</th>
@@ -127,7 +128,8 @@
                                 <td><?= esc($row['name']) ?></td>
                                 <td><?= !empty($row['date_of_incorp']) ? date('d-m-Y', strtotime($row['date_of_incorp'])) : '' ?></td>
                                 <td><?= esc($row['registered_office']) ?></td>
-                                <td><?= esc($row['head_office']) ?></td>
+                                <td><?= esc($row['pan']) ?></td>
+                                 <td><?= esc($row['gstin']) ?></td>
                                 <td><?= esc($row['email']) ?></td>
                                 <td><?= esc($row['website']) ?></td>
                                 <td>
@@ -639,7 +641,7 @@ if (phoneInput.length) {
     const phoneVal = $.trim(phoneInput.val());
 
     // Allow numbers and multiple dashes
-    const phonePattern = /^[0-9]+(-[0-9]+)*$/;
+    const phonePattern = /^[0-9,-]+$/;
 
     if (phoneVal !== '' && !phonePattern.test(phoneVal)) {
 
