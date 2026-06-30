@@ -500,27 +500,77 @@
 
                         return;
                     }
-                    if (data.status === 'success') {
-                        Swal.fire({
-                            title: 'Invoice Saved!',
-                            text: 'Your invoice has been saved successfully.',
-                            icon: 'success',
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: 'Print Invoice',
-                            denyButtonText: 'Download PDF',
-                            cancelButtonText: 'Close'
-                        }).then(result => {
-                            if (result.isConfirmed) {
-                                // window.open('<?= site_url("invoice/print/") ?>' + data.invoice_id);
-                                window.location.href = `<?= site_url('invoice/print') ?>/${data.invoice_id}`;
-                            } else if (result.isDenied) {
-                                // window.open('<?= site_url("invoice/pdf/") ?>' + data.invoice_id);
-                                window.location.href = `<?= site_url('invoice/pdf') ?>/${data.invoice_id}`;
-                            }
-                        });
+
+                                        if (data.status === 'success') {
+
+                        function showInvoicePopup() {
+
+                            Swal.fire({
+                                title: 'Invoice Saved!',
+                                text: 'Your invoice has been saved successfully.',
+                                icon: 'success',
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: 'Print Invoice',
+                                denyButtonText: 'Download PDF',
+                                cancelButtonText: 'Close'
+                            }).then((result) => {
+
+                                // Print Invoice
+                                if (result.isConfirmed) {
+
+                                   let iframe = document.createElement('iframe');
+                                    iframe.style.display = 'none';
+                                    iframe.src = '<?= site_url("invoice/print/") ?>' + data.invoice_id;
+
+                                    document.body.appendChild(iframe);
+
+                                    iframe.onload = function () {
+
+                                        const printWindow = iframe.contentWindow;
+
+                                        // When the print dialog closes
+                                        printWindow.onafterprint = function () {
+
+                                            document.body.removeChild(iframe);
+
+                                            // Show popup again
+                                            showInvoicePopup();
+                                        };
+
+                                        printWindow.focus();
+                                        printWindow.print();
+                                    };
+
+                                }
+
+                                // Download PDF
+                                else if (result.isDenied) {
+
+                                    window.open(
+                                        '<?= site_url("invoice/pdf/") ?>' + data.invoice_id,
+                                        '_blank'
+                                    );
+
+                                    // Show popup again
+                                    showInvoicePopup();
+
+                                }
+
+                            });
+
+                        }
+
+                        showInvoicePopup();
+
                     } else {
-                        Swal.fire('Error!', 'Something went wrong while saving invoice.', 'error');
+
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong while saving invoice.',
+                            'error'
+                        );
+
                     }
                 })
                 .catch(() => {

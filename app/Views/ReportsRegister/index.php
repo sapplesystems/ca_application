@@ -244,9 +244,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <!-- Fallback for SheetJS if jsDelivr is blocked -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></scrip>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -625,37 +625,26 @@ searchResultsBody.appendChild(totalRow);
         });
     }
 
-  function exportToExcel() {
+function exportToExcel() {
 
     const table = document.querySelector('#searchResultsSection table');
     if (!table) return;
 
     const fromDate = document.getElementById('Minvoice-fromDate').value;
-    const toDate   = document.getElementById('Minvoice-toDate').value;
+    const toDate = document.getElementById('Minvoice-toDate').value;
 
     let filename = 'Sale-Report';
 
     if (fromDate && toDate) {
         const from = fromDate.split('-').reverse().join('-');
-        const to   = toDate.split('-').reverse().join('-');
+        const to = toDate.split('-').reverse().join('-');
         filename = `Sale-Report_${from}_to_${to}`;
     }
 
-    // Dynamic Company Details
-    const companyName = document
-        .getElementById('company-name')
-        .innerText
-        .trim();
-
-    const companyAddress = document
-        .getElementById('company-address')
-        .innerText
-        .trim();
-
-    const companyContact = document
-        .getElementById('company-contact')
-        .innerText
-        .trim();
+    // Company Details
+    const companyName = document.getElementById('company-name').innerText.trim();
+    const companyAddress = document.getElementById('company-address').innerText.trim();
+    const companyContact = document.getElementById('company-contact').innerText.trim();
 
     // Header Data
     const wsData = [
@@ -668,34 +657,29 @@ searchResultsBody.appendChild(totalRow);
         []
     ];
 
-    // Get Table Data
+    // Table Data
     const tableSheet = XLSX.utils.table_to_sheet(table);
+    const tableData = XLSX.utils.sheet_to_json(tableSheet, { header: 1 });
 
-    const tableData = XLSX.utils.sheet_to_json(
-        tableSheet,
-        { header: 1 }
-    );
-
-    // Add Table Data Below Header
     wsData.push(...tableData);
 
-    // Create Worksheet
+    // Worksheet
     const ws = XLSX.utils.aoa_to_sheet(wsData);
 
     // Merge Header Rows
     ws['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } }, // Company Name
-        { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } }, // Address
-        { s: { r: 2, c: 0 }, e: { r: 2, c: 9 } }, // Contact
-        { s: { r: 4, c: 0 }, e: { r: 4, c: 9 } }, // Sales Register
-        { s: { r: 5, c: 0 }, e: { r: 5, c: 9 } }  // Period
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } },
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 9 } },
+        { s: { r: 4, c: 0 }, e: { r: 4, c: 9 } },
+        { s: { r: 5, c: 0 }, e: { r: 5, c: 9 } }
     ];
 
-    // Optional Column Widths
+    // Column Widths
     ws['!cols'] = [
         { wch: 15 },
         { wch: 20 },
-        { wch: 100 },
+        { wch: 40 },
         { wch: 20 },
         { wch: 15 },
         { wch: 15 },
@@ -705,7 +689,31 @@ searchResultsBody.appendChild(totalRow);
         { wch: 20 }
     ];
 
-    // Create Workbook
+    // Wrap Text For ALL Cells
+    const range = XLSX.utils.decode_range(ws['!ref']);
+
+    for (let R = range.s.r; R <= range.e.r; R++) {
+
+        for (let C = range.s.c; C <= range.e.c; C++) {
+
+            const cellRef = XLSX.utils.encode_cell({
+                r: R,
+                c: C
+            });
+
+            if (ws[cellRef]) {
+
+                ws[cellRef].s = ws[cellRef].s || {};
+
+                ws[cellRef].s.alignment = {
+                    wrapText: true,
+                    vertical: "top"
+                };
+            }
+        }
+    }
+
+    // Workbook
     const wb = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(
