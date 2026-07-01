@@ -26,9 +26,11 @@ class InvoiceMasterController extends BaseController
     $companyModel = new CompanyMasterModel();
         $companies= $companyModel
         ->select('id, name,type_of_company')->findAll();
+        $workModel=new WorkMasterModel();
+        $works=$workModel->select('id, service_name ,sac_code,frequency,status')->where('status', 1)->findAll();
 
     echo view('common/header');
-    echo view('InvoiceMaster/index', ['clients' => $clients, 'companies' => $companies]);
+    echo view('InvoiceMaster/index', ['clients' => $clients, 'companies' => $companies, 'works' => $works]);
     echo view('common/footer');
 }
 
@@ -643,16 +645,22 @@ $serviceTotal = $totalRow['service_amount'] ?? 0;
 
 public function storeDebitNote()
 {
+    // print_r( $this->request->getPost());exit;
     $companyId = $this->request->getPost('company_debit');
     $clientId  = $this->request->getPost('client_id');
     $noteType  = $this->request->getPost('note_type');
     $tax=$this->request->getPost('tax');
+    $workIds    = $this->request->getPost('work_ids');
+    $expenses   = $this->request->getPost('expenses');
 
     $clientModel = new ClientModel();
     $client = $clientModel->find($clientId);
 
     $companyModel = new CompanyMasterModel();
     $company = $companyModel->find($companyId);
+
+    $workModel=new WorkMasterModel();
+    $works   = $workModel->whereIn('id', $workIds)->findAll();
 
    $DebitModel = new DebitNotes();
 
@@ -665,7 +673,7 @@ if ($noteType === 'debit') {
 
     $nextDebitId = $lastDebit ? ($lastDebit['id'] + 1) : 1;
 
-    $debitNo = $company['debit_format'] .
+    $debitNo = $company['debit_format'] .'/' .
                str_pad($nextDebitId, 2, '0', STR_PAD_LEFT);
 
     return view('common/header')
@@ -673,7 +681,10 @@ if ($noteType === 'debit') {
             'company' => $company,
             'client'  => $client,
             'debitNo' => $debitNo,
-            'tax'     => $tax
+            'tax'     => $tax,
+            'expenses'  => $expenses,
+            'works'     => $works,
+
         ])
         . view('common/footer');
 
@@ -686,7 +697,7 @@ if ($noteType === 'debit') {
 
     $nextCreditId = $lastCredit ? ($lastCredit['id'] + 1) : 1;
 
-    $creditNo = $company['credit_format'] .
+    $creditNo = $company['credit_format'] .'/' .
                 str_pad($nextCreditId, 2, '0', STR_PAD_LEFT);
 
     return view('common/header')
@@ -694,7 +705,9 @@ if ($noteType === 'debit') {
             'company'  => $company,
             'client'   => $client,
             'creditNo' => $creditNo,
-            'tax'      => $tax
+            'tax'      => $tax,
+            'expenses'  => $expenses,
+            'works'     => $works,
         ])
         . view('common/footer');
 }
@@ -704,16 +717,18 @@ if ($noteType === 'debit') {
 {
     $DebitModel   = new DebitNotes();
     $ExpenseModel = new ExpenseModel();
+    $workModel    = new InvoiceWorksModel();
+
+    $db = \Config\Database::connect();
 
     $debitNo  = $this->request->getPost('debit_no');
     $creditNo = $this->request->getPost('credit_no');
 
+    // ==========================
     // Check Duplicate Debit No
+    // ==========================
     if (!empty($debitNo)) {
-
-        $exists = $DebitModel
-            ->where('debit_no', $debitNo)
-            ->first();
+        $exists = $DebitModel->where('debit_no', $debitNo)->first();
 
         if ($exists) {
             return $this->response->setJSON([
@@ -723,12 +738,11 @@ if ($noteType === 'debit') {
         }
     }
 
+    // ==========================
     // Check Duplicate Credit No
+    // ==========================
     if (!empty($creditNo)) {
-
-        $exists = $DebitModel
-            ->where('credit_no', $creditNo)
-            ->first();
+        $exists = $DebitModel->where('credit_no', $creditNo)->first();
 
         if ($exists) {
             return $this->response->setJSON([
@@ -738,61 +752,109 @@ if ($noteType === 'debit') {
         }
     }
 
-    // Collect debit note data
+    // ==========================
+    // Debit Note Data
+    // ==========================
     $data = [
-        'debit_no'                  => $this->request->getPost('debit_no'),
-        'credit_no'                 => $this->request->getPost('credit_no'),
+        'debit_no'                   => $debitNo,
+        'credit_no'                  => $creditNo,
         'total_recoverable_expenses' => $this->request->getPost('expense_total'),
-        'advance_amount'            => $this->request->getPost('advance_received'),
-        'total_amount'              => $this->request->getPost('net_amount'),
-        'client_id'                 => $this->request->getPost('client_id'),
-        'company_id'                => $this->request->getPost('company_id'),
-        'terms_and_conditions'      => $this->request->getPost('term_condition'),
-        'date'                      => $this->request->getPost('debit_date'),
-        'created_by'                => $this->request->getPost('created_by'),
-        'note_type'                 => $this->request->getPost('note_type'),
-        'tax'                       => $this->request->getPost('tax_type'),
+        'advance_amount'             => $this->request->getPost('advance_received'),
+        'total_amount'               => $this->request->getPost('net_amount'),
+        'client_id'                  => $this->request->getPost('client_id'),
+        'company_id'                 => $this->request->getPost('company_id'),
+        'terms_and_conditions'       => $this->request->getPost('term_condition'),
+        'date'                       => $this->request->getPost('debit_date'),
+        'created_by'                 => $this->request->getPost('created_by'),
+        'note_type'                  => $this->request->getPost('note_type'),
+        'tax'                        => $this->request->getPost('tax_type'),
     ];
 
-    // Insert debit note
-    $insertId = $DebitModel->insert($data);
+    // ==========================
+    // Start Transaction
+    // ==========================
+    $db->transStart();
 
-    // If insert successful, save expenses
-    if ($insertId) {
+    // Save Debit Note
+    $DebitModel->insert($data);
 
-        $descriptions = $this->request->getPost('expense_description');
-        $amounts      = $this->request->getPost('expense_amount');
+    $insertId = $DebitModel->getInsertID();
 
-        $expenseData = [];
+    // ==========================
+    // Save Expenses
+    // ==========================
+    $descriptions = $this->request->getPost('expense_description') ?? [];
+    $amounts      = $this->request->getPost('expense_amount') ?? [];
 
-        foreach ($descriptions as $i => $desc) {
-            // Skip empty rows
-            if (empty($desc) || empty($amounts[$i])) {
-                continue;
-            }
+    $expenseData = [];
 
-            $expenseData[] = [
-                'debit_id'             => $insertId, // link to the debit note
-                'expense_description'  => $desc,
-                'expense_amount'       => $amounts[$i],
-                'created_at'           => date('Y-m-d H:i:s')
-            ];
+    foreach ($descriptions as $i => $desc) {
+
+        if (trim($desc) == '' || empty($amounts[$i])) {
+            continue;
         }
 
-        // Insert all expenses in batch
-        if (!empty($expenseData)) {
-            $ExpenseModel->insertBatch($expenseData);
+        $expenseData[] = [
+            'debit_id'             => $insertId,
+            'expense_description'  => $desc,
+            'expense_amount'       => $amounts[$i],
+            'created_at'           => date('Y-m-d H:i:s')
+        ];
+    }
+
+    if (!empty($expenseData)) {
+        $ExpenseModel->insertBatch($expenseData);
+    }
+
+    // ==========================
+    // Save Service Details
+    // ==========================
+    $serviceDescriptions = $this->request->getPost('service_description') ?? [];
+    $serviceAmounts      = $this->request->getPost('service_amount') ?? [];
+    $serviceNames        = $this->request->getPost('service_name') ?? [];
+    $serviceSacCodes     = $this->request->getPost('sacCode') ?? [];
+    $serviceUnits        = $this->request->getPost('unit') ?? [];
+
+    $workData = [];
+
+    foreach ($serviceDescriptions as $i => $description) {
+
+        if (trim($description) == '' || empty($serviceAmounts[$i])) {
+            continue;
         }
 
+        $workData[] = [
+            'debit_id'          => $insertId,
+            'service_name'        => $serviceNames[$i] ?? '',
+            'service_description' => $description,
+            'service_amount'      => $serviceAmounts[$i],
+            'service_unit'        => $serviceUnits[$i] ?? '',
+            'sac_code'            => $serviceSacCodes[$i] ?? '',
+            'created_at'          => date('Y-m-d H:i:s')
+        ];
+    }
+
+    if (!empty($workData)) {
+        $workModel->insertBatch($workData);
+    }
+
+    // ==========================
+    // Complete Transaction
+    // ==========================
+    $db->transComplete();
+
+    if ($db->transStatus() === false) {
+
         return $this->response->setJSON([
-            'status' => 'success',
-            'invoice_id' => $insertId
-        ]);
-    } else {
-        return $this->response->setJSON([
-            'status' => 'error'
+            'status'  => 'error',
+            'message' => 'Failed to save Debit Note.'
         ]);
     }
+
+    return $this->response->setJSON([
+        'status'     => 'success',
+        'invoice_id' => $insertId
+    ]);
 }
 
 public function debitNote($id)
@@ -816,12 +878,35 @@ public function debitNote($id)
     $company = $companyModel->find($debitNote['company_id']);
     $client  = $clientModel->find($debitNote['client_id']);
 
+     $invoiceWorkModel=new InvoiceWorksModel();
+    $invoice_works=$invoiceWorkModel->where('debit_id', $id)->findAll();
+
+    // print_r($invoice_works);exit;
+
+  /* 2️⃣ TOTAL of service_amount */
+$totalRow = $invoiceWorkModel
+    ->selectSum('service_amount')
+    ->where('debit_id', $id)
+    ->get()
+    ->getRowArray();
+
+
+$serviceTotal = $totalRow['service_amount'] ?? 0;
+    $ExpenseModel = new ExpenseModel();
+
+     $expenses= $ExpenseModel
+    ->where('debit_id', $id)
+    ->findAll();
+
     // Pass data to view
     $data = [
         'debitNote' => $debitNote,
         'company'   => $company,
         'client'    => $client,
         'expenses'  => $expenses,
+        'serviceTotal' => $serviceTotal,
+        'invoice_works'=> $invoice_works,
+
     ];
 
     echo view('InvoiceMaster/debitprint', $data);
@@ -840,6 +925,24 @@ public function debitNotePDF($id)
     $ExpenseModel = new ExpenseModel();
     $expenses = $ExpenseModel->where('debit_id', $id)->findAll();
 
+    $invoiceWorkModel=new InvoiceWorksModel();
+    $invoice_works=$invoiceWorkModel->where('debit_id', $id)->findAll();
+
+    $totalRow = $invoiceWorkModel
+    ->selectSum('service_amount')
+    ->where('debit_id', $id)
+    ->get()
+    ->getRowArray();
+
+
+$serviceTotal = $totalRow['service_amount'] ?? 0;
+    $ExpenseModel = new ExpenseModel();
+
+     $expenses= $ExpenseModel
+    ->where('debit_id', $id)
+    ->findAll();
+
+
     if (!$debitNote) {
         return redirect()->to('/debit-notes')->with('error', 'Debit Note not found.');
     }
@@ -857,6 +960,9 @@ public function debitNotePDF($id)
         'company'   => $company,
         'client'    => $client,
         'expenses'  => $expenses,
+        'serviceTotal' => $serviceTotal,
+        'invoice_works'=> $invoice_works,
+        
     ];
 
     // Load HTML view
@@ -1143,82 +1249,134 @@ public function debitDelete($id)
 public function debitEdit($id)
 {
     // print_r($id);exit;
+    $expenseModel = new ExpenseModel();
+    $workModel    = new InvoiceWorksModel();
     $debitModel   = new DebitNotes();
-        $companyModel = new CompanyMasterModel();
-        $clientModel  = new ClientModel();
-        $expenseModel = new ExpenseModel();
+    $companyModel = new CompanyMasterModel();
+    $clientModel  = new ClientModel();
+    $expenseModel = new ExpenseModel();
 
-        $debitNote = $debitModel->find($id);
+    $debitNote = $debitModel->find($id);
+    $invoiceWorkModel=new InvoiceWorksModel();
+    $invoice_works=$invoiceWorkModel->where('debit_id', $id)->findAll();
 
         $data = [
             'debitNote' => $debitNote,
             'company'   => $companyModel->find($debitNote['company_id']),
             'client'    => $clientModel->find($debitNote['client_id']),
             'expenses'  => $expenseModel->where('debit_id', $id)->findAll(),
+            'invoice_works'=> $invoice_works,
         ];
 
         return view('common/header').view('InvoiceMaster/edit_debit_note', $data).view('common/footer');
 
 }
- public function debitUpdate($id)
+public function debitUpdate($id)
 {
-    // print_r($this->request->getPost());exit;
-    $DebitModel   = new DebitNotes();
-    $ExpenseModel = new ExpenseModel();
+    
+    $debitModel   = new DebitNotes();
+    $expenseModel = new ExpenseModel();
+    $workModel    = new InvoiceWorksModel();
 
-    // Collect debit note data (same as save)
-    $data = [
-        'debit_no'                  => $this->request->getPost('debit_no'),
-        'credit_no'                 => $this->request->getPost('credit_no'),
-        'date'                =>$this->request->getPost('debit_date'),
-        'total_recoverable_expenses'=> $this->request->getPost('expense_total'),
-        'advance_amount'            => $this->request->getPost('advance_received'),
-        'total_amount'              => $this->request->getPost('net_amount'),
-        'client_id'                 => $this->request->getPost('client_id'),
-        'company_id'                => $this->request->getPost('company_id'),
-        'terms_and_conditions'      => $this->request->getPost('term_condition'),
-    ];
+    // ======================
+    // UPDATE DEBIT MASTER
+    // ======================
+    $debitModel->update($id, [
+        'debit_no'                   => $this->request->getPost('debit_no'),
+        'credit_no'                  => $this->request->getPost('credit_no'),
+        'date'                       => $this->request->getPost('debit_date'),
+        'total_recoverable_expenses' => $this->request->getPost('expense_total'),
+        'advance_amount'             => $this->request->getPost('advance_received'),
+        'total_amount'               => $this->request->getPost('net_amount'),
+        'amount_in_words'            => $this->request->getPost('amount_in_words'),
+        'terms_and_conditions'       => $this->request->getPost('term_condition'),
+        'client_id'                  => $this->request->getPost('client_id'),
+        'company_id'                 => $this->request->getPost('company_id'),
+        'updated_at'                 => date('Y-m-d H:i:s')
+    ]);
 
-    // 1️⃣ Update debit note
-    $DebitModel->update($id, $data);
-
-    // 2️⃣ Expenses update / insert
-    $descriptions = $this->request->getPost('expense_description');
-    $amounts      = $this->request->getPost('expense_amount');
-    $expenseIds   = $this->request->getPost('expense_id');
+    // ======================
+    // EXPENSE UPDATE / INSERT
+    // ======================
+    $expenseIds   = $this->request->getPost('expense_id') ?? [];
+    $descriptions = $this->request->getPost('expense_description') ?? [];
+    $amounts      = $this->request->getPost('expense_amount') ?? [];
 
     foreach ($descriptions as $i => $desc) {
 
-        if (empty($desc) || empty($amounts[$i])) {
+        if ($desc === '' || empty($amounts[$i])) {
             continue;
         }
 
-        $expenseData = [
-            'expense_description' => $desc,
-            'expense_amount'      => $amounts[$i],
-            'updated_at'          => date('Y-m-d H:i:s')
-        ];
-
-        // ✅ Update existing expense
+        // UPDATE EXISTING
         if (!empty($expenseIds[$i])) {
 
-            $ExpenseModel->update($expenseIds[$i], $expenseData);
-
+            $expenseModel->update($expenseIds[$i], [
+                'expense_description' => $desc,
+                'expense_amount'      => $amounts[$i],
+                'updated_at'          => date('Y-m-d H:i:s')
+            ]);
         }
-        // ✅ Insert new expense
+        // INSERT NEW
         else {
 
-            $expenseData['debit_id']   = $id;
-            $expenseData['created_at'] = date('Y-m-d H:i:s');
+            $expenseModel->insert([
+                'debit_id'            => $id,
+                'expense_description' => $desc,
+                'expense_amount'      => $amounts[$i],
+                'created_at'          => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
 
-            $ExpenseModel->insert($expenseData);
+    // ======================
+    // WORK UPDATE / INSERT
+    // ======================
+    $workIds      = $this->request->getPost('work_id') ?? [];
+    $workAmounts  = $this->request->getPost('service_amount') ?? [];
+    $workTitles   = $this->request->getPost('service_description') ?? [];
+    $serviceNames = $this->request->getPost('service_name') ?? [];
+    $serviceUnits = $this->request->getPost('service_unit') ?? [];
+
+    foreach ($workAmounts as $i => $amount) {
+
+        if (empty($amount)) {
+            continue;
+        }
+
+        // UPDATE EXISTING
+        if (!empty($workIds[$i])) {
+
+            $workModel->update($workIds[$i], [
+                'service_description' => $workTitles[$i] ?? null,
+                'service_amount'      => $amount,
+                'service_name'        => $serviceNames[$i] ?? null,
+                'service_unit'        => $serviceUnits[$i] ?? null,
+                'updated_at'          => date('Y-m-d H:i:s')
+            ]);
+        }
+        // INSERT NEW
+        else {
+
+            if (empty($workTitles[$i])) {
+                continue;
+            }
+
+            $workModel->insert([
+                'debit_id'            => $id,
+                'service_description' => $workTitles[$i],
+                'service_amount'      => $amount,
+                'service_name'        => $serviceNames[$i] ?? null,
+                'service_unit'        => $serviceUnits[$i] ?? null,
+                'created_at'          => date('Y-m-d H:i:s')
+            ]);
         }
     }
 
     return $this->response->setJSON([
-        'status'     => 'success',
-        'mode'       => 'update',
-        'invoice_id' => $id
+        'status'   => 'success',
+        'mode'     => 'update',
+        'debit_id' => $id
     ]);
 }
 public function ExpenseDelete()

@@ -7,7 +7,7 @@
                 <input type="hidden" name="client_id" id="client_id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Generate Note</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"  onclick="location.reload();">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -23,6 +23,17 @@
                                 <option value="credit">Credit Note</option>
                             </select>
                         </div>
+                         <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                <label><strong>Select Work</strong></label>
+                                
+                                    <input type="text" id="workSearch" class="search-input" placeholder="Search work...">
+                                <?php foreach ($works as $work): ?>
+                                    <div class="Gvoice-option-row">
+                                        <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>">
+                                        <?= esc($work['service_name']); ?> (<?= esc($work['sac_code']); ?>)
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                             <div class="title">Choose Company For Generate Note</div>
 
                             <div class="radio-box">
@@ -49,6 +60,10 @@
                                 <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
                                 <label><input type="radio" name="tax" value="igst"> IGST</label>
                                 </div>
+                            </div>
+                             <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                <label><strong>Add Expenses Recoverable</strong></label>
+                                <label><input type="checkbox" name="expenses" value="1"> Include Expenses</label>
                             </div>
 
                             <div class="buttons">
