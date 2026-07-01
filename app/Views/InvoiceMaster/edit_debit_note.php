@@ -1,30 +1,32 @@
 <?php
-function toRoman($number)
+function romanNumeral($num)
 {
     $map = [
-        'm'  => 1000,
-        'cm' => 900,
-        'd'  => 500,
-        'cd' => 400,
-        'c'  => 100,
-        'xc' => 90,
-        'l'  => 50,
+        'M' => 1000,
+        'CM' => 900,
+        'D' => 500,
+        'CD' => 400,
+        'C' => 100,
+        'XC' => 90,
+        'L' => 50,
         'xl' => 40,
-        'x'  => 10,
+        'x' => 10,
         'ix' => 9,
-        'v'  => 5,
+        'v' => 5,
         'iv' => 4,
-        'i'  => 1,
+        'i' => 1
     ];
-
-    $result = '';
-    foreach ($map as $roman => $value) {
-        while ($number >= $value) {
-            $result .= $roman;
-            $number -= $value;
+    $returnValue = '';
+    while ($num > 0) {
+        foreach ($map as $roman => $int) {
+            if ($num >= $int) {
+                $num -= $int;
+                $returnValue .= $roman;
+                break;
+            }
         }
     }
-    return $result;
+    return strtolower($returnValue);
 }
 ?>
 <style>
@@ -119,106 +121,179 @@ function toRoman($number)
                     </tr>
                 </thead>
 
-                <tbody id="expenseBody">
-
-                    <!-- Add Expense Button Row -->
+                  <tbody id="expenseBody">
+                <?php $sl = 1; ?>
+                <?php foreach ($invoice_works as $service): ?>
                     <tr>
+                        <td style="padding:8px; border:1px solid #ccc; text-align:center;">
+                            <?= $sl++; ?>
+                        </td>
+
+                        <input type="hidden" name="work_id[]" value="<?= esc($service['id']); ?>">
+
+                        <td style="padding:8px; border:1px solid #ccc;">
+                            <leval><?= esc($service['service_name']); ?></leval>
+
+                            <input type="text"
+                                name="service_description[]"
+                                value="<?= esc($service['service_description'] ?? '') ?>"
+                                style="width:100%; margin-top:6px; padding:8px; border:1px solid #bbb;"
+                                placeholder="Description">
+                        </td>
+
+                        <td style="padding:8px; border:1px solid #ccc;">
+                            <leval style="visibility:hidden">Hidden</leval>
+                            <input type="text"
+                                name="service_amount[]"
+                                class="service-amount"
+                                value="<?= esc($service['service_amount'] ?? '') ?>"
+                                style="width:100%; padding:8px; border:1px solid #bbb; text-align:right;margin-top: 5px;">
+                        </td>
+                    </tr>
+
+                    <input type="hidden" name="service_name[]" value="<?= esc($service['service_name']) ?>">
+                    <input type="hidden" name="service_unit[]" value="<?= esc($service['service_unit']) ?>">
+                <?php endforeach; ?>
+
+
+                <tr style="background:#0b5c7d;color:#fff;padding:8px;border:1px solid #ccc">
+                    <td align="center" style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">Service Value</td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;"><span id="serviceValue">0</span></td>
+                </tr>
+
+                <?php if ($debitNote['tax'] === 'cgst_sgst'): ?>
+                        <!-- CGST Row -->
+                        <tr id="cgstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">CGST @ 9%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="cgstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+
+                        <!-- SGST Row -->
+                        <tr id="sgstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">SGST @ 9%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="sgstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php if ($debitNote['tax'] === 'igst'): ?>
+                        <tr id="igstRow" style="background:#e9f5fb;">
+                            <td style="padding:8px; border:1px solid #ccc; text-align:center;"></td>
+                            <td style="padding:8px; border:1px solid #ccc;">IGST @ 18%</td>
+                            <td style="padding:8px; border:1px solid #ccc;">
+                                <input type="text" id="igstAmount" readonly style="width:100%; text-align:right;">
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
+
+               
+
+                <?php if (!empty($expenses)): ?>
+                        <tr>
                         <td></td>
-                        <td>Expenses Recoverable</td>
+                        <td>Add : Expenses Recoverable</td>
                         <td>
                             <button type="button" onclick="addExpenseRow()" style="margin-top:10px; padding:6px 12px;">
                                 ➕ Add Expense
                             </button>
                         </td>
                     </tr>
+                    <?php foreach ($expenses as $index => $exp): ?>
+                        <tr class="expense-row" style="background:#e9f5fb;">
+                            <td style="text-align:center;">
+                                <?= romanNumeral($index + 1); ?>
+                            </td>
+                            <td>
+                                <input type="hidden" name="expense_id[]" value="<?= esc($exp['id']) ?>">
+                                <input type="text"
+                                    name="expense_description[]"
+                                    value="<?= esc($exp['expense_description']); ?>"
+                                    style="width:100%;padding:8px;border:1px solid #ccc">
+                            </td>
+                            <td>
+                                <input type="text"
+                                    class="expense"
+                                    name="expense_amount[]"
+                                    value="<?= esc($exp['expense_amount']); ?>"
+                                    style="width:85%; text-align:right;padding:8px;border:1px solid #ccc">
+                                <button type="button" class="btn btn-danger btn-sm delete-row" data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
 
-                    <!-- Existing Expense Rows -->
-                    <?php if(!empty($expenses)): ?>
-                    <?php foreach($expenses as $index => $exp): ?>
-                    <input type="hidden" name="expense_id[]" value="<?= $exp['id'] ?>">
+                            </td>
+                        </tr>
+                 <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
+                    <td style="text-align:center;"></td>
+                    <td>
+                        <input type="hidden" name="expense_id[]" value="">
+                        <input type="text" placeholder="Expense Recoverable" name="expense_description[]" style="width:100%;margin-top:6px; padding:8px; border:1px solid #bbb;">
+                    </td>
+                    <td>
+                        <input type="text" class="expense" name="expense_amount[]" style="width:85%; text-align:right;margin-top:6px; padding:8px; border:1px solid #bbb;">
+                        <button type="button" class="btn btn-danger btn-sm delete-row" style="background-color: red;">✖</button>
 
-                    <tr class="expense-row" style="background:#e9f5fb;">
-                        <td style="text-align:center;"><?= $index + 1 ?></td>
-                        <td>
-                            <input type="text" placeholder="Expense Recoverable" style="width:100%;"
-                                name="expense_description[]" value="<?= esc($exp['expense_description']) ?>">
-                        </td>
-                        <td>
-                            <input type="text" class="expense" style="width:85%; text-align:right;"
-                                name="expense_amount[]" value="<?= esc($exp['expense_amount']) ?>">
-                            <button type="button" class="btn btn-danger btn-sm delete-row"
-                                data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
                     <?php endforeach; ?>
-                    <?php else: ?>
-                    <tr class="expense-row" style="background:#e9f5fb;">
-                        <td style="text-align:center;">i</td>
-                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
-                                name="expense_description[]"></td>
-                        <td><input type="text" class="expense" style="width:85%; text-align:right;"
-                                name="expense_amount[]">
-                            <button type="button" class="btn btn-danger btn-sm delete-row"
-                                data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
-                        </td>
+                     <tr style="background:#0b5c7d; color:#fff;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;"></td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                        Total Expenses Recoverable
+                    </td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                        <span id="expenseTotal">0</span>
+                    </td>
+                </tr>
+                <?php endif; ?>
+                <!-- Hidden Template Row -->
+               
 
-                    </tr>
-                    <?php endif; ?>
+               
+                <tr>
 
-                    <!-- Hidden Template Row -->
-                    <tr id="hiddenRow" class="expense-row" style="background:#e9f5fb; display:none;">
-                        <td style="text-align:center;"></td>
-                        <td><input type="text" placeholder="Expense Recoverable" style="width:100%;"
-                                name="expense_description[]"></td>
-                        <td><input type="text" class="expense" style="width:85%; text-align:right;"
-                                name="expense_amount[]">
-                            <button type="button" class="btn btn-danger btn-sm delete-row"
-                                data-expense-id="<?= esc($exp['id']) ?>" style="background-color: red;">✖</button>
-                        </td>
-                    </tr>
 
-                    <!-- Totals / Grand Total / Advance / Net rows -->
-                    <tr style="background:#0b5c7d; color:#fff;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;">A</td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                            Total Expenses Recoverable
-                        </td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
-                            <span id="expenseTotalDisplay">0</span>
-                        </td>
-                    </tr>
+                <tr>
+                    <td></td>
+                    <td align="right"><strong>Grand Total</strong></td>
+                    <td align="right" style="text-align:right;"><strong id="grandTotal">0</strong></td>
+                </tr>
 
-                    <tr>
-                        <td style="padding:8px; border:1px solid #ccc;"></td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong>Grand Total</strong>
-                        </td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;"><strong
-                                id="grandTotalDisplay">0</strong></td>
-                    </tr>
+                <tr>
+                    <td></td>
+                    <td align="right">(-) Advance</td>
+                    <td>
+                        <input type="text" id="advance" name="advance_received"
+                            value="<?= esc($debitNote['advance_amount']); ?>"
+                            style="width:100%;text-align:right;padding:8px;border:1px solid #ccc">
+                    </td>
+                </tr>
 
-                    <tr>
-                        <td style="padding:8px; border:1px solid #ccc;">B</td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right;">(-) Advances Received</td>
-                        <td style="padding:8px; border:1px solid #ccc;">
-                            <input type="text" value="<?= esc($debitNote['advance_amount'] ?? 0) ?>" id="advance"
-                                name="advance_received"
-                                style="width:100%; padding:6px; border:1px solid #bbb; text-align:right;">
-                        </td>
-                    </tr>
+                <tr style="background:#0b5c7d;color:#fff;">
+                    <td style="padding:8px; border:1px solid #ccc; text-align:center;background:#0b5c7d;"></td>
+                    <td style="padding:8px; border:1px solid #ccc; text-align:left;background:#0b5c7d;">
+                        <strong>Amount In Words</strong><br>
 
-                    <tr style="background:#0b5c7d; color:#fff;">
-                        <td style="padding:8px; border:1px solid #ccc; text-align:center; color:black;">C</td>
-                        <td style="padding:8px; border:1px solid #ccc;color:black">
-                            <strong>(Amount In Words)</strong><br>
-                            <span id="amountInWords">ZERO</span>
-                        </td>
-                        <td style="padding:8px; border:1px solid #ccc; text-align:right; color:black;">
-                            Net Amount Receivable (A+B)<br>
-                            <strong id="netAmountDisplay">0</strong>
-                        </td>
-                    </tr>
+                        <!-- Display -->
+                        <span id="amountInWords">
+                            <?= esc($debitNote['amount_in_words'] ?? 'ZERO'); ?>
+                        </span>
 
-                </tbody>
+                        <!-- Hidden field for submit -->
+                        <input type="hidden"
+                            name="amount_in_words"
+                            id="amountInWordsInput"
+                            value="<?= esc($debitNote['amount_in_words'] ?? 'ZERO'); ?>">
+                    </td>
+                    <td align="right" style="padding:8px; border:1px solid #ccc; text-align:right;background:#0b5c7d;">
+                        Net Amount Receivable<br>
+                        <strong id="netAmount">0</strong>
+                    </td>
+                </tr>
+            </tbody>
             </table>
 
               <div class="debitnotepdf-bank">
@@ -319,7 +394,7 @@ function toRoman($number)
 
                         let iframe = document.createElement('iframe');
                         iframe.style.display = 'none';
-                        iframe.src = printUrl + data.invoice_id;
+                        iframe.src = printUrl + data.debit_id;
 
                         document.body.appendChild(iframe);
 
@@ -351,7 +426,7 @@ function toRoman($number)
                     else if (result.isDenied) {
 
                         window.location.href =
-                            pdfUrl + data.invoice_id;
+                            pdfUrl + data.debit_id;
 
                     }
 
@@ -401,39 +476,140 @@ function toRoman($number)
         return convert(num).trim();
     }
 
-    function calculateTotals() {
-        let expenseTotal = 0;
+   function calculateTotals() {
 
-        document.querySelectorAll('.expense-row:not([style*="display:none"]) .expense')
-            .forEach(input => {
-                expenseTotal += parseFloat(input.value) || 0;
-            });
+    /* =========================
+       SERVICE TOTAL
+    ========================== */
+    let serviceValue = 0;
 
-        const advance = parseFloat(document.getElementById('advance').value) || 0;
-        const netAmount = expenseTotal - advance;
+    document.querySelectorAll('.service-amount').forEach(function(el) {
+        serviceValue += parseFloat(el.value) || 0;
+    });
 
-        /* ===== DISPLAY ===== */
-        document.getElementById('expenseTotalDisplay').innerText = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalDisplay').innerText = expenseTotal.toFixed(2);
-        document.getElementById('netAmountDisplay').innerText = netAmount.toFixed(2);
+    document.getElementById('serviceValue').innerText = serviceValue.toFixed(2);
 
-        /* ===== BACKEND (HIDDEN INPUTS) ===== */
+
+    /* =========================
+       EXPENSE TOTAL
+    ========================== */
+    let expenseTotal = 0;
+
+    document.querySelectorAll('.expense').forEach(function(el) {
+        expenseTotal += parseFloat(el.value) || 0;
+    });
+
+    if (document.getElementById('expenseTotal')) {
+        document.getElementById('expenseTotal').innerText = expenseTotal.toFixed(2);
+    }
+
+
+    /* =========================
+       GST
+    ========================== */
+    let cgst = 0;
+    let sgst = 0;
+    let igst = 0;
+
+    if (document.getElementById('cgstAmount')) {
+
+        cgst = serviceValue * 0.09;
+        sgst = serviceValue * 0.09;
+
+        document.getElementById('cgstAmount').value = cgst.toFixed(2);
+        document.getElementById('sgstAmount').value = sgst.toFixed(2);
+    }
+
+    if (document.getElementById('igstAmount')) {
+
+        igst = serviceValue * 0.18;
+
+        document.getElementById('igstAmount').value = igst.toFixed(2);
+    }
+
+
+    /* =========================
+       GRAND TOTAL
+    ========================== */
+    const taxTotal = cgst + sgst + igst;
+
+    const grandTotal = serviceValue + expenseTotal + taxTotal;
+
+    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+
+
+    /* =========================
+       NET AMOUNT
+    ========================== */
+    const advance = parseFloat(document.getElementById('advance')?.value) || 0;
+
+    const netAmount = grandTotal - advance;
+
+    document.getElementById('netAmount').innerText = Math.round(netAmount);
+
+
+    /* =========================
+       AMOUNT IN WORDS
+    ========================== */
+    const amountWords = numberToWords(Math.round(netAmount)) + " Rupees Only";
+
+    document.getElementById('amountInWords').innerText = amountWords;
+    document.getElementById('amountInWordsInput').value = amountWords;
+
+
+    /* =========================
+       HIDDEN INPUTS
+    ========================== */
+    if (document.getElementById('serviceValueInput'))
+        document.getElementById('serviceValueInput').value = serviceValue.toFixed(2);
+
+    if (document.getElementById('expenseTotalInput'))
         document.getElementById('expenseTotalInput').value = expenseTotal.toFixed(2);
-        document.getElementById('grandTotalInput').value = expenseTotal.toFixed(2);
+
+    if (document.getElementById('cgstInput'))
+        document.getElementById('cgstInput').value = cgst.toFixed(2);
+
+    if (document.getElementById('sgstInput'))
+        document.getElementById('sgstInput').value = sgst.toFixed(2);
+
+    if (document.getElementById('igstInput'))
+        document.getElementById('igstInput').value = igst.toFixed(2);
+
+    if (document.getElementById('grandTotalInput'))
+        document.getElementById('grandTotalInput').value = grandTotal.toFixed(2);
+
+    if (document.getElementById('netAmountInput'))
         document.getElementById('netAmountInput').value = netAmount.toFixed(2);
+}
 
-        document.getElementById('amountInWords').innerText =
-            numberToWords(Math.round(netAmount));
+
+
+// =========================
+// ATTACH EVENTS
+// =========================
+document.addEventListener('input', function(e) {
+
+    if (
+        e.target.matches('.service-amount') ||
+        e.target.matches('.expense') ||
+        e.target.matches('#advance')
+    ) {
+        calculateTotals();
     }
 
+});
 
-    // Add input event listener for dynamic rows
-    function attachInputListeners() {
-        document.querySelectorAll('.expense, #advance').forEach(el => {
-            el.removeEventListener('input', calculateTotals); // prevent duplicates
-            el.addEventListener('input', calculateTotals);
-        });
-    }
+
+// =========================
+// INITIAL LOAD
+// =========================
+document.addEventListener('DOMContentLoaded', function () {
+
+    attachInputListeners();
+    calculateTotals();
+
+});
+
 
     // Call whenever a new row is added
     function addExpenseRow() {

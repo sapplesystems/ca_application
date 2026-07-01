@@ -381,19 +381,56 @@ style="width:180px; height:auto; display:block;">
         <tr>
             <th style="width:12%;">SL No.</th>
             <th style="width:58%;">Particulars</th>
+            <th style="width:30%;">SAC Code</th>
             <th style="width:30%;">Amount (Rs)</th>
         </tr>
-        <?php if (!empty($expenses)) : ?>
-        <?php foreach ($expenses as $index => $exp) : ?>
         <tr>
-            <td class="center"><?= $index + 1 ?></td>
+             <?php $sl = 1; ?>
+             <?php foreach ($invoice_works as $service): ?>
+
+                <tr>
+                    <td class="center"><?= $sl++; ?></td>
+
+                    <td>
+                        <strong><?= esc($service['service_name']); ?></strong><br>
+                        <?= esc($service['service_description']); ?>
+                    </td>
+
+                    <td class="center">
+                        <strong>
+                            <?= esc($service['sac_code']); ?>
+                        </strong>
+                    </td>
+
+                    <td class="right">
+                        <?= number_format($service['service_amount'], 2); ?>
+                    </td>
+                </tr>
+
+            <?php endforeach; ?>
+        </tr>
+         <tr>
+                <th colspan="3" class="right">Taxable</th>
+                <th class="right"><strong><?= number_format($serviceTotal, 2); ?></strong></th>
+            </tr>
+            <?php $sl = 1; ?>
+        <?php if (!empty($expenses)) : ?>
+             <tr>
+                    <td colspan="4"><strong>Expenses Recoverable</strong></td>
+                </tr>
+        <?php foreach ($expenses as $index => $exp) : ?>
+            
+        <tr>
+            <td class="center"><?= $sl++; ?></td>
             <td class="center">
                 <?= esc($exp['expense_description']) ?>
             </td>
+            <td class="center">-</td>
             <td class="right">
                 <?= number_format($exp['expense_amount'], 2) ?>
             </td>
         </tr>
+        
         <?php endforeach; ?>
         <?php else : ?>
         <tr>
@@ -406,6 +443,7 @@ style="width:180px; height:auto; display:block;">
             <td class="center">
                 Total Recoverable Expenses
             </td>
+            <td class="center">-</td>
             <td class="right"><?php echo number_format($debitNote['total_recoverable_expenses'], 2); ?></td>
         </tr>
         
@@ -414,12 +452,14 @@ style="width:180px; height:auto; display:block;">
                 <tr >
                     <td></td>
                     <td  class="center"><strong>CGST @ 9%</strong></td>
+                    <td class="center">-</td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
                 </tr>
 
                 <tr>
                     <td></td>
                     <td  class="center"><strong>SGST @ 9%</strong></td>
+                    <td class="center">-</td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.09, 2); ?></strong></td>
                 </tr>
 
@@ -428,6 +468,7 @@ style="width:180px; height:auto; display:block;">
                 <tr>
                     <td></td>
                     <td class="center"><strong>IGST @ 18%</strong></td>
+                    <td class="center">-</td>
                     <td class="right"><strong><?= number_format($debitNote['total_recoverable_expenses'] * 0.18, 2); ?></strong></td>
                 </tr>
 
@@ -449,21 +490,24 @@ style="width:180px; height:auto; display:block;">
                 else{
                     $taxAmount =0;
                 }
-                $grandTotal = $amount + $taxAmount;
+                $grandTotal = $amount + $taxAmount+$serviceTotal;
             ?>
             <tr class="debitnotepdf-summary">
                 <td></td>
                 <td class="center"><strong>Total Amount</strong></td>
+                <td class="center">-</td>
                 <td class="right"><strong><?php echo number_format($grandTotal, 2); ?></strong></td>
            </tr>
         <tr class="debitnotepdf-summary">
             <td class="center">B</td>
             <td class="center">(-) Advances Received</td>
+            <td class="center">-</td>
             <td class="right"><?php echo number_format($debitNote['advance_amount'], 2); ?></td>
         </tr>
         <tr class="debitnotepdf-summary">
             <td class="center">C</td>
             <td class="center">Net Amount(A+B)</td>
+            <td class="center">-</td>
             <td class="right"><?php echo number_format($debitNote['total_amount'], 2); ?></td>
         </tr>
 

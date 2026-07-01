@@ -111,7 +111,7 @@
                     <input type="text" id="clientSearch" class="search-input" placeholder="Search client...">
                 <?php foreach ($clients as $client): ?>
                     <div class="Gvoice-option-row">
-                        <input type="radio" name="client_id"
+                        <input type="checkbox" name="client_id"
                             value="<?= $client['id']; ?>"
                             data-state="<?= esc($client['gst_state']); ?>" required>
 
@@ -136,7 +136,7 @@
                     <input type="text" id="modalCompanySearch" class="search-input" placeholder="Search company...">
                 <?php foreach ($companies as $company): ?>
                     <div class="Gvoice-option-row">
-                        <input type="radio" name="company_id"
+                        <input type="checkbox" name="company_id"
                             value="<?= $company['id']; ?>"
                             data-state="<?= esc($company['gst_state']); ?>" required>
 
@@ -147,8 +147,8 @@
 
                 <div class="Gvoice-section-title">Tax
                 <div class="Gvoice-box">
-                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
-                <label><input type="radio" name="tax" value="igst"> IGST</label>
+                <label><input type="checkbox" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                <label><input type="checkbox" name="tax" value="igst"> IGST</label>
                 </div>
                 </div>
 
@@ -194,29 +194,44 @@
                                 <?php foreach ($clients as $client): ?>
                                 <div class="Gvoice-option-row note-client-row">
                                     <label>
-                                        <input type="radio" name="note_client_choice" value="<?= $client['id']; ?>">
+                                        <input type="checkbox" name="note_client_choice" value="<?= $client['id']; ?>">
                                         <?= esc($client['legal_name']); ?>
                                     </label>
                                 </div>
                                 <?php endforeach; ?>
                             </div>
                             <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                <label><strong>Select Work</strong></label>
+                                
+                                    <input type="text" id="workSearch" class="search-input" placeholder="Search work...">
+                                <?php foreach ($works as $work): ?>
+                                    <div class="Gvoice-option-row">
+                                        <input type="checkbox" name="work_ids[]" value="<?= $work['id']; ?>">
+                                        <?= esc($work['service_name']); ?> (<?= esc($work['sac_code']); ?>)
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                           
+                            <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
                                 <label><strong>Choose Company</strong></label>
                                 <input type="text" id="noteCompanySearch" class="search-input" placeholder="Search company...">
                                 <?php foreach ($companies as $company): ?>
                                 <div class="Gvoice-option-row note-company-row">
                                     <label>
-                                        <input type="radio" name="note_company_choice" value="<?= esc($company['id']) ?>">
+                                        <input type="checkbox" name="note_company_choice" value="<?= esc($company['id']) ?>">
                                         <?= esc($company['name']) ?> [<?= esc($company['type_of_company']) ?>]
                                     </label>
                                 </div>
                                 <?php endforeach; ?>
                             </div>
-                            <div class="Gvoice-section-title">Tax
-                                <div class="Gvoice-box">
-                                <label><input type="radio" name="tax" value="cgst_sgst"> CGST & SGST</label>
-                                <label><input type="radio" name="tax" value="igst"> IGST</label>
-                                </div>
+                             <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                 <label><strong>Tax</strong></label>
+                                    <label><input type="checkbox" name="tax" value="cgst_sgst"> CGST & SGST</label>
+                                    <label><input type="checkbox" name="tax" value="igst"> IGST</label>   
+                            </div>
+                            <div class="form-group mb-3"style="max-height:200px;overflow-y:auto;">
+                                <label><strong>Add Expenses Recoverable</strong></label>
+                                <label><input type="checkbox" name="expenses" value="1"> Include Expenses</label>
                             </div>
                              <div class="Gvoice-actions">
                     <button class="Gvoice-btn Gvoice-btn-success">Proceed</button>
@@ -269,7 +284,7 @@
 
                                 <label>
 
-                                    <input type="radio"
+                                    <input type="checkbox"
                                            name="receipt_client_choice"
                                            value="<?= $client['id']; ?>">
 
@@ -304,7 +319,7 @@
 
                                 <label>
 
-                                    <input type="radio"
+                                    <input type="checkbox"
                                            name="receipt_company_choice"
                                            value="<?= $company['id']; ?>">
 
@@ -681,13 +696,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         el.addEventListener('change', function () {
 
-            if (!clientState) {
+            // if (!clientState) {
 
-                alert('Select client first');
+            //     alert('Select client first');
 
-                return;
+            //     return;
 
-            }
+            // }
 
             let companyState = this.dataset.state;
 
@@ -814,13 +829,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('modalCompanySearch');
 
     const clientRows =
-        document.querySelectorAll('input[type="radio"][name="client_id"]');
+        document.querySelectorAll('input[type="checkbox"][name="client_id"]');
 
     const workRows =
         document.querySelectorAll('input[type="checkbox"][name="work_ids[]"]');
 
     const modalCompanyRows =
-        document.querySelectorAll('.Gvoice-box input[type="radio"][name="company_id"]');
+        document.querySelectorAll('.Gvoice-box input[type="checkbox"][name="company_id"]');
 
 
     // Open dropdown
@@ -1607,5 +1622,6 @@ document.getElementById("downloadPdfBtn").addEventListener("click", function() {
         $('#submitrecipt').modal('hide');
         location.reload();
     });
+    
 
 </script>

@@ -24,7 +24,8 @@ class DebitNotes extends Model
         'date',
         'created_by',
         'note_type',
-        'tax'
+        'tax',
+        'amount_in_words',
     ];
 
     protected bool $allowEmptyInserts = false;
